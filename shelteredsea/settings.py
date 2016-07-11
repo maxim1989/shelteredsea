@@ -76,21 +76,9 @@ WSGI_APPLICATION = 'shelteredsea.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
-# DATABASES = {
-#     'default': os.environ.get('DB_SETTINGS', {})
-# }
-
 DATABASES = {
-    'default':  {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'test',
-        'USER': 'test',
-        'PASSWORD': 'test',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-    }
+    'default': os.environ.get('DB_SETTINGS', {})
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
