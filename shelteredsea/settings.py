@@ -102,7 +102,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-RU'
 
 TIME_ZONE = 'UTC'
 
@@ -117,3 +117,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static")
+]
+
+# Default: None
+#
+# The absolute path to the directory where collectstatic will collect static files for deployment.
+#
+# Example: "/var/www/example.com/static/"
+#
+# If the staticfiles contrib app is enabled (default) the collectstatic management command will collect static files into this directory. See the howto on managing static files for more details about usage.
+# STATIC_ROOT = '/path/to/static/for/deploy/'
