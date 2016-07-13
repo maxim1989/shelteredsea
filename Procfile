@@ -1,0 +1,1 @@
+web: gunicorn shelteredsea.wsgi --log-file -
