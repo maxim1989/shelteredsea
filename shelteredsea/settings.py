@@ -119,7 +119,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATICFILES_DIRS = []
 
 # Default: None
 #
@@ -128,5 +128,6 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 # Example: "/var/www/example.com/static/"
 #
 # If the staticfiles contrib app is enabled (default) the collectstatic management command will collect static files into this directory. See the howto on managing static files for more details about usage.
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+# STATIC_ROOT = "staticfiles"
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
