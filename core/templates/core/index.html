@@ -12,15 +12,17 @@
     {% if page_status == 'login' %}
         <p>Вход выполнен</p>
 
-
-{#        <a href="{% url 'social:disconnect' social %}">Выход</a>#}
-
         {% for social in backends.backends %}
-            <form action="{% url 'social:disconnect' social %}" method="post">
-{#                {% csrf_token %}#}
-                <input type="submit" value="Выход" />
-            </form>
+            <a href="{% url 'social:disconnect' social %}">Выход</a>
         {% endfor %}
+
+
+{#        {% for social in backends.backends %}#}
+{#            <form action="{% url 'social:disconnect' social %}" method="post">#}
+{#                {% csrf_token %}#}
+{#                <input type="submit" value="Выход" />#}
+{#            </form>#}
+{#        {% endfor %}#}
 
 
 
