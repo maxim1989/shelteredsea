@@ -13,8 +13,9 @@
         <p>Вход выполнен</p>
 
         {% for soc in backends.backends %}
-            <form action="{% url 'social:disconnect' backend=soc %}" method="post">{% csrf_token %}
-                <input type="submit" value="Выход" />
+            <form action="{% url 'social:disconnect' backend=soc %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Disconnect</button>
             </form>
         {% endfor %}
 
