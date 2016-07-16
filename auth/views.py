@@ -12,5 +12,4 @@ def logged_fail(request):
 
 
 def user_logout(request):
-    logout(request)
-    return redirect(reverse('home'))
+    return render(request, 'core/index.html', {'page_status': 'login'})
