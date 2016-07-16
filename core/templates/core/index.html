@@ -11,7 +11,7 @@
     {{ status_page }}
     {% if page_status == 'login' %}
         <p>Вход выполнен</p>
-        <a href="{% url 'auth:logout' %}">Выход</a>
+        <a href="{% url 'auth:user_logout' %}">Выход</a>
     {% elif page_status == 'logout' %}
         <p>Выход выполнен</p>
         {% for social in backends.backends %}
