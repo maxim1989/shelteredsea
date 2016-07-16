@@ -11,7 +11,19 @@
     {{ status_page }}
     {% if page_status == 'login' %}
         <p>Вход выполнен</p>
-        <a href="{% url 'auth:user_logout' %}">Выход</a>
+
+
+{#        <a href="{% url 'auth:user_logout' %}">Выход</a>#}
+
+        {% for social in backends.backends %}
+            <form action="{% url 'social:disconnect' social %}" method="post">
+                {% csrf_token %}
+                <input type="submit" value="Выход" />
+            </form>
+        {% endfor %}
+
+
+
     {% endif %}
     {% if page_status == 'start' %}
         <p>Стартовая страница</p>
