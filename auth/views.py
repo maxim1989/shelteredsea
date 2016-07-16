@@ -10,6 +10,6 @@ def logged_fail(request):
     return render(request, 'core/index.html', {'page_status': 'fail'})
 
 
-def logout(request):
+def user_logout(request):
     logout(request)
     return render(request, 'core/index.html', {'page_status': 'logout'})
