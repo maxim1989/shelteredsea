@@ -13,4 +13,4 @@ def logged_fail(request):
 
 def user_logout(request):
     logout(request)
-    return HttpResponseRedirect(reverse('home'))
+    return HttpResponseRedirect('/')
