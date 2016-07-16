@@ -17,7 +17,7 @@
 
         {% for social in backends.backends %}
             <form action="{% url 'social:disconnect' social %}" method="post">
-{#                {% csrf_token %}#}
+                {% csrf_token %}
                 <input type="submit" value="Выход" />
             </form>
         {% endfor %}
