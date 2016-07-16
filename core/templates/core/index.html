@@ -10,12 +10,19 @@
     {{ backends.backends }}
     {% if status_page == 'login' %}
         <p>Вход выполнен</p>
+        <a href="{% url 'auth:logout' %}">Выход</a>
     {% elif status_page == 'logout' %}
         <p>Выход выполнен</p>
+        {% for social in backends.backends %}
+            <a href="{% url 'social:begin' social %}">{{ social }}</a>
+        {% endfor %}
     {% elif status_page == 'fail' %}
         <p>Ошибка</p>
     {% else %}
         <p>Стартовая страница</p>
+        {% for social in backends.backends %}
+            <a href="{% url 'social:begin' social %}">{{ social }}</a>
+        {% endfor %}
     {% endif %}
 </body>
 </html>
