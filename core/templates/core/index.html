@@ -8,6 +8,7 @@
     {{ backends.associated }}
     {{ backends.not_associated }}
     {{ backends.backends }}
+    {{ status_page }}
     {% if status_page == 'login' %}
         <p>Вход выполнен</p>
         <a href="{% url 'auth:logout' %}">Выход</a>
