@@ -12,25 +12,19 @@
     {% if page_status == 'login' %}
         <p>Вход выполнен</p>
 
-        {% for social in backends.backends %}
-            <a href="{% url 'social:disconnect' social %}">Выход</a>
+        {% for soc in backends.backends %}
+            <form action="{% url 'social:disconnect' backend=soc %}" method="post">{% csrf_token %}
+                <input type="submit" value="Выход" />
+            </form>
         {% endfor %}
-
-
-{#        {% for social in backends.backends %}#}
-{#            <form action="{% url 'social:disconnect' social %}" method="post">#}
-{#                {% csrf_token %}#}
-{#                <input type="submit" value="Выход" />#}
-{#            </form>#}
-{#        {% endfor %}#}
 
 
 
     {% endif %}
     {% if page_status == 'start' %}
         <p>Стартовая страница</p>
-        {% for social in backends.backends %}
-            <a href="{% url 'social:begin' social %}">{{ social }}</a>
+        {% for soc in backends.backends %}
+            <a href="{% url 'social:begin' soc %}">{{ soc }}</a>
         {% endfor %}
     {% endif %}
 </body>
