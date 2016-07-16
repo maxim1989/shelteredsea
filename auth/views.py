@@ -1,6 +1,6 @@
 from django.contrib.auth import logout
 from django.core.urlresolvers import reverse
-from django.shortcuts import HttpResponseRedirect, render
+from django.shortcuts import HttpResponseRedirect, render, redirect
 
 # Create your views here.
 def logged(request):
@@ -13,4 +13,4 @@ def logged_fail(request):
 
 def user_logout(request):
     logout(request)
-    return HttpResponseRedirect('/')
+    return redirect(reverse('home'))
