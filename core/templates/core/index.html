@@ -9,15 +9,15 @@
     {{ backends.not_associated }}
     {{ backends.backends }}
     {{ status_page }}
-    {% if status_page == 'login' %}
+    {% if page_status == 'login' %}
         <p>Вход выполнен</p>
         <a href="{% url 'auth:logout' %}">Выход</a>
-    {% elif status_page == 'logout' %}
+    {% elif page_status == 'logout' %}
         <p>Выход выполнен</p>
         {% for social in backends.backends %}
             <a href="{% url 'social:begin' social %}">{{ social }}</a>
         {% endfor %}
-    {% elif status_page == 'fail' %}
+    {% elif page_status == 'fail' %}
         <p>Ошибка</p>
     {% else %}
         <p>Стартовая страница</p>
