@@ -12,14 +12,8 @@
     {% if page_status == 'login' %}
         <p>Вход выполнен</p>
         <a href="{% url 'auth:user_logout' %}">Выход</a>
-    {% elif page_status == 'logout' %}
-        <p>Выход выполнен</p>
-        {% for social in backends.backends %}
-            <a href="{% url 'social:begin' social %}">{{ social }}</a>
-        {% endfor %}
-    {% elif page_status == 'fail' %}
-        <p>Ошибка</p>
-    {% else %}
+    {% endif %}
+    {% if page_status == 'start' %}
         <p>Стартовая страница</p>
         {% for social in backends.backends %}
             <a href="{% url 'social:begin' social %}">{{ social }}</a>
