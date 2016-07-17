@@ -93,3 +93,7 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Front-end
+node_modules/
+/core/static/**/*.map

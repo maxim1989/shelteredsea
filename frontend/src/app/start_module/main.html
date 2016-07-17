@@ -1,0 +1,22 @@
+<div class="start-page row">
+    <div class="col-md-offset-1 col-md-4">
+        <a class="thumbnail text-center"
+           @pageState="'in-from-left'"
+           href="#">
+            <div class="pfe-logo"></div>
+            <div class="caption">
+                <p>PfE</p>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-offset-2 col-md-4">
+        <a class="thumbnail text-center"
+           @pageState="'in-from-right'"
+           [routerLink]="['/pfg']">
+            <div class="pfg-logo"></div>
+            <div class="caption">
+                <p>PfG</p>
+            </div>
+        </a>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+#wrapper{
+    margin-top: 10px;
+}
+.logo{
+    display: block;
+    height: 150px;
+    background: url(../img/logo.png) no-repeat 50% 50%;
+}
+.log-in{
+    font-size: 2em;
+}
+
+.start-page .pfe-logo{
+    display: block;
+    height: 400px;
+    background: url(../img/pfe.jpg) no-repeat 50% 50%;
+}
+.start-page .pfg-logo{
+    display: block;
+    height: 400px;
+    background: url(../img/pfg.jpg) no-repeat 50% 50%;
+}
