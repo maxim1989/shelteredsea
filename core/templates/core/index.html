@@ -5,7 +5,7 @@
     <title>Стартовая страница</title>
 </head>
 <body>
-    {% if user.user.is_authenticated %}
+    {% if user.is_authenticated %}
         <p><a href="{% url 'auth:logout' %}">Выход</a></p>
     {% else %}
         <p>Стартовая страница</p>

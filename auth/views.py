@@ -4,9 +4,6 @@ from django.shortcuts import HttpResponseRedirect, render
 
 # Create your views here.
 def logged(request):
-    print('logged')
-    print(request.user.is_authenticated())
-
     return render(request, 'core/index.html')
 
 
