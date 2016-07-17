@@ -1,4 +1,4 @@
-from django.contrib.auth import logout
+from django.contrib import auth
 from django.core.urlresolvers import reverse
 from django.shortcuts import HttpResponseRedirect, render, redirect
 
@@ -11,6 +11,7 @@ def logged_fail(request):
     return HttpResponseRedirect(reverse('home'))
 
 
-def user_logout(request):
+def logout(request):
     # return render(request, 'core/index.html', {'page_status': 'login'})
+    auth.logout(request)
     return HttpResponseRedirect('/')
