@@ -12,4 +12,5 @@ def logged_fail(request):
 
 
 def user_logout(request):
-    return render(request, 'core/index.html', {'page_status': 'login'})
+    # return render(request, 'core/index.html', {'page_status': 'login'})
+    return HttpResponseRedirect('/')

@@ -9,14 +9,11 @@
     {{ backends.not_associated }}
     {{ backends.backends }}
     {{ status_page }}
-    {{ association }}
-    {{ association.provider }}
-    {{ association.id }}
     {% if page_status == 'login' %}
         <p>Вход выполнен</p>
 
         {% for soc in backends.backends %}
-            <form action="{% url 'social:disconnect_individual' backend=association.provider association_id=association.id %}" method="post">
+            <form action="{% url 'social:disconnect_individual' backend=soc %}" method="post">
                 {% csrf_token %}
                 <button type="submit">Disconnect</button>
             </form>
