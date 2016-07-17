@@ -20,7 +20,7 @@
         <p>pppppppppppppppppppppppppppppp</p>
 
         {% for soc in backends.backends %}
-            <form action="{% url 'social:disconnect_individual' soc  %}" method="post">
+            <form action="{% url 'social:disconnect' soc  %}" method="post">
                 {% csrf_token %}
                 <button type="submit">Disconnect</button>
             </form>
