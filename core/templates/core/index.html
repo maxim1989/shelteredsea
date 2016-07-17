@@ -11,13 +11,13 @@
     {{ backends.backends }}
     {{ status_page }}
     {% if page_status == 'login' %}
-        <p>Вход выполнен</p>
-            {% for i in backends.associated %}
-            {{ i }}
-            {{ i.provider }}
-            {{ i.id }}
-        {% endfor %}
-        <p>pppppppppppppppppppppppppppppp</p>
+{#        <p>Вход выполнен</p>#}
+{#            {% for i in backends.associated %}#}
+{#            {{ i }}#}
+{#            {{ i.provider }}#}
+{#            {{ i.id }}#}
+{#        {% endfor %}#}
+{#        <p>pppppppppppppppppppppppppppppp</p>#}
 
 {#        {% for soc in backends.backends %}#}
 {#            <form action="{% url 'social:disconnect' soc  %}" method="post">#}
@@ -25,13 +25,13 @@
 {#                <button type="submit">Disconnect</button>#}
 {#            </form>#}
 {#        {% endfor %}#}
-        {% for i in backends.associated %}
-            <form action="{% url 'social:disconnect_individual' i.provider i.id %}" method="post">
-                {% csrf_token %}
-                <button type="submit">Disconnect</button>
-            </form>
-        {% endfor %}
-{#        <a href="{% url 'auth:logout' %}">Выход</a>#}
+{#        {% for i in backends.associated %}#}
+{#            <form action="{% url 'social:disconnect_individual' i.provider i.id %}" method="post">#}
+{#                {% csrf_token %}#}
+{#                <button type="submit">Disconnect</button>#}
+{#            </form>#}
+{#        {% endfor %}#}
+        <a href="{% url 'auth:logout' %}">Выход</a>
 
 
 
