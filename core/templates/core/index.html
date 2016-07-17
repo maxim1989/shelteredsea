@@ -10,6 +10,14 @@
         <link rel="stylesheet" href="{% static 'css/main.css' %}">
     </head>
     <body>
+    {% if user.is_authenticated %}
+        <p><a href="{% url 'auth:logout' %}">Выход</a></p>
+    {% else %}
+        <p>Стартовая страница</p>
+        {% for soc in backends.backends %}
+            <a href="{% url 'social:begin' soc %}">{{ soc }}</a>
+        {% endfor %}
+    {% endif %}
         <div id="wrapper" class="container">
             <app>Loading...</app>
         </div>
@@ -20,4 +28,3 @@
         <script src="{% static 'js/main.bundle.js' %}"></script>
     </body>
 </html>
-

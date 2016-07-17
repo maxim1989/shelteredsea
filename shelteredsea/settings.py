@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social.apps.django_app.default',
     'core',
 ]
 
@@ -67,6 +68,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social.apps.django_app.context_processors.backends',
+                'social.apps.django_app.context_processors.login_redirect'
             ],
         },
     },
@@ -121,13 +124,58 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = []
 
-# Default: None
-#
-# The absolute path to the directory where collectstatic will collect static files for deployment.
-#
-# Example: "/var/www/example.com/static/"
-#
-# If the staticfiles contrib app is enabled (default) the collectstatic management command will collect static files into this directory. See the howto on managing static files for more details about usage.
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
-# STATIC_ROOT = "staticfiles"
+
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+# Логирование через провайдера
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'social.backends.steam.SteamOpenId',
+)
+
+SOCIAL_AUTH_STEAM_API_KEY = os.environ.get('SOCIAL_AUTH_STEAM_API_KEY', '')
+
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/auth/'
+    # Used to redirect the user once the auth process ended successfully. The value of ?next=/foo is used if it was present
+# SOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'
+    # URL where the user will be redirected in case of an error
+SOCIAL_AUTH_LOGIN_URL = '/auth/login_fail/'
+    # Is used as a fallback for LOGIN_ERROR_URL
+# SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/new-users-redirect-url/'
+    # Used to redirect new registered users, will be used in place of SOCIAL_AUTH_LOGIN_REDIRECT_URL if defined. Note that ?next=/foo is appended if present, if you want new users to go to next, you’ll need to do it yourself.
+# SOCIAL_AUTH_NEW_ASSOCIATION_REDIRECT_URL = '/new-association-redirect-url/'
+    # Like SOCIAL_AUTH_NEW_USER_REDIRECT_URL but for new associated accounts (user is already logged in). Used in place of SOCIAL_AUTH_LOGIN_REDIRECT_URL
+# SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/auth/logout/'
+    # The user will be redirected to this URL when a social account is disconnected
+# SOCIAL_AUTH_INACTIVE_USER_URL = '/inactive-user/'
+    # Inactive users can be redirected to this URL when trying to authenticate.
+
+SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
+
+SOCIAL_AUTH_DISCONNECT_PIPELINE = (
+    # Verifies that the social association can be disconnected from the current
+    # user (ensure that the user login mechanism is not compromised by this
+    # disconnection).
+    'social.pipeline.disconnect.allowed_to_disconnect',
+
+    # Collects the social associations to disconnect.
+    'social.pipeline.disconnect.get_entries',
+
+    # Revoke any access_token when possible.
+    'social.pipeline.disconnect.revoke_tokens',
+
+    # Removes the social associations.
+    'social.pipeline.disconnect.disconnect',
+)
+
+SOCIAL_AUTH_PIPELINE = (
+    'social.pipeline.social_auth.social_details',
+    'social.pipeline.social_auth.social_uid',
+    'social.pipeline.social_auth.auth_allowed',
+    'social.pipeline.social_auth.social_user',
+    'social.pipeline.social_auth.associate_user',
+    'social.pipeline.social_auth.load_extra_data',
+    'social.pipeline.user.user_details',
+)
+#-----------------------------------------------------------------------------------------------------------------------
