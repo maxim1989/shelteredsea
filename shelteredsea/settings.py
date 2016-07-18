@@ -138,7 +138,7 @@ SOCIAL_AUTH_STEAM_API_KEY = os.environ.get('SOCIAL_AUTH_STEAM_API_KEY', '')
 
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/auth/'
     # Used to redirect the user once the auth process ended successfully. The value of ?next=/foo is used if it was present
-SOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'
+# SOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'
     # URL where the user will be redirected in case of an error
 # SOCIAL_AUTH_LOGIN_URL = '/auth/login_fail/'
     # Is used as a fallback for LOGIN_ERROR_URL
