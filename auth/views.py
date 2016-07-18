@@ -9,7 +9,13 @@ def logged(request):
     return render(request, 'core/index.html')
 
 
+def login_error(request):
+    print(vars(request))
+    return HttpResponseRedirect(reverse('home'))
+
+
 def logged_fail(request):
+    print(vars(request))
     return HttpResponseRedirect(reverse('home'))
 
 
