@@ -178,7 +178,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.load_extra_data',
     'social.pipeline.user.user_details',
 )
-STEAM_SOCIAL_AUTH_RAISE_EXCEPTIONS = False
-SOCIAL_AUTH_RAISE_EXCEPTIONS = False
-RAISE_EXCEPTIONS = False
+STEAM_SOCIAL_AUTH_RAISE_EXCEPTIONS = True
+SOCIAL_AUTH_RAISE_EXCEPTIONS = True
+RAISE_EXCEPTIONS = True
 #-----------------------------------------------------------------------------------------------------------------------
