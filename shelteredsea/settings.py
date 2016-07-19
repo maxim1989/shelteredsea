@@ -152,30 +152,4 @@ SOCIAL_AUTH_LOGIN_URL = '/auth/login_fail/'
     # Inactive users can be redirected to this URL when trying to authenticate.
 
 SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
-
-SOCIAL_AUTH_DISCONNECT_PIPELINE = (
-    # Verifies that the social association can be disconnected from the current
-    # user (ensure that the user login mechanism is not compromised by this
-    # disconnection).
-    'social.pipeline.disconnect.allowed_to_disconnect',
-
-    # Collects the social associations to disconnect.
-    'social.pipeline.disconnect.get_entries',
-
-    # Revoke any access_token when possible.
-    'social.pipeline.disconnect.revoke_tokens',
-
-    # Removes the social associations.
-    'social.pipeline.disconnect.disconnect',
-)
-
-SOCIAL_AUTH_PIPELINE = (
-    'social.pipeline.social_auth.social_details',
-    'social.pipeline.social_auth.social_uid',
-    'social.pipeline.social_auth.auth_allowed',
-    'social.pipeline.social_auth.social_user',
-    'social.pipeline.social_auth.associate_user',
-    'social.pipeline.social_auth.load_extra_data',
-    'social.pipeline.user.user_details',
-)
 #-----------------------------------------------------------------------------------------------------------------------
