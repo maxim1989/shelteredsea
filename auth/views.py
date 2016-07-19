@@ -2,8 +2,6 @@ from django.contrib import auth
 from django.core.urlresolvers import reverse
 from django.shortcuts import HttpResponseRedirect, render
 
-from social.apps.django_app.middleware import SocialAuthExceptionMiddleware
-
 # Create your views here.
 def logged(request):
     return render(request, 'core/index.html')

@@ -9,4 +9,4 @@ ptyprocess==0.5
 dj-database-url==0.4.1
 whitenoise==3.2
 gunicorn==19.6.0
-python-social-auth==0.2.19
+django-oidc-provider==0.3.6
