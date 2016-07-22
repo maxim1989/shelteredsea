@@ -22,12 +22,12 @@ import { ROUTER_DIRECTIVES } from '@angular/router';
                 transform: 'translateX(0)'
             })),
             transition('void => in-from-left', [
-                style({transform: 'translateX(-100%)'}),
-                animate(500)
+                style({transform: 'translateX(-200%)'}),
+                animate('0.3s ease-in')
             ]),
             transition('void => in-from-right', [
-                style({transform: 'translateX(100%)'}),
-                animate(500)
+                style({transform: 'translateX(200%)'}),
+                animate('0.3s ease-in')
             ])
         ])
     ]

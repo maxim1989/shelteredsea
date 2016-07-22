@@ -3,9 +3,21 @@
         <a class="logo"
            [routerLink]="['/']">&nbsp;</a>
     </div>
-    <div class="col-md-offset-2 col-md-1 text-right">
-        <a class="log-in">
-           <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+    <div class="col-md-3 text-right">
+        <div *ngIf="is_authenticated">
+            <a class="log-in"
+                 (click)="goToAccount()">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{userTitle}}
+            </a>
+            <a class="log-in"
+                 (click)="routeLogOut()">
+                <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Выйти
+            </a>
+        </div>
+        <a class="log-in"
+             *ngIf="!is_authenticated"
+             (click)="routeLogIn()">
+            <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> Войти
         </a>
     </div>
 </div>
