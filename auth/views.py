@@ -10,12 +10,10 @@ def logged(request):
 
 
 def login_error(request):
-    print(vars(request))
     return HttpResponseRedirect(reverse('home'))
 
 
 def logged_fail(request):
-    print(vars(request))
     return HttpResponseRedirect(reverse('home'))
 
 
