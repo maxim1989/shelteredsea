@@ -10,3 +10,4 @@ dj-database-url==0.4.1
 whitenoise==3.2
 gunicorn==19.6.0
 python-social-auth==0.2.19
+djangorestframework==3.4.0
