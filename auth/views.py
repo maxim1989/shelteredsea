@@ -13,7 +13,6 @@ from rest_framework.renderers import JSONRenderer
 from auth.serializers import AuthenticatedUserSerializer
 
 
-# Create your views here.
 def logged(request):
     return render(request, 'core/index.html')
 
@@ -28,7 +27,7 @@ def logged_fail(request):
 
 def logout(request):
     auth.logout(request)
-    return HttpResponseRedirect(reverse('home'))
+    return JSONResponse(data=dict(), is_autorized=False)
 
 
 class JSONResponse(HttpResponse):
@@ -36,6 +35,7 @@ class JSONResponse(HttpResponse):
     An HttpResponse that renders its content into JSON.
     """
     def __init__(self, data, **kwargs):
+        data['is_autorized'] = kwargs.get('is_autorized', True)
         content = JSONRenderer().render(data)
         kwargs['content_type'] = 'application/json'
         super(JSONResponse, self).__init__(content, **kwargs)
@@ -56,3 +56,11 @@ def authenticated_user(request):
         serializer = AuthenticatedUserSerializer(data=user)
         return JSONResponse(data=serializer.data)
 
+
+def not_authenticated(request):
+    """
+    Если пользователь not_authenticated то приходим сюда, за счёт декоратора login_required
+    :param request:
+    :return:
+    """
+    return JSONResponse(data=dict(), is_autorized=False)
