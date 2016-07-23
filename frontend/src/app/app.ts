@@ -16,6 +16,7 @@ export class App implements OnInit{
 
     user : User;
     userTitle : string;
+    userLoaded: boolean = false;
     is_authenticated: boolean = false;
 
     constructor(private UserService: UserService) {}
@@ -27,11 +28,20 @@ export class App implements OnInit{
     getAuthUserData() {
         this.UserService
             .getAuthUser()
-            .then(user => this.initAuthUser(user))
-            .catch(() => this.is_authenticated = false);
+            .then(
+                user => {
+                    this.userLoaded = true;
+                    this.initAuthUser(user);
+                },
+                error => {
+                    this.userLoaded = true;
+                    this.is_authenticated = false;
+                    console.log(error);
+                }
+            );
     }
 
-    initAuthUser( user : User) {
+    initAuthUser(user : User) {
         this.is_authenticated = user.is_auth;
         if (user.is_auth) {
             this.userTitle = user.name;
@@ -42,11 +52,11 @@ export class App implements OnInit{
         console.log('redirect in account');
     }
 
-    routerLogIn() {
+    routeLogIn() {
         location.href = this.URL_LOGIN;
     }
 
-    routelogOut() {
+    routeLogOut() {
         location.href = this.URL_LOGOUT;
     }
 
