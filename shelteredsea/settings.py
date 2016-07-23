@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social.apps.django_app.default',
+    'rest_framework',
     'core',
 ]
 
@@ -153,3 +154,13 @@ SOCIAL_AUTH_LOGIN_URL = '/auth/login_fail/'
 
 SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
 #-----------------------------------------------------------------------------------------------------------------------
+# Django rest framework settings
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
+#-----------------------------------------------------------------------------------------------------------------------
+LOGIN_URL = '/auth/not_authenticated/'
