@@ -1,5 +1,5 @@
 export class User {
     id : number;
-    name : string;
-    is_auth : boolean = false;
+    username : string;
+    is_autorized : boolean = false;
 }

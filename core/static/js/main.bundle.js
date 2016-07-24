@@ -5,8 +5,8 @@ webpackJsonp([2],{
 
 	"use strict";
 	var common_1 = __webpack_require__(37);
-	var platform_browser_dynamic_1 = __webpack_require__(318);
-	var http_1 = __webpack_require__(201);
+	var platform_browser_dynamic_1 = __webpack_require__(319);
+	var http_1 = __webpack_require__(202);
 	// import {enableProdMode} from '@angular/core';
 	var routes_1 = __webpack_require__(489);
 	var app_1 = __webpack_require__(487);
@@ -62,9 +62,9 @@ webpackJsonp([2],{
 	        });
 	    };
 	    App.prototype.initAuthUser = function (user) {
-	        this.is_authenticated = user.is_auth;
-	        if (user.is_auth) {
-	            this.userTitle = user.name;
+	        this.is_authenticated = user.is_autorized;
+	        if (user.is_autorized) {
+	            this.userTitle = user.username;
 	        }
 	    };
 	    App.prototype.goToAccount = function () {
@@ -82,7 +82,7 @@ webpackJsonp([2],{
 	            pipes: [],
 	            providers: [service_1.UserService],
 	            directives: [router_1.ROUTER_DIRECTIVES],
-	            template: __webpack_require__(654),
+	            template: __webpack_require__(655),
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof service_1.UserService !== 'undefined' && service_1.UserService) === 'function' && _a) || Object])
 	    ], App);
@@ -117,7 +117,7 @@ webpackJsonp([2],{
 	            pipes: [],
 	            providers: [],
 	            directives: [],
-	            template: __webpack_require__(655)
+	            template: __webpack_require__(656)
 	        }), 
 	        __metadata('design:paramtypes', [])
 	    ], GameDispute);
@@ -176,7 +176,7 @@ webpackJsonp([2],{
 	            pipes: [],
 	            providers: [],
 	            directives: [router_1.ROUTER_DIRECTIVES],
-	            template: __webpack_require__(656),
+	            template: __webpack_require__(657),
 	            animations: [
 	                core_1.trigger('pageState', [
 	                    core_1.state('in-from-left', core_1.style({
@@ -219,7 +219,7 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var http_1 = __webpack_require__(201);
+	var http_1 = __webpack_require__(202);
 	__webpack_require__(371);
 	var UserService = (function () {
 	    function UserService(http) {
@@ -231,11 +231,6 @@ webpackJsonp([2],{
 	            .toPromise()
 	            .then(function (response) { return response.json(); })
 	            .catch(this.handlerError);
-	        // let user : User = {id: 10, name: 'Test User', is_auth: false};
-	        // return Promise.resolve(user);
-	        // return new Promise<User>(resolve =>
-	        //     setTimeout( () => resolve(user), 2000));
-	        // return Promise.reject(user);
 	    };
 	    UserService.prototype.handlerError = function (error) {
 	        console.error('An error occurred', error);
@@ -253,21 +248,21 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 654:
+/***/ 655:
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"row\">\n    <div class=\"col-md-offset-3 col-md-6\">\n        <a class=\"logo\"\n           [routerLink]=\"['/']\"></a>\n    </div>\n    <div class=\"col-md-3 text-right\">\n        <div *ngIf=\"!userLoaded\">\n            <em>Идет загрузка данных...</em>\n        </div>\n        <div *ngIf=\"userLoaded && is_authenticated\">\n            <a class=\"log-in\"\n                 (click)=\"goToAccount()\">\n                <span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span> {{userTitle}}\n            </a>\n            <a class=\"log-in\"\n                 (click)=\"routeLogOut()\">\n                <span class=\"glyphicon glyphicon-log-out\" aria-hidden=\"true\"></span> Выйти\n            </a>\n        </div>\n        <a class=\"log-in\"\n             *ngIf=\"userLoaded && !is_authenticated\"\n             (click)=\"routeLogIn()\">\n            <span class=\"glyphicon glyphicon-log-in\" aria-hidden=\"true\"></span> Войти\n        </a>\n    </div>\n</div>\n\n<main>\n    <router-outlet></router-outlet>\n</main>\n\n"
 
 /***/ },
 
-/***/ 655:
+/***/ 656:
 /***/ function(module, exports) {
 
 	module.exports = "<h3>Спор через игру</h3>\n<p>Добро пожаловать на площадку</p>\n"
 
 /***/ },
 
-/***/ 656:
+/***/ 657:
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"start-page row\">\n    <div class=\"col-md-offset-1 col-md-4\">\n        <a class=\"thumbnail text-center\"\n           @pageState=\"'in-from-left'\"\n           href=\"#\">\n            <div class=\"caption\">\n                <p>PfE</p>\n            </div>\n            <div class=\"pfe-logo\"></div>\n        </a>\n    </div>\n    <div class=\"col-md-offset-2 col-md-4\">\n        <a class=\"thumbnail text-center\"\n           @pageState=\"'in-from-right'\"\n           [routerLink]=\"['/pfg']\">\n            <div class=\"caption\">\n                <p>PfG</p>\n            </div>\n            <div class=\"pfg-logo\"></div>\n        </a>\n    </div>\n</div>\n"

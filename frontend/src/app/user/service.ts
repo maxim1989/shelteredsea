@@ -15,11 +15,6 @@ export class UserService {
             .toPromise()
             .then(response => response.json() as User)
             .catch(this.handlerError);
-        // let user : User = {id: 10, name: 'Test User', is_auth: false};
-        // return Promise.resolve(user);
-        // return new Promise<User>(resolve =>
-        //     setTimeout( () => resolve(user), 2000));
-        // return Promise.reject(user);
     }
 
     handlerError(error: any) {

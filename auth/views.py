@@ -22,7 +22,7 @@ def logged_fail(request):
 
 def logout(request):
     auth.logout(request)
-    return JSONResponse(dict(), is_autorized=False)
+    return HttpResponseRedirect(reverse('home'))
 
 
 class JSONResponse(HttpResponse):

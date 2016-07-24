@@ -42,9 +42,9 @@ export class App implements OnInit{
     }
 
     initAuthUser(user : User) {
-        this.is_authenticated = user.is_auth;
-        if (user.is_auth) {
-            this.userTitle = user.name;
+        this.is_authenticated = user.is_autorized;
+        if (user.is_autorized) {
+            this.userTitle = user.username;
         }
     }
 
