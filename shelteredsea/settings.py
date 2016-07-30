@@ -25,9 +25,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'po4!tj&0w+$qn6vr1arlox(l)4&%x2$5!-h)=@04fxjt!0m$i+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0']
 
 
 # Application definition
@@ -145,9 +145,9 @@ SOCIAL_AUTH_LOGIN_URL = '/auth/login_fail/'
     # Is used as a fallback for LOGIN_ERROR_URL
 # SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/new-users-redirect-url/'
     # Used to redirect new registered users, will be used in place of SOCIAL_AUTH_LOGIN_REDIRECT_URL if defined. Note that ?next=/foo is appended if present, if you want new users to go to next, you’ll need to do it yourself.
-# SOCIAL_AUTH_NEW_ASSOCIATION_REDIRECT_URL = '/new-association-redirect-url/'
+# SOCIAL_AUTH_NEW_ASSOCIATION_REDIRECT_URL = '/auth/login-error/'
     # Like SOCIAL_AUTH_NEW_USER_REDIRECT_URL but for new associated accounts (user is already logged in). Used in place of SOCIAL_AUTH_LOGIN_REDIRECT_URL
-# SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/auth/logout/'
+SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/auth/login-error/'
     # The user will be redirected to this URL when a social account is disconnected
 # SOCIAL_AUTH_INACTIVE_USER_URL = '/inactive-user/'
     # Inactive users can be redirected to this URL when trying to authenticate.
@@ -159,7 +159,7 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
     ]
 }
 #-----------------------------------------------------------------------------------------------------------------------

@@ -1,9 +1,13 @@
+import copy
+
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse
 from django.shortcuts import HttpResponseRedirect, render
-from rest_framework.renderers import JSONRenderer
+from rest_framework import permissions
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from auth.serializers import AuthenticatedUserSerializer
 
@@ -20,33 +24,24 @@ def logged_fail(request):
     return HttpResponseRedirect(reverse('home'))
 
 
+@api_view(['GET'])
+@permission_classes((permissions.IsAuthenticated,))
 def logout(request):
     auth.logout(request)
     return HttpResponseRedirect(reverse('home'))
 
 
-class JSONResponse(HttpResponse):
-    """
-    An HttpResponse that renders its content into JSON.
-    """
-    def __init__(self, data, **kwargs):
-        data['is_autorized'] = kwargs.pop('is_autorized')
-        content = JSONRenderer().render(data)
-        kwargs['content_type'] = 'application/json'
-        super(JSONResponse, self).__init__(content, **kwargs)
-
-
-def authenticated_user(request):
+class AuthenticatedUser(APIView):
     """
     Получить сведения об авторизированном пользователе
-    :param request:
-    :return: данные пользователя
     """
-    if request.method == 'GET':
+    def get(self, request):
         if request.user.is_authenticated():
             user_id = request.user.id
             user = User.objects.get(pk=user_id)
             serializer = AuthenticatedUserSerializer(user)
-            return JSONResponse(serializer.data, is_autorized=True)
+            data = copy.deepcopy(serializer.data)
+            data['is_autorized'] = True
+            return Response(data)
         else:
-            return JSONResponse(dict(), is_autorized=False)
+            return Response(dict(is_autorized=False))
