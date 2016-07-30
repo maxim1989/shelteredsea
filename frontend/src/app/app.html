@@ -1,11 +1,26 @@
 <div class="row">
     <div class="col-md-offset-3 col-md-6">
         <a class="logo"
-           [routerLink]="['/']">&nbsp;</a>
+           [routerLink]="['/']"></a>
     </div>
-    <div class="col-md-offset-2 col-md-1 text-right">
-        <a class="log-in">
-           <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+    <div class="col-md-3 text-right">
+        <div *ngIf="!userLoaded">
+            <em>Идет загрузка данных...</em>
+        </div>
+        <div *ngIf="userLoaded && is_authenticated">
+            <a class="log-in"
+                 (click)="goToAccount()">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{userTitle}}
+            </a>
+            <a class="log-in"
+                 (click)="routeLogOut()">
+                <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Выйти
+            </a>
+        </div>
+        <a class="log-in"
+             *ngIf="userLoaded && !is_authenticated"
+             (click)="routeLogIn()">
+            <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> Войти
         </a>
     </div>
 </div>

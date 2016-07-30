@@ -1,22 +1,33 @@
 #wrapper{
     margin-top: 10px;
 }
+.loading_app{
+    height: 500px;
+    background: url(../img/loading_app.gif) no-repeat 50% 50%;
+}
+
 .logo{
     display: block;
     height: 150px;
     background: url(../img/logo.png) no-repeat 50% 50%;
 }
 .log-in{
-    font-size: 2em;
+    cursor: pointer;
+    font-size: 1.2em;
+    text-decoration: none;
+    margin-left: 20px;
+}
+.log-in:hover{
+    text-decoration: none;
 }
 
 .start-page .pfe-logo{
     display: block;
     height: 400px;
-    background: url(../img/pfe.jpg) no-repeat 50% 50%;
+    background: url(../img/discus.png) no-repeat 50% 50%;
 }
 .start-page .pfg-logo{
     display: block;
     height: 400px;
-    background: url(../img/pfg.jpg) no-repeat 50% 50%;
+    background: url(../img/discus_game.png) no-repeat 50% 50%;
 }
