@@ -3,6 +3,6 @@ from . import views
 
 
 urlpatterns = [
-    # url(r'^$', views.logged, name='logged'),
+    url(r'^$', views.ChatList.as_view()),
     # url(r'^authenticated_user$', views.AuthenticatedUser.as_view()),
 ]
