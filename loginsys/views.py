@@ -17,8 +17,8 @@ from loginsys.towns import towns
 
 
 def logged(request):
-    user = User.objects.get(pk=request.user.id)
-    if not user.additional_name.chat_name:
+    additional_name = AdditionalName.objects.filter(user=request.user.id)
+    if not additional_name:
         engaged_names = [u.chat_name for u in AdditionalName.objects.all()]
         counter = 0
         while True:
@@ -26,7 +26,9 @@ def logged(request):
             if counter > 100:
                 new_name = new_name + str(counter)
             if new_name not in engaged_names:
-                user.additional_name.chat_name = new_name
+                user = User.objects.get(pk=request.user.id)
+                appended_name = AdditionalName(chat_name=new_name, user=user)
+                appended_name.save()
                 break
             else:
                 continue

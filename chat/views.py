@@ -18,9 +18,9 @@ class ChatList(APIView):
     def get(self, request):
         u = request.user.id
         my_chats_uids = [ch.chat for ch in ManyChatsToManyUsersConnector.objects.filter(user=u)]
-        users_in_my_chats = ManyChatsToManyUsersConnector.\
+        users_in_my_chats = ManyChatsToManyUsersConnector.objects.\
             filter(chat__in=my_chats_uids).\
             exclude(user=u).\
-            order_by('chat_name')
+            order_by('chat__name')
         serializer = ManyChatsToManyUsersConnectorSerializer(users_in_my_chats, many=True)
         return Response(serializer.data)
