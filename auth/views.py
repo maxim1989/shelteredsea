@@ -1,4 +1,5 @@
 import copy
+import random
 
 from django.contrib import auth
 from django.contrib.auth.models import User
@@ -10,10 +11,25 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from auth.models import AdditionalName
 from auth.serializers import AuthenticatedUserSerializer
+from auth.towns import towns
 
 
 def logged(request):
+    user = User.objects.get(pk=request.user.id)
+    if not user.additional_name.chat_name:
+        engaged_names = [u.chat_name for u in AdditionalName.objects.all()]
+        counter = 0
+        while True:
+            new_name = random.choice(towns)
+            if counter > 100:
+                new_name = new_name + str(counter)
+            if new_name not in engaged_names:
+                user.additional_name.chat_name = new_name
+                break
+            else:
+                continue
     return render(request, 'core/index.html')
 
 

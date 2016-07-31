@@ -22,5 +22,6 @@ urlpatterns = [
 url(r'^$', views.home, name='home'),
     url(r'^admin/', admin.site.urls),
     url('^auth/', include('auth.urls', namespace='auth')),
+    url('^chat/', include('chat.urls', namespace='chat')),
     url('', include('social.apps.django_app.urls', namespace='social'))
 ]

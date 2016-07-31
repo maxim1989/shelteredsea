@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'social.apps.django_app.default',
     'rest_framework',
     'core',
+    'chat',
 ]
 
 MIDDLEWARE_CLASSES = [
