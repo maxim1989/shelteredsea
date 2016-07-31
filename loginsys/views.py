@@ -11,9 +11,9 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from auth.models import AdditionalName
-from auth.serializers import AuthenticatedUserSerializer
-from auth.towns import towns
+from loginsys.models import AdditionalName
+from loginsys.serializers import AuthenticatedUserSerializer
+from loginsys.towns import towns
 
 
 def logged(request):
