@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ROUTER_DIRECTIVES } from '@angular/router';
-import { UserService } from './user/service';
+import { UserService } from './user/auth.service';
 import { User } from './user/model';
 
 @Component({
@@ -22,30 +22,18 @@ export class App implements OnInit{
     constructor(private UserService: UserService) {}
 
     ngOnInit() {
-        this.getAuthUserData();
-    }
-
-    getAuthUserData() {
-        this.UserService
-            .getAuthUser()
+        this.UserService.initAuthUser()
             .then(
-                user => {
-                    this.userLoaded = true;
-                    this.initAuthUser(user);
-                },
-                error => {
-                    this.userLoaded = true;
-                    this.is_authenticated = false;
-                    console.log(error);
+                isInit => {
+                    this.userLoaded = isInit;
+                    this.initAuthUser();
                 }
             );
     }
 
-    initAuthUser(user : User) {
-        this.is_authenticated = user.is_autorized;
-        if (user.is_autorized) {
-            this.userTitle = user.username;
-        }
+    initAuthUser() {
+        this.is_authenticated = this.UserService.isAutorized();
+        this.userTitle = this.UserService.getName();
     }
 
     goToAccount() {
