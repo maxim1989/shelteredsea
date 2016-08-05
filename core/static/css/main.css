@@ -31,3 +31,10 @@
     height: 400px;
     background: url(../img/discus_game.png) no-repeat 50% 50%;
 }
+
+/*
+ * ng2-bootstrap
+ */
+.tab-content{
+    padding: 10px;
+}

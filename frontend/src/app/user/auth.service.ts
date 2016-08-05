@@ -38,7 +38,7 @@ export class UserService {
     }
 
     isAutorized() {
-        return this.user.is_autorized;
+        return (this.user) ? this.user.is_autorized : false;
     }
 
     handlerError(error: any) {
