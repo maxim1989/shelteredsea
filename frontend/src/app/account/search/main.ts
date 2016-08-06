@@ -1,22 +1,33 @@
 import {Component, OnInit} from '@angular/core';
-// import { UserService } from '../user/auth.service';
+import { NgForm } from '@angular/forms';
+import { User } from 'app/user/model';
+import { SearchUserService } from 'app/user/search.service';
 
 @Component({
     selector: 'account-search',
-    templateUrl: './main.html'
+    templateUrl: './main.html',
+    providers: [SearchUserService]
 })
-export class Search //implements OnInit
-{
+export class Search {
+    IDForSearch : string = "";
+    inSearchState: boolean = false;
+    searchedUser: User;
 
     constructor(
-        // private UserService: UserService,
+        private SearchUserService: SearchUserService
     ) {}
 
-    // ngOnInit() {
-    //     if ( this.UserService.isAutorized() ) {
-    //         this.initAuthUser();
-    //     } else {
-    //         this.redirectToMainPage();
-    //     }
-    // }
+    searchUserByID() {
+        this.inSearchState = true;
+        this.SearchUserService.getUserByID( this.IDForSearch )
+            .then(user => {
+                this.searchedUser = user;
+                this.showSearchResult()
+            });
+    }
+
+    showSearchResult() {
+        this.inSearchState = false;
+        console.log( this.searchedUser );
+    }
 }
