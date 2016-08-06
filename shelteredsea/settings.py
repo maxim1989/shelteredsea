@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'loginsys',
     'core',
     'chat',
+    'personalarea',
 ]
 
 MIDDLEWARE_CLASSES = [

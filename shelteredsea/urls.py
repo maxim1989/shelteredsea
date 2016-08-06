@@ -23,5 +23,6 @@ url(r'^$', views.home, name='home'),
     url(r'^admin/', admin.site.urls),
     url('^auth/', include('loginsys.urls', namespace='auth')),
     url('^chat/', include('chat.urls', namespace='chat')),
+    url('^personalarea/', include('personalarea.urls', namespace='personalarea')),
     url('', include('social.apps.django_app.urls', namespace='social'))
 ]

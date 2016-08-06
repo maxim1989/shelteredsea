@@ -4,17 +4,15 @@ from .models import ManyChatsToManyUsersConnector
 
 
 class ManyChatsToManyUsersConnectorSerializer(serializers.ModelSerializer):
-    chat = serializers.ReadOnlyField(source='chat.name')
-    chat_id = serializers.SerializerMethodField()
-    user = serializers.ReadOnlyField(source='user.additional_name.chat_name')
-    user_id = serializers.SerializerMethodField()
+    chat_name = serializers.SerializerMethodField()
+    user_name = serializers.SerializerMethodField()
 
-    def get_chat_id(self, obj):
-        return obj.chat.id
+    def get_chat_name(self, obj):
+        return obj.chat.name
 
-    def get_user_id(self, obj):
-        return obj.user.id
+    def get_user_name(self, obj):
+        return obj.user.additional_name.chat_name
 
     class Meta:
         model = ManyChatsToManyUsersConnector
-        fields = ('chat_id', 'chat', 'user_id', 'user')
+        fields = ('chat_name', 'chat', 'user_name', 'user')
