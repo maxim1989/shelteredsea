@@ -1,6 +1,7 @@
 import copy
 import datetime
 import random
+import uuid
 
 from django.contrib import auth
 from django.contrib.auth.models import User
@@ -40,7 +41,9 @@ def add_uid(request_object):
     if not additional_uuid:
         part_1 = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
         part_2 = str(request_object.user.id)
-        uid_for_client = int(part_1 + part_2)
+        name = part_1 + part_2
+        namespace = uuid.uuid4()
+        uid_for_client = str(int(uuid.uuid3(namespace, name)))
         user = User.objects.get(pk=request_object.user.id)
         appended_uuid = AdditionalUuid(uid_for_client=uid_for_client, user=user)
         appended_uuid.save()

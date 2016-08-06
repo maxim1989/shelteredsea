@@ -29,7 +29,7 @@ class FindUser(APIView):
 
     def get(self, request, uid_for_client):
         try:
-            find_user = AdditionalUuid.objects.get(uid_for_client=int(uid_for_client))
+            find_user = AdditionalUuid.objects.get(uid_for_client=uid_for_client)
         except AdditionalUuid.DoesNotExist:
             return Response(list())
         user = User.objects.get(pk=find_user.id)

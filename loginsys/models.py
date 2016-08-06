@@ -9,4 +9,4 @@ class AdditionalName(models.Model):
 
 class AdditionalUuid(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='additional_uuid')
-    uid_for_client = models.BigIntegerField(null=True)
+    uid_for_client = models.TextField(null=True)
