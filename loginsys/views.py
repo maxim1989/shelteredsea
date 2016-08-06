@@ -1,4 +1,5 @@
 import copy
+import datetime
 import random
 
 from django.contrib import auth
@@ -11,13 +12,13 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from loginsys.models import AdditionalName
+from loginsys.models import AdditionalName, AdditionalUuid
 from loginsys.serializers import AuthenticatedUserSerializer
 from loginsys.towns import towns
 
 
-def logged(request):
-    additional_name = AdditionalName.objects.filter(user=request.user.id)
+def add_name(request_object):
+    additional_name = AdditionalName.objects.filter(user=request_object.user.id)
     if not additional_name:
         engaged_names = [u.chat_name for u in AdditionalName.objects.all()]
         counter = 0
@@ -26,12 +27,32 @@ def logged(request):
             if counter > 100:
                 new_name = new_name + str(counter)
             if new_name not in engaged_names:
-                user = User.objects.get(pk=request.user.id)
+                user = User.objects.get(pk=request_object.user.id)
                 appended_name = AdditionalName(chat_name=new_name, user=user)
                 appended_name.save()
                 break
             else:
                 continue
+
+
+def add_uid(request_object):
+    additional_uuid = AdditionalUuid.objects.filter(user=request_object.user.id)
+    if not additional_uuid:
+        part_1 = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        part_2 = str(request_object.user.id)
+        uid_for_client = int(part_1 + part_2)
+        user = User.objects.get(pk=request_object.user.id)
+        appended_uuid = AdditionalUuid(uid_for_client=uid_for_client, user=user)
+        appended_uuid.save()
+
+
+def append_additional_parameters(request_object):
+    add_name(request_object)
+    add_uid(request_object)
+
+
+def logged(request):
+    append_additional_parameters(request)
     return render(request, 'core/index.html')
 
 
