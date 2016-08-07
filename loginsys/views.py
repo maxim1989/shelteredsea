@@ -1,0 +1,97 @@
+import copy
+import datetime
+import random
+import uuid
+
+from django.contrib import auth
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from django.shortcuts import HttpResponseRedirect, render
+from rest_framework import permissions
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from loginsys.models import AdditionalName, AdditionalUuid
+from loginsys.serializers import AuthenticatedUserSerializer
+from loginsys.towns import towns
+
+
+def add_name(request_object):
+    additional_name = AdditionalName.objects.filter(user=request_object.user.id)
+    if not additional_name:
+        engaged_names = [u.chat_name for u in AdditionalName.objects.all()]
+        counter = 0
+        while True:
+            new_name = random.choice(towns)
+            if counter > 100:
+                new_name = new_name + str(counter)
+            if new_name not in engaged_names:
+                user = User.objects.get(pk=request_object.user.id)
+                appended_name = AdditionalName(chat_name=new_name, user=user)
+                appended_name.save()
+                break
+            else:
+                continue
+
+
+def add_uid(request_object):
+    additional_uuid = AdditionalUuid.objects.filter(user=request_object.user.id)
+    if not additional_uuid:
+        part_1 = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        part_2 = str(request_object.user.id)
+        name = part_1 + part_2
+        namespace = uuid.uuid4()
+        uid_for_client = str(int(uuid.uuid3(namespace, name)))
+        user = User.objects.get(pk=request_object.user.id)
+        appended_uuid = AdditionalUuid(uid_for_client=uid_for_client, user=user)
+        appended_uuid.save()
+
+
+def append_additional_parameters(request_object):
+    add_name(request_object)
+    add_uid(request_object)
+
+
+def logged(request):
+    append_additional_parameters(request)
+    return render(request, 'core/index.html')
+
+
+def login_error(request):
+    return HttpResponseRedirect(reverse('home'))
+
+
+def logged_fail(request):
+    return HttpResponseRedirect(reverse('home'))
+
+
+@api_view(['GET'])
+@permission_classes((permissions.IsAuthenticated,))
+def logout(request):
+    """
+    Выход, только из авторизированного режима
+    :param request:
+    :return: редирект на домашнюю страницу
+    """
+    auth.logout(request)
+    return HttpResponseRedirect(reverse('home'))
+
+
+class AuthenticatedUser(APIView):
+    """
+    Получить сведения об авторизированном пользователе
+    """
+    renderer_classes = (JSONRenderer,)
+
+    def get(self, request):
+        if request.user.is_authenticated():
+            user_id = request.user.id
+            user = User.objects.get(pk=user_id)
+            serializer = AuthenticatedUserSerializer(user)
+            data = copy.deepcopy(serializer.data)
+            data['is_autorized'] = True
+            return Response(data)
+        else:
+            return Response(dict(is_autorized=False))

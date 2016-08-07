@@ -41,7 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'social.apps.django_app.default',
     'rest_framework',
+    'loginsys',
     'core',
+    'chat',
+    'personalarea',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -147,7 +150,7 @@ SOCIAL_AUTH_LOGIN_URL = '/auth/login_fail/'
     # Used to redirect new registered users, will be used in place of SOCIAL_AUTH_LOGIN_REDIRECT_URL if defined. Note that ?next=/foo is appended if present, if you want new users to go to next, you’ll need to do it yourself.
 # SOCIAL_AUTH_NEW_ASSOCIATION_REDIRECT_URL = '/new-association-redirect-url/'
     # Like SOCIAL_AUTH_NEW_USER_REDIRECT_URL but for new associated accounts (user is already logged in). Used in place of SOCIAL_AUTH_LOGIN_REDIRECT_URL
-# SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/auth/logout/'
+SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/auth/logout/'
     # The user will be redirected to this URL when a social account is disconnected
 # SOCIAL_AUTH_INACTIVE_USER_URL = '/inactive-user/'
     # Inactive users can be redirected to this URL when trying to authenticate.
@@ -159,7 +162,7 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
     ]
 }
 #-----------------------------------------------------------------------------------------------------------------------
