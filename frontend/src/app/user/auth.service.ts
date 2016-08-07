@@ -11,6 +11,7 @@ export class UserService {
     constructor(private http: Http) { }
 
     initAuthUser() {
+        //noinspection TypeScriptUnresolvedFunction
         return this.http.get(this.AUTH_USER_URL)
             .toPromise()
             .then(
@@ -26,19 +27,21 @@ export class UserService {
             )
             .catch(this.handlerError);
     }
-    getAuthUser() {
-        return this.http.get(this.AUTH_USER_URL)
-            .toPromise()
-            .then(response => response.json() as User)
-            .catch(this.handlerError);
-    }
 
     getName() {
-        return (this.user) ? this.user.username : '';
+        return (this.user) ? this.user.username : "";
     }
 
     isAutorized() {
         return (this.user) ? this.user.is_autorized : false;
+    }
+
+    getUid() {
+        return (this.user) ? this.user.uid_for_client : "";
+    }
+
+    getChatName() {
+        return (this.user) ? this.user.chat_name : "";
     }
 
     handlerError(error: any) {

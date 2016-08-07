@@ -1,17 +1,19 @@
 import {Component, OnInit} from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { ResultListComponent } from './result-list';
 import { User } from 'app/user/model';
 import { SearchUserService } from 'app/user/search.service';
 
 @Component({
     selector: 'account-search',
     templateUrl: './main.html',
-    providers: [SearchUserService]
+    providers: [SearchUserService],
+    directives: [ResultListComponent]
 })
 export class Search {
     IDForSearch : string = "";
     inSearchState: boolean = false;
-    searchedUser: User;
+    foundUser : User;
+    showResultState : boolean = false;
 
     constructor(
         private SearchUserService: SearchUserService
@@ -20,14 +22,18 @@ export class Search {
     searchUserByID() {
         this.inSearchState = true;
         this.SearchUserService.getUserByID( this.IDForSearch )
-            .then(user => {
-                this.searchedUser = user;
-                this.showSearchResult()
+            .then((found_list : User[]) => {
+                this.showSearchResult(found_list);
             });
     }
 
-    showSearchResult() {
+    showSearchResult(foundList: User[]) {
         this.inSearchState = false;
-        console.log( this.searchedUser );
+        this.showResultState = true;
+        if ( foundList.length ) {
+            this.foundUser = foundList[0];
+        } else {
+            this.foundUser = null;
+        }
     }
 }

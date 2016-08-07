@@ -14,7 +14,7 @@
                             class="btn btn-primary"
                             type="button"
                             (click)="searchUserByID()">
-                        Search
+                        Поиск
                     </button>
                 </span>
             </div>
@@ -35,3 +35,4 @@
         </div>
     </div>
 </form>
+<search-result-list [user]="foundUser" [showResult]="showResultState"></search-result-list>

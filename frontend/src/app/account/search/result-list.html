@@ -1,0 +1,17 @@
+<div *ngIf="user">
+    <h4>Найден 1 пользователь</h4>
+    <div class="row">
+        <div class="col-md-8">{{user.chat_name}}</div>
+        <div class="col-md-4 text-right">
+            <div *ngIf="!user.is_friend">
+                <button class="btn btn-default btn-xs">Добавить в друзья</button>
+            </div>
+            <div *ngIf="user.is_friend">
+                <button class="btn btn-default btn-xs" disabled>Уже в друзьях</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="showResult && !user">
+    <em>Пользователи не найдены</em>
+</div>

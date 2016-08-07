@@ -8,8 +8,8 @@ webpackJsonp([2],[
 	var http_1 = __webpack_require__(154);
 	// import {disableDeprecatedForms, provideForms} from '@angular/forms';
 	// import {enableProdMode} from '@angular/core';
-	var routes_1 = __webpack_require__(684);
-	var app_1 = __webpack_require__(682);
+	var routes_1 = __webpack_require__(685);
+	var app_1 = __webpack_require__(683);
 	// enableProdMode()
 	platform_browser_dynamic_1.bootstrap(app_1.App, [
 	    http_1.HTTP_PROVIDERS,
@@ -1789,7 +1789,7 @@ webpackJsonp([2],[
 	                module && module.exports) {
 	            try {
 	                oldLocale = globalLocale._abbr;
-	                __webpack_require__(850)("./" + name);
+	                __webpack_require__(851)("./" + name);
 	                // because defineLocale currently also sets the global locale, we
 	                // want to undo that for lazy loaded locales
 	                locale_locales__getSetGlobalLocale(oldLocale);
@@ -6879,7 +6879,7 @@ webpackJsonp([2],[
 	var core_1 = __webpack_require__(1);
 	var common_1 = __webpack_require__(10);
 	var forms_1 = __webpack_require__(34);
-	var date_formatter_1 = __webpack_require__(853);
+	var date_formatter_1 = __webpack_require__(854);
 	var FORMAT_DAY = 'DD';
 	var FORMAT_MONTH = 'MMMM';
 	var FORMAT_YEAR = 'YYYY';
@@ -7225,7 +7225,7 @@ webpackJsonp([2],[
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var dropdown_service_1 = __webpack_require__(857);
+	var dropdown_service_1 = __webpack_require__(858);
 	var DropdownDirective = (function () {
 	    function DropdownDirective(el, ref) {
 	        this.onToggle = new core_1.EventEmitter(false);
@@ -9299,7 +9299,7 @@ webpackJsonp([2],[
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var collapse_directive_1 = __webpack_require__(852);
+	var collapse_directive_1 = __webpack_require__(853);
 	exports.CollapseDirective = collapse_directive_1.CollapseDirective;
 
 
@@ -9324,9 +9324,9 @@ webpackJsonp([2],[
 	var common_1 = __webpack_require__(10);
 	var forms_1 = __webpack_require__(34);
 	var datepicker_inner_component_1 = __webpack_require__(174);
-	var daypicker_component_1 = __webpack_require__(854);
-	var monthpicker_component_1 = __webpack_require__(855);
-	var yearpicker_component_1 = __webpack_require__(856);
+	var daypicker_component_1 = __webpack_require__(855);
+	var monthpicker_component_1 = __webpack_require__(856);
+	var yearpicker_component_1 = __webpack_require__(857);
 	// import {DatePickerPopup} from './datepicker-popup';
 	/* tslint:disable:component-selector-name component-selector-type */
 	var DatePickerComponent = (function () {
@@ -11175,6 +11175,7 @@ webpackJsonp([2],[
 	    }
 	    UserService.prototype.initAuthUser = function () {
 	        var _this = this;
+	        //noinspection TypeScriptUnresolvedFunction
 	        return this.http.get(this.AUTH_USER_URL)
 	            .toPromise()
 	            .then(function (response) {
@@ -11187,17 +11188,17 @@ webpackJsonp([2],[
 	        })
 	            .catch(this.handlerError);
 	    };
-	    UserService.prototype.getAuthUser = function () {
-	        return this.http.get(this.AUTH_USER_URL)
-	            .toPromise()
-	            .then(function (response) { return response.json(); })
-	            .catch(this.handlerError);
-	    };
 	    UserService.prototype.getName = function () {
-	        return (this.user) ? this.user.username : '';
+	        return (this.user) ? this.user.username : "";
 	    };
 	    UserService.prototype.isAutorized = function () {
 	        return (this.user) ? this.user.is_autorized : false;
+	    };
+	    UserService.prototype.getUid = function () {
+	        return (this.user) ? this.user.uid_for_client : "";
+	    };
+	    UserService.prototype.getChatName = function () {
+	        return (this.user) ? this.user.chat_name : "";
 	    };
 	    UserService.prototype.handlerError = function (error) {
 	        console.error('An error occurred', error);
@@ -20959,7 +20960,7 @@ webpackJsonp([2],[
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var alert_component_1 = __webpack_require__(851);
+	var alert_component_1 = __webpack_require__(852);
 	exports.AlertComponent = alert_component_1.AlertComponent;
 
 
@@ -21669,7 +21670,7 @@ webpackJsonp([2],[
 	var modal_backdrop_component_1 = __webpack_require__(276);
 	var modal_options_class_1 = __webpack_require__(277);
 	var components_helper_service_1 = __webpack_require__(557);
-	var utils_class_1 = __webpack_require__(861);
+	var utils_class_1 = __webpack_require__(862);
 	var TRANSITION_DURATION = 300;
 	var BACKDROP_TRANSITION_DURATION = 150;
 	var ModalDirective = (function () {
@@ -22132,7 +22133,7 @@ webpackJsonp([2],[
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var rating_component_1 = __webpack_require__(858);
+	var rating_component_1 = __webpack_require__(859);
 	exports.RatingComponent = rating_component_1.RatingComponent;
 
 
@@ -22187,7 +22188,7 @@ webpackJsonp([2],[
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var timepicker_component_1 = __webpack_require__(859);
+	var timepicker_component_1 = __webpack_require__(860);
 	exports.TimepickerComponent = timepicker_component_1.TimepickerComponent;
 
 
@@ -22371,7 +22372,7 @@ webpackJsonp([2],[
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var latin_map_1 = __webpack_require__(860);
+	var latin_map_1 = __webpack_require__(861);
 	var TypeaheadUtils = (function () {
 	    function TypeaheadUtils() {
 	    }
@@ -22435,11 +22436,11 @@ webpackJsonp([2],[
 	var typeahead_options_class_1 = __webpack_require__(284);
 	var Observable_1 = __webpack_require__(8);
 	__webpack_require__(559);
-	__webpack_require__(874);
 	__webpack_require__(876);
+	__webpack_require__(878);
 	__webpack_require__(286);
 	__webpack_require__(560);
-	__webpack_require__(879);
+	__webpack_require__(881);
 	var lang_1 = __webpack_require__(5);
 	/* tslint:disable */
 	var KeyboardEvent = lang_1.global.KeyboardEvent;
@@ -23188,7 +23189,7 @@ webpackJsonp([2],[
 	};
 	var core_1 = __webpack_require__(1);
 	var router_1 = __webpack_require__(119);
-	var ng2_bootstrap_1 = __webpack_require__(862);
+	var ng2_bootstrap_1 = __webpack_require__(863);
 	var main_1 = __webpack_require__(681);
 	var auth_service_1 = __webpack_require__(391);
 	var Account = (function () {
@@ -23213,7 +23214,7 @@ webpackJsonp([2],[
 	        core_1.Component({
 	            selector: 'account',
 	            directives: [ng2_bootstrap_1.TAB_DIRECTIVES, main_1.Search],
-	            template: __webpack_require__(864)
+	            template: __webpack_require__(865)
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object, (typeof (_b = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _b) || Object])
 	    ], Account);
@@ -23238,31 +23239,39 @@ webpackJsonp([2],[
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var search_service_1 = __webpack_require__(687);
+	var result_list_1 = __webpack_require__(682);
+	var search_service_1 = __webpack_require__(688);
 	var Search = (function () {
 	    function Search(SearchUserService) {
 	        this.SearchUserService = SearchUserService;
 	        this.IDForSearch = "";
 	        this.inSearchState = false;
+	        this.showResultState = false;
 	    }
 	    Search.prototype.searchUserByID = function () {
 	        var _this = this;
 	        this.inSearchState = true;
 	        this.SearchUserService.getUserByID(this.IDForSearch)
-	            .then(function (user) {
-	            _this.searchedUser = user;
-	            _this.showSearchResult();
+	            .then(function (found_list) {
+	            _this.showSearchResult(found_list);
 	        });
 	    };
-	    Search.prototype.showSearchResult = function () {
+	    Search.prototype.showSearchResult = function (foundList) {
 	        this.inSearchState = false;
-	        console.log(this.searchedUser);
+	        this.showResultState = true;
+	        if (foundList.length) {
+	            this.foundUser = foundList[0];
+	        }
+	        else {
+	            this.foundUser = null;
+	        }
 	    };
 	    Search = __decorate([
 	        core_1.Component({
 	            selector: 'account-search',
-	            template: __webpack_require__(865),
-	            providers: [search_service_1.SearchUserService]
+	            template: __webpack_require__(866),
+	            providers: [search_service_1.SearchUserService],
+	            directives: [result_list_1.ResultListComponent]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof search_service_1.SearchUserService !== 'undefined' && search_service_1.SearchUserService) === 'function' && _a) || Object])
 	    ], Search);
@@ -23274,6 +23283,47 @@ webpackJsonp([2],[
 
 /***/ },
 /* 682 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(1);
+	var model_1 = __webpack_require__(687);
+	var ResultListComponent = (function () {
+	    function ResultListComponent() {
+	    }
+	    __decorate([
+	        core_1.Input(), 
+	        __metadata('design:type', (typeof (_a = typeof model_1.User !== 'undefined' && model_1.User) === 'function' && _a) || Object)
+	    ], ResultListComponent.prototype, "user", void 0);
+	    __decorate([
+	        core_1.Input(), 
+	        __metadata('design:type', Boolean)
+	    ], ResultListComponent.prototype, "showResult", void 0);
+	    ResultListComponent = __decorate([
+	        core_1.Component({
+	            selector: 'search-result-list',
+	            template: __webpack_require__(867),
+	            providers: []
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], ResultListComponent);
+	    return ResultListComponent;
+	    var _a;
+	}());
+	exports.ResultListComponent = ResultListComponent;
+	
+
+/***/ },
+/* 683 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -23308,6 +23358,7 @@ webpackJsonp([2],[
 	    App.prototype.initAuthUser = function () {
 	        this.is_authenticated = this.UserService.isAutorized();
 	        this.userTitle = this.UserService.getName();
+	        this.uid = this.UserService.getUid();
 	    };
 	    App.prototype.goToAccount = function () {
 	        console.log('redirect in account');
@@ -23324,7 +23375,7 @@ webpackJsonp([2],[
 	            pipes: [],
 	            providers: [auth_service_1.UserService],
 	            directives: [router_1.ROUTER_DIRECTIVES],
-	            template: __webpack_require__(866),
+	            template: __webpack_require__(868),
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object])
 	    ], App);
@@ -23335,7 +23386,7 @@ webpackJsonp([2],[
 	
 
 /***/ },
-/* 683 */
+/* 684 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -23358,7 +23409,7 @@ webpackJsonp([2],[
 	            pipes: [],
 	            providers: [],
 	            directives: [],
-	            template: __webpack_require__(867)
+	            template: __webpack_require__(869)
 	        }), 
 	        __metadata('design:paramtypes', [])
 	    ], GameDispute);
@@ -23368,13 +23419,13 @@ webpackJsonp([2],[
 	
 
 /***/ },
-/* 684 */
+/* 685 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var router_1 = __webpack_require__(119);
-	var main_1 = __webpack_require__(685);
-	var main_2 = __webpack_require__(683);
+	var main_1 = __webpack_require__(686);
+	var main_2 = __webpack_require__(684);
 	var main_3 = __webpack_require__(680);
 	var routes = [
 	    {
@@ -23396,7 +23447,7 @@ webpackJsonp([2],[
 	
 
 /***/ },
-/* 685 */
+/* 686 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -23420,7 +23471,7 @@ webpackJsonp([2],[
 	            pipes: [],
 	            providers: [],
 	            directives: [router_1.ROUTER_DIRECTIVES],
-	            template: __webpack_require__(868),
+	            template: __webpack_require__(870),
 	            animations: [
 	                core_1.trigger('pageState', [
 	                    core_1.state('in-from-left', core_1.style({
@@ -23448,13 +23499,14 @@ webpackJsonp([2],[
 	
 
 /***/ },
-/* 686 */
+/* 687 */
 /***/ function(module, exports) {
 
 	"use strict";
 	var User = (function () {
 	    function User() {
 	        this.is_autorized = false;
+	        this.is_friend = false;
 	    }
 	    return User;
 	}());
@@ -23462,7 +23514,7 @@ webpackJsonp([2],[
 	
 
 /***/ },
-/* 687 */
+/* 688 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -23477,34 +23529,30 @@ webpackJsonp([2],[
 	};
 	var core_1 = __webpack_require__(1);
 	var http_1 = __webpack_require__(154);
-	var model_1 = __webpack_require__(686);
 	__webpack_require__(287);
 	var SearchUserService = (function () {
 	    function SearchUserService(http) {
 	        this.http = http;
-	        this.SEARCH_USER_URL = 'auth/authenticated_user';
+	        this.SEARCH_USER_URL = 'personalarea/';
 	    }
 	    SearchUserService.prototype.getUserByID = function (ID) {
-	        return new Promise(function (resolve) {
-	            var user = new model_1.User();
-	            user.id = 123;
-	            user.username = "Hello world";
-	            setTimeout(function () { return resolve(user); }, 2000);
-	        });
-	        // return this.http.get(this.SEARCH_USER_URL)
-	        //     .toPromise()
-	        //     .then(
-	        //         response => {
-	        //             let result = response.json();
-	        //             let user = result as User;
-	        //             return user;
-	        //         },
-	        //         error => {
-	        //             console.log(error);
-	        //             return false;
-	        //         }
-	        //     )
-	        //     .catch(this.handlerError);
+	        var url = this.SEARCH_USER_URL + ID;
+	        //noinspection TypeScriptUnresolvedFunction
+	        return this.http.get(url)
+	            .toPromise()
+	            .then(function (response) {
+	            var result = response.json();
+	            if (result.length == null) {
+	                var user = result;
+	                return [user];
+	            }
+	            else {
+	                return [];
+	            }
+	        }, function (error) {
+	            return [];
+	        })
+	            .catch(this.handlerError);
 	    };
 	    SearchUserService.prototype.handlerError = function (error) {
 	        console.error('An error occurred', error);
@@ -23521,7 +23569,6 @@ webpackJsonp([2],[
 	
 
 /***/ },
-/* 688 */,
 /* 689 */,
 /* 690 */,
 /* 691 */,
@@ -23683,7 +23730,8 @@ webpackJsonp([2],[
 /* 847 */,
 /* 848 */,
 /* 849 */,
-/* 850 */
+/* 850 */,
+/* 851 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
@@ -23901,11 +23949,11 @@ webpackJsonp([2],[
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 850;
+	webpackContext.id = 851;
 
 
 /***/ },
-/* 851 */
+/* 852 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -23976,7 +24024,7 @@ webpackJsonp([2],[
 
 
 /***/ },
-/* 852 */
+/* 853 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -24153,7 +24201,7 @@ webpackJsonp([2],[
 
 
 /***/ },
-/* 853 */
+/* 854 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -24170,7 +24218,7 @@ webpackJsonp([2],[
 
 
 /***/ },
-/* 854 */
+/* 855 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -24302,7 +24350,7 @@ webpackJsonp([2],[
 
 
 /***/ },
-/* 855 */
+/* 856 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -24372,7 +24420,7 @@ webpackJsonp([2],[
 
 
 /***/ },
-/* 856 */
+/* 857 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -24445,7 +24493,7 @@ webpackJsonp([2],[
 
 
 /***/ },
-/* 857 */
+/* 858 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -24520,7 +24568,7 @@ webpackJsonp([2],[
 
 
 /***/ },
-/* 858 */
+/* 859 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -24672,7 +24720,7 @@ webpackJsonp([2],[
 
 
 /***/ },
-/* 859 */
+/* 860 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25028,7 +25076,7 @@ webpackJsonp([2],[
 
 
 /***/ },
-/* 860 */
+/* 861 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -25861,7 +25909,7 @@ webpackJsonp([2],[
 
 
 /***/ },
-/* 861 */
+/* 862 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25889,7 +25937,7 @@ webpackJsonp([2],[
 
 
 /***/ },
-/* 862 */
+/* 863 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25957,82 +26005,88 @@ webpackJsonp([2],[
 
 
 /***/ },
-/* 863 */,
-/* 864 */
+/* 864 */,
+/* 865 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"raw\">\n    <tabset\n            class=\"col-md-9\"\n            [justified]=\"true\">\n        <tab>\n            <template tabHeading>\n                <span class=\"glyphicon glyphicon-envelope\" aria-hidden=\"true\"></span> Chat\n            </template>\n            Friends Chat\n        </tab>\n        <tab>\n            <template tabHeading>\n                <span class=\"glyphicon glyphicon-star\" aria-hidden=\"true\"></span> Friends\n            </template>\n            Friends\n        </tab>\n        <tab>\n            <template tabHeading>\n                <span class=\"glyphicon glyphicon-signal\" aria-hidden=\"true\"></span> Statistic\n            </template>\n            Statistic\n        </tab>\n        <tab>\n            <template tabHeading>\n                <span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Search\n            </template>\n            <account-search></account-search>\n        </tab>\n    </tabset>\n    <div class=\"col-md-3\" style=\"height: 100px; border: 1px solid #333;\"></div>\n</div>\n"
 
 /***/ },
-/* 865 */
-/***/ function(module, exports) {
-
-	module.exports = "<form>\n    <fieldset [disabled]=\"inSearchState\">\n        <div class=\"form-group\">\n            <label for=\"search-query-field\">Введите ID пользователя для поиска:</label>\n            <div class=\"input-group\">\n                <input\n                        id=\"search-query-field\"\n                        type=\"text\"\n                        class=\"form-control\"\n                        placeholder=\"ID пользователя\"\n                        [(ngModel)]=\"IDForSearch\" />\n                <span class=\"input-group-btn\">\n                    <button\n                            class=\"btn btn-primary\"\n                            type=\"button\"\n                            (click)=\"searchUserByID()\">\n                        Search\n                    </button>\n                </span>\n            </div>\n        </div>\n    </fieldset>\n    <div\n            class=\"form-group\"\n            [hidden]=\"!inSearchState\">\n        <div class=\"progress\">\n            <div\n                    class=\"progress-bar progress-bar-info progress-bar-striped active\"\n                    role=\"progressbar\"\n                    aria-valuenow=\"60\"\n                    aria-valuemin=\"0\"\n                    aria-valuemax=\"100\"\n                    style=\"width: 100%\">\n            </div>\n        </div>\n    </div>\n</form>\n"
-
-/***/ },
 /* 866 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"row\">\n    <div class=\"col-md-offset-3 col-md-6\">\n        <a class=\"logo\"\n           [routerLink]=\"['/']\"></a>\n    </div>\n    <div class=\"col-md-3 text-right\">\n        <div *ngIf=\"!userLoaded\">\n            <em>Идет загрузка данных...</em>\n        </div>\n        <div *ngIf=\"userLoaded && is_authenticated\">\n            <a class=\"log-in\"\n                 [routerLink]=\"['account']\">\n                <span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span> {{userTitle}}\n            </a>\n            <a class=\"log-in\"\n                 (click)=\"routeLogOut()\">\n                <span class=\"glyphicon glyphicon-log-out\" aria-hidden=\"true\"></span> Выйти\n            </a>\n        </div>\n        <a class=\"log-in\"\n             *ngIf=\"userLoaded && !is_authenticated\"\n             (click)=\"routeLogIn()\">\n            <span class=\"glyphicon glyphicon-log-in\" aria-hidden=\"true\"></span> Войти\n        </a>\n    </div>\n</div>\n\n<main>\n    <router-outlet></router-outlet>\n</main>\n\n"
+	module.exports = "<form>\n    <fieldset [disabled]=\"inSearchState\">\n        <div class=\"form-group\">\n            <label for=\"search-query-field\">Введите ID пользователя для поиска:</label>\n            <div class=\"input-group\">\n                <input\n                        id=\"search-query-field\"\n                        type=\"text\"\n                        class=\"form-control\"\n                        placeholder=\"ID пользователя\"\n                        [(ngModel)]=\"IDForSearch\" />\n                <span class=\"input-group-btn\">\n                    <button\n                            class=\"btn btn-primary\"\n                            type=\"button\"\n                            (click)=\"searchUserByID()\">\n                        Поиск\n                    </button>\n                </span>\n            </div>\n        </div>\n    </fieldset>\n    <div\n            class=\"form-group\"\n            [hidden]=\"!inSearchState\">\n        <div class=\"progress\">\n            <div\n                    class=\"progress-bar progress-bar-info progress-bar-striped active\"\n                    role=\"progressbar\"\n                    aria-valuenow=\"60\"\n                    aria-valuemin=\"0\"\n                    aria-valuemax=\"100\"\n                    style=\"width: 100%\">\n            </div>\n        </div>\n    </div>\n</form>\n<search-result-list [user]=\"foundUser\" [showResult]=\"showResultState\"></search-result-list>\n"
 
 /***/ },
 /* 867 */
 /***/ function(module, exports) {
 
-	module.exports = "<h3>Спор через игру</h3>\n<p>Добро пожаловать на площадку</p>\n"
+	module.exports = "<div *ngIf=\"user\">\n    <h4>Найден 1 пользователь</h4>\n    <div class=\"row\">\n        <div class=\"col-md-8\">{{user.chat_name}}</div>\n        <div class=\"col-md-4 text-right\">\n            <div *ngIf=\"!user.is_friend\">\n                <button class=\"btn btn-default btn-xs\">Добавить в друзья</button>\n            </div>\n            <div *ngIf=\"user.is_friend\">\n                <button class=\"btn btn-default btn-xs\" disabled>Уже в друзьях</button>\n            </div>\n        </div>\n    </div>\n</div>\n<div *ngIf=\"showResult && !user\">\n    <em>Пользователи не найдены</em>\n</div>"
 
 /***/ },
 /* 868 */
 /***/ function(module, exports) {
 
+	module.exports = "<div class=\"row\">\n    <div class=\"col-md-offset-1 col-md-4\">\n        <a\n                class=\"logo\"\n                [routerLink]=\"['/']\">\n        </a>\n    </div>\n    <div class=\"col-md-7 text-right\">\n        <div *ngIf=\"!userLoaded\">\n            <em>Идет загрузка данных...</em>\n        </div>\n        <div *ngIf=\"userLoaded && is_authenticated\">\n            <a\n                    class=\"log-in text-left\"\n                    [routerLink]=\"['account']\">\n                <span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span> {{userTitle}}\n                <br/>\n                <span class=\"small\">uid: {{uid}}</span>\n            </a>\n            <a\n                    class=\"log-in\"\n                    (click)=\"routeLogOut()\">\n                <span class=\"glyphicon glyphicon-log-out\" aria-hidden=\"true\"></span> Выйти\n            </a>\n        </div>\n        <a\n                class=\"log-in\"\n                 *ngIf=\"userLoaded && !is_authenticated\"\n                 (click)=\"routeLogIn()\">\n            <span class=\"glyphicon glyphicon-log-in\" aria-hidden=\"true\"></span> Войти\n        </a>\n    </div>\n</div>\n\n<main>\n    <router-outlet></router-outlet>\n</main>\n\n"
+
+/***/ },
+/* 869 */
+/***/ function(module, exports) {
+
+	module.exports = "<h3>Спор через игру</h3>\n<p>Добро пожаловать на площадку</p>\n"
+
+/***/ },
+/* 870 */
+/***/ function(module, exports) {
+
 	module.exports = "<div class=\"start-page row\">\n    <div class=\"col-md-offset-1 col-md-4\">\n        <a class=\"thumbnail text-center\"\n           @pageState=\"'in-from-left'\"\n           href=\"#\">\n            <div class=\"caption\">\n                <p>PfE</p>\n            </div>\n            <div class=\"pfe-logo\"></div>\n        </a>\n    </div>\n    <div class=\"col-md-offset-2 col-md-4\">\n        <a class=\"thumbnail text-center\"\n           @pageState=\"'in-from-right'\"\n           [routerLink]=\"['/pfg']\">\n            <div class=\"caption\">\n                <p>PfG</p>\n            </div>\n            <div class=\"pfg-logo\"></div>\n        </a>\n    </div>\n</div>\n"
 
 /***/ },
-/* 869 */,
-/* 870 */,
 /* 871 */,
 /* 872 */,
 /* 873 */,
-/* 874 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var Observable_1 = __webpack_require__(8);
-	var debounceTime_1 = __webpack_require__(886);
-	Observable_1.Observable.prototype.debounceTime = debounceTime_1.debounceTime;
-	//# sourceMappingURL=debounceTime.js.map
-
-/***/ },
+/* 874 */,
 /* 875 */,
 /* 876 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var Observable_1 = __webpack_require__(8);
-	var filter_1 = __webpack_require__(888);
-	Observable_1.Observable.prototype.filter = filter_1.filter;
-	//# sourceMappingURL=filter.js.map
+	var debounceTime_1 = __webpack_require__(888);
+	Observable_1.Observable.prototype.debounceTime = debounceTime_1.debounceTime;
+	//# sourceMappingURL=debounceTime.js.map
 
 /***/ },
 /* 877 */,
-/* 878 */,
-/* 879 */
+/* 878 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var Observable_1 = __webpack_require__(8);
-	var toArray_1 = __webpack_require__(894);
+	var filter_1 = __webpack_require__(890);
+	Observable_1.Observable.prototype.filter = filter_1.filter;
+	//# sourceMappingURL=filter.js.map
+
+/***/ },
+/* 879 */,
+/* 880 */,
+/* 881 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var Observable_1 = __webpack_require__(8);
+	var toArray_1 = __webpack_require__(896);
 	Observable_1.Observable.prototype.toArray = toArray_1.toArray;
 	//# sourceMappingURL=toArray.js.map
 
 /***/ },
-/* 880 */,
-/* 881 */,
 /* 882 */,
 /* 883 */,
 /* 884 */,
 /* 885 */,
-/* 886 */
+/* 886 */,
+/* 887 */,
+/* 888 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -26042,7 +26096,7 @@ webpackJsonp([2],[
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var Subscriber_1 = __webpack_require__(43);
-	var async_1 = __webpack_require__(898);
+	var async_1 = __webpack_require__(900);
 	/**
 	 * Returns the source Observable delayed by the computed debounce duration,
 	 * with the duration lengthened if a new source item arrives before the delay
@@ -26121,8 +26175,8 @@ webpackJsonp([2],[
 	//# sourceMappingURL=debounceTime.js.map
 
 /***/ },
-/* 887 */,
-/* 888 */
+/* 889 */,
+/* 890 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -26220,12 +26274,12 @@ webpackJsonp([2],[
 	//# sourceMappingURL=filter.js.map
 
 /***/ },
-/* 889 */,
-/* 890 */,
 /* 891 */,
 /* 892 */,
 /* 893 */,
-/* 894 */
+/* 894 */,
+/* 895 */,
+/* 896 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -26275,7 +26329,7 @@ webpackJsonp([2],[
 	//# sourceMappingURL=toArray.js.map
 
 /***/ },
-/* 895 */
+/* 897 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -26285,7 +26339,7 @@ webpackJsonp([2],[
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var FutureAction_1 = __webpack_require__(290);
-	var QueueScheduler_1 = __webpack_require__(897);
+	var QueueScheduler_1 = __webpack_require__(899);
 	var AsyncScheduler = (function (_super) {
 	    __extends(AsyncScheduler, _super);
 	    function AsyncScheduler() {
@@ -26300,7 +26354,7 @@ webpackJsonp([2],[
 	//# sourceMappingURL=AsyncScheduler.js.map
 
 /***/ },
-/* 896 */
+/* 898 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -26338,11 +26392,11 @@ webpackJsonp([2],[
 	//# sourceMappingURL=QueueAction.js.map
 
 /***/ },
-/* 897 */
+/* 899 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var QueueAction_1 = __webpack_require__(896);
+	var QueueAction_1 = __webpack_require__(898);
 	var FutureAction_1 = __webpack_require__(290);
 	var QueueScheduler = (function () {
 	    function QueueScheduler() {
@@ -26387,11 +26441,11 @@ webpackJsonp([2],[
 	//# sourceMappingURL=QueueScheduler.js.map
 
 /***/ },
-/* 898 */
+/* 900 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var AsyncScheduler_1 = __webpack_require__(895);
+	var AsyncScheduler_1 = __webpack_require__(897);
 	exports.async = new AsyncScheduler_1.AsyncScheduler();
 	//# sourceMappingURL=async.js.map
 

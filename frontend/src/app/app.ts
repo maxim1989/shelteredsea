@@ -16,6 +16,7 @@ export class App implements OnInit{
 
     user : User;
     userTitle : string;
+    uid : string;
     userLoaded: boolean = false;
     is_authenticated: boolean = false;
 
@@ -34,6 +35,7 @@ export class App implements OnInit{
     initAuthUser() {
         this.is_authenticated = this.UserService.isAutorized();
         this.userTitle = this.UserService.getName();
+        this.uid = this.UserService.getUid();
     }
 
     goToAccount() {
