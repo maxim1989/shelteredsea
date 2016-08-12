@@ -1,5 +1,4 @@
 import copy
-import datetime
 import random
 import uuid
 
@@ -39,11 +38,9 @@ def add_name(request_object):
 def add_uid(request_object):
     additional_uuid = AdditionalUuid.objects.filter(user=request_object.user.id)
     if not additional_uuid:
-        part_1 = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        part_2 = str(request_object.user.id)
-        name = part_1 + part_2
-        namespace = uuid.uuid4()
-        uid_for_client = str(int(uuid.uuid3(namespace, name)))
+        uid = uuid.uuid1()
+        uid = uid.int
+        uid_for_client = str(uid >> 64)
         user = User.objects.get(pk=request_object.user.id)
         appended_uuid = AdditionalUuid(uid_for_client=uid_for_client, user=user)
         appended_uuid.save()

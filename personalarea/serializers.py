@@ -15,4 +15,4 @@ class FriendsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Friends
-        fields = ('user_friend_name', 'user_friend', 'user_name', 'user')
+        fields = ('user_friend_name', 'user_friend', 'user_name', 'user', 'is_friend')

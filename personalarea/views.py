@@ -1,3 +1,5 @@
+import copy
+
 from django.contrib.auth.models import User
 from rest_framework import permissions
 from rest_framework.renderers import JSONRenderer
@@ -34,4 +36,9 @@ class FindUser(APIView):
             return Response(list())
         user = User.objects.get(pk=find_user.id)
         serializer = AuthenticatedUserSerializer(user)
-        return Response(serializer.data)
+        data = copy.deepcopy(serializer.data)
+        is_friend = Friends.objects.filter(user=request.user.id).filter(user_friend=user.id)
+        data['is_friend'] = False
+        if is_friend:
+            data['is_friend'] = is_friend[0].is_friend
+        return Response([data])
