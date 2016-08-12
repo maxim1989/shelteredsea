@@ -23542,13 +23542,11 @@ webpackJsonp([2],[
 	            .toPromise()
 	            .then(function (response) {
 	            var result = response.json();
-	            if (result.length == null) {
-	                var user = result;
-	                return [user];
-	            }
-	            else {
-	                return [];
-	            }
+	            return result;
+	            // if ( result.length ) {
+	            // } else {
+	            //     return [];
+	            // }
 	        }, function (error) {
 	            return [];
 	        })

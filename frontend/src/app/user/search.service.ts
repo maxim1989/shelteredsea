@@ -17,12 +17,12 @@ export class SearchUserService {
             .then(
                 response => {
                     let result = response.json();
-                    if ( result.length == null ) {
-                        let user = result as User;
-                        return [user];
-                    } else {
-                        return [];
-                    }
+                    return result as User[];
+
+                    // if ( result.length ) {
+                    // } else {
+                    //     return [];
+                    // }
                 },
                 error => {
                     return [];
