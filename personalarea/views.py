@@ -19,10 +19,13 @@ class FriendsList(APIView):
         u = request.user.id
         my_friends_uids = [ch.user_friend for ch in Friends.objects.filter(user=u)]
         my_friends = Friends.objects.\
-            filter(user_friend__in=my_friends_uids).\
-            order_by('user_friend__username')
-        serializer = FriendsSerializer(my_friends, many=True)
-        return Response(serializer.data)
+            filter(user_friend__in=my_friends_uids).filter(is_friend=True).order_by('user_friend__username')
+        want_be_my_friend = Friends.objects. \
+            filter(user_friend__in=my_friends_uids).filter(is_friend=True).order_by('user_friend__username')
+        serializer_friend = FriendsSerializer(my_friends, many=True)
+        serializer_not_friend = FriendsSerializer(want_be_my_friend, many=True)
+        data = dict(my_friends=serializer_friend.data, want_be_my_friend=serializer_not_friend.data)
+        return Response(data)
 
 
 class FindUser(APIView):
@@ -42,3 +45,25 @@ class FindUser(APIView):
         if is_friend:
             data['is_friend'] = is_friend[0].is_friend
         return Response([data])
+
+    def post(self, request, uid_for_client):
+        try:
+            person = AdditionalUuid.objects.get(uid_for_client=uid_for_client)
+        except AdditionalUuid.DoesNotExist:
+            return Response({'success': False, 'exist': False})
+
+        if person.user.id == request.user.id:
+            return Response({'success': False, 'exist': True})
+
+        friend = Friends.objects.filter(user=request.user.id).filter(user_friend=person.user.id)
+        if friend:
+            if friend[0].is_friend:
+                return Response({'success': True, 'created': False, 'exist': True, 'is_friend': True})
+            return Response({'success': True, 'created': False, 'exist': True, 'is_friend': False})
+
+        data_on_save = dict(user_friend=person.user.id, user=request.user.id, is_friend=False)
+        serializer = FriendsSerializer(data=data_on_save)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'success': True, 'created': True, 'exist': True, 'is_friend': False})
+        return Response({'success': True, 'created': False, 'exist': False, 'is_friend': False})
