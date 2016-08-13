@@ -150,3 +150,22 @@ class Delete(APIView):
         delete_from_my_side.delete()
         delete_from_his_side.delete()
         return Response({'success': True, 'created': False, 'exist': True, 'is_friend': False})
+
+
+class Ignore(APIView):
+    renderer_classes = (JSONRenderer,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, uid_for_client):
+        try:
+            person = AdditionalUuid.objects.get(uid_for_client=uid_for_client)
+        except AdditionalUuid.DoesNotExist:
+            return Response({'success': False, 'exist': False})
+
+        if person.user.id == request.user.id:
+            return Response({'success': False, 'exist': True})
+
+        ignore_friend = Friends.objects.filter(user=request.user.id).filter(user_friend=person.user.id)[0]
+        ignore_friend.is_ignore = True
+        ignore_friend.save()
+        return Response({'success': True, 'exist': True})
