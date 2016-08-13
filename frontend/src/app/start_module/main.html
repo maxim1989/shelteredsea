@@ -1,7 +1,7 @@
 <div class="start-page row">
     <div class="col-md-offset-1 col-md-4">
         <a class="thumbnail text-center"
-           @pageState="'in-from-left'"
+           [@pageState]="leftLinkState"
            href="#">
             <div class="caption">
                 <p>PfE</p>
@@ -11,8 +11,8 @@
     </div>
     <div class="col-md-offset-2 col-md-4">
         <a class="thumbnail text-center"
-           @pageState="'in-from-right'"
-           [routerLink]="['/pfg']">
+           [@pageState]="rightLinkState"
+           routerLink="/pfg">
             <div class="caption">
                 <p>PfG</p>
             </div>

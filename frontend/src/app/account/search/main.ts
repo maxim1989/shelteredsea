@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import { ResultListComponent } from './result-list';
 import { User } from 'app/user/model';
 import { SearchUserService } from 'app/user/search.service';
 
@@ -7,9 +6,9 @@ import { SearchUserService } from 'app/user/search.service';
     selector: 'account-search',
     templateUrl: './main.html',
     providers: [SearchUserService],
-    directives: [ResultListComponent]
+    // directives: [ResultListComponent]
 })
-export class Search {
+export class AccountSearchComponent {
     IDForSearch : string = "";
     inSearchState: boolean = false;
     foundUser : User;

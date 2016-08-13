@@ -36,8 +36,8 @@
 }
 
 /*
- * ng2-bootstrap
+ * material-design
  */
-.tab-content{
+.md-tab-body{
     padding: 10px;
 }

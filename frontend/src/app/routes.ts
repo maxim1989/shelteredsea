@@ -1,13 +1,13 @@
-import { provideRouter, RouterConfig } from '@angular/router';
+import { Routes, RouterModule } from '@angular/router';
 
-import {StartPage} from './start_module/main';
+import {StartPageComponent} from './start_module/main';
 import {GameDispute} from './game_dispute_module/main';
-import {Account} from './account/main';
+import {AccountComponent} from './account/main';
 
-const routes: RouterConfig = [
+const appRoutes: Routes = [
     {
         path: '',
-        component: StartPage
+        component: StartPageComponent
     },
     {
         path: 'pfg',
@@ -15,10 +15,8 @@ const routes: RouterConfig = [
     },
     {
         path: 'account',
-        component: Account
+        component: AccountComponent
     }
 ];
 
-export const APP_ROUTER_PROVIDERS = [
-  provideRouter(routes)
-];
+export const routing = RouterModule.forRoot(appRoutes, { useHash: true });

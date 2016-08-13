@@ -6,7 +6,7 @@ import { User } from 'app/user/model';
     templateUrl: './result-list.html',
     providers: []
 })
-export class ResultListComponent {
+export class AccountSearchResultListComponent {
     @Input() user: User;
     @Input() showResult: boolean;
 
