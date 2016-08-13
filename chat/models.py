@@ -13,7 +13,7 @@ class ManyChatsToManyUsersConnector(models.Model):
 
 
 class Message(models.Model):
-    chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
-    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
+    chat = models.OneToOneField(Chat, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     message = models.TextField()
     creation_datetime = models.DateTimeField(auto_now_add=True)

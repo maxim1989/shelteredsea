@@ -44,9 +44,9 @@
                     params = Object.keys(data).map(function(key){
                         return encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
                     }).join('&');
-                ajax.open('POST', 'personalarea/112353405404900500892403207717319453884/delete', true);
+                ajax.open('POST', 'personalarea/6152664167811584486', true);
                 ajax.setRequestHeader("Content-type", "application/json; charset=utf-8");
-                ajax.setRequestHeader("X-CSRFToken", 'DbuQC8dIaUPV3PD5YXpImYsimJNbg96Y');
+                ajax.setRequestHeader("X-CSRFToken", 'BBGP6MqNvaG6iWUTdqC2dAUMOngXT8uW');
                 ajax.onreadystatechange = function() {
                     if (ajax.readyState == 4) {
                         if(ajax.status == 200) {

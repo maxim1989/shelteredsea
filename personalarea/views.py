@@ -1,4 +1,5 @@
 import copy
+import datetime
 
 from django.contrib.auth.models import User
 from rest_framework import permissions
@@ -6,6 +7,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from chat.models import Chat, ManyChatsToManyUsersConnector, Message
 from loginsys.models import AdditionalUuid
 from loginsys.serializers import AuthenticatedUserSerializer
 from personalarea.models import Friends
@@ -27,6 +29,34 @@ class FriendsList(APIView):
         serializer_not_friend = FriendsSerializer(want_be_their_friend, many=True)
         data = dict(my_friends=serializer_friend.data, want_be_their_friend=serializer_not_friend.data)
         return Response(data)
+
+
+def create_chat(my_id, friend_id):
+    my_chats = {chat.chat.id for chat in ManyChatsToManyUsersConnector.objects.filter(user=my_id)}
+    friend_chats = {chat.chat.id for chat in ManyChatsToManyUsersConnector.objects.filter(user=friend_id)}
+    chat_set = my_chats & friend_chats
+    me = User.objects.get(pk=my_id)
+    if chat_set:
+        chat = chat_set.pop()
+        chat = Chat.objects.get(pk=chat)
+    else:
+        chat_name = datetime.datetime.now().strftime("%d-%m-%Y|%H:%M")
+        chat = Chat(name=chat_name)
+        chat.save()
+        connet_me_to_chat = ManyChatsToManyUsersConnector(chat=chat, user=me)
+        connet_me_to_chat.save()
+        friend = User.objects.get(pk=friend_id)
+        connet_friend_to_chat = ManyChatsToManyUsersConnector(chat=chat, user=friend)
+        connet_friend_to_chat.save()
+    return chat, me
+
+
+def invite_friend(chat, me):
+    message = Message(
+        chat=chat, user=me,
+        message="Пользователь {0} просит добавить его в друзья".format(me.additional_name.chat_name)
+    )
+    message.save()
 
 
 class FindUser(APIView):
@@ -56,15 +86,19 @@ class FindUser(APIView):
         if person.user.id == request.user.id:
             return Response({'success': False, 'exist': True})
 
+        chat, me = create_chat(request.user.id, person.user.id)
+
         friend = Friends.objects.filter(user=request.user.id).filter(user_friend=person.user.id)
         if friend:
             if friend[0].is_friend:
                 return Response({'success': True, 'created': False, 'exist': True, 'is_friend': True})
+            invite_friend(chat, me)
             return Response({'success': True, 'created': False, 'exist': True, 'is_friend': False})
 
         data_on_save = dict(user_friend=person.user.id, user=request.user.id, is_friend=False)
         serializer = FriendsSerializer(data=data_on_save)
         if serializer.is_valid():
+            invite_friend(chat, me)
             serializer.save()
             return Response({'success': True, 'created': True, 'exist': True, 'is_friend': False})
         return Response({'success': False, 'created': False, 'exist': True, 'is_friend': False})
