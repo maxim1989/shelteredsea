@@ -14,17 +14,18 @@ from personalarea.serializers import FriendsSerializer
 
 class FriendsList(APIView):
     renderer_classes = (JSONRenderer,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request):
         u = request.user.id
         my_friends_uids = [ch.user_friend for ch in Friends.objects.filter(user=u)]
         my_friends = Friends.objects.\
             filter(user_friend__in=my_friends_uids).filter(is_friend=True).order_by('user_friend__username')
-        want_be_my_friend = Friends.objects. \
-            filter(user_friend__in=my_friends_uids).filter(is_friend=True).order_by('user_friend__username')
+        want_be_their_friend = Friends.objects. \
+            filter(user_friend__in=my_friends_uids).filter(is_friend=False).order_by('user_friend__username')
         serializer_friend = FriendsSerializer(my_friends, many=True)
-        serializer_not_friend = FriendsSerializer(want_be_my_friend, many=True)
-        data = dict(my_friends=serializer_friend.data, want_be_my_friend=serializer_not_friend.data)
+        serializer_not_friend = FriendsSerializer(want_be_their_friend, many=True)
+        data = dict(my_friends=serializer_friend.data, want_be_their_friend=serializer_not_friend.data)
         return Response(data)
 
 
@@ -66,4 +67,32 @@ class FindUser(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response({'success': True, 'created': True, 'exist': True, 'is_friend': False})
-        return Response({'success': True, 'created': False, 'exist': False, 'is_friend': False})
+        return Response({'success': False, 'created': False, 'exist': True, 'is_friend': False})
+
+
+class Accept(APIView):
+    renderer_classes = (JSONRenderer,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, uid_for_client):
+        try:
+            person = AdditionalUuid.objects.get(uid_for_client=uid_for_client)
+        except AdditionalUuid.DoesNotExist:
+            return Response({'success': False, 'exist': False})
+
+        if person.user.id == request.user.id:
+            return Response({'success': False, 'exist': True})
+
+        who_invite = Friends.objects.filter(user_friend=request.user.id).filter(user=person.user.id)[0]
+        if request.data.get('accept'):
+            who_invite.is_friend = True
+            data_on_save = dict(user_friend=person.user.id, user=request.user.id, is_friend=True)
+            serializer_add = FriendsSerializer(data=data_on_save)
+            if serializer_add.is_valid():
+                who_invite.save()
+                serializer_add.save()
+                return Response({'success': True, 'created': True, 'exist': True, 'is_friend': True})
+            return Response({'success': False, 'created': False, 'exist': True, 'is_friend': False})
+        else:
+            who_invite.delete()
+            return Response({'success': True, 'created': False, 'exist': True, 'is_friend': False})
