@@ -5,7 +5,8 @@ webpackJsonp([2],{
 
 	"use strict";
 	var platform_browser_dynamic_1 = __webpack_require__(371);
-	var app_module_1 = __webpack_require__(560);
+	var app_module_1 = __webpack_require__(561);
+	//noinspection TypeScriptValidateTypes
 	platform_browser_dynamic_1.platformBrowserDynamic().bootstrapModule(app_module_1.AppModule);
 	
 
@@ -999,7 +1000,7 @@ webpackJsonp([2],{
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var abstract_control_directive_1 = __webpack_require__(227);
+	var abstract_control_directive_1 = __webpack_require__(228);
 	/**
 	 * A directive that contains multiple {@link NgControl}s.
 	 *
@@ -1050,13 +1051,13 @@ webpackJsonp([2],{
 	var exceptions_1 = __webpack_require__(78);
 	var lang_1 = __webpack_require__(25);
 	var validators_1 = __webpack_require__(44);
-	var checkbox_value_accessor_1 = __webpack_require__(148);
-	var default_value_accessor_1 = __webpack_require__(149);
-	var normalize_validator_1 = __webpack_require__(503);
-	var number_value_accessor_1 = __webpack_require__(230);
-	var radio_control_value_accessor_1 = __webpack_require__(151);
-	var select_control_value_accessor_1 = __webpack_require__(152);
-	var select_multiple_control_value_accessor_1 = __webpack_require__(153);
+	var checkbox_value_accessor_1 = __webpack_require__(149);
+	var default_value_accessor_1 = __webpack_require__(150);
+	var normalize_validator_1 = __webpack_require__(504);
+	var number_value_accessor_1 = __webpack_require__(231);
+	var radio_control_value_accessor_1 = __webpack_require__(152);
+	var select_control_value_accessor_1 = __webpack_require__(153);
+	var select_multiple_control_value_accessor_1 = __webpack_require__(154);
 	function controlPath(name, parent) {
 	    var p = collection_1.ListWrapper.clone(parent.path);
 	    p.push(name);
@@ -1182,7 +1183,7 @@ webpackJsonp([2],{
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var exceptions_1 = __webpack_require__(78);
-	var abstract_control_directive_1 = __webpack_require__(227);
+	var abstract_control_directive_1 = __webpack_require__(228);
 	/**
 	 * A base class that all control directive extend.
 	 * It binds a {@link Control} object to a DOM element.
@@ -1529,7 +1530,7 @@ webpackJsonp([2],{
 	var async_1 = __webpack_require__(94);
 	var collection_1 = __webpack_require__(38);
 	var lang_1 = __webpack_require__(25);
-	var model_1 = __webpack_require__(154);
+	var model_1 = __webpack_require__(155);
 	var validators_1 = __webpack_require__(44);
 	var control_container_1 = __webpack_require__(61);
 	var shared_1 = __webpack_require__(62);
@@ -1673,7 +1674,7 @@ webpackJsonp([2],{
 	var lang_1 = __webpack_require__(25);
 	var validators_1 = __webpack_require__(44);
 	var control_container_1 = __webpack_require__(61);
-	var reactive_errors_1 = __webpack_require__(233);
+	var reactive_errors_1 = __webpack_require__(234);
 	var shared_1 = __webpack_require__(62);
 	exports.formDirectiveProvider = {
 	    provide: control_container_1.ControlContainer,
@@ -1812,7 +1813,7 @@ webpackJsonp([2],{
 	var validators_1 = __webpack_require__(44);
 	var abstract_form_group_directive_1 = __webpack_require__(103);
 	var control_container_1 = __webpack_require__(61);
-	var reactive_errors_1 = __webpack_require__(233);
+	var reactive_errors_1 = __webpack_require__(234);
 	var shared_1 = __webpack_require__(62);
 	var form_group_directive_1 = __webpack_require__(105);
 	exports.formGroupNameProvider = {
@@ -1922,7 +1923,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 148:
+/***/ 149:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1972,7 +1973,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 149:
+/***/ 150:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2027,7 +2028,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 150:
+/***/ 151:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2088,7 +2089,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 151:
+/***/ 152:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2216,7 +2217,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 152:
+/***/ 153:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2362,7 +2363,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 153:
+/***/ 154:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2549,7 +2550,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 154:
+/***/ 155:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2565,7 +2566,7 @@ webpackJsonp([2],{
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var PromiseObservable_1 = __webpack_require__(178);
+	var PromiseObservable_1 = __webpack_require__(179);
 	var shared_1 = __webpack_require__(62);
 	var async_1 = __webpack_require__(94);
 	var collection_1 = __webpack_require__(38);
@@ -3293,7 +3294,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 227:
+/***/ 228:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3399,7 +3400,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 228:
+/***/ 229:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3484,7 +3485,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 229:
+/***/ 230:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3502,14 +3503,14 @@ webpackJsonp([2],{
 	};
 	var core_1 = __webpack_require__(1);
 	var async_1 = __webpack_require__(94);
-	var model_1 = __webpack_require__(154);
+	var model_1 = __webpack_require__(155);
 	var validators_1 = __webpack_require__(44);
 	var abstract_form_group_directive_1 = __webpack_require__(103);
 	var control_container_1 = __webpack_require__(61);
 	var control_value_accessor_1 = __webpack_require__(43);
 	var ng_control_1 = __webpack_require__(77);
 	var ng_form_1 = __webpack_require__(104);
-	var ng_model_group_1 = __webpack_require__(150);
+	var ng_model_group_1 = __webpack_require__(151);
 	var shared_1 = __webpack_require__(62);
 	var template_driven_errors_1 = __webpack_require__(359);
 	exports.formControlBinding = {
@@ -3641,7 +3642,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 230:
+/***/ 231:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3700,7 +3701,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 231:
+/***/ 232:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3798,7 +3799,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 232:
+/***/ 233:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3821,7 +3822,7 @@ webpackJsonp([2],{
 	var control_container_1 = __webpack_require__(61);
 	var control_value_accessor_1 = __webpack_require__(43);
 	var ng_control_1 = __webpack_require__(77);
-	var reactive_errors_1 = __webpack_require__(233);
+	var reactive_errors_1 = __webpack_require__(234);
 	var shared_1 = __webpack_require__(62);
 	var form_group_directive_1 = __webpack_require__(105);
 	var form_group_name_1 = __webpack_require__(106);
@@ -3918,7 +3919,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 233:
+/***/ 234:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3956,7 +3957,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 234:
+/***/ 235:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -4079,7 +4080,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 247:
+/***/ 248:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4098,7 +4099,7 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var portal_1 = __webpack_require__(550);
+	var portal_1 = __webpack_require__(551);
 	/**
 	 * Directive version of a `TemplatePortal`. Because the directive *is* a TemplatePortal,
 	 * the directive instance itself can be attached to a host, enabling declarative use of portals.
@@ -4222,55 +4223,55 @@ webpackJsonp([2],{
 	 */
 	"use strict";
 	var core_1 = __webpack_require__(1);
-	var checkbox_value_accessor_1 = __webpack_require__(148);
-	var default_value_accessor_1 = __webpack_require__(149);
-	var ng_control_status_1 = __webpack_require__(228);
+	var checkbox_value_accessor_1 = __webpack_require__(149);
+	var default_value_accessor_1 = __webpack_require__(150);
+	var ng_control_status_1 = __webpack_require__(229);
 	var ng_form_1 = __webpack_require__(104);
-	var ng_model_1 = __webpack_require__(229);
-	var ng_model_group_1 = __webpack_require__(150);
-	var number_value_accessor_1 = __webpack_require__(230);
-	var radio_control_value_accessor_1 = __webpack_require__(151);
-	var form_control_directive_1 = __webpack_require__(231);
-	var form_control_name_1 = __webpack_require__(232);
+	var ng_model_1 = __webpack_require__(230);
+	var ng_model_group_1 = __webpack_require__(151);
+	var number_value_accessor_1 = __webpack_require__(231);
+	var radio_control_value_accessor_1 = __webpack_require__(152);
+	var form_control_directive_1 = __webpack_require__(232);
+	var form_control_name_1 = __webpack_require__(233);
 	var form_group_directive_1 = __webpack_require__(105);
 	var form_group_name_1 = __webpack_require__(106);
-	var select_control_value_accessor_1 = __webpack_require__(152);
-	var select_multiple_control_value_accessor_1 = __webpack_require__(153);
-	var validators_1 = __webpack_require__(234);
-	var checkbox_value_accessor_2 = __webpack_require__(148);
+	var select_control_value_accessor_1 = __webpack_require__(153);
+	var select_multiple_control_value_accessor_1 = __webpack_require__(154);
+	var validators_1 = __webpack_require__(235);
+	var checkbox_value_accessor_2 = __webpack_require__(149);
 	exports.CheckboxControlValueAccessor = checkbox_value_accessor_2.CheckboxControlValueAccessor;
-	var default_value_accessor_2 = __webpack_require__(149);
+	var default_value_accessor_2 = __webpack_require__(150);
 	exports.DefaultValueAccessor = default_value_accessor_2.DefaultValueAccessor;
 	var ng_control_1 = __webpack_require__(77);
 	exports.NgControl = ng_control_1.NgControl;
-	var ng_control_status_2 = __webpack_require__(228);
+	var ng_control_status_2 = __webpack_require__(229);
 	exports.NgControlStatus = ng_control_status_2.NgControlStatus;
 	var ng_form_2 = __webpack_require__(104);
 	exports.NgForm = ng_form_2.NgForm;
-	var ng_model_2 = __webpack_require__(229);
+	var ng_model_2 = __webpack_require__(230);
 	exports.NgModel = ng_model_2.NgModel;
-	var ng_model_group_2 = __webpack_require__(150);
+	var ng_model_group_2 = __webpack_require__(151);
 	exports.NgModelGroup = ng_model_group_2.NgModelGroup;
-	var number_value_accessor_2 = __webpack_require__(230);
+	var number_value_accessor_2 = __webpack_require__(231);
 	exports.NumberValueAccessor = number_value_accessor_2.NumberValueAccessor;
-	var radio_control_value_accessor_2 = __webpack_require__(151);
+	var radio_control_value_accessor_2 = __webpack_require__(152);
 	exports.RadioControlValueAccessor = radio_control_value_accessor_2.RadioControlValueAccessor;
-	var form_control_directive_2 = __webpack_require__(231);
+	var form_control_directive_2 = __webpack_require__(232);
 	exports.FormControlDirective = form_control_directive_2.FormControlDirective;
-	var form_control_name_2 = __webpack_require__(232);
+	var form_control_name_2 = __webpack_require__(233);
 	exports.FormControlName = form_control_name_2.FormControlName;
 	var form_group_directive_2 = __webpack_require__(105);
 	exports.FormGroupDirective = form_group_directive_2.FormGroupDirective;
 	var form_group_name_2 = __webpack_require__(106);
 	exports.FormArrayName = form_group_name_2.FormArrayName;
 	exports.FormGroupName = form_group_name_2.FormGroupName;
-	var select_control_value_accessor_2 = __webpack_require__(152);
+	var select_control_value_accessor_2 = __webpack_require__(153);
 	exports.NgSelectOption = select_control_value_accessor_2.NgSelectOption;
 	exports.SelectControlValueAccessor = select_control_value_accessor_2.SelectControlValueAccessor;
-	var select_multiple_control_value_accessor_2 = __webpack_require__(153);
+	var select_multiple_control_value_accessor_2 = __webpack_require__(154);
 	exports.NgSelectMultipleOption = select_multiple_control_value_accessor_2.NgSelectMultipleOption;
 	exports.SelectMultipleControlValueAccessor = select_multiple_control_value_accessor_2.SelectMultipleControlValueAccessor;
-	var validators_2 = __webpack_require__(234);
+	var validators_2 = __webpack_require__(235);
 	exports.MaxLengthValidator = validators_2.MaxLengthValidator;
 	exports.MinLengthValidator = validators_2.MinLengthValidator;
 	exports.PatternValidator = validators_2.PatternValidator;
@@ -4599,7 +4600,7 @@ webpackJsonp([2],{
 	var core_1 = __webpack_require__(1);
 	var collection_1 = __webpack_require__(38);
 	var lang_1 = __webpack_require__(25);
-	var model_1 = __webpack_require__(154);
+	var model_1 = __webpack_require__(155);
 	var FormBuilder = (function () {
 	    function FormBuilder() {
 	    }
@@ -4686,9 +4687,7 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var router_1 = __webpack_require__(243);
-	// import {TAB_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
-	// import {AccountSearchComponent} from './search/main';
+	var router_1 = __webpack_require__(244);
 	var auth_service_1 = __webpack_require__(391);
 	var AccountComponent = (function () {
 	    function AccountComponent(UserService, router) {
@@ -4711,8 +4710,7 @@ webpackJsonp([2],{
 	    AccountComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account',
-	            // directives: [TAB_DIRECTIVES, Search],
-	            template: __webpack_require__(727)
+	            template: __webpack_require__(731)
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object, (typeof (_b = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _b) || Object])
 	    ], AccountComponent);
@@ -4747,7 +4745,7 @@ webpackJsonp([2],{
 	            pipes: [],
 	            providers: [],
 	            directives: [],
-	            template: __webpack_require__(731)
+	            template: __webpack_require__(735)
 	        }), 
 	        __metadata('design:paramtypes', [])
 	    ], GameDispute);
@@ -4785,7 +4783,7 @@ webpackJsonp([2],{
 	        core_1.Component({
 	            selector: 'start_page',
 	            providers: [],
-	            template: __webpack_require__(732),
+	            template: __webpack_require__(736),
 	            animations: [
 	                core_1.trigger('pageState', [
 	                    core_1.state('in-from-left', core_1.style({
@@ -4828,8 +4826,8 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var http_1 = __webpack_require__(155);
-	__webpack_require__(272);
+	var http_1 = __webpack_require__(107);
+	__webpack_require__(178);
 	var UserService = (function () {
 	    function UserService(http) {
 	        this.http = http;
@@ -4878,7 +4876,17 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 502:
+/***/ 427:
+/***/ function(module, exports, __webpack_require__) {
+
+	// Export all services
+	var cookie_1 = __webpack_require__(729);
+	exports.Cookie = cookie_1.Cookie;
+	//# sourceMappingURL=services.js.map
+
+/***/ },
+
+/***/ 503:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -4892,12 +4900,12 @@ webpackJsonp([2],{
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
-	__export(__webpack_require__(505));
+	__export(__webpack_require__(506));
 	//# sourceMappingURL=index.js.map
 
 /***/ },
 
-/***/ 503:
+/***/ 504:
 /***/ function(module, exports) {
 
 	/**
@@ -4930,7 +4938,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 504:
+/***/ 505:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -4943,7 +4951,7 @@ webpackJsonp([2],{
 	"use strict";
 	var core_1 = __webpack_require__(1);
 	var directives_1 = __webpack_require__(357);
-	var radio_control_value_accessor_1 = __webpack_require__(151);
+	var radio_control_value_accessor_1 = __webpack_require__(152);
 	var form_builder_1 = __webpack_require__(362);
 	/**
 	 * Shorthand set of providers used for building Angular forms.
@@ -5003,7 +5011,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 505:
+/***/ 506:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -5033,31 +5041,31 @@ webpackJsonp([2],{
 	var directives_1 = __webpack_require__(357);
 	exports.FORM_DIRECTIVES = directives_1.FORM_DIRECTIVES;
 	exports.REACTIVE_FORM_DIRECTIVES = directives_1.REACTIVE_FORM_DIRECTIVES;
-	var abstract_control_directive_1 = __webpack_require__(227);
+	var abstract_control_directive_1 = __webpack_require__(228);
 	exports.AbstractControlDirective = abstract_control_directive_1.AbstractControlDirective;
 	var abstract_form_group_directive_1 = __webpack_require__(103);
 	exports.AbstractFormGroupDirective = abstract_form_group_directive_1.AbstractFormGroupDirective;
-	var checkbox_value_accessor_1 = __webpack_require__(148);
+	var checkbox_value_accessor_1 = __webpack_require__(149);
 	exports.CheckboxControlValueAccessor = checkbox_value_accessor_1.CheckboxControlValueAccessor;
 	var control_container_1 = __webpack_require__(61);
 	exports.ControlContainer = control_container_1.ControlContainer;
 	var control_value_accessor_1 = __webpack_require__(43);
 	exports.NG_VALUE_ACCESSOR = control_value_accessor_1.NG_VALUE_ACCESSOR;
-	var default_value_accessor_1 = __webpack_require__(149);
+	var default_value_accessor_1 = __webpack_require__(150);
 	exports.DefaultValueAccessor = default_value_accessor_1.DefaultValueAccessor;
 	var ng_control_1 = __webpack_require__(77);
 	exports.NgControl = ng_control_1.NgControl;
-	var ng_control_status_1 = __webpack_require__(228);
+	var ng_control_status_1 = __webpack_require__(229);
 	exports.NgControlStatus = ng_control_status_1.NgControlStatus;
 	var ng_form_1 = __webpack_require__(104);
 	exports.NgForm = ng_form_1.NgForm;
-	var ng_model_1 = __webpack_require__(229);
+	var ng_model_1 = __webpack_require__(230);
 	exports.NgModel = ng_model_1.NgModel;
-	var ng_model_group_1 = __webpack_require__(150);
+	var ng_model_group_1 = __webpack_require__(151);
 	exports.NgModelGroup = ng_model_group_1.NgModelGroup;
-	var form_control_directive_1 = __webpack_require__(231);
+	var form_control_directive_1 = __webpack_require__(232);
 	exports.FormControlDirective = form_control_directive_1.FormControlDirective;
-	var form_control_name_1 = __webpack_require__(232);
+	var form_control_name_1 = __webpack_require__(233);
 	exports.FormControlName = form_control_name_1.FormControlName;
 	var form_group_directive_1 = __webpack_require__(105);
 	exports.FormGroupDirective = form_group_directive_1.FormGroupDirective;
@@ -5065,19 +5073,19 @@ webpackJsonp([2],{
 	exports.FormArrayName = form_group_name_1.FormArrayName;
 	var form_group_name_2 = __webpack_require__(106);
 	exports.FormGroupName = form_group_name_2.FormGroupName;
-	var select_control_value_accessor_1 = __webpack_require__(152);
+	var select_control_value_accessor_1 = __webpack_require__(153);
 	exports.NgSelectOption = select_control_value_accessor_1.NgSelectOption;
 	exports.SelectControlValueAccessor = select_control_value_accessor_1.SelectControlValueAccessor;
-	var select_multiple_control_value_accessor_1 = __webpack_require__(153);
+	var select_multiple_control_value_accessor_1 = __webpack_require__(154);
 	exports.SelectMultipleControlValueAccessor = select_multiple_control_value_accessor_1.SelectMultipleControlValueAccessor;
-	var validators_1 = __webpack_require__(234);
+	var validators_1 = __webpack_require__(235);
 	exports.MaxLengthValidator = validators_1.MaxLengthValidator;
 	exports.MinLengthValidator = validators_1.MinLengthValidator;
 	exports.PatternValidator = validators_1.PatternValidator;
 	exports.RequiredValidator = validators_1.RequiredValidator;
 	var form_builder_1 = __webpack_require__(362);
 	exports.FormBuilder = form_builder_1.FormBuilder;
-	var model_1 = __webpack_require__(154);
+	var model_1 = __webpack_require__(155);
 	exports.AbstractControl = model_1.AbstractControl;
 	exports.FormArray = model_1.FormArray;
 	exports.FormControl = model_1.FormControl;
@@ -5086,12 +5094,12 @@ webpackJsonp([2],{
 	exports.NG_ASYNC_VALIDATORS = validators_2.NG_ASYNC_VALIDATORS;
 	exports.NG_VALIDATORS = validators_2.NG_VALIDATORS;
 	exports.Validators = validators_2.Validators;
-	__export(__webpack_require__(504));
+	__export(__webpack_require__(505));
 	//# sourceMappingURL=forms.js.map
 
 /***/ },
 
-/***/ 546:
+/***/ 547:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -5111,8 +5119,8 @@ webpackJsonp([2],{
 	};
 	var core_1 = __webpack_require__(1);
 	var common_1 = __webpack_require__(36);
-	var field_value_1 = __webpack_require__(547);
-	var ripple_1 = __webpack_require__(552);
+	var field_value_1 = __webpack_require__(548);
+	var ripple_1 = __webpack_require__(553);
 	// TODO(jelbourn): Make the `isMouseDown` stuff done with one global listener.
 	// TODO(kara): Convert attribute selectors to classes when attr maps become available
 	var MdButton = (function () {
@@ -5290,7 +5298,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 547:
+/***/ 548:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -5326,7 +5334,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 548:
+/***/ 549:
 /***/ function(module, exports) {
 
 	// TODO(kara): Revisit why error messages are not being properly set.
@@ -5352,7 +5360,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 549:
+/***/ 550:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -5361,7 +5369,7 @@ webpackJsonp([2],{
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var error_1 = __webpack_require__(548);
+	var error_1 = __webpack_require__(549);
 	/** Exception thrown when a ComponentPortal is attached to a DomPortalHost without an origin. */
 	var MdComponentPortalAttachedToDomWithoutOriginError = (function (_super) {
 	    __extends(MdComponentPortalAttachedToDomWithoutOriginError, _super);
@@ -5431,7 +5439,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 550:
+/***/ 551:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -5440,7 +5448,7 @@ webpackJsonp([2],{
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var portal_errors_1 = __webpack_require__(549);
+	var portal_errors_1 = __webpack_require__(550);
 	/**
 	 * A `Portal` is something that you want to render somewhere else.
 	 * It can be attach to / detached from a `PortalHost`.
@@ -5597,7 +5605,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 551:
+/***/ 552:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -5754,7 +5762,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 552:
+/***/ 553:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -5768,7 +5776,7 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var ripple_renderer_1 = __webpack_require__(551);
+	var ripple_renderer_1 = __webpack_require__(552);
 	var MdRipple = (function () {
 	    function MdRipple(_elementRef) {
 	        var _this = this;
@@ -5937,7 +5945,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 553:
+/***/ 554:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -5994,7 +6002,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 554:
+/***/ 555:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6013,7 +6021,7 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var portal_directives_1 = __webpack_require__(247);
+	var portal_directives_1 = __webpack_require__(248);
 	/** Used to flag tab contents for use with the portal directive */
 	var MdTabContent = (function (_super) {
 	    __extends(MdTabContent, _super);
@@ -6033,7 +6041,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 555:
+/***/ 556:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6071,7 +6079,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 556:
+/***/ 557:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6090,7 +6098,7 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var portal_directives_1 = __webpack_require__(247);
+	var portal_directives_1 = __webpack_require__(248);
 	/** Used to flag tab labels for use with the portal directive */
 	var MdTabLabel = (function (_super) {
 	    __extends(MdTabLabel, _super);
@@ -6110,7 +6118,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 557:
+/***/ 558:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6125,13 +6133,13 @@ webpackJsonp([2],{
 	};
 	var core_1 = __webpack_require__(1);
 	var common_1 = __webpack_require__(36);
-	var portal_directives_1 = __webpack_require__(247);
-	var tab_label_1 = __webpack_require__(556);
-	var tab_content_1 = __webpack_require__(554);
-	var tab_label_wrapper_1 = __webpack_require__(555);
-	var ink_bar_1 = __webpack_require__(553);
+	var portal_directives_1 = __webpack_require__(248);
+	var tab_label_1 = __webpack_require__(557);
+	var tab_content_1 = __webpack_require__(555);
+	var tab_label_wrapper_1 = __webpack_require__(556);
+	var ink_bar_1 = __webpack_require__(554);
 	var Observable_1 = __webpack_require__(7);
-	__webpack_require__(271);
+	__webpack_require__(272);
 	// Due to a bug in the ChromeDriver, Angular 2 keyboard events are not triggered by `sendKeys`
 	// during E2E tests when using dot notation such as `(keydown.rightArrow)`. To get around this,
 	// we are temporarily using a single (keydown) handler.
@@ -6370,7 +6378,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 558:
+/***/ 559:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6384,7 +6392,7 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var search_service_1 = __webpack_require__(564);
+	var search_service_1 = __webpack_require__(566);
 	var AccountSearchComponent = (function () {
 	    function AccountSearchComponent(SearchUserService) {
 	        this.SearchUserService = SearchUserService;
@@ -6413,7 +6421,7 @@ webpackJsonp([2],{
 	    AccountSearchComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-search',
-	            template: __webpack_require__(728),
+	            template: __webpack_require__(732),
 	            providers: [search_service_1.SearchUserService],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof search_service_1.SearchUserService !== 'undefined' && search_service_1.SearchUserService) === 'function' && _a) || Object])
@@ -6422,48 +6430,6 @@ webpackJsonp([2],{
 	    var _a;
 	}());
 	exports.AccountSearchComponent = AccountSearchComponent;
-	
-
-/***/ },
-
-/***/ 559:
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (this && this.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	var core_1 = __webpack_require__(1);
-	var model_1 = __webpack_require__(563);
-	var AccountSearchResultListComponent = (function () {
-	    function AccountSearchResultListComponent() {
-	    }
-	    __decorate([
-	        core_1.Input(), 
-	        __metadata('design:type', (typeof (_a = typeof model_1.User !== 'undefined' && model_1.User) === 'function' && _a) || Object)
-	    ], AccountSearchResultListComponent.prototype, "user", void 0);
-	    __decorate([
-	        core_1.Input(), 
-	        __metadata('design:type', Boolean)
-	    ], AccountSearchResultListComponent.prototype, "showResult", void 0);
-	    AccountSearchResultListComponent = __decorate([
-	        core_1.Component({
-	            selector: 'search-result-list',
-	            template: __webpack_require__(729),
-	            providers: []
-	        }), 
-	        __metadata('design:paramtypes', [])
-	    ], AccountSearchResultListComponent);
-	    return AccountSearchResultListComponent;
-	    var _a;
-	}());
-	exports.AccountSearchResultListComponent = AccountSearchResultListComponent;
 	
 
 /***/ },
@@ -6482,19 +6448,66 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
+	var friendship_service_1 = __webpack_require__(564);
+	var model_1 = __webpack_require__(565);
+	var AccountSearchResultListComponent = (function () {
+	    function AccountSearchResultListComponent(FriendshipService) {
+	        this.FriendshipService = FriendshipService;
+	    }
+	    AccountSearchResultListComponent.prototype.addFriend = function () {
+	        this.FriendshipService.sendFriendRequest(this.user.uid_for_client)
+	            .then();
+	    };
+	    __decorate([
+	        core_1.Input(), 
+	        __metadata('design:type', (typeof (_a = typeof model_1.User !== 'undefined' && model_1.User) === 'function' && _a) || Object)
+	    ], AccountSearchResultListComponent.prototype, "user", void 0);
+	    __decorate([
+	        core_1.Input(), 
+	        __metadata('design:type', Boolean)
+	    ], AccountSearchResultListComponent.prototype, "showResult", void 0);
+	    AccountSearchResultListComponent = __decorate([
+	        core_1.Component({
+	            selector: 'search-result-list',
+	            template: __webpack_require__(733),
+	            providers: [friendship_service_1.FriendshipService]
+	        }), 
+	        __metadata('design:paramtypes', [(typeof (_b = typeof friendship_service_1.FriendshipService !== 'undefined' && friendship_service_1.FriendshipService) === 'function' && _b) || Object])
+	    ], AccountSearchResultListComponent);
+	    return AccountSearchResultListComponent;
+	    var _a, _b;
+	}());
+	exports.AccountSearchResultListComponent = AccountSearchResultListComponent;
+	
+
+/***/ },
+
+/***/ 561:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(1);
 	var platform_browser_1 = __webpack_require__(95);
-	var forms_1 = __webpack_require__(502);
-	var http_1 = __webpack_require__(155);
-	var button_1 = __webpack_require__(546);
-	var tabs_1 = __webpack_require__(557);
-	var app_1 = __webpack_require__(561);
-	var routes_1 = __webpack_require__(562);
+	var forms_1 = __webpack_require__(503);
+	var http_1 = __webpack_require__(107);
+	var button_1 = __webpack_require__(547);
+	var tabs_1 = __webpack_require__(558);
+	var app_1 = __webpack_require__(562);
+	var routes_1 = __webpack_require__(563);
 	var main_1 = __webpack_require__(390);
 	var main_2 = __webpack_require__(389);
 	var main_3 = __webpack_require__(388);
-	var main_4 = __webpack_require__(558);
-	var result_list_1 = __webpack_require__(559);
-	//noinspection TypeScriptValidateTypes
+	var main_4 = __webpack_require__(559);
+	var result_list_1 = __webpack_require__(560);
 	var AppModule = (function () {
 	    function AppModule() {
 	    }
@@ -6530,7 +6543,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 561:
+/***/ 562:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6579,7 +6592,7 @@ webpackJsonp([2],{
 	        core_1.Component({
 	            selector: 'app',
 	            providers: [auth_service_1.UserService],
-	            template: __webpack_require__(730),
+	            template: __webpack_require__(734),
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object])
 	    ], AppComponent);
@@ -6591,11 +6604,11 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 562:
+/***/ 563:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var router_1 = __webpack_require__(243);
+	var router_1 = __webpack_require__(244);
 	var main_1 = __webpack_require__(390);
 	var main_2 = __webpack_require__(389);
 	var main_3 = __webpack_require__(388);
@@ -6618,7 +6631,65 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 563:
+/***/ 564:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(1);
+	var http_1 = __webpack_require__(107);
+	var ng2_cookies_1 = __webpack_require__(728);
+	__webpack_require__(178);
+	var FriendshipService = (function () {
+	    function FriendshipService(http) {
+	        this.http = http;
+	        this.FRIENDSHIP_URL = 'personalarea/';
+	    }
+	    FriendshipService.prototype.sendFriendRequest = function (ID) {
+	        var url = this.FRIENDSHIP_URL + ID;
+	        var headers = new http_1.Headers({
+	            'Content-Type': 'application/json',
+	            'X-CSRFToken': ng2_cookies_1.Cookie.get('csrftoken')
+	        });
+	        var options = new http_1.RequestOptions({ headers: headers });
+	        //noinspection TypeScriptUnresolvedFunction
+	        return this.http.post(url, '{}', options)
+	            .toPromise()
+	            .then(function (response) {
+	            var result = response.json();
+	            console.log(result);
+	            // return result as User[];
+	        }, function (error) {
+	            console.log(error);
+	            return [];
+	        })
+	            .catch(this.handlerError);
+	    };
+	    FriendshipService.prototype.handlerError = function (error) {
+	        console.error('An error occurred', error);
+	        return Promise.reject(error.message || error);
+	    };
+	    FriendshipService = __decorate([
+	        core_1.Injectable(), 
+	        __metadata('design:paramtypes', [(typeof (_a = typeof http_1.Http !== 'undefined' && http_1.Http) === 'function' && _a) || Object])
+	    ], FriendshipService);
+	    return FriendshipService;
+	    var _a;
+	}());
+	exports.FriendshipService = FriendshipService;
+	
+
+/***/ },
+
+/***/ 565:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6634,7 +6705,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 564:
+/***/ 566:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6648,8 +6719,8 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var http_1 = __webpack_require__(155);
-	__webpack_require__(272);
+	var http_1 = __webpack_require__(107);
+	__webpack_require__(178);
 	var SearchUserService = (function () {
 	    function SearchUserService(http) {
 	        this.http = http;
@@ -6663,10 +6734,6 @@ webpackJsonp([2],{
 	            .then(function (response) {
 	            var result = response.json();
 	            return result;
-	            // if ( result.length ) {
-	            // } else {
-	            //     return [];
-	            // }
 	        }, function (error) {
 	            return [];
 	        })
@@ -6688,42 +6755,151 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 727:
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"raw\">\n    <md-tab-group\n        class=\"col-md-9\">\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-envelope\" aria-hidden=\"true\"></span> Chat\n            </template>\n            <template md-tab-content>\n                <h1>Some tab content</h1>\n                <p>...</p>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-star\" aria-hidden=\"true\"></span> Friends\n            </template>\n            <template md-tab-content>\n                <h1>Some more tab content</h1>\n                <p>...</p>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-signal\" aria-hidden=\"true\"></span> Statistic\n            </template>\n            <template md-tab-content>\n                <h1>Some more tab content</h1>\n                <p>...</p>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Search\n            </template>\n            <template md-tab-content>\n                <account-search></account-search>\n            </template>\n        </md-tab>\n    </md-tab-group>\n    <!--<tabset-->\n            <!--class=\"col-md-9\"-->\n            <!--[justified]=\"true\">-->\n        <!--<tab>-->\n            <!--<template tabHeading>-->\n                <!--<span class=\"glyphicon glyphicon-envelope\" aria-hidden=\"true\"></span> Chat-->\n            <!--</template>-->\n            <!--Friends Chat-->\n        <!--</tab>-->\n        <!--<tab>-->\n            <!--<template tabHeading>-->\n                <!--<span class=\"glyphicon glyphicon-star\" aria-hidden=\"true\"></span> Friends-->\n            <!--</template>-->\n            <!--Friends-->\n        <!--</tab>-->\n        <!--<tab>-->\n            <!--<template tabHeading>-->\n                <!--<span class=\"glyphicon glyphicon-signal\" aria-hidden=\"true\"></span> Statistic-->\n            <!--</template>-->\n            <!--Statistic-->\n        <!--</tab>-->\n        <!--<tab>-->\n            <!--<template tabHeading>-->\n                <!--<span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Search-->\n            <!--</template>-->\n            <!--<account-search></account-search>-->\n        <!--</tab>-->\n    <!--</tabset>-->\n    <div class=\"col-md-3\" style=\"height: 100px; border: 1px solid #333;\"></div>\n</div>\n"
-
-/***/ },
-
 /***/ 728:
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	module.exports = "<form>\n    <fieldset [disabled]=\"inSearchState\">\n        <div class=\"form-group\">\n            <label for=\"search-query-field\">Введите ID пользователя для поиска:</label>\n            <div class=\"input-group\">\n                <input\n                        id=\"search-query-field\"\n                        type=\"text\"\n                        name=\"search_uid\"\n                        class=\"form-control\"\n                        placeholder=\"ID пользователя\"\n                        [(ngModel)]=\"IDForSearch\" />\n                <span class=\"input-group-btn\">\n                    <button\n                            class=\"btn btn-primary\"\n                            type=\"button\"\n                            (click)=\"searchUserByID()\">\n                        Поиск\n                    </button>\n                </span>\n            </div>\n        </div>\n    </fieldset>\n    <div\n            class=\"form-group\"\n            [hidden]=\"!inSearchState\">\n        <div class=\"progress\">\n            <div\n                    class=\"progress-bar progress-bar-info progress-bar-striped active\"\n                    role=\"progressbar\"\n                    aria-valuenow=\"60\"\n                    aria-valuemin=\"0\"\n                    aria-valuemax=\"100\"\n                    style=\"width: 100%\">\n            </div>\n        </div>\n    </div>\n</form>\n<search-result-list [user]=\"foundUser\" [showResult]=\"showResultState\"></search-result-list>\n"
+	function __export(m) {
+	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+	}
+	__export(__webpack_require__(427));
+	var services = __webpack_require__(427);
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = {
+	    services: services
+	};
+	//# sourceMappingURL=ng2-cookies.js.map
 
 /***/ },
 
 /***/ 729:
 /***/ function(module, exports) {
 
-	module.exports = "<div *ngIf=\"user\">\n    <h4>Найден пользователь:</h4>\n    <div class=\"row\">\n        <div class=\"col-md-8\">{{user.chat_name}}</div>\n        <div class=\"col-md-4 text-right\">\n            <div *ngIf=\"!user.is_friend\">\n                <button class=\"btn btn-default btn-xs\">Добавить в друзья</button>\n            </div>\n            <div *ngIf=\"user.is_friend\">\n                <button class=\"btn btn-default btn-xs\" disabled>Уже в друзьях</button>\n            </div>\n        </div>\n    </div>\n</div>\n<div *ngIf=\"showResult && !user\">\n    <em>Пользователи не найдены</em>\n</div>"
-
-/***/ },
-
-/***/ 730:
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"row\">\n    <div class=\"col-md-offset-1 col-md-4\">\n        <a\n                class=\"logo\"\n                routerLink=\"/\">\n        </a>\n    </div>\n    <div class=\"col-md-7 text-right\">\n        <div *ngIf=\"!userLoaded\">\n            <em>Идет загрузка данных...</em>\n        </div>\n        <div *ngIf=\"userLoaded && is_authenticated\">\n            <a\n                    class=\"log-in text-left\"\n                    routerLink=\"account\">\n                <span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span> {{userTitle}}\n                <br/>\n                <span class=\"small\">uid: {{uid}}</span>\n            </a>\n            <a\n                    class=\"log-in\"\n                    (click)=\"routeLogOut()\">\n                <span class=\"glyphicon glyphicon-log-out\" aria-hidden=\"true\"></span> Выйти\n            </a>\n        </div>\n        <a\n                class=\"log-in\"\n                 *ngIf=\"userLoaded && !is_authenticated\"\n                 (click)=\"routeLogIn()\">\n            <span class=\"glyphicon glyphicon-log-in\" aria-hidden=\"true\"></span> Войти\n        </a>\n    </div>\n</div>\n\n<main>\n    <router-outlet></router-outlet>\n</main>\n\n"
+	/**
+	 * Class Cookie - Holds static functions to deal with Cookies
+	 */
+	var Cookie = (function () {
+	    function Cookie() {
+	    }
+	    /**
+	     * Retrieves a single cookie by it's name
+	     *
+	     * @param  {string} name Identification of the Cookie
+	     * @returns The Cookie's value
+	     */
+	    Cookie.get = function (name) {
+	        var myWindow = window;
+	        name = myWindow.escape(name);
+	        var regexp = new RegExp('(?:^' + name + '|;\\s*' + name + ')=(.*?)(?:;|$)', 'g');
+	        var result = regexp.exec(document.cookie);
+	        return (result === null) ? null : myWindow.unescape(result[1]);
+	    };
+	    /**
+	     * Retrieves a a list of all cookie avaiable
+	     *
+	     * @returns Object with all Cookies
+	     */
+	    Cookie.getAll = function () {
+	        var cookies = {};
+	        if (document.cookie && document.cookie != '') {
+	            var split = document.cookie.split(';');
+	            for (var i = 0; i < split.length; i++) {
+	                var currCookie = split[i].split('=');
+	                currCookie[0] = currCookie[0].replace(/^ /, '');
+	                cookies[decodeURIComponent(currCookie[0])] = decodeURIComponent(currCookie[1]);
+	            }
+	        }
+	        return cookies;
+	    };
+	    /**
+	     * Save the Cookie
+	     *
+	     * @param  {string} name Cookie's identification
+	     * @param  {string} value Cookie's value
+	     * @param  {number} expires Cookie's expiration date in days from now. If it's undefined the cookie is a session Cookie
+	     * @param  {string} path Path relative to the domain where the cookie should be avaiable. Default /
+	     * @param  {string} domain Domain where the cookie should be avaiable. Default current domain
+	     */
+	    Cookie.set = function (name, value, expires, path, domain) {
+	        var myWindow = window;
+	        var cookieStr = myWindow.escape(name) + '=' + myWindow.escape(value) + ';';
+	        if (expires) {
+	            var dtExpires = new Date(new Date().getTime() + expires * 1000 * 60 * 60 * 24);
+	            cookieStr += 'expires=' + dtExpires.toUTCString() + ';';
+	        }
+	        if (path) {
+	            cookieStr += 'path=' + path + ';';
+	        }
+	        if (domain) {
+	            cookieStr += 'domain=' + domain + ';';
+	        }
+	        // console.log(cookieStr);
+	        document.cookie = cookieStr;
+	    };
+	    /**
+	     * Removes specified Cookie
+	     *
+	     * @param  {string} name Cookie's identification
+	     * @param  {string} path Path relative to the domain where the cookie should be avaiable. Default /
+	     * @param  {string} domain Domain where the cookie should be avaiable. Default current domain
+	     */
+	    Cookie.delete = function (name, path, domain) {
+	        // If the cookie exists
+	        if (Cookie.get(name)) {
+	            Cookie.set(name, '', -1, path, domain);
+	        }
+	    };
+	    /**
+	     * Delete all cookie avaiable
+	     */
+	    Cookie.deleteAll = function (path, domain) {
+	        var cookies = Cookie.getAll();
+	        for (var cookieName in cookies) {
+	            Cookie.delete(cookieName, path, domain);
+	        }
+	    };
+	    return Cookie;
+	})();
+	exports.Cookie = Cookie;
+	//# sourceMappingURL=cookie.js.map
 
 /***/ },
 
 /***/ 731:
 /***/ function(module, exports) {
 
-	module.exports = "<h3>Спор через игру</h3>\n<p>Добро пожаловать на площадку</p>\n"
+	module.exports = "<div class=\"raw\">\n    <md-tab-group\n        class=\"col-md-9\">\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-envelope\" aria-hidden=\"true\"></span> Chat\n            </template>\n            <template md-tab-content>\n                <h1>Some tab content</h1>\n                <p>...</p>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-star\" aria-hidden=\"true\"></span> Friends\n            </template>\n            <template md-tab-content>\n                <h1>Some more tab content</h1>\n                <p>...</p>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-signal\" aria-hidden=\"true\"></span> Statistic\n            </template>\n            <template md-tab-content>\n                <h1>Some more tab content</h1>\n                <p>...</p>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Search\n            </template>\n            <template md-tab-content>\n                <account-search></account-search>\n            </template>\n        </md-tab>\n    </md-tab-group>\n    <div class=\"col-md-3\" style=\"height: 100px; border: 1px solid #333;\"></div>\n</div>\n"
 
 /***/ },
 
 /***/ 732:
+/***/ function(module, exports) {
+
+	module.exports = "<form>\n    <fieldset [disabled]=\"inSearchState\">\n        <div class=\"form-group\">\n            <label for=\"search-query-field\">Введите ID пользователя для поиска:</label>\n            <div class=\"input-group\">\n                <input\n                        id=\"search-query-field\"\n                        type=\"text\"\n                        name=\"search_uid\"\n                        class=\"form-control\"\n                        placeholder=\"ID пользователя\"\n                        [(ngModel)]=\"IDForSearch\" />\n                <span class=\"input-group-btn\">\n                    <button\n                            class=\"btn btn-primary\"\n                            type=\"button\"\n                            (click)=\"searchUserByID()\">\n                        Поиск\n                    </button>\n                </span>\n            </div>\n        </div>\n    </fieldset>\n    <div\n            class=\"form-group\"\n            [hidden]=\"!inSearchState\">\n        <div class=\"progress\">\n            <div\n                    class=\"progress-bar progress-bar-info progress-bar-striped active\"\n                    role=\"progressbar\"\n                    aria-valuenow=\"60\"\n                    aria-valuemin=\"0\"\n                    aria-valuemax=\"100\"\n                    style=\"width: 100%\">\n            </div>\n        </div>\n    </div>\n</form>\n<search-result-list [user]=\"foundUser\" [showResult]=\"showResultState\"></search-result-list>\n"
+
+/***/ },
+
+/***/ 733:
+/***/ function(module, exports) {
+
+	module.exports = "<div *ngIf=\"user\">\n    <h4>Найден пользователь:</h4>\n    <div class=\"row\">\n        <div class=\"col-md-8\">{{user.chat_name}}</div>\n        <div class=\"col-md-4 text-right\">\n            <div *ngIf=\"!user.is_friend\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        (click)=\"addFriend()\">\n                    Добавить в друзья\n                </button>\n            </div>\n            <div *ngIf=\"user.is_friend\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        disabled>\n                    Уже в друзьях\n                </button>\n            </div>\n        </div>\n    </div>\n</div>\n<div *ngIf=\"showResult && !user\">\n    <em>Пользователи не найдены</em>\n</div>"
+
+/***/ },
+
+/***/ 734:
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"row\">\n    <div class=\"col-md-offset-1 col-md-4\">\n        <a\n                class=\"logo\"\n                routerLink=\"/\">\n        </a>\n    </div>\n    <div class=\"col-md-7 text-right\">\n        <div *ngIf=\"!userLoaded\">\n            <em>Идет загрузка данных...</em>\n        </div>\n        <div *ngIf=\"userLoaded && is_authenticated\">\n            <a\n                    class=\"log-in text-left\"\n                    routerLink=\"account\">\n                <span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span> {{userTitle}}\n                <br/>\n                <span class=\"small\">uid: {{uid}}</span>\n            </a>\n            <a\n                    class=\"log-in\"\n                    (click)=\"routeLogOut()\">\n                <span class=\"glyphicon glyphicon-log-out\" aria-hidden=\"true\"></span> Выйти\n            </a>\n        </div>\n        <a\n                class=\"log-in\"\n                 *ngIf=\"userLoaded && !is_authenticated\"\n                 (click)=\"routeLogIn()\">\n            <span class=\"glyphicon glyphicon-log-in\" aria-hidden=\"true\"></span> Войти\n        </a>\n    </div>\n</div>\n\n<main>\n    <router-outlet></router-outlet>\n</main>\n\n"
+
+/***/ },
+
+/***/ 735:
+/***/ function(module, exports) {
+
+	module.exports = "<h3>Спор через игру</h3>\n<p>Добро пожаловать на площадку</p>\n"
+
+/***/ },
+
+/***/ 736:
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"start-page row\">\n    <div class=\"col-md-offset-1 col-md-4\">\n        <a class=\"thumbnail text-center\"\n           [@pageState]=\"leftLinkState\"\n           href=\"#\">\n            <div class=\"caption\">\n                <p>PfE</p>\n            </div>\n            <div class=\"pfe-logo\"></div>\n        </a>\n    </div>\n    <div class=\"col-md-offset-2 col-md-4\">\n        <a class=\"thumbnail text-center\"\n           [@pageState]=\"rightLinkState\"\n           routerLink=\"/pfg\">\n            <div class=\"caption\">\n                <p>PfG</p>\n            </div>\n            <div class=\"pfg-logo\"></div>\n        </a>\n    </div>\n</div>\n"

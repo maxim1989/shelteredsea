@@ -22,6 +22,7 @@
         <script src="{% static 'js/vendor.bundle.js' %}"></script>
         <script src="{% static 'js/main.bundle.js' %}"></script>
         <script>
+            // TODO удалить на production
             function getXmlHttp(){
                 var xmlhttp;
                 try {
@@ -40,10 +41,7 @@
             }
 
             function doAjax(data) {
-                var ajax = getXmlHttp(),
-                    params = Object.keys(data).map(function(key){
-                        return encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
-                    }).join('&');
+                var ajax = getXmlHttp();
                 ajax.open('POST', 'personalarea/6152664167811584486/ignore', true);
                 ajax.setRequestHeader("Content-type", "application/json; charset=utf-8");
                 ajax.setRequestHeader("X-CSRFToken", 'BBGP6MqNvaG6iWUTdqC2dAUMOngXT8uW');

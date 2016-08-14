@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NgModuleMetadataType } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
@@ -16,8 +16,7 @@ import {AccountSearchComponent} from './account/search/main';
 import {AccountSearchResultListComponent} from './account/search/result-list';
 
 
-//noinspection TypeScriptValidateTypes
-@NgModule({
+@NgModule(<NgModuleMetadataType>{
     imports: [
         BrowserModule,
         FormsModule,

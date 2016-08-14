@@ -18,11 +18,6 @@ export class SearchUserService {
                 response => {
                     let result = response.json();
                     return result as User[];
-
-                    // if ( result.length ) {
-                    // } else {
-                    //     return [];
-                    // }
                 },
                 error => {
                     return [];
