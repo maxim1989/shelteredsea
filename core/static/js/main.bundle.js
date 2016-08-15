@@ -4,8 +4,8 @@ webpackJsonp([2],{
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var platform_browser_dynamic_1 = __webpack_require__(371);
-	var app_module_1 = __webpack_require__(563);
+	var platform_browser_dynamic_1 = __webpack_require__(372);
+	var app_module_1 = __webpack_require__(565);
 	//noinspection TypeScriptValidateTypes
 	platform_browser_dynamic_1.platformBrowserDynamic().bootstrapModule(app_module_1.AppModule);
 	
@@ -844,7 +844,7 @@ webpackJsonp([2],{
 	 */
 	"use strict";
 	var core_1 = __webpack_require__(1);
-	var toPromise_1 = __webpack_require__(275);
+	var toPromise_1 = __webpack_require__(276);
 	var collection_1 = __webpack_require__(38);
 	var lang_1 = __webpack_require__(25);
 	/**
@@ -1232,9 +1232,9 @@ webpackJsonp([2],{
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var base_wrapped_exception_1 = __webpack_require__(360);
-	var exception_handler_1 = __webpack_require__(361);
-	var exception_handler_2 = __webpack_require__(361);
+	var base_wrapped_exception_1 = __webpack_require__(361);
+	var exception_handler_1 = __webpack_require__(362);
+	var exception_handler_2 = __webpack_require__(362);
 	exports.ExceptionHandler = exception_handler_2.ExceptionHandler;
 	/**
 	 * @stable
@@ -2049,7 +2049,7 @@ webpackJsonp([2],{
 	var abstract_form_group_directive_1 = __webpack_require__(103);
 	var control_container_1 = __webpack_require__(61);
 	var ng_form_1 = __webpack_require__(104);
-	var template_driven_errors_1 = __webpack_require__(359);
+	var template_driven_errors_1 = __webpack_require__(360);
 	exports.modelGroupProvider = {
 	    provide: control_container_1.ControlContainer,
 	    useExisting: core_1.forwardRef(function () { return NgModelGroup; })
@@ -3512,7 +3512,7 @@ webpackJsonp([2],{
 	var ng_form_1 = __webpack_require__(104);
 	var ng_model_group_1 = __webpack_require__(151);
 	var shared_1 = __webpack_require__(62);
-	var template_driven_errors_1 = __webpack_require__(359);
+	var template_driven_errors_1 = __webpack_require__(360);
 	exports.formControlBinding = {
 	    provide: ng_control_1.NgControl,
 	    useExisting: core_1.forwardRef(function () { return NgModel; })
@@ -3931,7 +3931,7 @@ webpackJsonp([2],{
 	 */
 	"use strict";
 	var exceptions_1 = __webpack_require__(78);
-	var error_examples_1 = __webpack_require__(358);
+	var error_examples_1 = __webpack_require__(359);
 	var ReactiveErrors = (function () {
 	    function ReactiveErrors() {
 	    }
@@ -4099,7 +4099,7 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var portal_1 = __webpack_require__(552);
+	var portal_1 = __webpack_require__(553);
 	/**
 	 * Directive version of a `TemplatePortal`. Because the directive *is* a TemplatePortal,
 	 * the directive instance itself can be attached to a host, enabling declarative use of portals.
@@ -4211,7 +4211,71 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 357:
+/***/ 249:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(1);
+	var http_1 = __webpack_require__(107);
+	__webpack_require__(178);
+	var UserService = (function () {
+	    function UserService(http) {
+	        this.http = http;
+	        this.AUTH_USER_URL = 'auth/authenticated_user';
+	    }
+	    UserService.prototype.initAuthUser = function () {
+	        var _this = this;
+	        //noinspection TypeScriptUnresolvedFunction
+	        return this.http.get(this.AUTH_USER_URL)
+	            .toPromise()
+	            .then(function (response) {
+	            var result = response.json();
+	            _this.user = result;
+	            return true;
+	        }, function (error) {
+	            console.log(error);
+	            return false;
+	        })
+	            .catch(this.handlerError);
+	    };
+	    UserService.prototype.getName = function () {
+	        return (this.user) ? this.user.username : "";
+	    };
+	    UserService.prototype.isAutorized = function () {
+	        return (this.user) ? this.user.is_autorized : false;
+	    };
+	    UserService.prototype.getUid = function () {
+	        return (this.user) ? this.user.uid_for_client : "";
+	    };
+	    UserService.prototype.getChatName = function () {
+	        return (this.user) ? this.user.chat_name : "";
+	    };
+	    UserService.prototype.handlerError = function (error) {
+	        console.error('An error occurred', error);
+	        return Promise.reject(error.message || error);
+	    };
+	    UserService = __decorate([
+	        core_1.Injectable(), 
+	        __metadata('design:paramtypes', [(typeof (_a = typeof http_1.Http !== 'undefined' && http_1.Http) === 'function' && _a) || Object])
+	    ], UserService);
+	    return UserService;
+	    var _a;
+	}());
+	exports.UserService = UserService;
+	
+
+/***/ },
+
+/***/ 358:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -4320,7 +4384,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 358:
+/***/ 359:
 /***/ function(module, exports) {
 
 	/**
@@ -4342,7 +4406,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 359:
+/***/ 360:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -4354,7 +4418,7 @@ webpackJsonp([2],{
 	 */
 	"use strict";
 	var exceptions_1 = __webpack_require__(78);
-	var error_examples_1 = __webpack_require__(358);
+	var error_examples_1 = __webpack_require__(359);
 	var TemplateDrivenErrors = (function () {
 	    function TemplateDrivenErrors() {
 	    }
@@ -4377,7 +4441,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 360:
+/***/ 361:
 /***/ function(module, exports) {
 
 	/**
@@ -4440,7 +4504,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 361:
+/***/ 362:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -4451,7 +4515,7 @@ webpackJsonp([2],{
 	 * found in the LICENSE file at https://angular.io/license
 	 */
 	"use strict";
-	var base_wrapped_exception_1 = __webpack_require__(360);
+	var base_wrapped_exception_1 = __webpack_require__(361);
 	var collection_1 = __webpack_require__(38);
 	var lang_1 = __webpack_require__(25);
 	var _ArrayLogger = (function () {
@@ -4586,7 +4650,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 362:
+/***/ 363:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -4673,7 +4737,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 388:
+/***/ 389:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4688,7 +4752,7 @@ webpackJsonp([2],{
 	};
 	var core_1 = __webpack_require__(1);
 	var router_1 = __webpack_require__(244);
-	var auth_service_1 = __webpack_require__(391);
+	var auth_service_1 = __webpack_require__(249);
 	var AccountComponent = (function () {
 	    function AccountComponent(UserService, router) {
 	        this.UserService = UserService;
@@ -4710,7 +4774,7 @@ webpackJsonp([2],{
 	    AccountComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account',
-	            template: __webpack_require__(733)
+	            template: __webpack_require__(736)
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object, (typeof (_b = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _b) || Object])
 	    ], AccountComponent);
@@ -4722,7 +4786,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 389:
+/***/ 390:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4745,7 +4809,7 @@ webpackJsonp([2],{
 	            pipes: [],
 	            providers: [],
 	            directives: [],
-	            template: __webpack_require__(737)
+	            template: __webpack_require__(740)
 	        }), 
 	        __metadata('design:paramtypes', [])
 	    ], GameDispute);
@@ -4756,7 +4820,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 390:
+/***/ 391:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4783,7 +4847,7 @@ webpackJsonp([2],{
 	        core_1.Component({
 	            selector: 'start_page',
 	            providers: [],
-	            template: __webpack_require__(738),
+	            template: __webpack_require__(741),
 	            animations: [
 	                core_1.trigger('pageState', [
 	                    core_1.state('in-from-left', core_1.style({
@@ -4812,70 +4876,6 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 391:
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (this && this.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	var core_1 = __webpack_require__(1);
-	var http_1 = __webpack_require__(107);
-	__webpack_require__(178);
-	var UserService = (function () {
-	    function UserService(http) {
-	        this.http = http;
-	        this.AUTH_USER_URL = 'auth/authenticated_user';
-	    }
-	    UserService.prototype.initAuthUser = function () {
-	        var _this = this;
-	        //noinspection TypeScriptUnresolvedFunction
-	        return this.http.get(this.AUTH_USER_URL)
-	            .toPromise()
-	            .then(function (response) {
-	            var result = response.json();
-	            _this.user = result;
-	            return true;
-	        }, function (error) {
-	            console.log(error);
-	            return false;
-	        })
-	            .catch(this.handlerError);
-	    };
-	    UserService.prototype.getName = function () {
-	        return (this.user) ? this.user.username : "";
-	    };
-	    UserService.prototype.isAutorized = function () {
-	        return (this.user) ? this.user.is_autorized : false;
-	    };
-	    UserService.prototype.getUid = function () {
-	        return (this.user) ? this.user.uid_for_client : "";
-	    };
-	    UserService.prototype.getChatName = function () {
-	        return (this.user) ? this.user.chat_name : "";
-	    };
-	    UserService.prototype.handlerError = function (error) {
-	        console.error('An error occurred', error);
-	        return Promise.reject(error.message || error);
-	    };
-	    UserService = __decorate([
-	        core_1.Injectable(), 
-	        __metadata('design:paramtypes', [(typeof (_a = typeof http_1.Http !== 'undefined' && http_1.Http) === 'function' && _a) || Object])
-	    ], UserService);
-	    return UserService;
-	    var _a;
-	}());
-	exports.UserService = UserService;
-	
-
-/***/ },
-
 /***/ 392:
 /***/ function(module, exports, __webpack_require__) {
 
@@ -4891,7 +4891,7 @@ webpackJsonp([2],{
 	};
 	var core_1 = __webpack_require__(1);
 	var http_1 = __webpack_require__(107);
-	var ng2_cookies_1 = __webpack_require__(729);
+	var ng2_cookies_1 = __webpack_require__(731);
 	__webpack_require__(178);
 	var FriendshipService = (function () {
 	    function FriendshipService(http) {
@@ -4959,7 +4959,7 @@ webpackJsonp([2],{
 /***/ function(module, exports, __webpack_require__) {
 
 	// Export all services
-	var cookie_1 = __webpack_require__(730);
+	var cookie_1 = __webpack_require__(732);
 	exports.Cookie = cookie_1.Cookie;
 	//# sourceMappingURL=services.js.map
 
@@ -5029,9 +5029,9 @@ webpackJsonp([2],{
 	 */
 	"use strict";
 	var core_1 = __webpack_require__(1);
-	var directives_1 = __webpack_require__(357);
+	var directives_1 = __webpack_require__(358);
 	var radio_control_value_accessor_1 = __webpack_require__(152);
-	var form_builder_1 = __webpack_require__(362);
+	var form_builder_1 = __webpack_require__(363);
 	/**
 	 * Shorthand set of providers used for building Angular forms.
 	 * @experimental
@@ -5117,7 +5117,7 @@ webpackJsonp([2],{
 	 * Forms providers are not included in default providers; you must import these providers
 	 * explicitly.
 	 */
-	var directives_1 = __webpack_require__(357);
+	var directives_1 = __webpack_require__(358);
 	exports.FORM_DIRECTIVES = directives_1.FORM_DIRECTIVES;
 	exports.REACTIVE_FORM_DIRECTIVES = directives_1.REACTIVE_FORM_DIRECTIVES;
 	var abstract_control_directive_1 = __webpack_require__(228);
@@ -5162,7 +5162,7 @@ webpackJsonp([2],{
 	exports.MinLengthValidator = validators_1.MinLengthValidator;
 	exports.PatternValidator = validators_1.PatternValidator;
 	exports.RequiredValidator = validators_1.RequiredValidator;
-	var form_builder_1 = __webpack_require__(362);
+	var form_builder_1 = __webpack_require__(363);
 	exports.FormBuilder = form_builder_1.FormBuilder;
 	var model_1 = __webpack_require__(155);
 	exports.AbstractControl = model_1.AbstractControl;
@@ -5198,8 +5198,8 @@ webpackJsonp([2],{
 	};
 	var core_1 = __webpack_require__(1);
 	var common_1 = __webpack_require__(36);
-	var field_value_1 = __webpack_require__(549);
-	var ripple_1 = __webpack_require__(554);
+	var field_value_1 = __webpack_require__(550);
+	var ripple_1 = __webpack_require__(555);
 	// TODO(jelbourn): Make the `isMouseDown` stuff done with one global listener.
 	// TODO(kara): Convert attribute selectors to classes when attr maps become available
 	var MdButton = (function () {
@@ -5378,6 +5378,123 @@ webpackJsonp([2],{
 /***/ },
 
 /***/ 549:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(1);
+	/*
+
+	<md-card> is a basic content container component that adds the styles of a material design card.
+
+	While you can use this component alone,
+	it also provides a number of preset styles for common card sections, including:
+	 - md-card-title
+	 - md-card-subtitle
+	 - md-card-content
+	 - md-card-actions
+	 - md-card-footer
+
+	 You can see some examples of cards here:
+	 http://embed.plnkr.co/s5O4YcyvbLhIApSrIhtj/
+
+	 TODO(kara): update link to demo site when it exists
+
+	*/
+	var MdCard = (function () {
+	    function MdCard() {
+	    }
+	    MdCard = __decorate([
+	        core_1.Component({            selector: 'md-card',
+	            template: "<div class=\"md-card\"> <ng-content></ng-content> </div> ",
+	            styles: ["/** * A collection of mixins and CSS classes that can be used to apply elevation to a material * element. * See: https://www.google.com/design/spec/what-is-material/elevation-shadows.html * Examples: * * * .md-foo { *   @include $md-elevation(2); * *   &:active { *     @include $md-elevation(8); *   } * } * * <div id=\"external-card\" class=\"md-elevation-z2\"><p>Some content</p></div> * * For an explanation of the design behind how elevation is implemented, see the design doc at * https://goo.gl/Kq0k9Z. */ /** * The css property used for elevation. In most cases this should not be changed. It is exposed * as a variable for abstraction / easy use when needing to reference the property directly, for * example in a will-change rule. */ /** The default duration value for elevation transitions. */ /** The default easing value for elevation transitions. */ /** * Applies the correct css rules to an element to give it the elevation specified by $zValue. * The $zValue must be between 0 and 24. */ /** * Returns a string that can be used as the value for a transition property for elevation. * Calling this function directly is useful in situations where a component needs to transition * more than one property. * * .foo { *   transition: md-elevation-transition-property-value(), opacity 100ms ease; *   will-change: $md-elevation-property, opacity; * } */ /** * Applies the correct css rules needed to have an element transition between elevations. * This mixin should be applied to elements whose elevation values will change depending on their * context (e.g. when active or disabled). */ md-card { box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12); -webkit-transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1); transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1); will-change: box-shadow; display: block; position: relative; padding: 24px; border-radius: 2px; font-family: Roboto, \"Helvetica Neue\", sans-serif; background: white; color: black; } md-card:hover { box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12); } .md-card-flat { box-shadow: none; } md-card-title, md-card-subtitle, md-card-content, md-card-actions { display: block; margin-bottom: 16px; } md-card-title { font-size: 24px; font-weight: 400; } md-card-subtitle { font-size: 14px; color: rgba(0, 0, 0, 0.54); } md-card-content { font-size: 14px; } md-card-actions { margin-left: -16px; margin-right: -16px; padding: 8px 0; } md-card-actions[align='end'] { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-pack: end; -ms-flex-pack: end; justify-content: flex-end; } [md-card-image] { width: calc(100% + 48px); margin: 0 -24px 16px -24px; } [md-card-xl-image] { width: 240px; height: 240px; margin: -8px; } md-card-footer { position: absolute; bottom: 0; } md-card-actions [md-button], md-card-actions [md-raised-button] { margin: 0 4px; } /* HEADER STYLES */ md-card-header { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-orient: horizontal; -webkit-box-direction: normal; -ms-flex-direction: row; flex-direction: row; height: 40px; margin: -8px 0 16px 0; } .md-card-header-text { height: 40px; margin: 0 8px; } [md-card-avatar] { height: 40px; width: 40px; border-radius: 50%; } md-card-header md-card-title { font-size: 14px; } /* TITLE-GROUP STYLES */ [md-card-sm-image], [md-card-md-image], [md-card-lg-image] { margin: -8px 0; } md-card-title-group { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; margin: 0 -8px; } [md-card-sm-image] { width: 80px; height: 80px; } [md-card-md-image] { width: 112px; height: 112px; } [md-card-lg-image] { width: 152px; height: 152px; } /* MEDIA QUERIES */ @media (max-width: 600px) { md-card { padding: 24px 16px; } [md-card-image] { width: calc(100% + 32px); margin: 16px -16px; } md-card-title-group { margin: 0; } [md-card-xl-image] { margin-left: 0; margin-right: 0; } md-card-header { margin: -8px 0 0 0; } } /* FIRST/LAST CHILD ADJUSTMENTS */ .md-card > :first-child, md-card-content > :first-child { margin-top: 0; } .md-card > :last-child, md-card-content > :last-child { margin-bottom: 0; } [md-card-image]:first-child { margin-top: -24px; } .md-card > md-card-actions:last-child { margin-bottom: -16px; padding-bottom: 0; } md-card-actions [md-button]:first-child, md-card-actions [md-raised-button]:first-child { margin-left: 0; margin-right: 0; } md-card-title:not(:first-child), md-card-subtitle:not(:first-child) { margin-top: -4px; } md-card-header md-card-subtitle:not(:first-child) { margin-top: -8px; } .md-card > [md-card-xl-image]:first-child { margin-top: -8px; } .md-card > [md-card-xl-image]:last-child { margin-bottom: -8px; } "],
+	            encapsulation: core_1.ViewEncapsulation.None,
+	            changeDetection: core_1.ChangeDetectionStrategy.OnPush,
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], MdCard);
+	    return MdCard;
+	}());
+	exports.MdCard = MdCard;
+	/*  The following components don't have any behavior.
+	 They simply use content projection to wrap user content
+	 for flex layout purposes in <md-card> (and thus allow a cleaner, boilerplate-free API).
+
+
+	<md-card-header> is a component intended to be used within the <md-card> component.
+	It adds styles for a preset header section (i.e. a title, subtitle, and avatar layout).
+
+	You can see an example of a card with a header here:
+	http://embed.plnkr.co/tvJl19z3gZTQd6WmwkIa/
+
+	TODO(kara): update link to demo site when it exists
+	*/
+	var MdCardHeader = (function () {
+	    function MdCardHeader() {
+	    }
+	    MdCardHeader = __decorate([
+	        core_1.Component({            selector: 'md-card-header',
+	            template: "<ng-content select=\"[md-card-avatar]\"></ng-content> <div class=\"md-card-header-text\"> <ng-content select=\"md-card-title, md-card-subtitle\"></ng-content> </div> <ng-content></ng-content> ",
+	            encapsulation: core_1.ViewEncapsulation.None,
+	            changeDetection: core_1.ChangeDetectionStrategy.OnPush,
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], MdCardHeader);
+	    return MdCardHeader;
+	}());
+	exports.MdCardHeader = MdCardHeader;
+	/*
+
+	<md-card-title-group> is a component intended to be used within the <md-card> component.
+	It adds styles for a preset layout that groups an image with a title section.
+
+	You can see an example of a card with a title-group section here:
+	http://embed.plnkr.co/EDfgCF9eKcXjini1WODm/
+
+	TODO(kara): update link to demo site when it exists
+	*/
+	var MdCardTitleGroup = (function () {
+	    function MdCardTitleGroup() {
+	    }
+	    MdCardTitleGroup = __decorate([
+	        core_1.Component({            selector: 'md-card-title-group',
+	            template: "<div> <ng-content select=\"md-card-title, md-card-subtitle\"></ng-content> </div> <ng-content select=\"img\"></ng-content> <ng-content></ng-content> ",
+	            encapsulation: core_1.ViewEncapsulation.None,
+	            changeDetection: core_1.ChangeDetectionStrategy.OnPush,
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], MdCardTitleGroup);
+	    return MdCardTitleGroup;
+	}());
+	exports.MdCardTitleGroup = MdCardTitleGroup;
+	/** @deprecated */
+	exports.MD_CARD_DIRECTIVES = [MdCard, MdCardHeader, MdCardTitleGroup];
+	var MdCardModule = (function () {
+	    function MdCardModule() {
+	    }
+	    MdCardModule = __decorate([
+	        core_1.NgModule({
+	            exports: exports.MD_CARD_DIRECTIVES,
+	            declarations: exports.MD_CARD_DIRECTIVES,
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], MdCardModule);
+	    return MdCardModule;
+	}());
+	exports.MdCardModule = MdCardModule;
+	//# sourceMappingURL=card.js.map
+
+/***/ },
+
+/***/ 550:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -5413,7 +5530,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 550:
+/***/ 551:
 /***/ function(module, exports) {
 
 	// TODO(kara): Revisit why error messages are not being properly set.
@@ -5439,7 +5556,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 551:
+/***/ 552:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -5448,7 +5565,7 @@ webpackJsonp([2],{
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var error_1 = __webpack_require__(550);
+	var error_1 = __webpack_require__(551);
 	/** Exception thrown when a ComponentPortal is attached to a DomPortalHost without an origin. */
 	var MdComponentPortalAttachedToDomWithoutOriginError = (function (_super) {
 	    __extends(MdComponentPortalAttachedToDomWithoutOriginError, _super);
@@ -5518,7 +5635,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 552:
+/***/ 553:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -5527,7 +5644,7 @@ webpackJsonp([2],{
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var portal_errors_1 = __webpack_require__(551);
+	var portal_errors_1 = __webpack_require__(552);
 	/**
 	 * A `Portal` is something that you want to render somewhere else.
 	 * It can be attach to / detached from a `PortalHost`.
@@ -5684,7 +5801,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 553:
+/***/ 554:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -5841,7 +5958,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 554:
+/***/ 555:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -5855,7 +5972,7 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var ripple_renderer_1 = __webpack_require__(553);
+	var ripple_renderer_1 = __webpack_require__(554);
 	var MdRipple = (function () {
 	    function MdRipple(_elementRef) {
 	        var _this = this;
@@ -6024,7 +6141,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 555:
+/***/ 556:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6081,7 +6198,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 556:
+/***/ 557:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6120,7 +6237,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 557:
+/***/ 558:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6158,7 +6275,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 558:
+/***/ 559:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6197,7 +6314,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 559:
+/***/ 560:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6213,12 +6330,12 @@ webpackJsonp([2],{
 	var core_1 = __webpack_require__(1);
 	var common_1 = __webpack_require__(36);
 	var portal_directives_1 = __webpack_require__(248);
-	var tab_label_1 = __webpack_require__(558);
-	var tab_content_1 = __webpack_require__(556);
-	var tab_label_wrapper_1 = __webpack_require__(557);
-	var ink_bar_1 = __webpack_require__(555);
+	var tab_label_1 = __webpack_require__(559);
+	var tab_content_1 = __webpack_require__(557);
+	var tab_label_wrapper_1 = __webpack_require__(558);
+	var ink_bar_1 = __webpack_require__(556);
 	var Observable_1 = __webpack_require__(7);
-	__webpack_require__(272);
+	__webpack_require__(273);
 	// Due to a bug in the ChromeDriver, Angular 2 keyboard events are not triggered by `sendKeys`
 	// during E2E tests when using dot notation such as `(keydown.rightArrow)`. To get around this,
 	// we are temporarily using a single (keydown) handler.
@@ -6457,7 +6574,45 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 560:
+/***/ 561:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(1);
+	var auth_service_1 = __webpack_require__(249);
+	var AccountCardComponent = (function () {
+	    function AccountCardComponent(UserService) {
+	        this.UserService = UserService;
+	    }
+	    AccountCardComponent.prototype.ngOnInit = function () {
+	        this.disputeName = this.UserService.getChatName();
+	    };
+	    AccountCardComponent = __decorate([
+	        core_1.Component({
+	            selector: 'account-card',
+	            template: __webpack_require__(734),
+	            providers: [],
+	        }), 
+	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object])
+	    ], AccountCardComponent);
+	    return AccountCardComponent;
+	    var _a;
+	}());
+	exports.AccountCardComponent = AccountCardComponent;
+	
+
+/***/ },
+
+/***/ 562:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6487,7 +6642,7 @@ webpackJsonp([2],{
 	    AccountFriendshipComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-friendship',
-	            template: __webpack_require__(732),
+	            template: __webpack_require__(735),
 	            providers: [friendship_service_1.FriendshipService],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof friendship_service_1.FriendshipService !== 'undefined' && friendship_service_1.FriendshipService) === 'function' && _a) || Object])
@@ -6500,7 +6655,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 561:
+/***/ 563:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6514,7 +6669,7 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var search_service_1 = __webpack_require__(567);
+	var search_service_1 = __webpack_require__(569);
 	var AccountSearchComponent = (function () {
 	    function AccountSearchComponent(SearchUserService) {
 	        this.SearchUserService = SearchUserService;
@@ -6543,7 +6698,7 @@ webpackJsonp([2],{
 	    AccountSearchComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-search',
-	            template: __webpack_require__(734),
+	            template: __webpack_require__(737),
 	            providers: [search_service_1.SearchUserService],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof search_service_1.SearchUserService !== 'undefined' && search_service_1.SearchUserService) === 'function' && _a) || Object])
@@ -6556,7 +6711,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 562:
+/***/ 564:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6571,7 +6726,7 @@ webpackJsonp([2],{
 	};
 	var core_1 = __webpack_require__(1);
 	var friendship_service_1 = __webpack_require__(392);
-	var model_1 = __webpack_require__(566);
+	var model_1 = __webpack_require__(568);
 	var AccountSearchResultListComponent = (function () {
 	    function AccountSearchResultListComponent(FriendshipService) {
 	        this.FriendshipService = FriendshipService;
@@ -6591,7 +6746,7 @@ webpackJsonp([2],{
 	    AccountSearchResultListComponent = __decorate([
 	        core_1.Component({
 	            selector: 'search-result-list',
-	            template: __webpack_require__(735),
+	            template: __webpack_require__(738),
 	            providers: [friendship_service_1.FriendshipService]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_b = typeof friendship_service_1.FriendshipService !== 'undefined' && friendship_service_1.FriendshipService) === 'function' && _b) || Object])
@@ -6604,7 +6759,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 563:
+/***/ 565:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6622,15 +6777,17 @@ webpackJsonp([2],{
 	var forms_1 = __webpack_require__(504);
 	var http_1 = __webpack_require__(107);
 	var button_1 = __webpack_require__(548);
-	var tabs_1 = __webpack_require__(559);
-	var app_1 = __webpack_require__(564);
-	var routes_1 = __webpack_require__(565);
-	var main_1 = __webpack_require__(390);
-	var main_2 = __webpack_require__(389);
-	var main_3 = __webpack_require__(388);
+	var tabs_1 = __webpack_require__(560);
+	var card_1 = __webpack_require__(549);
+	var app_1 = __webpack_require__(566);
+	var routes_1 = __webpack_require__(567);
+	var main_1 = __webpack_require__(391);
+	var main_2 = __webpack_require__(390);
+	var main_3 = __webpack_require__(389);
 	var main_4 = __webpack_require__(561);
-	var result_list_1 = __webpack_require__(562);
-	var main_5 = __webpack_require__(560);
+	var main_5 = __webpack_require__(563);
+	var result_list_1 = __webpack_require__(564);
+	var main_6 = __webpack_require__(562);
 	var AppModule = (function () {
 	    function AppModule() {
 	    }
@@ -6642,16 +6799,18 @@ webpackJsonp([2],{
 	                routes_1.routing,
 	                http_1.HttpModule,
 	                button_1.MdButtonModule,
-	                tabs_1.MdTabsModule
+	                tabs_1.MdTabsModule,
+	                card_1.MdCardModule
 	            ],
 	            declarations: [
 	                app_1.AppComponent,
 	                main_1.StartPageComponent,
 	                main_2.GameDispute,
 	                main_3.AccountComponent,
-	                main_4.AccountSearchComponent,
+	                main_4.AccountCardComponent,
+	                main_5.AccountSearchComponent,
 	                result_list_1.AccountSearchResultListComponent,
-	                main_5.AccountFriendshipComponent
+	                main_6.AccountFriendshipComponent
 	            ],
 	            providers: [],
 	            bootstrap: [
@@ -6667,7 +6826,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 564:
+/***/ 566:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6681,7 +6840,7 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var auth_service_1 = __webpack_require__(391);
+	var auth_service_1 = __webpack_require__(249);
 	var AppComponent = (function () {
 	    function AppComponent(UserService) {
 	        this.UserService = UserService;
@@ -6716,7 +6875,7 @@ webpackJsonp([2],{
 	        core_1.Component({
 	            selector: 'app',
 	            providers: [auth_service_1.UserService],
-	            template: __webpack_require__(736),
+	            template: __webpack_require__(739),
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object])
 	    ], AppComponent);
@@ -6728,14 +6887,14 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 565:
+/***/ 567:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var router_1 = __webpack_require__(244);
-	var main_1 = __webpack_require__(390);
-	var main_2 = __webpack_require__(389);
-	var main_3 = __webpack_require__(388);
+	var main_1 = __webpack_require__(391);
+	var main_2 = __webpack_require__(390);
+	var main_3 = __webpack_require__(389);
 	var appRoutes = [
 	    {
 	        path: '',
@@ -6755,7 +6914,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 566:
+/***/ 568:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6772,7 +6931,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 567:
+/***/ 569:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6822,7 +6981,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 729:
+/***/ 731:
 /***/ function(module, exports, __webpack_require__) {
 
 	function __export(m) {
@@ -6838,7 +6997,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 730:
+/***/ 732:
 /***/ function(module, exports) {
 
 	/**
@@ -6931,49 +7090,56 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 732:
-/***/ function(module, exports) {
-
-	module.exports = "<table class=\"table\">\n    <thead>\n        <th>№ п/п</th>\n        <th>Имя</th>\n        <th>Действия</th>\n    </thead>\n    <tbody>\n        <tr *ngFor=\"let user of friendList\">\n            <td>{{index + 1}}</td>\n            <td>{{user.username}}</td>\n            <td>\n                <button class=\"btn btn-primary\">Удалить</button>\n            </td>\n        </tr>\n    </tbody>\n</table>\n\n<table class=\"table\">\n    <thead>\n        <th>№ п/п</th>\n        <th>Имя</th>\n        <th>Действия</th>\n    </thead>\n    <tbody>\n        <tr *ngFor=\"let user of applicationsToFriends; let i = index\">\n            <td>{{i + 1}}</td>\n            <td>{{user.username}}</td>\n            <td>\n                <button class=\"btn btn-primary\">Удалить</button>\n            </td>\n        </tr>\n    </tbody>\n</table>\n"
-
-/***/ },
-
-/***/ 733:
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"raw\">\n    <md-tab-group\n        class=\"col-md-9\">\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-envelope\" aria-hidden=\"true\"></span> Chat\n            </template>\n            <template md-tab-content>\n                <h1>Some tab content</h1>\n                <p>...</p>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-star\" aria-hidden=\"true\"></span> Friends\n            </template>\n            <template md-tab-content>\n                <account-friendship></account-friendship>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-signal\" aria-hidden=\"true\"></span> Statistic\n            </template>\n            <template md-tab-content>\n                <h1>Some more tab content</h1>\n                <p>...</p>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Search\n            </template>\n            <template md-tab-content>\n                <account-search></account-search>\n            </template>\n        </md-tab>\n    </md-tab-group>\n    <div class=\"col-md-3\" style=\"height: 100px; border: 1px solid #333;\"></div>\n</div>\n"
-
-/***/ },
-
 /***/ 734:
 /***/ function(module, exports) {
 
-	module.exports = "<form>\n    <fieldset [disabled]=\"inSearchState\">\n        <div class=\"form-group\">\n            <label for=\"search-query-field\">Введите ID пользователя для поиска:</label>\n            <div class=\"input-group\">\n                <input\n                        id=\"search-query-field\"\n                        type=\"text\"\n                        name=\"search_uid\"\n                        class=\"form-control\"\n                        placeholder=\"ID пользователя\"\n                        [(ngModel)]=\"IDForSearch\" />\n                <span class=\"input-group-btn\">\n                    <button\n                            class=\"btn btn-primary\"\n                            type=\"button\"\n                            (click)=\"searchUserByID()\">\n                        Поиск\n                    </button>\n                </span>\n            </div>\n        </div>\n    </fieldset>\n    <div\n            class=\"form-group\"\n            [hidden]=\"!inSearchState\">\n        <div class=\"progress\">\n            <div\n                    class=\"progress-bar progress-bar-info progress-bar-striped active\"\n                    role=\"progressbar\"\n                    aria-valuenow=\"60\"\n                    aria-valuemin=\"0\"\n                    aria-valuemax=\"100\"\n                    style=\"width: 100%\">\n            </div>\n        </div>\n    </div>\n</form>\n<search-result-list [user]=\"foundUser\" [showResult]=\"showResultState\"></search-result-list>\n"
+	module.exports = "<md-card>\n    <md-card-subtitle>Личные данные</md-card-subtitle>\n    <md-card-content>\n        <p>{{disputeName}}</p>\n        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\n        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad</p>\n    </md-card-content>\n</md-card>"
 
 /***/ },
 
 /***/ 735:
 /***/ function(module, exports) {
 
-	module.exports = "<div *ngIf=\"user\">\n    <h4>Найден пользователь:</h4>\n    <div class=\"row\">\n        <div class=\"col-md-8\">{{user.chat_name}}</div>\n        <div class=\"col-md-4 text-right\">\n            <div *ngIf=\"!user.is_friend\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        (click)=\"addFriend()\">\n                    Добавить в друзья\n                </button>\n            </div>\n            <div *ngIf=\"user.is_friend\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        disabled>\n                    Уже в друзьях\n                </button>\n            </div>\n        </div>\n    </div>\n</div>\n<div *ngIf=\"showResult && !user\">\n    <em>Пользователи не найдены</em>\n</div>"
+	module.exports = "<div *ngIf=\"!friendList || !applicationsToFriends\">\n     <em>Загрузка данных...</em>\n</div>\n<div *ngIf=\"friendList && applicationsToFriends && !friendList.length && !applicationsToFriends.length\">\n    <em>У вас нет друзей</em>\n</div>\n<div *ngIf=\"friendList\">\n    <table *ngIf=\"friendList.length\" class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">№ п/п</th>\n            <th>Имя</th>\n            <th width=\"160\">Действия</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let user of friendList; let i = index\">\n                <td>{{i + 1}}</td>\n                <td>{{user.username}}</td>\n                <td>\n                    <button class=\"btn btn-primary btn-sm\">Удалить</button>\n                </td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n\n<div *ngIf=\"applicationsToFriends\">\n    <table *ngIf=\"applicationsToFriends.length\" class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">№ п/п</th>\n            <th>Имя</th>\n            <th width=\"160\">Действия</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let user of applicationsToFriends; let i = index\">\n                <td>{{i + 1}}</td>\n                <td>{{user.username}}</td>\n                <td>\n                    <button class=\"btn btn-primary btn-sm\">Удалить</button>\n                </td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n"
 
 /***/ },
 
 /***/ 736:
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"row\">\n    <div class=\"col-md-offset-1 col-md-4\">\n        <a\n                class=\"logo\"\n                routerLink=\"/\">\n        </a>\n    </div>\n    <div class=\"col-md-7 text-right\">\n        <div *ngIf=\"!userLoaded\">\n            <em>Идет загрузка данных...</em>\n        </div>\n        <div *ngIf=\"userLoaded && is_authenticated\">\n            <a\n                    class=\"log-in text-left\"\n                    routerLink=\"account\">\n                <span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span> {{userTitle}}\n                <br/>\n                <span class=\"small\">uid: {{uid}}</span>\n            </a>\n            <a\n                    class=\"log-in\"\n                    (click)=\"routeLogOut()\">\n                <span class=\"glyphicon glyphicon-log-out\" aria-hidden=\"true\"></span> Выйти\n            </a>\n        </div>\n        <a\n                class=\"log-in\"\n                 *ngIf=\"userLoaded && !is_authenticated\"\n                 (click)=\"routeLogIn()\">\n            <span class=\"glyphicon glyphicon-log-in\" aria-hidden=\"true\"></span> Войти\n        </a>\n    </div>\n</div>\n\n<main>\n    <router-outlet></router-outlet>\n</main>\n\n"
+	module.exports = "<div class=\"raw\">\n    <md-tab-group class=\"col-md-8\">\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-envelope\" aria-hidden=\"true\"></span> Сообщения\n            </template>\n            <template md-tab-content>\n                <h1>Some tab content</h1>\n                <p>...</p>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-star\" aria-hidden=\"true\"></span> Друзья\n            </template>\n            <template md-tab-content>\n                <account-friendship></account-friendship>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-signal\" aria-hidden=\"true\"></span> Статистика\n            </template>\n            <template md-tab-content>\n                <h1>Some more tab content</h1>\n                <p>...</p>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Поиск\n            </template>\n            <template md-tab-content>\n                <account-search></account-search>\n            </template>\n        </md-tab>\n    </md-tab-group>\n    <account-card class=\"col-md-4\"></account-card>\n</div>\n"
 
 /***/ },
 
 /***/ 737:
 /***/ function(module, exports) {
 
-	module.exports = "<h3>Спор через игру</h3>\n<p>Добро пожаловать на площадку</p>\n"
+	module.exports = "<form>\n    <fieldset [disabled]=\"inSearchState\">\n        <div class=\"form-group\">\n            <label for=\"search-query-field\">Введите ID пользователя для поиска:</label>\n            <div class=\"input-group\">\n                <input\n                        id=\"search-query-field\"\n                        type=\"text\"\n                        name=\"search_uid\"\n                        class=\"form-control\"\n                        placeholder=\"ID пользователя\"\n                        [(ngModel)]=\"IDForSearch\" />\n                <span class=\"input-group-btn\">\n                    <button\n                            class=\"btn btn-primary\"\n                            type=\"button\"\n                            (click)=\"searchUserByID()\">\n                        Поиск\n                    </button>\n                </span>\n            </div>\n        </div>\n    </fieldset>\n    <div\n            class=\"form-group\"\n            [hidden]=\"!inSearchState\">\n        <div class=\"progress\">\n            <div\n                    class=\"progress-bar progress-bar-info progress-bar-striped active\"\n                    role=\"progressbar\"\n                    aria-valuenow=\"60\"\n                    aria-valuemin=\"0\"\n                    aria-valuemax=\"100\"\n                    style=\"width: 100%\">\n            </div>\n        </div>\n    </div>\n</form>\n<search-result-list [user]=\"foundUser\" [showResult]=\"showResultState\"></search-result-list>\n"
 
 /***/ },
 
 /***/ 738:
+/***/ function(module, exports) {
+
+	module.exports = "<div *ngIf=\"user\">\n    <h4>Найден пользователь:</h4>\n    <div class=\"row\">\n        <div class=\"col-md-8\">{{user.chat_name}}</div>\n        <div class=\"col-md-4 text-right\">\n            <div *ngIf=\"!user.is_friend\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        (click)=\"addFriend()\">\n                    Добавить в друзья\n                </button>\n            </div>\n            <div *ngIf=\"user.is_friend\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        disabled>\n                    Уже в друзьях\n                </button>\n            </div>\n        </div>\n    </div>\n</div>\n<div *ngIf=\"showResult && !user\">\n    <em>Пользователи не найдены</em>\n</div>"
+
+/***/ },
+
+/***/ 739:
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"row\">\n    <div class=\"col-md-offset-1 col-md-4\">\n        <a\n                class=\"logo\"\n                routerLink=\"/\">\n        </a>\n    </div>\n    <div class=\"col-md-7 text-right\">\n        <div *ngIf=\"!userLoaded\">\n            <em>Идет загрузка данных...</em>\n        </div>\n        <div *ngIf=\"userLoaded && is_authenticated\">\n            <a\n                    class=\"log-in text-left\"\n                    routerLink=\"account\">\n                <span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span> {{userTitle}}\n                <br/>\n                <span class=\"small\">uid: {{uid}}</span>\n            </a>\n            <a\n                    class=\"log-in\"\n                    (click)=\"routeLogOut()\">\n                <span class=\"glyphicon glyphicon-log-out\" aria-hidden=\"true\"></span> Выйти\n            </a>\n        </div>\n        <a\n                class=\"log-in\"\n                 *ngIf=\"userLoaded && !is_authenticated\"\n                 (click)=\"routeLogIn()\">\n            <span class=\"glyphicon glyphicon-log-in\" aria-hidden=\"true\"></span> Войти\n        </a>\n    </div>\n</div>\n\n<main>\n    <router-outlet></router-outlet>\n</main>\n\n"
+
+/***/ },
+
+/***/ 740:
+/***/ function(module, exports) {
+
+	module.exports = "<h3>Спор через игру</h3>\n<p>Добро пожаловать на площадку</p>\n"
+
+/***/ },
+
+/***/ 741:
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"start-page row\">\n    <div class=\"col-md-offset-1 col-md-4\">\n        <a class=\"thumbnail text-center\"\n           [@pageState]=\"leftLinkState\"\n           href=\"#\">\n            <div class=\"caption\">\n                <p>PfE</p>\n            </div>\n            <div class=\"pfe-logo\"></div>\n        </a>\n    </div>\n    <div class=\"col-md-offset-2 col-md-4\">\n        <a class=\"thumbnail text-center\"\n           [@pageState]=\"rightLinkState\"\n           routerLink=\"/pfg\">\n            <div class=\"caption\">\n                <p>PfG</p>\n            </div>\n            <div class=\"pfg-logo\"></div>\n        </a>\n    </div>\n</div>\n"

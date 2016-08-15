@@ -7,7 +7,7 @@ import { FriendshipService } from 'app/user/friendship.service';
     templateUrl: './main.html',
     providers: [FriendshipService],
 })
-export class AccountFriendshipComponent {
+export class AccountFriendshipComponent implements OnInit{
     friendList: User[];
     applicationsToFriends: User[];
 

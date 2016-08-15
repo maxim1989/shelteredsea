@@ -1,33 +1,43 @@
-<table class="table">
-    <thead>
-        <th>№ п/п</th>
-        <th>Имя</th>
-        <th>Действия</th>
-    </thead>
-    <tbody>
-        <tr *ngFor="let user of friendList">
-            <td>{{index + 1}}</td>
-            <td>{{user.username}}</td>
-            <td>
-                <button class="btn btn-primary">Удалить</button>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<div *ngIf="!friendList || !applicationsToFriends">
+     <em>Загрузка данных...</em>
+</div>
+<div *ngIf="friendList && applicationsToFriends && !friendList.length && !applicationsToFriends.length">
+    <em>У вас нет друзей</em>
+</div>
+<div *ngIf="friendList">
+    <table *ngIf="friendList.length" class="table" width="100%">
+        <thead>
+            <th width="80">№ п/п</th>
+            <th>Имя</th>
+            <th width="160">Действия</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let user of friendList; let i = index">
+                <td>{{i + 1}}</td>
+                <td>{{user.username}}</td>
+                <td>
+                    <button class="btn btn-primary btn-sm">Удалить</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
-<table class="table">
-    <thead>
-        <th>№ п/п</th>
-        <th>Имя</th>
-        <th>Действия</th>
-    </thead>
-    <tbody>
-        <tr *ngFor="let user of applicationsToFriends; let i = index">
-            <td>{{i + 1}}</td>
-            <td>{{user.username}}</td>
-            <td>
-                <button class="btn btn-primary">Удалить</button>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<div *ngIf="applicationsToFriends">
+    <table *ngIf="applicationsToFriends.length" class="table" width="100%">
+        <thead>
+            <th width="80">№ п/п</th>
+            <th>Имя</th>
+            <th width="160">Действия</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let user of applicationsToFriends; let i = index">
+                <td>{{i + 1}}</td>
+                <td>{{user.username}}</td>
+                <td>
+                    <button class="btn btn-primary btn-sm">Удалить</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

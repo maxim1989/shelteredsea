@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import { UserService } from '../user/auth.service';
+import { UserService } from 'app/user/auth.service';
 
 @Component({
     selector: 'account',
