@@ -22,11 +22,11 @@ class FriendsList(APIView):
         u = request.user.id
         my_friends_uids = [ch.user_friend for ch in Friends.objects.filter(user=u)]
         my_friends = Friends.objects.\
-            filter(user_friend__in=my_friends_uids).filter(is_friend=True).order_by('user_friend__username')
-        want_be_their_friend = Friends.objects. \
-            filter(user_friend__in=my_friends_uids).filter(is_friend=False).order_by('user_friend__username')
+            filter(user__in=my_friends_uids).filter(is_friend=True).order_by('user_friend__username')
+        want_be_my_friend = Friends.objects. \
+            filter(user_friend=u).filter(is_friend=False).order_by('user_friend__username')
         serializer_friend = FriendsSerializer(my_friends, many=True)
-        serializer_not_friend = FriendsSerializer(want_be_their_friend, many=True)
+        serializer_not_friend = FriendsSerializer(want_be_my_friend, many=True)
         data = dict(my_friends=serializer_friend.data, want_be_their_friend=serializer_not_friend.data)
         return Response(data)
 
@@ -68,6 +68,8 @@ class FindUser(APIView):
             find_user = AdditionalUuid.objects.get(uid_for_client=uid_for_client)
         except AdditionalUuid.DoesNotExist:
             return Response(list())
+        if find_user.user.id == request.user.id:
+            return Response({'success': False, 'exist': True})
         user = User.objects.get(pk=find_user.id)
         serializer = AuthenticatedUserSerializer(user)
         data = copy.deepcopy(serializer.data)
@@ -169,3 +171,26 @@ class Ignore(APIView):
         ignore_friend.is_ignore = True
         ignore_friend.save()
         return Response({'success': True, 'exist': True})
+
+
+class HallOfFame(APIView):
+    renderer_classes = (JSONRenderer,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        all_users = User.objects.order_by('username').all()
+        serializer = AuthenticatedUserSerializer(all_users, many=True)
+        return Response(serializer.data)
+
+
+class PersonalData(APIView):
+    renderer_classes = (JSONRenderer,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        try:
+            me = User.objects.get(pk=request.user.id)
+        except User.DoesNotExist as err:
+            return Response({'success': False, 'error': str(err)})
+        serializer = AuthenticatedUserSerializer(me)
+        return Response(serializer.data)
