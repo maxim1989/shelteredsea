@@ -5,4 +5,5 @@ export class User {
     uid_for_client: string;
     chat_name: string;
     is_friend: boolean = false;
+    is_ignore: boolean = false;
 }

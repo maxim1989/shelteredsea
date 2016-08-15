@@ -14,6 +14,7 @@ import {GameDispute} from './game_dispute_module/main';
 import {AccountComponent} from './account/main';
 import {AccountSearchComponent} from './account/search/main';
 import {AccountSearchResultListComponent} from './account/search/result-list';
+import {AccountFriendshipComponent} from './account/friendship/main';
 
 
 @NgModule(<NgModuleMetadataType>{
@@ -31,7 +32,8 @@ import {AccountSearchResultListComponent} from './account/search/result-list';
         GameDispute,
         AccountComponent,
         AccountSearchComponent,
-        AccountSearchResultListComponent
+        AccountSearchResultListComponent,
+        AccountFriendshipComponent
     ],
     providers: [
     ],

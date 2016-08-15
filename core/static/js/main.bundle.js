@@ -5,7 +5,7 @@ webpackJsonp([2],{
 
 	"use strict";
 	var platform_browser_dynamic_1 = __webpack_require__(371);
-	var app_module_1 = __webpack_require__(561);
+	var app_module_1 = __webpack_require__(563);
 	//noinspection TypeScriptValidateTypes
 	platform_browser_dynamic_1.platformBrowserDynamic().bootstrapModule(app_module_1.AppModule);
 	
@@ -1053,7 +1053,7 @@ webpackJsonp([2],{
 	var validators_1 = __webpack_require__(44);
 	var checkbox_value_accessor_1 = __webpack_require__(149);
 	var default_value_accessor_1 = __webpack_require__(150);
-	var normalize_validator_1 = __webpack_require__(504);
+	var normalize_validator_1 = __webpack_require__(505);
 	var number_value_accessor_1 = __webpack_require__(231);
 	var radio_control_value_accessor_1 = __webpack_require__(152);
 	var select_control_value_accessor_1 = __webpack_require__(153);
@@ -4099,7 +4099,7 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var portal_1 = __webpack_require__(551);
+	var portal_1 = __webpack_require__(552);
 	/**
 	 * Directive version of a `TemplatePortal`. Because the directive *is* a TemplatePortal,
 	 * the directive instance itself can be attached to a host, enabling declarative use of portals.
@@ -4710,7 +4710,7 @@ webpackJsonp([2],{
 	    AccountComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account',
-	            template: __webpack_require__(731)
+	            template: __webpack_require__(733)
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object, (typeof (_b = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _b) || Object])
 	    ], AccountComponent);
@@ -4745,7 +4745,7 @@ webpackJsonp([2],{
 	            pipes: [],
 	            providers: [],
 	            directives: [],
-	            template: __webpack_require__(735)
+	            template: __webpack_require__(737)
 	        }), 
 	        __metadata('design:paramtypes', [])
 	    ], GameDispute);
@@ -4783,7 +4783,7 @@ webpackJsonp([2],{
 	        core_1.Component({
 	            selector: 'start_page',
 	            providers: [],
-	            template: __webpack_require__(736),
+	            template: __webpack_require__(738),
 	            animations: [
 	                core_1.trigger('pageState', [
 	                    core_1.state('in-from-left', core_1.style({
@@ -4876,17 +4876,96 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 427:
+/***/ 392:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(1);
+	var http_1 = __webpack_require__(107);
+	var ng2_cookies_1 = __webpack_require__(729);
+	__webpack_require__(178);
+	var FriendshipService = (function () {
+	    function FriendshipService(http) {
+	        this.http = http;
+	        this.FRIENDSHIP_URL = 'personalarea/';
+	    }
+	    FriendshipService.prototype.sendFriendRequest = function (ID) {
+	        var url = this.FRIENDSHIP_URL + ID;
+	        var headers = new http_1.Headers({
+	            'Content-Type': 'application/json',
+	            'X-CSRFToken': ng2_cookies_1.Cookie.get('csrftoken')
+	        });
+	        var options = new http_1.RequestOptions({ headers: headers });
+	        //noinspection TypeScriptUnresolvedFunction
+	        return this.http.post(url, '{}', options)
+	            .toPromise()
+	            .then(function (response) {
+	            var result = response.json();
+	            console.log(result);
+	            // return result as User[];
+	        }, function (error) {
+	            console.log(error);
+	            return [];
+	        })
+	            .catch(this.handlerError);
+	    };
+	    FriendshipService.prototype.getFriendList = function () {
+	        //noinspection TypeScriptUnresolvedFunction
+	        return this.http.get(this.FRIENDSHIP_URL)
+	            .toPromise()
+	            .then(function (response) {
+	            var result = response.json();
+	            var friendList = result.my_friends;
+	            var applicationsToFriends = result.want_be_their_friend;
+	            return {
+	                friendList: friendList,
+	                applicationsToFriends: applicationsToFriends
+	            };
+	        }, function (error) {
+	            console.log(error);
+	            return {
+	                friendList: [],
+	                applicationsToFriends: []
+	            };
+	        })
+	            .catch(this.handlerError);
+	    };
+	    FriendshipService.prototype.handlerError = function (error) {
+	        console.error('An error occurred', error);
+	        return Promise.reject(error.message || error);
+	    };
+	    FriendshipService = __decorate([
+	        core_1.Injectable(), 
+	        __metadata('design:paramtypes', [(typeof (_a = typeof http_1.Http !== 'undefined' && http_1.Http) === 'function' && _a) || Object])
+	    ], FriendshipService);
+	    return FriendshipService;
+	    var _a;
+	}());
+	exports.FriendshipService = FriendshipService;
+	
+
+/***/ },
+
+/***/ 428:
 /***/ function(module, exports, __webpack_require__) {
 
 	// Export all services
-	var cookie_1 = __webpack_require__(729);
+	var cookie_1 = __webpack_require__(730);
 	exports.Cookie = cookie_1.Cookie;
 	//# sourceMappingURL=services.js.map
 
 /***/ },
 
-/***/ 503:
+/***/ 504:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -4900,12 +4979,12 @@ webpackJsonp([2],{
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
-	__export(__webpack_require__(506));
+	__export(__webpack_require__(507));
 	//# sourceMappingURL=index.js.map
 
 /***/ },
 
-/***/ 504:
+/***/ 505:
 /***/ function(module, exports) {
 
 	/**
@@ -4938,7 +5017,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 505:
+/***/ 506:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -5011,7 +5090,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 506:
+/***/ 507:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -5094,12 +5173,12 @@ webpackJsonp([2],{
 	exports.NG_ASYNC_VALIDATORS = validators_2.NG_ASYNC_VALIDATORS;
 	exports.NG_VALIDATORS = validators_2.NG_VALIDATORS;
 	exports.Validators = validators_2.Validators;
-	__export(__webpack_require__(505));
+	__export(__webpack_require__(506));
 	//# sourceMappingURL=forms.js.map
 
 /***/ },
 
-/***/ 547:
+/***/ 548:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -5119,8 +5198,8 @@ webpackJsonp([2],{
 	};
 	var core_1 = __webpack_require__(1);
 	var common_1 = __webpack_require__(36);
-	var field_value_1 = __webpack_require__(548);
-	var ripple_1 = __webpack_require__(553);
+	var field_value_1 = __webpack_require__(549);
+	var ripple_1 = __webpack_require__(554);
 	// TODO(jelbourn): Make the `isMouseDown` stuff done with one global listener.
 	// TODO(kara): Convert attribute selectors to classes when attr maps become available
 	var MdButton = (function () {
@@ -5298,7 +5377,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 548:
+/***/ 549:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -5334,7 +5413,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 549:
+/***/ 550:
 /***/ function(module, exports) {
 
 	// TODO(kara): Revisit why error messages are not being properly set.
@@ -5360,7 +5439,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 550:
+/***/ 551:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -5369,7 +5448,7 @@ webpackJsonp([2],{
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var error_1 = __webpack_require__(549);
+	var error_1 = __webpack_require__(550);
 	/** Exception thrown when a ComponentPortal is attached to a DomPortalHost without an origin. */
 	var MdComponentPortalAttachedToDomWithoutOriginError = (function (_super) {
 	    __extends(MdComponentPortalAttachedToDomWithoutOriginError, _super);
@@ -5439,7 +5518,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 551:
+/***/ 552:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -5448,7 +5527,7 @@ webpackJsonp([2],{
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var portal_errors_1 = __webpack_require__(550);
+	var portal_errors_1 = __webpack_require__(551);
 	/**
 	 * A `Portal` is something that you want to render somewhere else.
 	 * It can be attach to / detached from a `PortalHost`.
@@ -5605,7 +5684,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 552:
+/***/ 553:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -5762,7 +5841,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 553:
+/***/ 554:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -5776,7 +5855,7 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var ripple_renderer_1 = __webpack_require__(552);
+	var ripple_renderer_1 = __webpack_require__(553);
 	var MdRipple = (function () {
 	    function MdRipple(_elementRef) {
 	        var _this = this;
@@ -5945,7 +6024,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 554:
+/***/ 555:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6002,7 +6081,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 555:
+/***/ 556:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6041,7 +6120,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 556:
+/***/ 557:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6079,7 +6158,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 557:
+/***/ 558:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6118,7 +6197,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 558:
+/***/ 559:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6134,10 +6213,10 @@ webpackJsonp([2],{
 	var core_1 = __webpack_require__(1);
 	var common_1 = __webpack_require__(36);
 	var portal_directives_1 = __webpack_require__(248);
-	var tab_label_1 = __webpack_require__(557);
-	var tab_content_1 = __webpack_require__(555);
-	var tab_label_wrapper_1 = __webpack_require__(556);
-	var ink_bar_1 = __webpack_require__(554);
+	var tab_label_1 = __webpack_require__(558);
+	var tab_content_1 = __webpack_require__(556);
+	var tab_label_wrapper_1 = __webpack_require__(557);
+	var ink_bar_1 = __webpack_require__(555);
 	var Observable_1 = __webpack_require__(7);
 	__webpack_require__(272);
 	// Due to a bug in the ChromeDriver, Angular 2 keyboard events are not triggered by `sendKeys`
@@ -6378,7 +6457,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 559:
+/***/ 560:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6392,7 +6471,50 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var search_service_1 = __webpack_require__(566);
+	var friendship_service_1 = __webpack_require__(392);
+	var AccountFriendshipComponent = (function () {
+	    function AccountFriendshipComponent(FriendshipService) {
+	        this.FriendshipService = FriendshipService;
+	    }
+	    AccountFriendshipComponent.prototype.ngOnInit = function () {
+	        var _this = this;
+	        this.FriendshipService.getFriendList()
+	            .then(function (data) {
+	            _this.friendList = data.friendList;
+	            _this.applicationsToFriends = data.applicationsToFriends;
+	        });
+	    };
+	    AccountFriendshipComponent = __decorate([
+	        core_1.Component({
+	            selector: 'account-friendship',
+	            template: __webpack_require__(732),
+	            providers: [friendship_service_1.FriendshipService],
+	        }), 
+	        __metadata('design:paramtypes', [(typeof (_a = typeof friendship_service_1.FriendshipService !== 'undefined' && friendship_service_1.FriendshipService) === 'function' && _a) || Object])
+	    ], AccountFriendshipComponent);
+	    return AccountFriendshipComponent;
+	    var _a;
+	}());
+	exports.AccountFriendshipComponent = AccountFriendshipComponent;
+	
+
+/***/ },
+
+/***/ 561:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(1);
+	var search_service_1 = __webpack_require__(567);
 	var AccountSearchComponent = (function () {
 	    function AccountSearchComponent(SearchUserService) {
 	        this.SearchUserService = SearchUserService;
@@ -6421,7 +6543,7 @@ webpackJsonp([2],{
 	    AccountSearchComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-search',
-	            template: __webpack_require__(732),
+	            template: __webpack_require__(734),
 	            providers: [search_service_1.SearchUserService],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof search_service_1.SearchUserService !== 'undefined' && search_service_1.SearchUserService) === 'function' && _a) || Object])
@@ -6434,7 +6556,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 560:
+/***/ 562:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6448,8 +6570,8 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var friendship_service_1 = __webpack_require__(564);
-	var model_1 = __webpack_require__(565);
+	var friendship_service_1 = __webpack_require__(392);
+	var model_1 = __webpack_require__(566);
 	var AccountSearchResultListComponent = (function () {
 	    function AccountSearchResultListComponent(FriendshipService) {
 	        this.FriendshipService = FriendshipService;
@@ -6469,7 +6591,7 @@ webpackJsonp([2],{
 	    AccountSearchResultListComponent = __decorate([
 	        core_1.Component({
 	            selector: 'search-result-list',
-	            template: __webpack_require__(733),
+	            template: __webpack_require__(735),
 	            providers: [friendship_service_1.FriendshipService]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_b = typeof friendship_service_1.FriendshipService !== 'undefined' && friendship_service_1.FriendshipService) === 'function' && _b) || Object])
@@ -6482,7 +6604,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 561:
+/***/ 563:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6497,17 +6619,18 @@ webpackJsonp([2],{
 	};
 	var core_1 = __webpack_require__(1);
 	var platform_browser_1 = __webpack_require__(95);
-	var forms_1 = __webpack_require__(503);
+	var forms_1 = __webpack_require__(504);
 	var http_1 = __webpack_require__(107);
-	var button_1 = __webpack_require__(547);
-	var tabs_1 = __webpack_require__(558);
-	var app_1 = __webpack_require__(562);
-	var routes_1 = __webpack_require__(563);
+	var button_1 = __webpack_require__(548);
+	var tabs_1 = __webpack_require__(559);
+	var app_1 = __webpack_require__(564);
+	var routes_1 = __webpack_require__(565);
 	var main_1 = __webpack_require__(390);
 	var main_2 = __webpack_require__(389);
 	var main_3 = __webpack_require__(388);
-	var main_4 = __webpack_require__(559);
-	var result_list_1 = __webpack_require__(560);
+	var main_4 = __webpack_require__(561);
+	var result_list_1 = __webpack_require__(562);
+	var main_5 = __webpack_require__(560);
 	var AppModule = (function () {
 	    function AppModule() {
 	    }
@@ -6527,7 +6650,8 @@ webpackJsonp([2],{
 	                main_2.GameDispute,
 	                main_3.AccountComponent,
 	                main_4.AccountSearchComponent,
-	                result_list_1.AccountSearchResultListComponent
+	                result_list_1.AccountSearchResultListComponent,
+	                main_5.AccountFriendshipComponent
 	            ],
 	            providers: [],
 	            bootstrap: [
@@ -6543,7 +6667,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 562:
+/***/ 564:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6592,7 +6716,7 @@ webpackJsonp([2],{
 	        core_1.Component({
 	            selector: 'app',
 	            providers: [auth_service_1.UserService],
-	            template: __webpack_require__(734),
+	            template: __webpack_require__(736),
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object])
 	    ], AppComponent);
@@ -6604,7 +6728,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 563:
+/***/ 565:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6631,65 +6755,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 564:
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (this && this.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	var core_1 = __webpack_require__(1);
-	var http_1 = __webpack_require__(107);
-	var ng2_cookies_1 = __webpack_require__(728);
-	__webpack_require__(178);
-	var FriendshipService = (function () {
-	    function FriendshipService(http) {
-	        this.http = http;
-	        this.FRIENDSHIP_URL = 'personalarea/';
-	    }
-	    FriendshipService.prototype.sendFriendRequest = function (ID) {
-	        var url = this.FRIENDSHIP_URL + ID;
-	        var headers = new http_1.Headers({
-	            'Content-Type': 'application/json',
-	            'X-CSRFToken': ng2_cookies_1.Cookie.get('csrftoken')
-	        });
-	        var options = new http_1.RequestOptions({ headers: headers });
-	        //noinspection TypeScriptUnresolvedFunction
-	        return this.http.post(url, '{}', options)
-	            .toPromise()
-	            .then(function (response) {
-	            var result = response.json();
-	            console.log(result);
-	            // return result as User[];
-	        }, function (error) {
-	            console.log(error);
-	            return [];
-	        })
-	            .catch(this.handlerError);
-	    };
-	    FriendshipService.prototype.handlerError = function (error) {
-	        console.error('An error occurred', error);
-	        return Promise.reject(error.message || error);
-	    };
-	    FriendshipService = __decorate([
-	        core_1.Injectable(), 
-	        __metadata('design:paramtypes', [(typeof (_a = typeof http_1.Http !== 'undefined' && http_1.Http) === 'function' && _a) || Object])
-	    ], FriendshipService);
-	    return FriendshipService;
-	    var _a;
-	}());
-	exports.FriendshipService = FriendshipService;
-	
-
-/***/ },
-
-/***/ 565:
+/***/ 566:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6697,6 +6763,7 @@ webpackJsonp([2],{
 	    function User() {
 	        this.is_autorized = false;
 	        this.is_friend = false;
+	        this.is_ignore = false;
 	    }
 	    return User;
 	}());
@@ -6705,7 +6772,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 566:
+/***/ 567:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6755,14 +6822,14 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 728:
+/***/ 729:
 /***/ function(module, exports, __webpack_require__) {
 
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
-	__export(__webpack_require__(427));
-	var services = __webpack_require__(427);
+	__export(__webpack_require__(428));
+	var services = __webpack_require__(428);
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = {
 	    services: services
@@ -6771,7 +6838,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 729:
+/***/ 730:
 /***/ function(module, exports) {
 
 	/**
@@ -6864,42 +6931,49 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 731:
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"raw\">\n    <md-tab-group\n        class=\"col-md-9\">\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-envelope\" aria-hidden=\"true\"></span> Chat\n            </template>\n            <template md-tab-content>\n                <h1>Some tab content</h1>\n                <p>...</p>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-star\" aria-hidden=\"true\"></span> Friends\n            </template>\n            <template md-tab-content>\n                <h1>Some more tab content</h1>\n                <p>...</p>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-signal\" aria-hidden=\"true\"></span> Statistic\n            </template>\n            <template md-tab-content>\n                <h1>Some more tab content</h1>\n                <p>...</p>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Search\n            </template>\n            <template md-tab-content>\n                <account-search></account-search>\n            </template>\n        </md-tab>\n    </md-tab-group>\n    <div class=\"col-md-3\" style=\"height: 100px; border: 1px solid #333;\"></div>\n</div>\n"
-
-/***/ },
-
 /***/ 732:
 /***/ function(module, exports) {
 
-	module.exports = "<form>\n    <fieldset [disabled]=\"inSearchState\">\n        <div class=\"form-group\">\n            <label for=\"search-query-field\">Введите ID пользователя для поиска:</label>\n            <div class=\"input-group\">\n                <input\n                        id=\"search-query-field\"\n                        type=\"text\"\n                        name=\"search_uid\"\n                        class=\"form-control\"\n                        placeholder=\"ID пользователя\"\n                        [(ngModel)]=\"IDForSearch\" />\n                <span class=\"input-group-btn\">\n                    <button\n                            class=\"btn btn-primary\"\n                            type=\"button\"\n                            (click)=\"searchUserByID()\">\n                        Поиск\n                    </button>\n                </span>\n            </div>\n        </div>\n    </fieldset>\n    <div\n            class=\"form-group\"\n            [hidden]=\"!inSearchState\">\n        <div class=\"progress\">\n            <div\n                    class=\"progress-bar progress-bar-info progress-bar-striped active\"\n                    role=\"progressbar\"\n                    aria-valuenow=\"60\"\n                    aria-valuemin=\"0\"\n                    aria-valuemax=\"100\"\n                    style=\"width: 100%\">\n            </div>\n        </div>\n    </div>\n</form>\n<search-result-list [user]=\"foundUser\" [showResult]=\"showResultState\"></search-result-list>\n"
+	module.exports = "<table class=\"table\">\n    <thead>\n        <th>№ п/п</th>\n        <th>Имя</th>\n        <th>Действия</th>\n    </thead>\n    <tbody>\n        <tr *ngFor=\"let user of friendList\">\n            <td>{{index + 1}}</td>\n            <td>{{user.username}}</td>\n            <td>\n                <button class=\"btn btn-primary\">Удалить</button>\n            </td>\n        </tr>\n    </tbody>\n</table>\n\n<table class=\"table\">\n    <thead>\n        <th>№ п/п</th>\n        <th>Имя</th>\n        <th>Действия</th>\n    </thead>\n    <tbody>\n        <tr *ngFor=\"let user of applicationsToFriends; let i = index\">\n            <td>{{i + 1}}</td>\n            <td>{{user.username}}</td>\n            <td>\n                <button class=\"btn btn-primary\">Удалить</button>\n            </td>\n        </tr>\n    </tbody>\n</table>\n"
 
 /***/ },
 
 /***/ 733:
 /***/ function(module, exports) {
 
-	module.exports = "<div *ngIf=\"user\">\n    <h4>Найден пользователь:</h4>\n    <div class=\"row\">\n        <div class=\"col-md-8\">{{user.chat_name}}</div>\n        <div class=\"col-md-4 text-right\">\n            <div *ngIf=\"!user.is_friend\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        (click)=\"addFriend()\">\n                    Добавить в друзья\n                </button>\n            </div>\n            <div *ngIf=\"user.is_friend\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        disabled>\n                    Уже в друзьях\n                </button>\n            </div>\n        </div>\n    </div>\n</div>\n<div *ngIf=\"showResult && !user\">\n    <em>Пользователи не найдены</em>\n</div>"
+	module.exports = "<div class=\"raw\">\n    <md-tab-group\n        class=\"col-md-9\">\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-envelope\" aria-hidden=\"true\"></span> Chat\n            </template>\n            <template md-tab-content>\n                <h1>Some tab content</h1>\n                <p>...</p>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-star\" aria-hidden=\"true\"></span> Friends\n            </template>\n            <template md-tab-content>\n                <account-friendship></account-friendship>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-signal\" aria-hidden=\"true\"></span> Statistic\n            </template>\n            <template md-tab-content>\n                <h1>Some more tab content</h1>\n                <p>...</p>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Search\n            </template>\n            <template md-tab-content>\n                <account-search></account-search>\n            </template>\n        </md-tab>\n    </md-tab-group>\n    <div class=\"col-md-3\" style=\"height: 100px; border: 1px solid #333;\"></div>\n</div>\n"
 
 /***/ },
 
 /***/ 734:
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"row\">\n    <div class=\"col-md-offset-1 col-md-4\">\n        <a\n                class=\"logo\"\n                routerLink=\"/\">\n        </a>\n    </div>\n    <div class=\"col-md-7 text-right\">\n        <div *ngIf=\"!userLoaded\">\n            <em>Идет загрузка данных...</em>\n        </div>\n        <div *ngIf=\"userLoaded && is_authenticated\">\n            <a\n                    class=\"log-in text-left\"\n                    routerLink=\"account\">\n                <span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span> {{userTitle}}\n                <br/>\n                <span class=\"small\">uid: {{uid}}</span>\n            </a>\n            <a\n                    class=\"log-in\"\n                    (click)=\"routeLogOut()\">\n                <span class=\"glyphicon glyphicon-log-out\" aria-hidden=\"true\"></span> Выйти\n            </a>\n        </div>\n        <a\n                class=\"log-in\"\n                 *ngIf=\"userLoaded && !is_authenticated\"\n                 (click)=\"routeLogIn()\">\n            <span class=\"glyphicon glyphicon-log-in\" aria-hidden=\"true\"></span> Войти\n        </a>\n    </div>\n</div>\n\n<main>\n    <router-outlet></router-outlet>\n</main>\n\n"
+	module.exports = "<form>\n    <fieldset [disabled]=\"inSearchState\">\n        <div class=\"form-group\">\n            <label for=\"search-query-field\">Введите ID пользователя для поиска:</label>\n            <div class=\"input-group\">\n                <input\n                        id=\"search-query-field\"\n                        type=\"text\"\n                        name=\"search_uid\"\n                        class=\"form-control\"\n                        placeholder=\"ID пользователя\"\n                        [(ngModel)]=\"IDForSearch\" />\n                <span class=\"input-group-btn\">\n                    <button\n                            class=\"btn btn-primary\"\n                            type=\"button\"\n                            (click)=\"searchUserByID()\">\n                        Поиск\n                    </button>\n                </span>\n            </div>\n        </div>\n    </fieldset>\n    <div\n            class=\"form-group\"\n            [hidden]=\"!inSearchState\">\n        <div class=\"progress\">\n            <div\n                    class=\"progress-bar progress-bar-info progress-bar-striped active\"\n                    role=\"progressbar\"\n                    aria-valuenow=\"60\"\n                    aria-valuemin=\"0\"\n                    aria-valuemax=\"100\"\n                    style=\"width: 100%\">\n            </div>\n        </div>\n    </div>\n</form>\n<search-result-list [user]=\"foundUser\" [showResult]=\"showResultState\"></search-result-list>\n"
 
 /***/ },
 
 /***/ 735:
 /***/ function(module, exports) {
 
-	module.exports = "<h3>Спор через игру</h3>\n<p>Добро пожаловать на площадку</p>\n"
+	module.exports = "<div *ngIf=\"user\">\n    <h4>Найден пользователь:</h4>\n    <div class=\"row\">\n        <div class=\"col-md-8\">{{user.chat_name}}</div>\n        <div class=\"col-md-4 text-right\">\n            <div *ngIf=\"!user.is_friend\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        (click)=\"addFriend()\">\n                    Добавить в друзья\n                </button>\n            </div>\n            <div *ngIf=\"user.is_friend\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        disabled>\n                    Уже в друзьях\n                </button>\n            </div>\n        </div>\n    </div>\n</div>\n<div *ngIf=\"showResult && !user\">\n    <em>Пользователи не найдены</em>\n</div>"
 
 /***/ },
 
 /***/ 736:
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"row\">\n    <div class=\"col-md-offset-1 col-md-4\">\n        <a\n                class=\"logo\"\n                routerLink=\"/\">\n        </a>\n    </div>\n    <div class=\"col-md-7 text-right\">\n        <div *ngIf=\"!userLoaded\">\n            <em>Идет загрузка данных...</em>\n        </div>\n        <div *ngIf=\"userLoaded && is_authenticated\">\n            <a\n                    class=\"log-in text-left\"\n                    routerLink=\"account\">\n                <span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span> {{userTitle}}\n                <br/>\n                <span class=\"small\">uid: {{uid}}</span>\n            </a>\n            <a\n                    class=\"log-in\"\n                    (click)=\"routeLogOut()\">\n                <span class=\"glyphicon glyphicon-log-out\" aria-hidden=\"true\"></span> Выйти\n            </a>\n        </div>\n        <a\n                class=\"log-in\"\n                 *ngIf=\"userLoaded && !is_authenticated\"\n                 (click)=\"routeLogIn()\">\n            <span class=\"glyphicon glyphicon-log-in\" aria-hidden=\"true\"></span> Войти\n        </a>\n    </div>\n</div>\n\n<main>\n    <router-outlet></router-outlet>\n</main>\n\n"
+
+/***/ },
+
+/***/ 737:
+/***/ function(module, exports) {
+
+	module.exports = "<h3>Спор через игру</h3>\n<p>Добро пожаловать на площадку</p>\n"
+
+/***/ },
+
+/***/ 738:
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"start-page row\">\n    <div class=\"col-md-offset-1 col-md-4\">\n        <a class=\"thumbnail text-center\"\n           [@pageState]=\"leftLinkState\"\n           href=\"#\">\n            <div class=\"caption\">\n                <p>PfE</p>\n            </div>\n            <div class=\"pfe-logo\"></div>\n        </a>\n    </div>\n    <div class=\"col-md-offset-2 col-md-4\">\n        <a class=\"thumbnail text-center\"\n           [@pageState]=\"rightLinkState\"\n           routerLink=\"/pfg\">\n            <div class=\"caption\">\n                <p>PfG</p>\n            </div>\n            <div class=\"pfg-logo\"></div>\n        </a>\n    </div>\n</div>\n"

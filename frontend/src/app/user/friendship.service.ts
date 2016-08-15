@@ -33,6 +33,31 @@ export class FriendshipService {
             )
             .catch(this.handlerError);
     }
+    
+    getFriendList() {
+        //noinspection TypeScriptUnresolvedFunction
+        return this.http.get(this.FRIENDSHIP_URL)
+            .toPromise()
+            .then(
+                response => {
+                    let result = response.json();
+                    let friendList: User[] = result.my_friends as User[];
+                    let applicationsToFriends: User[] = result.want_be_their_friend as User[];
+                    return {
+                        friendList: friendList,
+                        applicationsToFriends: applicationsToFriends
+                    };
+                },
+                error => {
+                    console.log(error);
+                    return {
+                        friendList: [],
+                        applicationsToFriends: []
+                    };
+                }
+            )
+            .catch(this.handlerError);
+    }
 
     handlerError(error: any) {
         console.error('An error occurred', error);

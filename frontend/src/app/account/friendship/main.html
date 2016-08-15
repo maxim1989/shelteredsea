@@ -1,0 +1,33 @@
+<table class="table">
+    <thead>
+        <th>№ п/п</th>
+        <th>Имя</th>
+        <th>Действия</th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let user of friendList">
+            <td>{{index + 1}}</td>
+            <td>{{user.username}}</td>
+            <td>
+                <button class="btn btn-primary">Удалить</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="table">
+    <thead>
+        <th>№ п/п</th>
+        <th>Имя</th>
+        <th>Действия</th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let user of applicationsToFriends; let i = index">
+            <td>{{i + 1}}</td>
+            <td>{{user.username}}</td>
+            <td>
+                <button class="btn btn-primary">Удалить</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
