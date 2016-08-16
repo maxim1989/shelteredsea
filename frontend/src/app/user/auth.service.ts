@@ -28,6 +28,10 @@ export class UserService {
             .catch(this.handlerError);
     }
 
+    getUser() {
+        return this.user;
+    }
+
     getName() {
         return (this.user) ? this.user.username : "";
     }
@@ -40,8 +44,12 @@ export class UserService {
         return (this.user) ? this.user.uid_for_client : "";
     }
 
-    getChatName() {
-        return (this.user) ? this.user.chat_name : "";
+    getDisputeName() {
+        return (this.user) ? this.user.dispute_name : "";
+    }
+
+    getStatisticName() {
+        return (this.user) ? this.user.statistic_name : "";
     }
 
     handlerError(error: any) {

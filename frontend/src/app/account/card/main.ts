@@ -15,6 +15,7 @@ export class AccountCardComponent implements OnInit{
     ) {}
 
     ngOnInit() {
-        this.disputeName = this.UserService.getChatName();
+        console.log('disput');
+        this.disputeName = this.UserService.getDisputeName();
     }
 }

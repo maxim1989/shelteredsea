@@ -4,8 +4,9 @@
 <div *ngIf="friendList && applicationsToFriends && !friendList.length && !applicationsToFriends.length">
     <em>У вас нет друзей</em>
 </div>
-<div *ngIf="friendList">
-    <table *ngIf="friendList.length" class="table" width="100%">
+<div *ngIf="friendList && friendList.length">
+    <h4>Друзья</h4>
+    <table class="table" width="100%">
         <thead>
             <th width="80">№ п/п</th>
             <th>Имя</th>
@@ -14,7 +15,7 @@
         <tbody>
             <tr *ngFor="let user of friendList; let i = index">
                 <td>{{i + 1}}</td>
-                <td>{{user.username}}</td>
+                <td>{{user.username}} ({{user.dispute_name}})</td>
                 <td>
                     <button class="btn btn-primary btn-sm">Удалить</button>
                 </td>
@@ -23,8 +24,9 @@
     </table>
 </div>
 
-<div *ngIf="applicationsToFriends">
-    <table *ngIf="applicationsToFriends.length" class="table" width="100%">
+<div *ngIf="applicationsToFriends && applicationsToFriends.length">
+    <h4>Заявки в друзья</h4>
+    <table class="table" width="100%">
         <thead>
             <th width="80">№ п/п</th>
             <th>Имя</th>

@@ -17,6 +17,7 @@ import {AccountCardComponent} from './account/card/main';
 import {AccountSearchComponent} from './account/search/main';
 import {AccountSearchResultListComponent} from './account/search/result-list';
 import {AccountFriendshipComponent} from './account/friendship/main';
+import {AccountStatisticComponent} from './account/statistic/main';
 
 
 @NgModule(<NgModuleMetadataType>{
@@ -37,7 +38,8 @@ import {AccountFriendshipComponent} from './account/friendship/main';
         AccountCardComponent,
         AccountSearchComponent,
         AccountSearchResultListComponent,
-        AccountFriendshipComponent
+        AccountFriendshipComponent,
+        AccountStatisticComponent
     ],
     providers: [
     ],

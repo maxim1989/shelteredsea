@@ -1,0 +1,21 @@
+<div *ngIf="!statisticUserList">
+     <em>Загрузка данных...</em>
+</div>
+<div *ngIf="statisticUserList && !statisticUserList.length">
+    <em>Статистика отсутствует</em>
+</div>
+<div *ngIf="statisticUserList && statisticUserList.length">
+    <table class="table" width="100%">
+        <thead>
+            <th width="80">Место</th>
+            <th>Имя</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let statisticUser of statisticUserList; let i = index"
+                    [class.success]="statisticUser.id==user.id">
+                <td>{{i + 1}}</td>
+                <td>{{statisticUser.statistic_name}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

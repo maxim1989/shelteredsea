@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
+import { User } from 'app/user/model';
 import { UserService } from 'app/user/auth.service';
 
 @Component({
@@ -7,6 +8,7 @@ import { UserService } from 'app/user/auth.service';
     templateUrl: './main.html'
 })
 export class AccountComponent implements OnInit{
+    user: User;
 
     constructor(
         private UserService: UserService,
@@ -22,7 +24,7 @@ export class AccountComponent implements OnInit{
     }
 
     initAuthUser() {
-        
+        this.user = this.UserService.getUser();
     }
 
     private redirectToMainPage() {
