@@ -54,7 +54,7 @@ def create_chat(my_id, friend_id):
 def invite_friend(chat, me):
     message = Message(
         chat=chat, user=me,
-        message="Пользователь {0} просит добавить его в друзья".format(me.additional_name.chat_name)
+        message="Пользователь {0} просит добавить его в друзья".format(me.statistic_name.name)
     )
     message.save()
 
@@ -194,3 +194,11 @@ class PersonalData(APIView):
             return Response({'success': False, 'error': str(err)})
         serializer = AuthenticatedUserSerializer(me)
         return Response(serializer.data)
+
+    def post(self, request):
+        user = User.objects.get(pk=request.user.id)
+        serializer = AuthenticatedUserSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)

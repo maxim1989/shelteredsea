@@ -12,15 +12,15 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from loginsys.models import AdditionalName, AdditionalUuid
+from loginsys.models import AdditionalUuid, DisputeName, StatisticSame
 from loginsys.serializers import AuthenticatedUserSerializer
 from loginsys.towns import towns
 
 
 def add_name(request_object):
-    additional_name = AdditionalName.objects.filter(user=request_object.user.id)
-    if not additional_name:
-        engaged_names = [u.chat_name for u in AdditionalName.objects.all()]
+    statistic_name = StatisticSame.objects.filter(user=request_object.user.id)
+    if not statistic_name:
+        engaged_names = [u.chat_name for u in StatisticSame.objects.all()]
         counter = 0
         while True:
             new_name = random.choice(towns)
@@ -28,11 +28,16 @@ def add_name(request_object):
                 new_name = new_name + str(counter)
             if new_name not in engaged_names:
                 user = User.objects.get(pk=request_object.user.id)
-                appended_name = AdditionalName(chat_name=new_name, user=user)
+                appended_name = StatisticSame(name=new_name, user=user)
                 appended_name.save()
                 break
             else:
                 continue
+    dispute_name = DisputeName.objects.filter(user=request_object.user.id)
+    if not dispute_name:
+        user = User.objects.get(pk=request_object.user.id)
+        appended_name = DisputeName(name='', user=user)
+        appended_name.save()
 
 
 def add_uid(request_object):

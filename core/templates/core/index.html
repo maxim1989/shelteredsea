@@ -42,9 +42,9 @@
 
             function doAjax(data) {
                 var ajax = getXmlHttp();
-                ajax.open('POST', 'personalarea/6152664167811584486/ignore', true);
+                ajax.open('POST', 'personalarea/personal', true);
                 ajax.setRequestHeader("Content-type", "application/json; charset=utf-8");
-                ajax.setRequestHeader("X-CSRFToken", 'BBGP6MqNvaG6iWUTdqC2dAUMOngXT8uW');
+                ajax.setRequestHeader("X-CSRFToken", 'JD0NfBdsPFFNyv5280O28A477z3koUS2');
                 ajax.onreadystatechange = function() {
                     if (ajax.readyState == 4) {
                         if(ajax.status == 200) {

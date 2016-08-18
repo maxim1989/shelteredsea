@@ -13,10 +13,10 @@ class ManyChatsToManyUsersConnectorSerializer(serializers.ModelSerializer):
         return obj.chat.name
 
     def get_statistic_name(self, obj):
-        return obj.user.additional_name.chat_name
+        return obj.user.statistic_name.name
 
     def get_dispute_name(self, obj):
-        return obj.user.additional_name.dispute_name
+        return obj.user.dispute_name.name
 
     def get_username(self, obj):
         return obj.user.username
