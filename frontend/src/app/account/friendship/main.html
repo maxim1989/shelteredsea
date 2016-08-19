@@ -17,7 +17,8 @@
                 <td>{{i + 1}}</td>
                 <td>{{user.username}} ({{user.dispute_name}})</td>
                 <td>
-                    <button class="btn btn-primary btn-sm">Удалить</button>
+                    <button class="btn btn-primary btn-sm"
+                            (click)="deleteFriend(user)">Удалить из друзей</button>
                 </td>
             </tr>
         </tbody>
@@ -37,7 +38,8 @@
                 <td>{{i + 1}}</td>
                 <td>{{user.username}}</td>
                 <td>
-                    <button class="btn btn-primary btn-sm">Удалить</button>
+                    <button class="btn btn-primary btn-sm"
+                            (click)="addFriend(user)">Принять дружбу</button>
                 </td>
             </tr>
         </tbody>

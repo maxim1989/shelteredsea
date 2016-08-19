@@ -24,4 +24,13 @@ export class AccountFriendshipComponent implements OnInit{
                 }
             );
     }
+
+    addFriend(user: User) {
+        alert('TODO');
+        // this.FriendshipService.acceptFriendshipWith(uid);
+    }
+    deleteFriend(user: User) {
+        alert('TODO');
+        // this.FriendshipService.acceptFriendshipWith(uid);
+    }
 }

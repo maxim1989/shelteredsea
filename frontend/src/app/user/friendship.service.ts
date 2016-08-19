@@ -59,6 +59,26 @@ export class FriendshipService {
             .catch(this.handlerError);
     }
 
+    acceptFriendshipWith(ID : string) {
+        let url = this.FRIENDSHIP_URL + ID;
+        let headers = new Headers({
+            'Content-Type': 'application/json',
+            'X-CSRFToken': Cookie.get('csrftoken')
+        });
+        let options = new RequestOptions({ headers: headers });
+        //noinspection TypeScriptUnresolvedFunction
+        return this.http.post(url, '{}', options)
+            .toPromise()
+            .then(
+                response => {
+                    let result = response.json();
+                    console.log(result);
+                    // return result as User[];
+                }
+            )
+            .catch(this.handlerError);
+    }
+
     handlerError(error: any) {
         console.error('An error occurred', error);
         return Promise.reject(error.message || error);

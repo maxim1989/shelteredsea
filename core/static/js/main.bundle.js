@@ -4946,6 +4946,23 @@ webpackJsonp([2],{
 	        })
 	            .catch(this.handlerError);
 	    };
+	    FriendshipService.prototype.acceptFriendshipWith = function (ID) {
+	        var url = this.FRIENDSHIP_URL + ID;
+	        var headers = new http_1.Headers({
+	            'Content-Type': 'application/json',
+	            'X-CSRFToken': ng2_cookies_1.Cookie.get('csrftoken')
+	        });
+	        var options = new http_1.RequestOptions({ headers: headers });
+	        //noinspection TypeScriptUnresolvedFunction
+	        return this.http.post(url, '{}', options)
+	            .toPromise()
+	            .then(function (response) {
+	            var result = response.json();
+	            console.log(result);
+	            // return result as User[];
+	        })
+	            .catch(this.handlerError);
+	    };
 	    FriendshipService.prototype.handlerError = function (error) {
 	        console.error('An error occurred', error);
 	        return Promise.reject(error.message || error);
@@ -6618,8 +6635,7 @@ webpackJsonp([2],{
 	        this.UserService = UserService;
 	    }
 	    AccountCardComponent.prototype.ngOnInit = function () {
-	        console.log('disput');
-	        this.disputeName = this.UserService.getDisputeName();
+	        this.user = this.UserService.getUser();
 	    };
 	    AccountCardComponent = __decorate([
 	        core_1.Component({
@@ -6663,6 +6679,14 @@ webpackJsonp([2],{
 	            _this.friendList = data.friendList;
 	            _this.applicationsToFriends = data.applicationsToFriends;
 	        });
+	    };
+	    AccountFriendshipComponent.prototype.addFriend = function (user) {
+	        alert('TODO');
+	        // this.FriendshipService.acceptFriendshipWith(uid);
+	    };
+	    AccountFriendshipComponent.prototype.deleteFriend = function (user) {
+	        alert('TODO');
+	        // this.FriendshipService.acceptFriendshipWith(uid);
 	    };
 	    AccountFriendshipComponent = __decorate([
 	        core_1.Component({
@@ -6758,7 +6782,9 @@ webpackJsonp([2],{
 	    }
 	    AccountSearchResultListComponent.prototype.addFriend = function () {
 	        this.FriendshipService.sendFriendRequest(this.user.uid_for_client)
-	            .then();
+	            .then(function () {
+	            alert('TODO Запрос отправлен');
+	        });
 	    };
 	    __decorate([
 	        core_1.Input(), 
@@ -7197,14 +7223,14 @@ webpackJsonp([2],{
 /***/ 736:
 /***/ function(module, exports) {
 
-	module.exports = "<md-card>\n    <md-card-subtitle>Личные данные</md-card-subtitle>\n    <md-card-content>\n        <p>{{disputeName}}</p>\n        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\n        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad</p>\n    </md-card-content>\n</md-card>"
+	module.exports = "<md-card>\n    <md-card-subtitle>Личные данные</md-card-subtitle>\n    <md-card-content>\n        <div *ngIf=\"user\">\n            <p>Имя в статистике: <em>{{user.dispute_name}}</em></p>\n            <p>id: {{user.uid_for_client}}</p>\n        </div>\n    </md-card-content>\n</md-card>"
 
 /***/ },
 
 /***/ 737:
 /***/ function(module, exports) {
 
-	module.exports = "<div *ngIf=\"!friendList || !applicationsToFriends\">\n     <em>Загрузка данных...</em>\n</div>\n<div *ngIf=\"friendList && applicationsToFriends && !friendList.length && !applicationsToFriends.length\">\n    <em>У вас нет друзей</em>\n</div>\n<div *ngIf=\"friendList && friendList.length\">\n    <h4>Друзья</h4>\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">№ п/п</th>\n            <th>Имя</th>\n            <th width=\"160\">Действия</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let user of friendList; let i = index\">\n                <td>{{i + 1}}</td>\n                <td>{{user.username}} ({{user.dispute_name}})</td>\n                <td>\n                    <button class=\"btn btn-primary btn-sm\">Удалить</button>\n                </td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n\n<div *ngIf=\"applicationsToFriends && applicationsToFriends.length\">\n    <h4>Заявки в друзья</h4>\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">№ п/п</th>\n            <th>Имя</th>\n            <th width=\"160\">Действия</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let user of applicationsToFriends; let i = index\">\n                <td>{{i + 1}}</td>\n                <td>{{user.username}}</td>\n                <td>\n                    <button class=\"btn btn-primary btn-sm\">Удалить</button>\n                </td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n"
+	module.exports = "<div *ngIf=\"!friendList || !applicationsToFriends\">\n     <em>Загрузка данных...</em>\n</div>\n<div *ngIf=\"friendList && applicationsToFriends && !friendList.length && !applicationsToFriends.length\">\n    <em>У вас нет друзей</em>\n</div>\n<div *ngIf=\"friendList && friendList.length\">\n    <h4>Друзья</h4>\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">№ п/п</th>\n            <th>Имя</th>\n            <th width=\"160\">Действия</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let user of friendList; let i = index\">\n                <td>{{i + 1}}</td>\n                <td>{{user.username}} ({{user.dispute_name}})</td>\n                <td>\n                    <button class=\"btn btn-primary btn-sm\"\n                            (click)=\"deleteFriend(user)\">Удалить из друзей</button>\n                </td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n\n<div *ngIf=\"applicationsToFriends && applicationsToFriends.length\">\n    <h4>Заявки в друзья</h4>\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">№ п/п</th>\n            <th>Имя</th>\n            <th width=\"160\">Действия</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let user of applicationsToFriends; let i = index\">\n                <td>{{i + 1}}</td>\n                <td>{{user.username}}</td>\n                <td>\n                    <button class=\"btn btn-primary btn-sm\"\n                            (click)=\"addFriend(user)\">Принять дружбу</button>\n                </td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n"
 
 /***/ },
 
@@ -7225,7 +7251,7 @@ webpackJsonp([2],{
 /***/ 740:
 /***/ function(module, exports) {
 
-	module.exports = "<div *ngIf=\"user\">\n    <h4>Найден пользователь:</h4>\n    <div class=\"row\">\n        <div class=\"col-md-8\">{{user.chat_name}}</div>\n        <div class=\"col-md-4 text-right\">\n            <div *ngIf=\"!user.is_friend\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        (click)=\"addFriend()\">\n                    Добавить в друзья\n                </button>\n            </div>\n            <div *ngIf=\"user.is_friend\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        disabled>\n                    Уже в друзьях\n                </button>\n            </div>\n        </div>\n    </div>\n</div>\n<div *ngIf=\"showResult && !user\">\n    <em>Пользователи не найдены</em>\n</div>"
+	module.exports = "<div *ngIf=\"user\">\n    <h4>Найден пользователь:</h4>\n    <div class=\"row\">\n        <div class=\"col-md-8\">{{user.username}}</div>\n        <div class=\"col-md-4 text-right\">\n            <div *ngIf=\"!user.is_friend\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        (click)=\"addFriend()\">\n                    Добавить в друзья\n                </button>\n            </div>\n            <div *ngIf=\"user.is_friend\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        disabled>\n                    Уже в друзьях\n                </button>\n            </div>\n        </div>\n    </div>\n</div>\n<div *ngIf=\"showResult && !user\">\n    <em>Пользователи не найдены</em>\n</div>"
 
 /***/ },
 

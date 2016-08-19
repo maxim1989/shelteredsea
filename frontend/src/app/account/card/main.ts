@@ -8,14 +8,13 @@ import { UserService } from 'app/user/auth.service';
     providers: [],
 })
 export class AccountCardComponent implements OnInit{
-    disputeName: string;
+    user: User;
 
     constructor(
         private UserService: UserService
     ) {}
 
     ngOnInit() {
-        console.log('disput');
-        this.disputeName = this.UserService.getDisputeName();
+        this.user = this.UserService.getUser();
     }
 }
