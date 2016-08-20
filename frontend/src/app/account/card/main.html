@@ -1,0 +1,9 @@
+<md-card>
+    <md-card-subtitle>Личные данные</md-card-subtitle>
+    <md-card-content>
+        <div *ngIf="user">
+            <p>Имя в статистике: <em>{{user.dispute_name}}</em></p>
+            <p>id: {{user.uid_for_client}}</p>
+        </div>
+    </md-card-content>
+</md-card>

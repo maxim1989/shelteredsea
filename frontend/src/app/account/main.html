@@ -1,9 +1,8 @@
 <div class="raw">
-    <md-tab-group
-        class="col-md-9">
+    <md-tab-group class="col-md-8">
         <md-tab>
             <template md-tab-label>
-                <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> Chat
+                <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> Сообщения
             </template>
             <template md-tab-content>
                 <h1>Some tab content</h1>
@@ -12,7 +11,7 @@
         </md-tab>
         <md-tab>
             <template md-tab-label>
-                <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Friends
+                <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Друзья
             </template>
             <template md-tab-content>
                 <account-friendship></account-friendship>
@@ -20,21 +19,20 @@
         </md-tab>
         <md-tab>
             <template md-tab-label>
-                <span class="glyphicon glyphicon-signal" aria-hidden="true"></span> Statistic
+                <span class="glyphicon glyphicon-signal" aria-hidden="true"></span> Статистика
             </template>
             <template md-tab-content>
-                <h1>Some more tab content</h1>
-                <p>...</p>
+                <account-statistic [user]="user"></account-statistic>
             </template>
         </md-tab>
         <md-tab>
             <template md-tab-label>
-                <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Поиск
             </template>
             <template md-tab-content>
                 <account-search></account-search>
             </template>
         </md-tab>
     </md-tab-group>
-    <div class="col-md-3" style="height: 100px; border: 1px solid #333;"></div>
+    <account-card class="col-md-4"></account-card>
 </div>

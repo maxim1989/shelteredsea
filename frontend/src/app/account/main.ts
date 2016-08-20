@@ -1,12 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import { UserService } from '../user/auth.service';
+import { User } from 'app/user/model';
+import { UserService } from 'app/user/auth.service';
 
 @Component({
     selector: 'account',
     templateUrl: './main.html'
 })
 export class AccountComponent implements OnInit{
+    user: User;
 
     constructor(
         private UserService: UserService,
@@ -22,7 +24,7 @@ export class AccountComponent implements OnInit{
     }
 
     initAuthUser() {
-        
+        this.user = this.UserService.getUser();
     }
 
     private redirectToMainPage() {

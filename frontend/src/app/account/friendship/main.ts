@@ -7,7 +7,7 @@ import { FriendshipService } from 'app/user/friendship.service';
     templateUrl: './main.html',
     providers: [FriendshipService],
 })
-export class AccountFriendshipComponent {
+export class AccountFriendshipComponent implements OnInit{
     friendList: User[];
     applicationsToFriends: User[];
 
@@ -23,5 +23,14 @@ export class AccountFriendshipComponent {
                     this.applicationsToFriends = data.applicationsToFriends;
                 }
             );
+    }
+
+    addFriend(user: User) {
+        alert('TODO');
+        // this.FriendshipService.acceptFriendshipWith(uid);
+    }
+    deleteFriend(user: User) {
+        alert('TODO');
+        // this.FriendshipService.acceptFriendshipWith(uid);
     }
 }
