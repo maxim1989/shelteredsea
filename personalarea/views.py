@@ -1,9 +1,8 @@
 import copy
 import datetime
 
+from django.conf import settings
 from django.contrib.auth.models import User
-from rest_framework import permissions
-from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -15,9 +14,6 @@ from personalarea.serializers import FriendsSerializer
 
 
 class FriendsList(APIView):
-    renderer_classes = (JSONRenderer,)
-    permission_classes = (permissions.IsAuthenticated,)
-
     def get(self, request):
         u = request.user.id
         my_friends_uids = [ch.user_friend for ch in Friends.objects.filter(user=u)]
@@ -60,16 +56,13 @@ def invite_friend(chat, me):
 
 
 class FindUser(APIView):
-    renderer_classes = (JSONRenderer,)
-    permission_classes = (permissions.IsAuthenticated,)
-
     def get(self, request, uid_for_client):
         try:
             find_user = AdditionalUuid.objects.get(uid_for_client=uid_for_client)
         except AdditionalUuid.DoesNotExist:
             return Response(list())
         if find_user.user.id == request.user.id:
-            return Response({'success': False, 'exist': True})
+            return Response({'success': False, 'error': settings._ME_ERROR})
         user = User.objects.get(pk=find_user.id)
         serializer = AuthenticatedUserSerializer(user)
         data = copy.deepcopy(serializer.data)
@@ -82,11 +75,11 @@ class FindUser(APIView):
     def post(self, request, uid_for_client):
         try:
             person = AdditionalUuid.objects.get(uid_for_client=uid_for_client)
-        except AdditionalUuid.DoesNotExist:
-            return Response({'success': False, 'exist': False})
+        except AdditionalUuid.DoesNotExist as err:
+            return Response({'success': False, 'error': str(err)})
 
         if person.user.id == request.user.id:
-            return Response({'success': False, 'exist': True})
+            return Response({'success': False, 'error': settings._ME_ERROR})
 
         chat, me = create_chat(request.user.id, person.user.id)
 
@@ -107,17 +100,14 @@ class FindUser(APIView):
 
 
 class Accept(APIView):
-    renderer_classes = (JSONRenderer,)
-    permission_classes = (permissions.IsAuthenticated,)
-
     def post(self, request, uid_for_client):
         try:
             person = AdditionalUuid.objects.get(uid_for_client=uid_for_client)
-        except AdditionalUuid.DoesNotExist:
-            return Response({'success': False, 'exist': False})
+        except AdditionalUuid.DoesNotExist as err:
+            return Response({'success': False, 'error': str(err)})
 
         if person.user.id == request.user.id:
-            return Response({'success': False, 'exist': True})
+            return Response({'success': False, 'error': settings._ME_ERROR})
 
         who_invite = Friends.objects.filter(user_friend=request.user.id).filter(user=person.user.id)[0]
         if request.data.get('accept'):
@@ -135,48 +125,39 @@ class Accept(APIView):
 
 
 class Delete(APIView):
-    renderer_classes = (JSONRenderer,)
-    permission_classes = (permissions.IsAuthenticated,)
-
     def post(self, request, uid_for_client):
         try:
             person = AdditionalUuid.objects.get(uid_for_client=uid_for_client)
-        except AdditionalUuid.DoesNotExist:
-            return Response({'success': False, 'exist': False})
+        except AdditionalUuid.DoesNotExist as err:
+            return Response({'success': False, 'error': str(err)})
 
         if person.user.id == request.user.id:
-            return Response({'success': False, 'exist': True})
+            return Response({'success': False, 'error': settings._ME_ERROR})
 
         delete_from_my_side = Friends.objects.filter(user=request.user.id).filter(user_friend=person.user.id)
         delete_from_his_side = Friends.objects.filter(user_friend=request.user.id).filter(user=person.user.id)
         delete_from_my_side.delete()
         delete_from_his_side.delete()
-        return Response({'success': True, 'created': False, 'exist': True, 'is_friend': False})
+        return Response({'success': True})
 
 
 class Ignore(APIView):
-    renderer_classes = (JSONRenderer,)
-    permission_classes = (permissions.IsAuthenticated,)
-
     def post(self, request, uid_for_client):
         try:
             person = AdditionalUuid.objects.get(uid_for_client=uid_for_client)
-        except AdditionalUuid.DoesNotExist:
-            return Response({'success': False, 'exist': False})
+        except AdditionalUuid.DoesNotExist as err:
+            return Response({'success': False, 'error': str(err)})
 
         if person.user.id == request.user.id:
-            return Response({'success': False, 'exist': True})
+            return Response({'success': False, 'error': settings._ME_ERROR})
 
         ignore_friend = Friends.objects.filter(user=request.user.id).filter(user_friend=person.user.id)[0]
         ignore_friend.is_ignore = True
         ignore_friend.save()
-        return Response({'success': True, 'exist': True})
+        return Response({'success': True})
 
 
 class HallOfFame(APIView):
-    renderer_classes = (JSONRenderer,)
-    permission_classes = (permissions.IsAuthenticated,)
-
     def get(self, request):
         all_users = User.objects.order_by('username').all()
         serializer = AuthenticatedUserSerializer(all_users, many=True)
@@ -184,9 +165,6 @@ class HallOfFame(APIView):
 
 
 class PersonalData(APIView):
-    renderer_classes = (JSONRenderer,)
-    permission_classes = (permissions.IsAuthenticated,)
-
     def get(self, request):
         try:
             me = User.objects.get(pk=request.user.id)

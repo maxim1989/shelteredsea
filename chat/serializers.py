@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import ManyChatsToManyUsersConnector
+from .models import ManyChatsToManyUsersConnector, Message
 
 
 class ManyChatsToManyUsersConnectorSerializer(serializers.ModelSerializer):
@@ -24,3 +24,17 @@ class ManyChatsToManyUsersConnectorSerializer(serializers.ModelSerializer):
     class Meta:
         model = ManyChatsToManyUsersConnector
         fields = ('chat_name', 'chat', 'statistic_name', 'user', 'dispute_name', 'username')
+
+
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = ('message',)
+
+    def create(self, validated_data):
+        message = validated_data.get('message')
+        chat_object = self.context.get('chat_object')
+        user_object = self.context.get('user_object')
+        message_instance = Message(chat=chat_object, user=user_object, message=message)
+        message_instance.save()
+        return message_instance

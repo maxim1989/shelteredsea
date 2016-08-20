@@ -5,13 +5,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from chat.models import Chat, ManyChatsToManyUsersConnector, Message
-from chat.serializers import ManyChatsToManyUsersConnectorSerializer
+from chat.serializers import ManyChatsToManyUsersConnectorSerializer, MessageSerializer
 
 
 class ChatList(APIView):
-    renderer_classes = (JSONRenderer,)
-    permission_classes = (permissions.IsAuthenticated,)
-
     def get(self, request):
         u = request.user.id
         my_chats_uids = [ch.chat for ch in ManyChatsToManyUsersConnector.objects.filter(user=u)]
@@ -24,18 +21,19 @@ class ChatList(APIView):
 
 
 class SendMessage(APIView):
-    renderer_classes = (JSONRenderer,)
-    permission_classes = (permissions.IsAuthenticated,)
-
     def post(self, request, chat):
-        text = request.data.get('text', '')
         try:
-            chat = Chat.objects.get(pk=int(chat))
-            user = User.objects.get(pk=request.user.id)
+            chat_object = Chat.objects.get(pk=int(chat))
+            user_object = User.objects.get(pk=request.user.id)
         except Chat.DoesNotExist as err:
             return Response({'success': False, 'error': str(err)})
         except User.DoesNotExist as err:
             return Response({'success': False, 'error': str(err)})
-        message = Message(chat=chat, user=user, message=text)
-        message.save()
-        return Response({'success': True})
+
+        serializer = MessageSerializer(data=request.data,
+                                       context={'chat_object': chat_object, 'user_object': user_object},
+                                       partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)

@@ -20,7 +20,7 @@ from loginsys.towns import towns
 def add_name(request_object):
     statistic_name = StatisticSame.objects.filter(user=request_object.user.id)
     if not statistic_name:
-        engaged_names = [u.chat_name for u in StatisticSame.objects.all()]
+        engaged_names = [u.name for u in StatisticSame.objects.all()]
         counter = 0
         while True:
             new_name = random.choice(towns)
@@ -85,7 +85,7 @@ class AuthenticatedUser(APIView):
     """
     Получить сведения об авторизированном пользователе
     """
-    renderer_classes = (JSONRenderer,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def get(self, request):
         if request.user.is_authenticated():
