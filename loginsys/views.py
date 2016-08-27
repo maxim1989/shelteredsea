@@ -43,11 +43,20 @@ def add_name(request_object):
 def add_uid(request_object):
     additional_uuid = AdditionalUuid.objects.filter(user=request_object.user.id)
     if not additional_uuid:
-        uid = uuid.uuid1()
-        uid = uid.int
-        uid_for_client = str(uid >> 64)
+        try:
+            max_exists_uuid = AdditionalUuid.objects.order_by('-series').order_by('-number')[0]
+        except IndexError:
+            next_uuid_series = 0
+            next_uuid_number = 0
+        else:
+            if max_exists_uuid.number < 999999:
+                next_uuid_series = max_exists_uuid.series
+                next_uuid_number = max_exists_uuid.number + 1
+            else:
+                next_uuid_series = max_exists_uuid.series + 1
+                next_uuid_number = 0
         user = User.objects.get(pk=request_object.user.id)
-        appended_uuid = AdditionalUuid(uid_for_client=uid_for_client, user=user)
+        appended_uuid = AdditionalUuid(series=next_uuid_series, number=next_uuid_number, user=user)
         appended_uuid.save()
 
 
