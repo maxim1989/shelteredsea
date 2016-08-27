@@ -1,6 +1,4 @@
 from django.contrib.auth.models import User
-from rest_framework import permissions
-from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -21,6 +19,14 @@ class ChatList(APIView):
 
 
 class SendMessage(APIView):
+    def get(self, request, chat):
+        check_user = ManyChatsToManyUsersConnector.objects.filter(chat=int(chat)).filter(user=request.user.id)
+        if not check_user:
+            return Response(list())
+        messages = Message.objects.filter(chat=chat).order_by('creation_datetime')
+        serializer = MessageSerializer(messages, many=True)
+        return Response(serializer.data)
+
     def post(self, request, chat):
         try:
             chat_object = Chat.objects.get(pk=int(chat))

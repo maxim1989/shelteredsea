@@ -26,7 +26,7 @@ class StatisticNameSerializer(serializers.ModelSerializer):
 class AuthenticatedUserSerializer(serializers.ModelSerializer):
     uid_for_client = AdditionalUuidSerializer()
     statistic_name = StatisticNameSerializer()
-    dispute_name = StatisticNameSerializer()
+    dispute_name = DisputeNameSerializer()
 
     class Meta:
         model = User

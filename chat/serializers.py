@@ -1,6 +1,13 @@
 from rest_framework import serializers
 
-from .models import ManyChatsToManyUsersConnector, Message
+from loginsys.serializers import AuthenticatedUserSerializer
+from .models import Chat, ManyChatsToManyUsersConnector, Message
+
+
+class ChatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Chat
+        fields = ('name', 'id')
 
 
 class ManyChatsToManyUsersConnectorSerializer(serializers.ModelSerializer):
@@ -27,9 +34,12 @@ class ManyChatsToManyUsersConnectorSerializer(serializers.ModelSerializer):
 
 
 class MessageSerializer(serializers.ModelSerializer):
+    user = AuthenticatedUserSerializer()
+    chat = ChatSerializer()
+
     class Meta:
         model = Message
-        fields = ('message',)
+        fields = ('id', 'message', 'creation_datetime', 'chat', 'user')
 
     def create(self, validated_data):
         message = validated_data.get('message')
