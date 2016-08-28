@@ -8,7 +8,7 @@ from loginsys.models import AdditionalUuid, DisputeName, StatisticSame
 class AdditionalUuidSerializer(serializers.ModelSerializer):
     class Meta:
         model = AdditionalUuid
-        fields = ('uid_for_client',)
+        fields = ('name',)
 
 
 class DisputeNameSerializer(serializers.ModelSerializer):

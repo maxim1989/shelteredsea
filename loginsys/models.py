@@ -14,7 +14,7 @@ class DisputeName(models.Model):
 
 class AdditionalUuid(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='uid_for_client')
-    uid_for_client = models.CharField(max_length=7, null=True)
+    name = models.CharField(max_length=7, null=True)
     series = models.PositiveIntegerField(null=True)
     number = models.PositiveIntegerField(null=True)
 
@@ -24,5 +24,5 @@ class AdditionalUuid(models.Model):
         while zero_count:
             number = '0' + number
             zero_count -= 1
-        self.uid_for_client = str(self.series) + number
+        self.name = str(self.series) + number
         super(AdditionalUuid, self).save(*args, **kwargs)

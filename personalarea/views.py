@@ -58,7 +58,7 @@ def invite_friend(chat, me):
 class FindUser(APIView):
     def get(self, request, uid_for_client):
         try:
-            find_user = AdditionalUuid.objects.get(uid_for_client=uid_for_client)
+            find_user = AdditionalUuid.objects.get(name=uid_for_client)
         except AdditionalUuid.DoesNotExist:
             return Response(list())
         if find_user.user.id == request.user.id:
@@ -74,7 +74,7 @@ class FindUser(APIView):
 
     def post(self, request, uid_for_client):
         try:
-            person = AdditionalUuid.objects.get(uid_for_client=uid_for_client)
+            person = AdditionalUuid.objects.get(name=uid_for_client)
         except AdditionalUuid.DoesNotExist as err:
             return Response({'success': False, 'error': str(err)})
 
@@ -102,7 +102,7 @@ class FindUser(APIView):
 class Accept(APIView):
     def post(self, request, uid_for_client):
         try:
-            person = AdditionalUuid.objects.get(uid_for_client=uid_for_client)
+            person = AdditionalUuid.objects.get(name=uid_for_client)
         except AdditionalUuid.DoesNotExist as err:
             return Response({'success': False, 'error': str(err)})
 
@@ -127,7 +127,7 @@ class Accept(APIView):
 class Delete(APIView):
     def post(self, request, uid_for_client):
         try:
-            person = AdditionalUuid.objects.get(uid_for_client=uid_for_client)
+            person = AdditionalUuid.objects.get(name=uid_for_client)
         except AdditionalUuid.DoesNotExist as err:
             return Response({'success': False, 'error': str(err)})
 
@@ -144,7 +144,7 @@ class Delete(APIView):
 class Ignore(APIView):
     def post(self, request, uid_for_client):
         try:
-            person = AdditionalUuid.objects.get(uid_for_client=uid_for_client)
+            person = AdditionalUuid.objects.get(name=uid_for_client)
         except AdditionalUuid.DoesNotExist as err:
             return Response({'success': False, 'error': str(err)})
 
