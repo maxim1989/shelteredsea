@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { User } from 'app/user/model';
+import { Chat } from 'app/chat/model';
 import { ChatService } from './service';
 
 @Component({
@@ -8,6 +9,8 @@ import { ChatService } from './service';
     providers: [ChatService],
 })
 export class AccountChatComponent implements OnInit{
+    chatList: Chat[];
+    selectedChat: Chat;
 
     constructor(
         private ChatService: ChatService
@@ -18,12 +21,16 @@ export class AccountChatComponent implements OnInit{
     }
 
     loadChatList() {
-        this.ChatService.getChatList();
-            // .then(
-            //     (data: any) => {
-            //         this.friendList = data.friendList;
-            //         this.applicationsToFriends = data.applicationsToFriends;
-            //     }
-            // );
+        this.ChatService.getChatList()
+            .then(
+                (chatList: Chat[]) => {
+                    this.chatList = chatList;
+                }
+            );
     }
+
+    chooseChat(chat: Chat) {
+        this.selectedChat = chat;
+    }
+
 }

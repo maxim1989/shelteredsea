@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions } from '@angular/http';
 import {Cookie} from 'ng2-cookies/ng2-cookies';
-import { User } from 'app/user/model';
+import { Chat } from 'app/chat/model';
+import { Message } from 'app/chat/message.model';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
@@ -41,13 +42,22 @@ export class ChatService {
             .then(
                 response => {
                     let result = response.json();
+                    return result as Chat[];
+                }
+            )
+            .catch(this.handlerError);
+    }
+
+    getChat(chatId: number) {
+        let url = this.CHAT_URL + chatId;
+        //noinspection TypeScriptUnresolvedFunction
+        return this.http.get( url )
+            .toPromise()
+            .then(
+                response => {
+                    let result = response.json();
                     console.log( result );
-                    // let friendList: User[] = result.my_friends as User[];
-                    // let applicationsToFriends: User[] = result.want_be_their_friend as User[];
-                    // return {
-                    //     friendList: friendList,
-                    //     applicationsToFriends: applicationsToFriends
-                    // };
+                    return result as Message[];
                 }
             )
             .catch(this.handlerError);

@@ -15,6 +15,7 @@ import {StartPageComponent} from './start_module/main';
 import {GameDispute} from './game_dispute_module/main';
 import {AccountComponent} from './account/main';
 import {AccountChatComponent} from './account/chat/main';
+import {AccountChatMessageListComponent} from './account/chat/message-list';
 import {AccountCardComponent} from './account/card/main';
 import {AccountSearchComponent} from './account/search/main';
 import {AccountSearchResultListComponent} from './account/search/result-list';
@@ -37,12 +38,20 @@ import {AccountStatisticComponent} from './account/statistic/main';
         AppComponent,
         StartPageComponent,
         GameDispute,
+
+
         AccountComponent,
+
         AccountChatComponent,
+        AccountChatMessageListComponent,
+
         AccountCardComponent,
+
         AccountSearchComponent,
         AccountSearchResultListComponent,
+
         AccountFriendshipComponent,
+
         AccountStatisticComponent
     ],
     providers: [

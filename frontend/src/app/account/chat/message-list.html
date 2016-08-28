@@ -1,0 +1,9 @@
+<div *ngIf="chat">
+
+</div>
+<div *ngIf="!chat && !isBusy">
+    <em>Выберите собеседника</em>
+</div>
+<div *ngIf="isBusy">
+    <md-progress-bar mode="indeterminate"></md-progress-bar>
+</div>

@@ -1,5 +1,5 @@
 <div *ngIf="!friendList || !applicationsToFriends">
-     <em>Загрузка данных...</em>
+    <md-progress-bar mode="indeterminate"></md-progress-bar>
 </div>
 <div *ngIf="friendList && applicationsToFriends && !friendList.length && !applicationsToFriends.length">
     <em>У вас нет друзей</em>
