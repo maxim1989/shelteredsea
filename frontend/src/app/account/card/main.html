@@ -2,8 +2,8 @@
     <md-card-subtitle>Личные данные</md-card-subtitle>
     <md-card-content>
         <div *ngIf="user">
-            <p>Имя в статистике: <em>{{user.dispute_name}}</em></p>
-            <p>id: {{user.uid_for_client}}</p>
+            <p>Имя в статистике: <em>{{user.statistic_name.name}}</em></p>
+            <p>id: {{user.uid_for_client.name}}</p>
         </div>
     </md-card-content>
 </md-card>

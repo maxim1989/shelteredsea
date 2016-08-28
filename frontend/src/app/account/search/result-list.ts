@@ -16,7 +16,7 @@ export class AccountSearchResultListComponent {
     ) {}
 
     addFriend() {
-        this.FriendshipService.sendFriendRequest(this.user.uid_for_client)
+        this.FriendshipService.sendFriendRequest(this.user.uid_for_client.name)
             .then(
                 () => {
                     alert('TODO Запрос отправлен');

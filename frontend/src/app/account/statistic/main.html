@@ -14,7 +14,7 @@
             <tr *ngFor="let statisticUser of statisticUserList; let i = index"
                     [class.success]="statisticUser.id==user.id">
                 <td>{{i + 1}}</td>
-                <td>{{statisticUser.statistic_name}}</td>
+                <td>{{statisticUser.statistic_name.name}}</td>
             </tr>
         </tbody>
     </table>

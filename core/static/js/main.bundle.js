@@ -4257,13 +4257,13 @@ webpackJsonp([2],{
 	        return (this.user) ? this.user.is_autorized : false;
 	    };
 	    UserService.prototype.getUid = function () {
-	        return (this.user) ? this.user.uid_for_client : "";
+	        return (this.user) ? this.user.uid_for_client.name : "";
 	    };
 	    UserService.prototype.getDisputeName = function () {
-	        return (this.user) ? this.user.dispute_name : "";
+	        return (this.user) ? this.user.dispute_name.name : "";
 	    };
 	    UserService.prototype.getStatisticName = function () {
-	        return (this.user) ? this.user.statistic_name : "";
+	        return (this.user) ? this.user.statistic_name.name : "";
 	    };
 	    UserService.prototype.handlerError = function (error) {
 	        console.error('An error occurred', error);
@@ -6781,7 +6781,7 @@ webpackJsonp([2],{
 	        this.FriendshipService = FriendshipService;
 	    }
 	    AccountSearchResultListComponent.prototype.addFriend = function () {
-	        this.FriendshipService.sendFriendRequest(this.user.uid_for_client)
+	        this.FriendshipService.sendFriendRequest(this.user.uid_for_client.name)
 	            .then(function () {
 	            alert('TODO Запрос отправлен');
 	        });
@@ -7223,7 +7223,7 @@ webpackJsonp([2],{
 /***/ 736:
 /***/ function(module, exports) {
 
-	module.exports = "<md-card>\n    <md-card-subtitle>Личные данные</md-card-subtitle>\n    <md-card-content>\n        <div *ngIf=\"user\">\n            <p>Имя в статистике: <em>{{user.dispute_name}}</em></p>\n            <p>id: {{user.uid_for_client}}</p>\n        </div>\n    </md-card-content>\n</md-card>"
+	module.exports = "<md-card>\n    <md-card-subtitle>Личные данные</md-card-subtitle>\n    <md-card-content>\n        <div *ngIf=\"user\">\n            <p>Имя в статистике: <em>{{user.statistic_name.name}}</em></p>\n            <p>id: {{user.uid_for_client.name}}</p>\n        </div>\n    </md-card-content>\n</md-card>"
 
 /***/ },
 
@@ -7258,7 +7258,7 @@ webpackJsonp([2],{
 /***/ 741:
 /***/ function(module, exports) {
 
-	module.exports = "<div *ngIf=\"!statisticUserList\">\n     <em>Загрузка данных...</em>\n</div>\n<div *ngIf=\"statisticUserList && !statisticUserList.length\">\n    <em>Статистика отсутствует</em>\n</div>\n<div *ngIf=\"statisticUserList && statisticUserList.length\">\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">Место</th>\n            <th>Имя</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let statisticUser of statisticUserList; let i = index\"\n                    [class.success]=\"statisticUser.id==user.id\">\n                <td>{{i + 1}}</td>\n                <td>{{statisticUser.statistic_name}}</td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n"
+	module.exports = "<div *ngIf=\"!statisticUserList\">\n     <em>Загрузка данных...</em>\n</div>\n<div *ngIf=\"statisticUserList && !statisticUserList.length\">\n    <em>Статистика отсутствует</em>\n</div>\n<div *ngIf=\"statisticUserList && statisticUserList.length\">\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">Место</th>\n            <th>Имя</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let statisticUser of statisticUserList; let i = index\"\n                    [class.success]=\"statisticUser.id==user.id\">\n                <td>{{i + 1}}</td>\n                <td>{{statisticUser.statistic_name.name}}</td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n"
 
 /***/ },
 
