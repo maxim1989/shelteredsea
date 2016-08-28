@@ -10,7 +10,7 @@ class FriendsSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField()
 
     def get_uid_for_client(self, obj):
-        return obj.user.uid_for_client.uid_for_client
+        return obj.user.uid_for_client.name
 
     def get_statistic_name(self, obj):
         return obj.user.statistic_name.name
