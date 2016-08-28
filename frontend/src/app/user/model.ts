@@ -9,4 +9,6 @@ export class User {
     dispute_name: Standard;
     statistic_name: Standard;
     uid_for_client: Standard;
+
+    is_busy: boolean = false;
 }

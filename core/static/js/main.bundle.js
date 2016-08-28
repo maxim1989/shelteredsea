@@ -5,7 +5,7 @@ webpackJsonp([2],{
 
 	"use strict";
 	var platform_browser_dynamic_1 = __webpack_require__(372);
-	var app_module_1 = __webpack_require__(567);
+	var app_module_1 = __webpack_require__(570);
 	//noinspection TypeScriptValidateTypes
 	platform_browser_dynamic_1.platformBrowserDynamic().bootstrapModule(app_module_1.AppModule);
 	
@@ -1311,7 +1311,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 94:
+/***/ 95:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1434,7 +1434,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 104:
+/***/ 105:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1510,7 +1510,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 105:
+/***/ 106:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1527,7 +1527,7 @@ webpackJsonp([2],{
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var core_1 = __webpack_require__(1);
-	var async_1 = __webpack_require__(94);
+	var async_1 = __webpack_require__(95);
 	var collection_1 = __webpack_require__(38);
 	var lang_1 = __webpack_require__(25);
 	var model_1 = __webpack_require__(156);
@@ -1652,7 +1652,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 106:
+/***/ 107:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1669,7 +1669,7 @@ webpackJsonp([2],{
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var core_1 = __webpack_require__(1);
-	var async_1 = __webpack_require__(94);
+	var async_1 = __webpack_require__(95);
 	var collection_1 = __webpack_require__(38);
 	var lang_1 = __webpack_require__(25);
 	var validators_1 = __webpack_require__(44);
@@ -1793,7 +1793,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 107:
+/***/ 108:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1811,11 +1811,11 @@ webpackJsonp([2],{
 	};
 	var core_1 = __webpack_require__(1);
 	var validators_1 = __webpack_require__(44);
-	var abstract_form_group_directive_1 = __webpack_require__(104);
+	var abstract_form_group_directive_1 = __webpack_require__(105);
 	var control_container_1 = __webpack_require__(61);
 	var reactive_errors_1 = __webpack_require__(234);
 	var shared_1 = __webpack_require__(62);
-	var form_group_directive_1 = __webpack_require__(106);
+	var form_group_directive_1 = __webpack_require__(107);
 	exports.formGroupNameProvider = {
 	    provide: control_container_1.ControlContainer,
 	    useExisting: core_1.forwardRef(function () { return FormGroupName; })
@@ -2046,9 +2046,9 @@ webpackJsonp([2],{
 	};
 	var core_1 = __webpack_require__(1);
 	var validators_1 = __webpack_require__(44);
-	var abstract_form_group_directive_1 = __webpack_require__(104);
+	var abstract_form_group_directive_1 = __webpack_require__(105);
 	var control_container_1 = __webpack_require__(61);
-	var ng_form_1 = __webpack_require__(105);
+	var ng_form_1 = __webpack_require__(106);
 	var template_driven_errors_1 = __webpack_require__(360);
 	exports.modelGroupProvider = {
 	    provide: control_container_1.ControlContainer,
@@ -2568,7 +2568,7 @@ webpackJsonp([2],{
 	};
 	var PromiseObservable_1 = __webpack_require__(179);
 	var shared_1 = __webpack_require__(62);
-	var async_1 = __webpack_require__(94);
+	var async_1 = __webpack_require__(95);
 	var collection_1 = __webpack_require__(38);
 	var exceptions_1 = __webpack_require__(78);
 	var lang_1 = __webpack_require__(25);
@@ -3502,14 +3502,14 @@ webpackJsonp([2],{
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var core_1 = __webpack_require__(1);
-	var async_1 = __webpack_require__(94);
+	var async_1 = __webpack_require__(95);
 	var model_1 = __webpack_require__(156);
 	var validators_1 = __webpack_require__(44);
-	var abstract_form_group_directive_1 = __webpack_require__(104);
+	var abstract_form_group_directive_1 = __webpack_require__(105);
 	var control_container_1 = __webpack_require__(61);
 	var control_value_accessor_1 = __webpack_require__(43);
 	var ng_control_1 = __webpack_require__(77);
-	var ng_form_1 = __webpack_require__(105);
+	var ng_form_1 = __webpack_require__(106);
 	var ng_model_group_1 = __webpack_require__(152);
 	var shared_1 = __webpack_require__(62);
 	var template_driven_errors_1 = __webpack_require__(360);
@@ -3718,7 +3718,7 @@ webpackJsonp([2],{
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var core_1 = __webpack_require__(1);
-	var async_1 = __webpack_require__(94);
+	var async_1 = __webpack_require__(95);
 	var collection_1 = __webpack_require__(38);
 	var validators_1 = __webpack_require__(44);
 	var control_value_accessor_1 = __webpack_require__(43);
@@ -3816,16 +3816,16 @@ webpackJsonp([2],{
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var core_1 = __webpack_require__(1);
-	var async_1 = __webpack_require__(94);
+	var async_1 = __webpack_require__(95);
 	var validators_1 = __webpack_require__(44);
-	var abstract_form_group_directive_1 = __webpack_require__(104);
+	var abstract_form_group_directive_1 = __webpack_require__(105);
 	var control_container_1 = __webpack_require__(61);
 	var control_value_accessor_1 = __webpack_require__(43);
 	var ng_control_1 = __webpack_require__(77);
 	var reactive_errors_1 = __webpack_require__(234);
 	var shared_1 = __webpack_require__(62);
-	var form_group_directive_1 = __webpack_require__(106);
-	var form_group_name_1 = __webpack_require__(107);
+	var form_group_directive_1 = __webpack_require__(107);
+	var form_group_name_1 = __webpack_require__(108);
 	exports.controlNameBinding = {
 	    provide: ng_control_1.NgControl,
 	    useExisting: core_1.forwardRef(function () { return FormControlName; })
@@ -4225,8 +4225,8 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var http_1 = __webpack_require__(95);
-	__webpack_require__(124);
+	var http_1 = __webpack_require__(79);
+	__webpack_require__(99);
 	var UserService = (function () {
 	    function UserService(http) {
 	        this.http = http;
@@ -4296,15 +4296,15 @@ webpackJsonp([2],{
 	var checkbox_value_accessor_1 = __webpack_require__(150);
 	var default_value_accessor_1 = __webpack_require__(151);
 	var ng_control_status_1 = __webpack_require__(229);
-	var ng_form_1 = __webpack_require__(105);
+	var ng_form_1 = __webpack_require__(106);
 	var ng_model_1 = __webpack_require__(230);
 	var ng_model_group_1 = __webpack_require__(152);
 	var number_value_accessor_1 = __webpack_require__(231);
 	var radio_control_value_accessor_1 = __webpack_require__(153);
 	var form_control_directive_1 = __webpack_require__(232);
 	var form_control_name_1 = __webpack_require__(233);
-	var form_group_directive_1 = __webpack_require__(106);
-	var form_group_name_1 = __webpack_require__(107);
+	var form_group_directive_1 = __webpack_require__(107);
+	var form_group_name_1 = __webpack_require__(108);
 	var select_control_value_accessor_1 = __webpack_require__(154);
 	var select_multiple_control_value_accessor_1 = __webpack_require__(155);
 	var validators_1 = __webpack_require__(235);
@@ -4316,7 +4316,7 @@ webpackJsonp([2],{
 	exports.NgControl = ng_control_1.NgControl;
 	var ng_control_status_2 = __webpack_require__(229);
 	exports.NgControlStatus = ng_control_status_2.NgControlStatus;
-	var ng_form_2 = __webpack_require__(105);
+	var ng_form_2 = __webpack_require__(106);
 	exports.NgForm = ng_form_2.NgForm;
 	var ng_model_2 = __webpack_require__(230);
 	exports.NgModel = ng_model_2.NgModel;
@@ -4330,9 +4330,9 @@ webpackJsonp([2],{
 	exports.FormControlDirective = form_control_directive_2.FormControlDirective;
 	var form_control_name_2 = __webpack_require__(233);
 	exports.FormControlName = form_control_name_2.FormControlName;
-	var form_group_directive_2 = __webpack_require__(106);
+	var form_group_directive_2 = __webpack_require__(107);
 	exports.FormGroupDirective = form_group_directive_2.FormGroupDirective;
-	var form_group_name_2 = __webpack_require__(107);
+	var form_group_name_2 = __webpack_require__(108);
 	exports.FormArrayName = form_group_name_2.FormArrayName;
 	exports.FormGroupName = form_group_name_2.FormGroupName;
 	var select_control_value_accessor_2 = __webpack_require__(154);
@@ -4757,149 +4757,9 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var router_1 = __webpack_require__(244);
-	var auth_service_1 = __webpack_require__(249);
-	var AccountComponent = (function () {
-	    function AccountComponent(UserService, router) {
-	        this.UserService = UserService;
-	        this.router = router;
-	    }
-	    AccountComponent.prototype.ngOnInit = function () {
-	        if (this.UserService.isAutorized()) {
-	            this.initAuthUser();
-	        }
-	        else {
-	            this.redirectToMainPage();
-	        }
-	    };
-	    AccountComponent.prototype.initAuthUser = function () {
-	        this.user = this.UserService.getUser();
-	    };
-	    AccountComponent.prototype.redirectToMainPage = function () {
-	        this.router.navigate(['/']);
-	    };
-	    AccountComponent = __decorate([
-	        core_1.Component({
-	            selector: 'account',
-	            template: __webpack_require__(738)
-	        }), 
-	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object, (typeof (_b = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _b) || Object])
-	    ], AccountComponent);
-	    return AccountComponent;
-	    var _a, _b;
-	}());
-	exports.AccountComponent = AccountComponent;
-	
-
-/***/ },
-
-/***/ 390:
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (this && this.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	var core_1 = __webpack_require__(1);
-	var GameDispute = (function () {
-	    function GameDispute() {
-	    }
-	    GameDispute = __decorate([
-	        core_1.Component({
-	            selector: 'pfg',
-	            pipes: [],
-	            providers: [],
-	            directives: [],
-	            template: __webpack_require__(743)
-	        }), 
-	        __metadata('design:paramtypes', [])
-	    ], GameDispute);
-	    return GameDispute;
-	}());
-	exports.GameDispute = GameDispute;
-	
-
-/***/ },
-
-/***/ 391:
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (this && this.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	var core_1 = __webpack_require__(1);
-	var StartPageComponent = (function () {
-	    function StartPageComponent() {
-	        this.leftLinkState = "";
-	        this.rightLinkState = "";
-	    }
-	    StartPageComponent.prototype.ngOnInit = function () {
-	        this.leftLinkState = 'in-from-left';
-	        this.rightLinkState = 'in-from-right';
-	    };
-	    StartPageComponent = __decorate([
-	        core_1.Component({
-	            selector: 'start_page',
-	            providers: [],
-	            template: __webpack_require__(744),
-	            animations: [
-	                core_1.trigger('pageState', [
-	                    core_1.state('in-from-left', core_1.style({
-	                        transform: 'translateX(0)'
-	                    })),
-	                    core_1.state('in-from-right', core_1.style({
-	                        transform: 'translateX(0)'
-	                    })),
-	                    core_1.transition('void => in-from-left', [
-	                        core_1.style({ transform: 'translateX(-200%)' }),
-	                        core_1.animate('.3s ease-in')
-	                    ]),
-	                    core_1.transition('void => in-from-right', [
-	                        core_1.style({ transform: 'translateX(200%)' }),
-	                        core_1.animate('.3s ease-in')
-	                    ])
-	                ])
-	            ]
-	        }), 
-	        __metadata('design:paramtypes', [])
-	    ], StartPageComponent);
-	    return StartPageComponent;
-	}());
-	exports.StartPageComponent = StartPageComponent;
-	
-
-/***/ },
-
-/***/ 392:
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (this && this.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	var core_1 = __webpack_require__(1);
-	var http_1 = __webpack_require__(95);
-	var ng2_cookies_1 = __webpack_require__(733);
-	__webpack_require__(124);
+	var http_1 = __webpack_require__(79);
+	var ng2_cookies_1 = __webpack_require__(736);
+	__webpack_require__(99);
 	var FriendshipService = (function () {
 	    function FriendshipService(http) {
 	        this.http = http;
@@ -4979,6 +4839,146 @@ webpackJsonp([2],{
 
 /***/ },
 
+/***/ 390:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(1);
+	var router_1 = __webpack_require__(244);
+	var auth_service_1 = __webpack_require__(249);
+	var AccountComponent = (function () {
+	    function AccountComponent(UserService, router) {
+	        this.UserService = UserService;
+	        this.router = router;
+	    }
+	    AccountComponent.prototype.ngOnInit = function () {
+	        if (this.UserService.isAutorized()) {
+	            this.initAuthUser();
+	        }
+	        else {
+	            this.redirectToMainPage();
+	        }
+	    };
+	    AccountComponent.prototype.initAuthUser = function () {
+	        this.user = this.UserService.getUser();
+	    };
+	    AccountComponent.prototype.redirectToMainPage = function () {
+	        this.router.navigate(['/']);
+	    };
+	    AccountComponent = __decorate([
+	        core_1.Component({
+	            selector: 'account',
+	            template: __webpack_require__(742)
+	        }), 
+	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object, (typeof (_b = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _b) || Object])
+	    ], AccountComponent);
+	    return AccountComponent;
+	    var _a, _b;
+	}());
+	exports.AccountComponent = AccountComponent;
+	
+
+/***/ },
+
+/***/ 391:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(1);
+	var GameDispute = (function () {
+	    function GameDispute() {
+	    }
+	    GameDispute = __decorate([
+	        core_1.Component({
+	            selector: 'pfg',
+	            pipes: [],
+	            providers: [],
+	            directives: [],
+	            template: __webpack_require__(747)
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], GameDispute);
+	    return GameDispute;
+	}());
+	exports.GameDispute = GameDispute;
+	
+
+/***/ },
+
+/***/ 392:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(1);
+	var StartPageComponent = (function () {
+	    function StartPageComponent() {
+	        this.leftLinkState = "";
+	        this.rightLinkState = "";
+	    }
+	    StartPageComponent.prototype.ngOnInit = function () {
+	        this.leftLinkState = 'in-from-left';
+	        this.rightLinkState = 'in-from-right';
+	    };
+	    StartPageComponent = __decorate([
+	        core_1.Component({
+	            selector: 'start_page',
+	            providers: [],
+	            template: __webpack_require__(748),
+	            animations: [
+	                core_1.trigger('pageState', [
+	                    core_1.state('in-from-left', core_1.style({
+	                        transform: 'translateX(0)'
+	                    })),
+	                    core_1.state('in-from-right', core_1.style({
+	                        transform: 'translateX(0)'
+	                    })),
+	                    core_1.transition('void => in-from-left', [
+	                        core_1.style({ transform: 'translateX(-200%)' }),
+	                        core_1.animate('.3s ease-in')
+	                    ]),
+	                    core_1.transition('void => in-from-right', [
+	                        core_1.style({ transform: 'translateX(200%)' }),
+	                        core_1.animate('.3s ease-in')
+	                    ])
+	                ])
+	            ]
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], StartPageComponent);
+	    return StartPageComponent;
+	}());
+	exports.StartPageComponent = StartPageComponent;
+	
+
+/***/ },
+
 /***/ 393:
 /***/ function(module, exports) {
 
@@ -4988,6 +4988,7 @@ webpackJsonp([2],{
 	        this.is_autorized = false;
 	        this.is_friend = false;
 	        this.is_ignore = false;
+	        this.is_busy = false;
 	    }
 	    return User;
 	}());
@@ -5000,7 +5001,7 @@ webpackJsonp([2],{
 /***/ function(module, exports, __webpack_require__) {
 
 	// Export all services
-	var cookie_1 = __webpack_require__(734);
+	var cookie_1 = __webpack_require__(737);
 	exports.Cookie = cookie_1.Cookie;
 	//# sourceMappingURL=services.js.map
 
@@ -5163,7 +5164,7 @@ webpackJsonp([2],{
 	exports.REACTIVE_FORM_DIRECTIVES = directives_1.REACTIVE_FORM_DIRECTIVES;
 	var abstract_control_directive_1 = __webpack_require__(228);
 	exports.AbstractControlDirective = abstract_control_directive_1.AbstractControlDirective;
-	var abstract_form_group_directive_1 = __webpack_require__(104);
+	var abstract_form_group_directive_1 = __webpack_require__(105);
 	exports.AbstractFormGroupDirective = abstract_form_group_directive_1.AbstractFormGroupDirective;
 	var checkbox_value_accessor_1 = __webpack_require__(150);
 	exports.CheckboxControlValueAccessor = checkbox_value_accessor_1.CheckboxControlValueAccessor;
@@ -5177,7 +5178,7 @@ webpackJsonp([2],{
 	exports.NgControl = ng_control_1.NgControl;
 	var ng_control_status_1 = __webpack_require__(229);
 	exports.NgControlStatus = ng_control_status_1.NgControlStatus;
-	var ng_form_1 = __webpack_require__(105);
+	var ng_form_1 = __webpack_require__(106);
 	exports.NgForm = ng_form_1.NgForm;
 	var ng_model_1 = __webpack_require__(230);
 	exports.NgModel = ng_model_1.NgModel;
@@ -5187,11 +5188,11 @@ webpackJsonp([2],{
 	exports.FormControlDirective = form_control_directive_1.FormControlDirective;
 	var form_control_name_1 = __webpack_require__(233);
 	exports.FormControlName = form_control_name_1.FormControlName;
-	var form_group_directive_1 = __webpack_require__(106);
+	var form_group_directive_1 = __webpack_require__(107);
 	exports.FormGroupDirective = form_group_directive_1.FormGroupDirective;
-	var form_group_name_1 = __webpack_require__(107);
+	var form_group_name_1 = __webpack_require__(108);
 	exports.FormArrayName = form_group_name_1.FormArrayName;
-	var form_group_name_2 = __webpack_require__(107);
+	var form_group_name_2 = __webpack_require__(108);
 	exports.FormGroupName = form_group_name_2.FormGroupName;
 	var select_control_value_accessor_1 = __webpack_require__(154);
 	exports.NgSelectOption = select_control_value_accessor_1.NgSelectOption;
@@ -5238,7 +5239,7 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var common_1 = __webpack_require__(36);
+	var common_1 = __webpack_require__(34);
 	var field_value_1 = __webpack_require__(551);
 	var ripple_1 = __webpack_require__(556);
 	// TODO(jelbourn): Make the `isMouseDown` stuff done with one global listener.
@@ -6118,7 +6119,7 @@ webpackJsonp([2],{
 	    };
 	    __decorate([
 	        core_1.Input('md-ripple-trigger'), 
-	        __metadata('design:type', HTMLElement)
+	        __metadata('design:type', Object)
 	    ], MdRipple.prototype, "trigger", void 0);
 	    __decorate([
 	        core_1.Input('md-ripple-centered'), 
@@ -6196,6 +6197,132 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
+	var common_1 = __webpack_require__(34);
+	// TODO(josephperrott): Benchpress tests.
+	// TODO(josephperrott): Add ARIA attributes for progressbar "for".
+	/**
+	 * <md-progress-bar> component.
+	 */
+	var MdProgressBar = (function () {
+	    function MdProgressBar() {
+	        /** Value of the progressbar. Defaults to zero. Mirrored to aria-valuenow. */
+	        this._value = 0;
+	        /** Buffer value of the progress bar. Defaults to zero. */
+	        this._bufferValue = 0;
+	        /**
+	         * Mode of the progress bar.
+	         *
+	         * Input must be one of these values: determinate, indeterminate, buffer, query, defaults to
+	         * 'determinate'.
+	         * Mirrored to mode attribute.
+	         */
+	        this.mode = 'determinate';
+	    }
+	    Object.defineProperty(MdProgressBar.prototype, "value", {
+	        get: function () {
+	            return this._value;
+	        },
+	        set: function (v) {
+	            this._value = clamp(v || 0);
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(MdProgressBar.prototype, "bufferValue", {
+	        get: function () {
+	            return this._bufferValue;
+	        },
+	        set: function (v) {
+	            this._bufferValue = clamp(v || 0);
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    /** Gets the current transform value for the progress bar's primary indicator. */
+	    MdProgressBar.prototype._primaryTransform = function () {
+	        var scale = this.value / 100;
+	        return { transform: "scaleX(" + scale + ")" };
+	    };
+	    /**
+	     * Gets the current transform value for the progress bar's buffer indicator.  Only used if the
+	     * progress mode is set to buffer, otherwise returns an undefined, causing no transformation.
+	     */
+	    MdProgressBar.prototype._bufferTransform = function () {
+	        if (this.mode == 'buffer') {
+	            var scale = this.bufferValue / 100;
+	            return { transform: "scaleX(" + scale + ")" };
+	        }
+	    };
+	    __decorate([
+	        core_1.Input(),
+	        core_1.HostBinding('attr.aria-valuenow'), 
+	        __metadata('design:type', Object)
+	    ], MdProgressBar.prototype, "value", null);
+	    __decorate([
+	        core_1.Input(), 
+	        __metadata('design:type', Object)
+	    ], MdProgressBar.prototype, "bufferValue", null);
+	    __decorate([
+	        core_1.Input(),
+	        core_1.HostBinding('attr.mode'), 
+	        __metadata('design:type', Object)
+	    ], MdProgressBar.prototype, "mode", void 0);
+	    MdProgressBar = __decorate([
+	        core_1.Component({            selector: 'md-progress-bar',
+	            host: {
+	                'role': 'progressbar',
+	                'aria-valuemin': '0',
+	                'aria-valuemax': '100',
+	            },
+	            template: "<!-- The background div is named as such because it appears below the other divs and is not sized based on values. --> <div class=\"md-progress-bar-background\"></div> <div class=\"md-progress-bar-buffer\" [ngStyle]=\"_bufferTransform()\"></div> <div class=\"md-progress-bar-primary md-progress-bar-fill\" [ngStyle]=\"_primaryTransform()\"></div> <div class=\"md-progress-bar-secondary md-progress-bar-fill\"></div> ",
+	            styles: ["/** In buffer mode a repeated SVG object is used as a background.  Each of the following defines the SVG object for each of the class defined colors. Each string is a URL encoded version of: <svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\" x=\"0px\" y=\"0px\" enable-background=\"new 0 0 5 2\" xml:space=\"preserve\" viewBox=\"0 0 5 2\" preserveAspectRatio=\"none slice\"> <circle cx=\"1\" cy=\"1\" r=\"1\" fill=\"{INJECTED_COLOR}\"/> </svg> */ :host { display: block; height: 5px; overflow: hidden; position: relative; -webkit-transform: translateZ(0); transform: translateZ(0); -webkit-transition: opacity 250ms linear; transition: opacity 250ms linear; width: 100%; /** * The progress bar buffer is the bar indicator showing the buffer value and is only visible beyond the current value * of the primary progress bar. */ /** * The secondary progress bar is only used in the indeterminate animation, because of this it is hidden in other uses. */ /** * The progress bar fill fills the progress bar with the indicator color. */ /** * A pseudo element is created for each progress bar bar that fills with the indicator color. */ } :host .md-progress-bar-background { background: url(\"data:image/svg+xml;charset=UTF-8,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20x%3D%270px%27%20y%3D%270px%27%20enable-background%3D%27new%200%200%205%202%27%20xml%3Aspace%3D%27preserve%27%20viewBox%3D%270%200%205%202%27%20preserveAspectRatio%3D%27none%20slice%27%3E%3Ccircle%20cx%3D%271%27%20cy%3D%271%27%20r%3D%271%27%20fill%3D%27#b2dfdb%27%2F%3E%3C%2Fsvg%3E\"); background-repeat: repeat-x; background-size: 10px 4px; height: 100%; position: absolute; visibility: hidden; width: 100%; } :host .md-progress-bar-buffer { background-color: #b2dfdb; height: 100%; position: absolute; -webkit-transform-origin: top left; transform-origin: top left; -webkit-transition: -webkit-transform 250ms ease; transition: -webkit-transform 250ms ease; transition: transform 250ms ease; transition: transform 250ms ease, -webkit-transform 250ms ease; width: 100%; } :host .md-progress-bar-secondary { visibility: hidden; } :host .md-progress-bar-fill { -webkit-animation: none; animation: none; height: 100%; position: absolute; -webkit-transform-origin: top left; transform-origin: top left; -webkit-transition: -webkit-transform 250ms ease; transition: -webkit-transform 250ms ease; transition: transform 250ms ease; transition: transform 250ms ease, -webkit-transform 250ms ease; width: 100%; } :host .md-progress-bar-fill::after { -webkit-animation: none; animation: none; background-color: #00897b; content: ''; display: inline-block; height: 100%; position: absolute; width: 100%; } :host[color='accent'] .md-progress-bar-background { background: url(\"data:image/svg+xml;charset=UTF-8,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20x%3D%270px%27%20y%3D%270px%27%20enable-background%3D%27new%200%200%205%202%27%20xml%3Aspace%3D%27preserve%27%20viewBox%3D%270%200%205%202%27%20preserveAspectRatio%3D%27none%20slice%27%3E%3Ccircle%20cx%3D%271%27%20cy%3D%271%27%20r%3D%271%27%20fill%3D%27#e1bee7%27%2F%3E%3C%2Fsvg%3E\"); background-repeat: repeat-x; background-size: 10px 4px; } :host[color='accent'] .md-progress-bar-buffer { background-color: #e1bee7; } :host[color='accent'] .md-progress-bar-fill::after { background-color: #8e24aa; } :host[color='warn'] .md-progress-bar-background { background: url(\"data:image/svg+xml;charset=UTF-8,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20x%3D%270px%27%20y%3D%270px%27%20enable-background%3D%27new%200%200%205%202%27%20xml%3Aspace%3D%27preserve%27%20viewBox%3D%270%200%205%202%27%20preserveAspectRatio%3D%27none%20slice%27%3E%3Ccircle%20cx%3D%271%27%20cy%3D%271%27%20r%3D%271%27%20fill%3D%27#ffcdd2%27%2F%3E%3C%2Fsvg%3E\"); background-repeat: repeat-x; background-size: 10px 4px; } :host[color='warn'] .md-progress-bar-buffer { background-color: #ffcdd2; } :host[color='warn'] .md-progress-bar-fill::after { background-color: #e53935; } :host[mode='query'] { -webkit-transform: rotateZ(180deg); transform: rotateZ(180deg); } :host[mode='indeterminate'] .md-progress-bar-fill, :host[mode='query'] .md-progress-bar-fill { -webkit-transition: none; transition: none; } :host[mode='indeterminate'] .md-progress-bar-primary, :host[mode='query'] .md-progress-bar-primary { -webkit-animation: md-progress-bar-primary-indeterminate-translate 2000ms infinite linear; animation: md-progress-bar-primary-indeterminate-translate 2000ms infinite linear; left: -145.166611%; } :host[mode='indeterminate'] .md-progress-bar-primary.md-progress-bar-fill::after, :host[mode='query'] .md-progress-bar-primary.md-progress-bar-fill::after { -webkit-animation: md-progress-bar-primary-indeterminate-scale 2000ms infinite linear; animation: md-progress-bar-primary-indeterminate-scale 2000ms infinite linear; } :host[mode='indeterminate'] .md-progress-bar-secondary, :host[mode='query'] .md-progress-bar-secondary { -webkit-animation: md-progress-bar-secondary-indeterminate-translate 2000ms infinite linear; animation: md-progress-bar-secondary-indeterminate-translate 2000ms infinite linear; left: -54.888891%; visibility: visible; } :host[mode='indeterminate'] .md-progress-bar-secondary.md-progress-bar-fill::after, :host[mode='query'] .md-progress-bar-secondary.md-progress-bar-fill::after { -webkit-animation: md-progress-bar-secondary-indeterminate-scale 2000ms infinite linear; animation: md-progress-bar-secondary-indeterminate-scale 2000ms infinite linear; } :host[mode='buffer'] .md-progress-bar-background { -webkit-animation: md-progress-bar-background-scroll 250ms infinite linear; animation: md-progress-bar-background-scroll 250ms infinite linear; visibility: visible; } :host-context([dir='rtl']) { -webkit-transform: rotateY(180deg); transform: rotateY(180deg); } /** The values used for animations in md-progress-bar, both timing and transformation, can be considered magic values. They are sourced from the Material Design example spec and duplicate the values of the original designers definitions. The indeterminate state is essentially made up of two progress bars, one primary (the one that is shown in both the determinate and indeterminate states) and one secondary, which essentially mirrors the primary progress bar in appearance but is only shown to assist with the indeterminate animations. KEYFRAME BLOCK	                    DESCRIPTION primary-indeterminate-translate     Translation of the primary progressbar across the screen primary-indeterminate-scale         Scaling of the primary progressbar as it's being translated across the screen secondary-indeterminate-translate   Translation of the secondary progressbar across the screen secondary-indeterminate-scale       Scaling of the secondary progressbar as it's being translated across the screen Because two different transform animations need to be applied at once, the translation is applied to the outer element and the scaling is applied to the inner element, which provides the illusion necessary to make the animation work. */ /** Animations for indeterminate and query mode. */ @-webkit-keyframes md-progress-bar-primary-indeterminate-translate { 0% { -webkit-transform: translateX(0); transform: translateX(0); } 20% { -webkit-animation-timing-function: cubic-bezier(0.5, 0, 0.70173, 0.49582); animation-timing-function: cubic-bezier(0.5, 0, 0.70173, 0.49582); -webkit-transform: translateX(0); transform: translateX(0); } 59.15% { -webkit-animation-timing-function: cubic-bezier(0.30244, 0.38135, 0.55, 0.95635); animation-timing-function: cubic-bezier(0.30244, 0.38135, 0.55, 0.95635); -webkit-transform: translateX(83.67142%); transform: translateX(83.67142%); } 100% { -webkit-transform: translateX(200.61106%); transform: translateX(200.61106%); } } @keyframes md-progress-bar-primary-indeterminate-translate { 0% { -webkit-transform: translateX(0); transform: translateX(0); } 20% { -webkit-animation-timing-function: cubic-bezier(0.5, 0, 0.70173, 0.49582); animation-timing-function: cubic-bezier(0.5, 0, 0.70173, 0.49582); -webkit-transform: translateX(0); transform: translateX(0); } 59.15% { -webkit-animation-timing-function: cubic-bezier(0.30244, 0.38135, 0.55, 0.95635); animation-timing-function: cubic-bezier(0.30244, 0.38135, 0.55, 0.95635); -webkit-transform: translateX(83.67142%); transform: translateX(83.67142%); } 100% { -webkit-transform: translateX(200.61106%); transform: translateX(200.61106%); } } @-webkit-keyframes md-progress-bar-primary-indeterminate-scale { 0% { -webkit-transform: scaleX(0.08); transform: scaleX(0.08); } 36.65% { -webkit-animation-timing-function: cubic-bezier(0.33473, 0.12482, 0.78584, 1); animation-timing-function: cubic-bezier(0.33473, 0.12482, 0.78584, 1); -webkit-transform: scaleX(0.08); transform: scaleX(0.08); } 69.15% { -webkit-animation-timing-function: cubic-bezier(0.06, 0.11, 0.6, 1); animation-timing-function: cubic-bezier(0.06, 0.11, 0.6, 1); -webkit-transform: scaleX(0.66148); transform: scaleX(0.66148); } 100% { -webkit-transform: scaleX(0.08); transform: scaleX(0.08); } } @keyframes md-progress-bar-primary-indeterminate-scale { 0% { -webkit-transform: scaleX(0.08); transform: scaleX(0.08); } 36.65% { -webkit-animation-timing-function: cubic-bezier(0.33473, 0.12482, 0.78584, 1); animation-timing-function: cubic-bezier(0.33473, 0.12482, 0.78584, 1); -webkit-transform: scaleX(0.08); transform: scaleX(0.08); } 69.15% { -webkit-animation-timing-function: cubic-bezier(0.06, 0.11, 0.6, 1); animation-timing-function: cubic-bezier(0.06, 0.11, 0.6, 1); -webkit-transform: scaleX(0.66148); transform: scaleX(0.66148); } 100% { -webkit-transform: scaleX(0.08); transform: scaleX(0.08); } } @-webkit-keyframes md-progress-bar-secondary-indeterminate-translate { 0% { -webkit-animation-timing-function: cubic-bezier(0.15, 0, 0.51506, 0.40969); animation-timing-function: cubic-bezier(0.15, 0, 0.51506, 0.40969); -webkit-transform: translateX(0); transform: translateX(0); } 25% { -webkit-animation-timing-function: cubic-bezier(0.31033, 0.28406, 0.8, 0.73371); animation-timing-function: cubic-bezier(0.31033, 0.28406, 0.8, 0.73371); -webkit-transform: translateX(37.65191%); transform: translateX(37.65191%); } 48.35% { -webkit-animation-timing-function: cubic-bezier(0.4, 0.62704, 0.6, 0.90203); animation-timing-function: cubic-bezier(0.4, 0.62704, 0.6, 0.90203); -webkit-transform: translateX(84.38617%); transform: translateX(84.38617%); } 100% { -webkit-transform: translateX(160.27778%); transform: translateX(160.27778%); } } @keyframes md-progress-bar-secondary-indeterminate-translate { 0% { -webkit-animation-timing-function: cubic-bezier(0.15, 0, 0.51506, 0.40969); animation-timing-function: cubic-bezier(0.15, 0, 0.51506, 0.40969); -webkit-transform: translateX(0); transform: translateX(0); } 25% { -webkit-animation-timing-function: cubic-bezier(0.31033, 0.28406, 0.8, 0.73371); animation-timing-function: cubic-bezier(0.31033, 0.28406, 0.8, 0.73371); -webkit-transform: translateX(37.65191%); transform: translateX(37.65191%); } 48.35% { -webkit-animation-timing-function: cubic-bezier(0.4, 0.62704, 0.6, 0.90203); animation-timing-function: cubic-bezier(0.4, 0.62704, 0.6, 0.90203); -webkit-transform: translateX(84.38617%); transform: translateX(84.38617%); } 100% { -webkit-transform: translateX(160.27778%); transform: translateX(160.27778%); } } @-webkit-keyframes md-progress-bar-secondary-indeterminate-scale { 0% { -webkit-animation-timing-function: cubic-bezier(0.15, 0, 0.51506, 0.40969); animation-timing-function: cubic-bezier(0.15, 0, 0.51506, 0.40969); -webkit-transform: scaleX(0.08); transform: scaleX(0.08); } 19.15% { -webkit-animation-timing-function: cubic-bezier(0.31033, 0.28406, 0.8, 0.73371); animation-timing-function: cubic-bezier(0.31033, 0.28406, 0.8, 0.73371); -webkit-transform: scaleX(0.4571); transform: scaleX(0.4571); } 44.15% { -webkit-animation-timing-function: cubic-bezier(0.4, 0.62704, 0.6, 0.90203); animation-timing-function: cubic-bezier(0.4, 0.62704, 0.6, 0.90203); -webkit-transform: scaleX(0.72796); transform: scaleX(0.72796); } 100% { -webkit-transform: scaleX(0.08); transform: scaleX(0.08); } } @keyframes md-progress-bar-secondary-indeterminate-scale { 0% { -webkit-animation-timing-function: cubic-bezier(0.15, 0, 0.51506, 0.40969); animation-timing-function: cubic-bezier(0.15, 0, 0.51506, 0.40969); -webkit-transform: scaleX(0.08); transform: scaleX(0.08); } 19.15% { -webkit-animation-timing-function: cubic-bezier(0.31033, 0.28406, 0.8, 0.73371); animation-timing-function: cubic-bezier(0.31033, 0.28406, 0.8, 0.73371); -webkit-transform: scaleX(0.4571); transform: scaleX(0.4571); } 44.15% { -webkit-animation-timing-function: cubic-bezier(0.4, 0.62704, 0.6, 0.90203); animation-timing-function: cubic-bezier(0.4, 0.62704, 0.6, 0.90203); -webkit-transform: scaleX(0.72796); transform: scaleX(0.72796); } 100% { -webkit-transform: scaleX(0.08); transform: scaleX(0.08); } } /** Animation for buffer mode. */ @-webkit-keyframes md-progress-bar-background-scroll { to { -webkit-transform: translateX(-10px); transform: translateX(-10px); } } @keyframes md-progress-bar-background-scroll { to { -webkit-transform: translateX(-10px); transform: translateX(-10px); } } "],
+	            changeDetection: core_1.ChangeDetectionStrategy.OnPush,
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], MdProgressBar);
+	    return MdProgressBar;
+	}());
+	exports.MdProgressBar = MdProgressBar;
+	/** Clamps a value to be between two numbers, by default 0 and 100. */
+	function clamp(v, min, max) {
+	    if (min === void 0) { min = 0; }
+	    if (max === void 0) { max = 100; }
+	    return Math.max(min, Math.min(max, v));
+	}
+	/** @deprecated */
+	exports.MD_PROGRESS_BAR_DIRECTIVES = [MdProgressBar];
+	var MdProgressBarModule = (function () {
+	    function MdProgressBarModule() {
+	    }
+	    MdProgressBarModule = __decorate([
+	        core_1.NgModule({
+	            imports: [common_1.CommonModule],
+	            exports: exports.MD_PROGRESS_BAR_DIRECTIVES,
+	            declarations: exports.MD_PROGRESS_BAR_DIRECTIVES,
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], MdProgressBarModule);
+	    return MdProgressBarModule;
+	}());
+	exports.MdProgressBarModule = MdProgressBarModule;
+	//# sourceMappingURL=progress-bar.js.map
+
+/***/ },
+
+/***/ 558:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(1);
 	/** The ink-bar is used to display and animate the line underneath the current active tab label. */
 	var MdInkBar = (function () {
 	    function MdInkBar(_renderer, _elementRef) {
@@ -6239,7 +6366,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 558:
+/***/ 559:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6278,7 +6405,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 559:
+/***/ 560:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6316,7 +6443,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 560:
+/***/ 561:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6355,7 +6482,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 561:
+/***/ 562:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6369,12 +6496,12 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var common_1 = __webpack_require__(36);
+	var common_1 = __webpack_require__(34);
 	var portal_directives_1 = __webpack_require__(248);
-	var tab_label_1 = __webpack_require__(560);
-	var tab_content_1 = __webpack_require__(558);
-	var tab_label_wrapper_1 = __webpack_require__(559);
-	var ink_bar_1 = __webpack_require__(557);
+	var tab_label_1 = __webpack_require__(561);
+	var tab_content_1 = __webpack_require__(559);
+	var tab_label_wrapper_1 = __webpack_require__(560);
+	var ink_bar_1 = __webpack_require__(558);
 	var Observable_1 = __webpack_require__(7);
 	__webpack_require__(273);
 	// Due to a bug in the ChromeDriver, Angular 2 keyboard events are not triggered by `sendKeys`
@@ -6615,7 +6742,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 562:
+/***/ 563:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6640,7 +6767,7 @@ webpackJsonp([2],{
 	    AccountCardComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-card',
-	            template: __webpack_require__(736),
+	            template: __webpack_require__(739),
 	            providers: [],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object])
@@ -6649,57 +6776,6 @@ webpackJsonp([2],{
 	    var _a;
 	}());
 	exports.AccountCardComponent = AccountCardComponent;
-	
-
-/***/ },
-
-/***/ 563:
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (this && this.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	var core_1 = __webpack_require__(1);
-	var friendship_service_1 = __webpack_require__(392);
-	var AccountFriendshipComponent = (function () {
-	    function AccountFriendshipComponent(FriendshipService) {
-	        this.FriendshipService = FriendshipService;
-	    }
-	    AccountFriendshipComponent.prototype.ngOnInit = function () {
-	        var _this = this;
-	        this.FriendshipService.getFriendList()
-	            .then(function (data) {
-	            _this.friendList = data.friendList;
-	            _this.applicationsToFriends = data.applicationsToFriends;
-	        });
-	    };
-	    AccountFriendshipComponent.prototype.addFriend = function (user) {
-	        alert('TODO');
-	        // this.FriendshipService.acceptFriendshipWith(uid);
-	    };
-	    AccountFriendshipComponent.prototype.deleteFriend = function (user) {
-	        alert('TODO');
-	        // this.FriendshipService.acceptFriendshipWith(uid);
-	    };
-	    AccountFriendshipComponent = __decorate([
-	        core_1.Component({
-	            selector: 'account-friendship',
-	            template: __webpack_require__(737),
-	            providers: [friendship_service_1.FriendshipService],
-	        }), 
-	        __metadata('design:paramtypes', [(typeof (_a = typeof friendship_service_1.FriendshipService !== 'undefined' && friendship_service_1.FriendshipService) === 'function' && _a) || Object])
-	    ], AccountFriendshipComponent);
-	    return AccountFriendshipComponent;
-	    var _a;
-	}());
-	exports.AccountFriendshipComponent = AccountFriendshipComponent;
 	
 
 /***/ },
@@ -6718,7 +6794,185 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var search_service_1 = __webpack_require__(570);
+	var service_1 = __webpack_require__(565);
+	var AccountChatComponent = (function () {
+	    function AccountChatComponent(ChatService) {
+	        this.ChatService = ChatService;
+	    }
+	    AccountChatComponent.prototype.ngOnInit = function () {
+	        this.loadChatList();
+	    };
+	    AccountChatComponent.prototype.loadChatList = function () {
+	        this.ChatService.getChatList();
+	        // .then(
+	        //     (data: any) => {
+	        //         this.friendList = data.friendList;
+	        //         this.applicationsToFriends = data.applicationsToFriends;
+	        //     }
+	        // );
+	    };
+	    AccountChatComponent = __decorate([
+	        core_1.Component({
+	            selector: 'account-chat',
+	            template: __webpack_require__(740),
+	            providers: [service_1.ChatService],
+	        }), 
+	        __metadata('design:paramtypes', [(typeof (_a = typeof service_1.ChatService !== 'undefined' && service_1.ChatService) === 'function' && _a) || Object])
+	    ], AccountChatComponent);
+	    return AccountChatComponent;
+	    var _a;
+	}());
+	exports.AccountChatComponent = AccountChatComponent;
+	
+
+/***/ },
+
+/***/ 565:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(1);
+	var http_1 = __webpack_require__(79);
+	__webpack_require__(99);
+	var ChatService = (function () {
+	    function ChatService(http) {
+	        this.http = http;
+	        this.CHAT_URL = 'chat/';
+	    }
+	    // sendFriendRequest(ID : string) {
+	    //     let url = this.FRIENDSHIP_URL + ID;
+	    //     let headers = new Headers({
+	    //         'Content-Type': 'application/json',
+	    //         'X-CSRFToken': Cookie.get('csrftoken')
+	    //     });
+	    //     let options = new RequestOptions({ headers: headers });
+	    //     //noinspection TypeScriptUnresolvedFunction
+	    //     return this.http.post(url, '{}', options)
+	    //         .toPromise()
+	    //         .then(
+	    //             response => {
+	    //                 let result = response.json();
+	    //                 console.log(result);
+	    //                 // return result as User[];
+	    //             },
+	    //             error => {
+	    //                 console.log(error);
+	    //                 return [];
+	    //             }
+	    //         )
+	    //         .catch(this.handlerError);
+	    // }
+	    ChatService.prototype.getChatList = function () {
+	        //noinspection TypeScriptUnresolvedFunction
+	        return this.http.get(this.CHAT_URL)
+	            .toPromise()
+	            .then(function (response) {
+	            var result = response.json();
+	            console.log(result);
+	            // let friendList: User[] = result.my_friends as User[];
+	            // let applicationsToFriends: User[] = result.want_be_their_friend as User[];
+	            // return {
+	            //     friendList: friendList,
+	            //     applicationsToFriends: applicationsToFriends
+	            // };
+	        })
+	            .catch(this.handlerError);
+	    };
+	    ChatService.prototype.handlerError = function (error) {
+	        console.error('An error occurred', error);
+	        return Promise.reject(error.message || error);
+	    };
+	    ChatService = __decorate([
+	        core_1.Injectable(), 
+	        __metadata('design:paramtypes', [(typeof (_a = typeof http_1.Http !== 'undefined' && http_1.Http) === 'function' && _a) || Object])
+	    ], ChatService);
+	    return ChatService;
+	    var _a;
+	}());
+	exports.ChatService = ChatService;
+	
+
+/***/ },
+
+/***/ 566:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(1);
+	var service_1 = __webpack_require__(389);
+	var AccountFriendshipComponent = (function () {
+	    function AccountFriendshipComponent(FriendshipService) {
+	        this.FriendshipService = FriendshipService;
+	    }
+	    AccountFriendshipComponent.prototype.ngOnInit = function () {
+	        this.loadFriendList();
+	    };
+	    AccountFriendshipComponent.prototype.loadFriendList = function () {
+	        var _this = this;
+	        this.FriendshipService.getFriendList()
+	            .then(function (data) {
+	            _this.friendList = data.friendList;
+	            _this.applicationsToFriends = data.applicationsToFriends;
+	        });
+	    };
+	    AccountFriendshipComponent.prototype.addFriend = function (user) {
+	        console.log(user);
+	        alert('TODO');
+	        // this.FriendshipService.acceptFriendshipWith(uid);
+	    };
+	    AccountFriendshipComponent.prototype.deleteFriend = function (user) {
+	        alert('TODO');
+	        // this.FriendshipService.acceptFriendshipWith(uid);
+	    };
+	    AccountFriendshipComponent = __decorate([
+	        core_1.Component({
+	            selector: 'account-friendship',
+	            template: __webpack_require__(741),
+	            providers: [service_1.FriendshipService],
+	        }), 
+	        __metadata('design:paramtypes', [(typeof (_a = typeof service_1.FriendshipService !== 'undefined' && service_1.FriendshipService) === 'function' && _a) || Object])
+	    ], AccountFriendshipComponent);
+	    return AccountFriendshipComponent;
+	    var _a;
+	}());
+	exports.AccountFriendshipComponent = AccountFriendshipComponent;
+	
+
+/***/ },
+
+/***/ 567:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(1);
+	var search_service_1 = __webpack_require__(573);
 	var AccountSearchComponent = (function () {
 	    function AccountSearchComponent(SearchUserService) {
 	        this.SearchUserService = SearchUserService;
@@ -6747,7 +7001,7 @@ webpackJsonp([2],{
 	    AccountSearchComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-search',
-	            template: __webpack_require__(739),
+	            template: __webpack_require__(743),
 	            providers: [search_service_1.SearchUserService],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof search_service_1.SearchUserService !== 'undefined' && search_service_1.SearchUserService) === 'function' && _a) || Object])
@@ -6760,7 +7014,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 565:
+/***/ 568:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6774,17 +7028,23 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var friendship_service_1 = __webpack_require__(392);
+	var service_1 = __webpack_require__(389);
 	var model_1 = __webpack_require__(393);
 	var AccountSearchResultListComponent = (function () {
 	    function AccountSearchResultListComponent(FriendshipService) {
 	        this.FriendshipService = FriendshipService;
 	    }
 	    AccountSearchResultListComponent.prototype.addFriend = function () {
+	        var _this = this;
+	        this.user.is_busy = true;
 	        this.FriendshipService.sendFriendRequest(this.user.uid_for_client.name)
 	            .then(function () {
-	            alert('TODO Запрос отправлен');
+	            _this.successAddFriend();
 	        });
+	    };
+	    AccountSearchResultListComponent.prototype.successAddFriend = function () {
+	        this.user.is_busy = false;
+	        this.user.is_friend = true;
 	    };
 	    __decorate([
 	        core_1.Input(), 
@@ -6797,10 +7057,10 @@ webpackJsonp([2],{
 	    AccountSearchResultListComponent = __decorate([
 	        core_1.Component({
 	            selector: 'search-result-list',
-	            template: __webpack_require__(740),
-	            providers: [friendship_service_1.FriendshipService]
+	            template: __webpack_require__(744),
+	            providers: [service_1.FriendshipService]
 	        }), 
-	        __metadata('design:paramtypes', [(typeof (_b = typeof friendship_service_1.FriendshipService !== 'undefined' && friendship_service_1.FriendshipService) === 'function' && _b) || Object])
+	        __metadata('design:paramtypes', [(typeof (_b = typeof service_1.FriendshipService !== 'undefined' && service_1.FriendshipService) === 'function' && _b) || Object])
 	    ], AccountSearchResultListComponent);
 	    return AccountSearchResultListComponent;
 	    var _a, _b;
@@ -6810,7 +7070,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 566:
+/***/ 569:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6825,7 +7085,7 @@ webpackJsonp([2],{
 	};
 	var core_1 = __webpack_require__(1);
 	var model_1 = __webpack_require__(393);
-	var statistic_service_1 = __webpack_require__(571);
+	var statistic_service_1 = __webpack_require__(574);
 	var AccountStatisticComponent = (function () {
 	    function AccountStatisticComponent(StatisticService) {
 	        this.StatisticService = StatisticService;
@@ -6844,7 +7104,7 @@ webpackJsonp([2],{
 	    AccountStatisticComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-statistic',
-	            template: __webpack_require__(741),
+	            template: __webpack_require__(745),
 	            providers: [statistic_service_1.StatisticService],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_b = typeof statistic_service_1.StatisticService !== 'undefined' && statistic_service_1.StatisticService) === 'function' && _b) || Object])
@@ -6857,7 +7117,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 567:
+/***/ 570:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6873,20 +7133,22 @@ webpackJsonp([2],{
 	var core_1 = __webpack_require__(1);
 	var platform_browser_1 = __webpack_require__(96);
 	var forms_1 = __webpack_require__(505);
-	var http_1 = __webpack_require__(95);
+	var http_1 = __webpack_require__(79);
 	var button_1 = __webpack_require__(549);
-	var tabs_1 = __webpack_require__(561);
+	var tabs_1 = __webpack_require__(562);
 	var card_1 = __webpack_require__(550);
-	var app_1 = __webpack_require__(568);
-	var routes_1 = __webpack_require__(569);
-	var main_1 = __webpack_require__(391);
-	var main_2 = __webpack_require__(390);
-	var main_3 = __webpack_require__(389);
-	var main_4 = __webpack_require__(562);
-	var main_5 = __webpack_require__(564);
-	var result_list_1 = __webpack_require__(565);
-	var main_6 = __webpack_require__(563);
+	var progress_bar_1 = __webpack_require__(557);
+	var app_1 = __webpack_require__(571);
+	var routes_1 = __webpack_require__(572);
+	var main_1 = __webpack_require__(392);
+	var main_2 = __webpack_require__(391);
+	var main_3 = __webpack_require__(390);
+	var main_4 = __webpack_require__(564);
+	var main_5 = __webpack_require__(563);
+	var main_6 = __webpack_require__(567);
+	var result_list_1 = __webpack_require__(568);
 	var main_7 = __webpack_require__(566);
+	var main_8 = __webpack_require__(569);
 	var AppModule = (function () {
 	    function AppModule() {
 	    }
@@ -6899,18 +7161,20 @@ webpackJsonp([2],{
 	                http_1.HttpModule,
 	                button_1.MdButtonModule,
 	                tabs_1.MdTabsModule,
-	                card_1.MdCardModule
+	                card_1.MdCardModule,
+	                progress_bar_1.MdProgressBarModule
 	            ],
 	            declarations: [
 	                app_1.AppComponent,
 	                main_1.StartPageComponent,
 	                main_2.GameDispute,
 	                main_3.AccountComponent,
-	                main_4.AccountCardComponent,
-	                main_5.AccountSearchComponent,
+	                main_4.AccountChatComponent,
+	                main_5.AccountCardComponent,
+	                main_6.AccountSearchComponent,
 	                result_list_1.AccountSearchResultListComponent,
-	                main_6.AccountFriendshipComponent,
-	                main_7.AccountStatisticComponent
+	                main_7.AccountFriendshipComponent,
+	                main_8.AccountStatisticComponent
 	            ],
 	            providers: [],
 	            bootstrap: [
@@ -6926,7 +7190,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 568:
+/***/ 571:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6975,7 +7239,7 @@ webpackJsonp([2],{
 	        core_1.Component({
 	            selector: 'app',
 	            providers: [auth_service_1.UserService],
-	            template: __webpack_require__(742),
+	            template: __webpack_require__(746),
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object])
 	    ], AppComponent);
@@ -6987,14 +7251,14 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 569:
+/***/ 572:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var router_1 = __webpack_require__(244);
-	var main_1 = __webpack_require__(391);
-	var main_2 = __webpack_require__(390);
-	var main_3 = __webpack_require__(389);
+	var main_1 = __webpack_require__(392);
+	var main_2 = __webpack_require__(391);
+	var main_3 = __webpack_require__(390);
 	var appRoutes = [
 	    {
 	        path: '',
@@ -7014,7 +7278,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 570:
+/***/ 573:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -7028,8 +7292,8 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var http_1 = __webpack_require__(95);
-	__webpack_require__(124);
+	var http_1 = __webpack_require__(79);
+	__webpack_require__(99);
 	var SearchUserService = (function () {
 	    function SearchUserService(http) {
 	        this.http = http;
@@ -7064,7 +7328,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 571:
+/***/ 574:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -7078,8 +7342,8 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(1);
-	var http_1 = __webpack_require__(95);
-	__webpack_require__(124);
+	var http_1 = __webpack_require__(79);
+	__webpack_require__(99);
 	var StatisticService = (function () {
 	    function StatisticService(http) {
 	        this.http = http;
@@ -7111,7 +7375,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 733:
+/***/ 736:
 /***/ function(module, exports, __webpack_require__) {
 
 	function __export(m) {
@@ -7127,7 +7391,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 734:
+/***/ 737:
 /***/ function(module, exports) {
 
 	/**
@@ -7220,63 +7484,70 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 736:
+/***/ 739:
 /***/ function(module, exports) {
 
 	module.exports = "<md-card>\n    <md-card-subtitle>Личные данные</md-card-subtitle>\n    <md-card-content>\n        <div *ngIf=\"user\">\n            <p>Имя в статистике: <em>{{user.statistic_name.name}}</em></p>\n            <p>id: {{user.uid_for_client.name}}</p>\n        </div>\n    </md-card-content>\n</md-card>"
 
 /***/ },
 
-/***/ 737:
-/***/ function(module, exports) {
-
-	module.exports = "<div *ngIf=\"!friendList || !applicationsToFriends\">\n     <em>Загрузка данных...</em>\n</div>\n<div *ngIf=\"friendList && applicationsToFriends && !friendList.length && !applicationsToFriends.length\">\n    <em>У вас нет друзей</em>\n</div>\n<div *ngIf=\"friendList && friendList.length\">\n    <h4>Друзья</h4>\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">№ п/п</th>\n            <th>Имя</th>\n            <th width=\"160\">Действия</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let user of friendList; let i = index\">\n                <td>{{i + 1}}</td>\n                <td>{{user.username}} ({{user.dispute_name}})</td>\n                <td>\n                    <button class=\"btn btn-primary btn-sm\"\n                            (click)=\"deleteFriend(user)\">Удалить из друзей</button>\n                </td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n\n<div *ngIf=\"applicationsToFriends && applicationsToFriends.length\">\n    <h4>Заявки в друзья</h4>\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">№ п/п</th>\n            <th>Имя</th>\n            <th width=\"160\">Действия</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let user of applicationsToFriends; let i = index\">\n                <td>{{i + 1}}</td>\n                <td>{{user.username}}</td>\n                <td>\n                    <button class=\"btn btn-primary btn-sm\"\n                            (click)=\"addFriend(user)\">Принять дружбу</button>\n                </td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n"
-
-/***/ },
-
-/***/ 738:
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"raw\">\n    <md-tab-group class=\"col-md-8\">\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-envelope\" aria-hidden=\"true\"></span> Сообщения\n            </template>\n            <template md-tab-content>\n                <h1>Some tab content</h1>\n                <p>...</p>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-star\" aria-hidden=\"true\"></span> Друзья\n            </template>\n            <template md-tab-content>\n                <account-friendship></account-friendship>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-signal\" aria-hidden=\"true\"></span> Статистика\n            </template>\n            <template md-tab-content>\n                <account-statistic [user]=\"user\"></account-statistic>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Поиск\n            </template>\n            <template md-tab-content>\n                <account-search></account-search>\n            </template>\n        </md-tab>\n    </md-tab-group>\n    <account-card class=\"col-md-4\"></account-card>\n</div>\n"
-
-/***/ },
-
-/***/ 739:
-/***/ function(module, exports) {
-
-	module.exports = "<form>\n    <fieldset [disabled]=\"inSearchState\">\n        <div class=\"form-group\">\n            <label for=\"search-query-field\">Введите ID пользователя для поиска:</label>\n            <div class=\"input-group\">\n                <input\n                        id=\"search-query-field\"\n                        type=\"text\"\n                        name=\"search_uid\"\n                        class=\"form-control\"\n                        placeholder=\"ID пользователя\"\n                        [(ngModel)]=\"IDForSearch\" />\n                <span class=\"input-group-btn\">\n                    <button\n                            class=\"btn btn-primary\"\n                            type=\"button\"\n                            (click)=\"searchUserByID()\">\n                        Поиск\n                    </button>\n                </span>\n            </div>\n        </div>\n    </fieldset>\n    <div\n            class=\"form-group\"\n            [hidden]=\"!inSearchState\">\n        <div class=\"progress\">\n            <div\n                    class=\"progress-bar progress-bar-info progress-bar-striped active\"\n                    role=\"progressbar\"\n                    aria-valuenow=\"60\"\n                    aria-valuemin=\"0\"\n                    aria-valuemax=\"100\"\n                    style=\"width: 100%\">\n            </div>\n        </div>\n    </div>\n</form>\n<search-result-list [user]=\"foundUser\" [showResult]=\"showResultState\"></search-result-list>\n"
-
-/***/ },
-
 /***/ 740:
 /***/ function(module, exports) {
 
-	module.exports = "<div *ngIf=\"user\">\n    <h4>Найден пользователь:</h4>\n    <div class=\"row\">\n        <div class=\"col-md-8\">{{user.username}}</div>\n        <div class=\"col-md-4 text-right\">\n            <div *ngIf=\"!user.is_friend\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        (click)=\"addFriend()\">\n                    Добавить в друзья\n                </button>\n            </div>\n            <div *ngIf=\"user.is_friend\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        disabled>\n                    Уже в друзьях\n                </button>\n            </div>\n        </div>\n    </div>\n</div>\n<div *ngIf=\"showResult && !user\">\n    <em>Пользователи не найдены</em>\n</div>"
+	module.exports = "<div>Chat</div>"
 
 /***/ },
 
 /***/ 741:
 /***/ function(module, exports) {
 
-	module.exports = "<div *ngIf=\"!statisticUserList\">\n     <em>Загрузка данных...</em>\n</div>\n<div *ngIf=\"statisticUserList && !statisticUserList.length\">\n    <em>Статистика отсутствует</em>\n</div>\n<div *ngIf=\"statisticUserList && statisticUserList.length\">\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">Место</th>\n            <th>Имя</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let statisticUser of statisticUserList; let i = index\"\n                    [class.success]=\"statisticUser.id==user.id\">\n                <td>{{i + 1}}</td>\n                <td>{{statisticUser.statistic_name.name}}</td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n"
+	module.exports = "<div *ngIf=\"!friendList || !applicationsToFriends\">\n     <em>Загрузка данных...</em>\n</div>\n<div *ngIf=\"friendList && applicationsToFriends && !friendList.length && !applicationsToFriends.length\">\n    <em>У вас нет друзей</em>\n</div>\n<div *ngIf=\"friendList && friendList.length\">\n    <h4>Друзья</h4>\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">№ п/п</th>\n            <th>Имя</th>\n            <th width=\"160\">Действия</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let user of friendList; let i = index\">\n                <td>{{i + 1}}</td>\n                <td>{{user.username}} ({{user.dispute_name}})</td>\n                <td>\n                    <button class=\"btn btn-primary btn-sm\"\n                            (click)=\"deleteFriend(user)\">Удалить из друзей</button>\n                </td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n\n<div *ngIf=\"applicationsToFriends && applicationsToFriends.length\">\n    <h4>Заявки в друзья</h4>\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">№ п/п</th>\n            <th>Имя</th>\n            <th width=\"160\">Действия</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let user of applicationsToFriends; let i = index\">\n                <td>{{i + 1}}</td>\n                <td>{{user.username}}</td>\n                <td>\n                    <button class=\"btn btn-primary btn-sm\"\n                            (click)=\"addFriend(user)\">Принять дружбу</button>\n                </td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n"
 
 /***/ },
 
 /***/ 742:
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"row\">\n    <div class=\"col-md-offset-1 col-md-4\">\n        <a\n                class=\"logo\"\n                routerLink=\"/\">\n        </a>\n    </div>\n    <div class=\"col-md-7 text-right\">\n        <div *ngIf=\"!userLoaded\">\n            <em>Идет загрузка данных...</em>\n        </div>\n        <div *ngIf=\"userLoaded && is_authenticated\">\n            <a\n                    class=\"log-in text-left\"\n                    routerLink=\"account\">\n                <span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span> {{userTitle}}\n                <br/>\n                <span class=\"small\">uid: {{uid}}</span>\n            </a>\n            <a\n                    class=\"log-in\"\n                    (click)=\"routeLogOut()\">\n                <span class=\"glyphicon glyphicon-log-out\" aria-hidden=\"true\"></span> Выйти\n            </a>\n        </div>\n        <a\n                class=\"log-in\"\n                 *ngIf=\"userLoaded && !is_authenticated\"\n                 (click)=\"routeLogIn()\">\n            <span class=\"glyphicon glyphicon-log-in\" aria-hidden=\"true\"></span> Войти\n        </a>\n    </div>\n</div>\n\n<main>\n    <router-outlet></router-outlet>\n</main>\n\n"
+	module.exports = "<div class=\"raw\">\n    <md-tab-group class=\"col-md-8\">\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-envelope\" aria-hidden=\"true\"></span> Сообщения\n            </template>\n            <template md-tab-content>\n                <account-chat></account-chat>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-star\" aria-hidden=\"true\"></span> Друзья\n            </template>\n            <template md-tab-content>\n                <account-friendship></account-friendship>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-signal\" aria-hidden=\"true\"></span> Статистика\n            </template>\n            <template md-tab-content>\n                <account-statistic [user]=\"user\"></account-statistic>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Поиск\n            </template>\n            <template md-tab-content>\n                <account-search></account-search>\n            </template>\n        </md-tab>\n    </md-tab-group>\n    <account-card class=\"col-md-4\"></account-card>\n</div>\n"
 
 /***/ },
 
 /***/ 743:
 /***/ function(module, exports) {
 
-	module.exports = "<h3>Спор через игру</h3>\n<p>Добро пожаловать на площадку</p>\n"
+	module.exports = "<form>\n    <fieldset [disabled]=\"inSearchState\">\n        <div class=\"form-group\">\n            <label for=\"search-query-field\">Введите ID пользователя для поиска:</label>\n            <div class=\"input-group\">\n                <input\n                        id=\"search-query-field\"\n                        type=\"text\"\n                        name=\"search_uid\"\n                        class=\"form-control\"\n                        placeholder=\"ID пользователя\"\n                        [(ngModel)]=\"IDForSearch\" />\n                <span class=\"input-group-btn\">\n                    <button\n                            class=\"btn btn-primary\"\n                            type=\"button\"\n                            (click)=\"searchUserByID()\">\n                        Поиск\n                    </button>\n                </span>\n            </div>\n        </div>\n    </fieldset>\n    <div\n            class=\"form-group\"\n            [hidden]=\"!inSearchState\">\n        <div class=\"progress\">\n            <div\n                    class=\"progress-bar progress-bar-info progress-bar-striped active\"\n                    role=\"progressbar\"\n                    aria-valuenow=\"60\"\n                    aria-valuemin=\"0\"\n                    aria-valuemax=\"100\"\n                    style=\"width: 100%\">\n            </div>\n        </div>\n    </div>\n</form>\n<search-result-list [user]=\"foundUser\" [showResult]=\"showResultState\"></search-result-list>\n"
 
 /***/ },
 
 /***/ 744:
+/***/ function(module, exports) {
+
+	module.exports = "<div *ngIf=\"user\">\n    <h4>Найден пользователь:</h4>\n    <div class=\"row\">\n        <div class=\"col-md-8\">{{user.username}}</div>\n        <div class=\"col-md-4 text-right\">\n            <div *ngIf=\"!user.is_friend && !user.is_busy\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        (click)=\"addFriend()\">\n                    Добавить в друзья\n                </button>\n            </div>\n            <div *ngIf=\"user.is_friend && !user.is_busy\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        disabled>\n                    Уже в друзьях\n                </button>\n            </div>\n            <div *ngIf=\"user.is_busy\">\n                <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n            </div>\n        </div>\n    </div>\n</div>\n<div *ngIf=\"showResult && !user\">\n    <em>Пользователи не найдены</em>\n</div>"
+
+/***/ },
+
+/***/ 745:
+/***/ function(module, exports) {
+
+	module.exports = "<div *ngIf=\"!statisticUserList\">\n     <em>Загрузка данных...</em>\n</div>\n<div *ngIf=\"statisticUserList && !statisticUserList.length\">\n    <em>Статистика отсутствует</em>\n</div>\n<div *ngIf=\"statisticUserList && statisticUserList.length\">\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">Место</th>\n            <th>Имя</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let statisticUser of statisticUserList; let i = index\"\n                    [class.success]=\"statisticUser.id==user.id\">\n                <td>{{i + 1}}</td>\n                <td>{{statisticUser.statistic_name.name}}</td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n"
+
+/***/ },
+
+/***/ 746:
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"row\">\n    <div class=\"col-md-offset-1 col-md-4\">\n        <a\n                class=\"logo\"\n                routerLink=\"/\">\n        </a>\n    </div>\n    <div class=\"col-md-7 text-right\">\n        <div *ngIf=\"!userLoaded\">\n            <em>Идет загрузка данных...</em>\n        </div>\n        <div *ngIf=\"userLoaded && is_authenticated\">\n            <a\n                    class=\"log-in text-left\"\n                    routerLink=\"account\">\n                <span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span> {{userTitle}}\n                <br/>\n                <span class=\"small\">uid: {{uid}}</span>\n            </a>\n            <a\n                    class=\"log-in\"\n                    (click)=\"routeLogOut()\">\n                <span class=\"glyphicon glyphicon-log-out\" aria-hidden=\"true\"></span> Выйти\n            </a>\n        </div>\n        <a\n                class=\"log-in\"\n                 *ngIf=\"userLoaded && !is_authenticated\"\n                 (click)=\"routeLogIn()\">\n            <span class=\"glyphicon glyphicon-log-in\" aria-hidden=\"true\"></span> Войти\n        </a>\n    </div>\n</div>\n\n<main>\n    <router-outlet></router-outlet>\n</main>\n\n"
+
+/***/ },
+
+/***/ 747:
+/***/ function(module, exports) {
+
+	module.exports = "<h3>Спор через игру</h3>\n<p>Добро пожаловать на площадку</p>\n"
+
+/***/ },
+
+/***/ 748:
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"start-page row\">\n    <div class=\"col-md-offset-1 col-md-4\">\n        <a class=\"thumbnail text-center\"\n           [@pageState]=\"leftLinkState\"\n           href=\"#\">\n            <div class=\"caption\">\n                <p>PfE</p>\n            </div>\n            <div class=\"pfe-logo\"></div>\n        </a>\n    </div>\n    <div class=\"col-md-offset-2 col-md-4\">\n        <a class=\"thumbnail text-center\"\n           [@pageState]=\"rightLinkState\"\n           routerLink=\"/pfg\">\n            <div class=\"caption\">\n                <p>PfG</p>\n            </div>\n            <div class=\"pfg-logo\"></div>\n        </a>\n    </div>\n</div>\n"

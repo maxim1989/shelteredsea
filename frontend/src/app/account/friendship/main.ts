@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { User } from 'app/user/model';
-import { FriendshipService } from 'app/user/friendship.service';
+import { FriendshipService } from './service';
 
 @Component({
     selector: 'account-friendship',
@@ -16,6 +16,10 @@ export class AccountFriendshipComponent implements OnInit{
     ) {}
 
     ngOnInit() {
+        this.loadFriendList();
+    }
+
+    loadFriendList() {
         this.FriendshipService.getFriendList()
             .then(
                 (data: any) => {
@@ -26,6 +30,7 @@ export class AccountFriendshipComponent implements OnInit{
     }
 
     addFriend(user: User) {
+        console.log(user);
         alert('TODO');
         // this.FriendshipService.acceptFriendshipWith(uid);
     }

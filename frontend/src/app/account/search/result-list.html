@@ -3,19 +3,22 @@
     <div class="row">
         <div class="col-md-8">{{user.username}}</div>
         <div class="col-md-4 text-right">
-            <div *ngIf="!user.is_friend">
+            <div *ngIf="!user.is_friend && !user.is_busy">
                 <button
                         class="btn btn-default btn-xs"
                         (click)="addFriend()">
                     Добавить в друзья
                 </button>
             </div>
-            <div *ngIf="user.is_friend">
+            <div *ngIf="user.is_friend && !user.is_busy">
                 <button
                         class="btn btn-default btn-xs"
                         disabled>
                     Уже в друзьях
                 </button>
+            </div>
+            <div *ngIf="user.is_busy">
+                <md-progress-bar mode="indeterminate"></md-progress-bar>
             </div>
         </div>
     </div>

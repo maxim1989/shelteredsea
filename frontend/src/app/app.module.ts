@@ -6,6 +6,7 @@ import { HttpModule } from '@angular/http';
 import { MdButtonModule } from '@angular2-material/button';
 import { MdTabsModule } from '@angular2-material/tabs';
 import { MdCardModule } from '@angular2-material/card';
+import { MdProgressBarModule } from '@angular2-material/progress-bar';
 
 import {AppComponent} from './app';
 import {routing} from './routes';
@@ -13,6 +14,7 @@ import {routing} from './routes';
 import {StartPageComponent} from './start_module/main';
 import {GameDispute} from './game_dispute_module/main';
 import {AccountComponent} from './account/main';
+import {AccountChatComponent} from './account/chat/main';
 import {AccountCardComponent} from './account/card/main';
 import {AccountSearchComponent} from './account/search/main';
 import {AccountSearchResultListComponent} from './account/search/result-list';
@@ -28,13 +30,15 @@ import {AccountStatisticComponent} from './account/statistic/main';
         HttpModule,
         MdButtonModule,
         MdTabsModule,
-        MdCardModule
+        MdCardModule,
+        MdProgressBarModule
     ],
     declarations: [
         AppComponent,
         StartPageComponent,
         GameDispute,
         AccountComponent,
+        AccountChatComponent,
         AccountCardComponent,
         AccountSearchComponent,
         AccountSearchResultListComponent,

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions } from '@angular/http';
 import {Cookie} from 'ng2-cookies/ng2-cookies';
-import { User } from './model';
+import { User } from 'app/user/model';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
