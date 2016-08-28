@@ -18,12 +18,12 @@ class FriendsList(APIView):
         u = request.user.id
         my_friends_uids = [ch.user_friend for ch in Friends.objects.filter(user=u)]
         my_friends = Friends.objects.\
-            filter(user__in=my_friends_uids).filter(is_friend=True).order_by('user_friend__username')
+            filter(user_friend__in=my_friends_uids).filter(is_friend=True).order_by('user_friend__username')
         want_be_my_friend = Friends.objects. \
             filter(user_friend=u).filter(is_friend=False).order_by('user_friend__username')
         serializer_friend = FriendsSerializer(my_friends, many=True)
         serializer_not_friend = FriendsSerializer(want_be_my_friend, many=True)
-        data = dict(my_friends=serializer_friend.data, want_be_their_friend=serializer_not_friend.data)
+        data = dict(my_friends=serializer_friend.data, want_be_my_friend=serializer_not_friend.data)
         return Response(data)
 
 
