@@ -28,6 +28,11 @@ class SendMessage(APIView):
             return Response(list())
         messages = Message.objects.filter(chat=chat).order_by('creation_datetime')
         serializer = MessageSerializer(messages, many=True)
+
+        other_users = ManyChatsToManyUsersConnector.objects.filter(chat=int(chat)).exclude(user=request.user.id)
+        for user in other_users:
+            Message.objects.filter(chat=chat).filter(user=user.id).update(is_read=True)
+
         return Response(serializer.data)
 
     def post(self, request, chat):
