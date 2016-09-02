@@ -16,11 +16,10 @@ from personalarea.serializers import FriendsSerializer
 class FriendsList(APIView):
     def get(self, request):
         u = request.user.id
-        my_friends_uids = [ch.friend for ch in Friends.objects.filter(myself=u)]
-        my_friends = Friends.objects.\
-            filter(friend__in=my_friends_uids).filter(is_friend=True).order_by('friend__username')
+        my_friends = Friends.objects. \
+            filter(myself=u).filter(is_friend=True).order_by('friend__username')
         want_be_my_friend = Friends.objects. \
-            filter(friend=u).filter(is_friend=False).order_by('friend__username')
+            filter(myself=u).filter(is_friend=False).order_by('friend__username')
         serializer_friend = FriendsSerializer(my_friends, many=True)
         serializer_not_friend = FriendsSerializer(want_be_my_friend, many=True)
         data = dict(my_friends=serializer_friend.data, want_be_my_friend=serializer_not_friend.data)
@@ -83,14 +82,14 @@ class FindUser(APIView):
 
         chat, me = create_chat(request.user.id, person.user.id)
 
-        friend = Friends.objects.filter(myself=request.user.id).filter(friend=person.user.id)
+        friend = Friends.objects.filter(friend=request.user.id).filter(myself=person.user.id)
         if friend:
             if friend[0].is_friend:
                 return Response({'success': True, 'created': False, 'exist': True, 'is_friend': True})
             invite_friend(chat, me)
             return Response({'success': True, 'created': False, 'exist': True, 'is_friend': False})
 
-        data_on_save = dict(friend=person.user.id, myself=request.user.id, is_friend=False)
+        data_on_save = dict(myself=person.user.id, friend=request.user.id, is_friend=False)
         serializer = FriendsSerializer(data=data_on_save)
         if serializer.is_valid():
             invite_friend(chat, me)
@@ -109,10 +108,10 @@ class Accept(APIView):
         if person.user.id == request.user.id:
             return Response({'success': False, 'error': settings._ME_ERROR})
 
-        who_invite = Friends.objects.filter(friend=request.user.id).filter(myself=person.user.id)[0]
+        who_invite = Friends.objects.filter(myself=request.user.id).filter(friend=person.user.id)[0]
         if request.data.get('accept'):
             who_invite.is_friend = True
-            data_on_save = dict(friend=person.user.id, myself=request.user.id, is_friend=True)
+            data_on_save = dict(myself=person.user.id, friend=request.user.id, is_friend=True)
             serializer_add = FriendsSerializer(data=data_on_save)
             if serializer_add.is_valid():
                 who_invite.save()
