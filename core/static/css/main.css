@@ -41,3 +41,46 @@
 .md-tab-body{
     padding: 10px 15px;
 }
+
+/*
+ * Chat
+ */
+.chat__block{
+    padding: 10px 5px 0;
+}
+.chat__history{
+    display: block;
+    margin-bottom: 10px;
+    min-height: 200px;
+    height: 200px;
+    overflow: auto;
+}
+
+.chat__message_stripe.myself{
+    text-align: right;
+}
+.chat__message_stripe.other{
+    text-align: left;
+}
+.chat__message_block{
+    display: inline-block;
+    max-width: 70%;
+    margin-top: 10px;
+    padding: 10px 15px;
+    text-align: left;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+.chat__message_stripe.myself .chat__message_block{
+    background-color: #d9edf7;
+}
+.chat__message_stripe.other .chat__message_block{
+    background-color: #dff0d8;
+}
+
+.chat__message-date{
+    text-align: right;
+    font-size: .8em;
+    color: #a1a1a1;
+}

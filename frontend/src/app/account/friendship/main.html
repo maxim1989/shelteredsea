@@ -36,10 +36,10 @@
         <tbody>
             <tr *ngFor="let user of applicationsToFriends; let i = index">
                 <td>{{i + 1}}</td>
-                <td>{{user.username}}</td>
+                <td>{{user.user.dispute_name.name}} ({{user.user.username}})</td>
                 <td>
                     <button class="btn btn-primary btn-sm"
-                            (click)="addFriend(user)">Принять дружбу</button>
+                            (click)="addFriend(user.user)">Принять дружбу</button>
                 </td>
             </tr>
         </tbody>

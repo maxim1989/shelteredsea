@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions } from '@angular/http';
 import {Cookie} from 'ng2-cookies/ng2-cookies';
 import { User } from 'app/user/model';
+import { Friend } from 'app/user/friend.model';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
@@ -41,8 +42,8 @@ export class FriendshipService {
             .then(
                 response => {
                     let result = response.json();
-                    let friendList: User[] = result.my_friends as User[];
-                    let applicationsToFriends: User[] = result.want_be_their_friend as User[];
+                    let friendList: Friend[] = result.my_friends as Friend[];
+                    let applicationsToFriends: Friend[] = result.want_be_my_friend as Friend[];
                     return {
                         friendList: friendList,
                         applicationsToFriends: applicationsToFriends
@@ -55,8 +56,7 @@ export class FriendshipService {
                         applicationsToFriends: []
                     };
                 }
-            )
-            .catch(this.handlerError);
+            );
     }
 
     acceptFriendshipWith(ID : string) {

@@ -1,0 +1,11 @@
+<div *ngFor="let message of messages"
+     class="chat__message_stripe"
+     [class.myself]="message.isMyself"
+     [class.other]="!message.isMyself">
+    <div class="chat__message_block">
+        <div class="chat__message-date">{{message.creation_datetime | date:'yyyy.MM.dd HH:mm'}}</div>
+        <div class="chat__message-body"
+             [innerHTML]="message.message">
+        </div>
+    </div>
+</div>

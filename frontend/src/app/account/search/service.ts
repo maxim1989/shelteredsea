@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http } from '@angular/http';
-import { User } from './model';
+import { Http } from '@angular/http';
+import { User } from 'app/user/model';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
@@ -18,9 +18,6 @@ export class SearchUserService {
                 response => {
                     let result = response.json();
                     return result as User[];
-                },
-                error => {
-                    return [];
                 }
             )
             .catch(this.handlerError);

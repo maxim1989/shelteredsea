@@ -1,19 +1,18 @@
 import {Component, OnInit} from '@angular/core';
-import { User } from 'app/user/model';
 import { Chat } from 'app/chat/model';
-import { ChatService } from './service';
+import { AccountChatService } from './service';
 
 @Component({
     selector: 'account-chat',
     templateUrl: './main.html',
-    providers: [ChatService],
+    providers: [AccountChatService],
 })
 export class AccountChatComponent implements OnInit{
     chatList: Chat[];
     selectedChat: Chat;
 
     constructor(
-        private ChatService: ChatService
+        private ChatService: AccountChatService
     ) {}
 
     ngOnInit() {

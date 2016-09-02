@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { User } from 'app/user/model';
+import { Friend } from 'app/user/friend.model';
 import { FriendshipService } from './service';
 
 @Component({
@@ -8,8 +9,8 @@ import { FriendshipService } from './service';
     providers: [FriendshipService],
 })
 export class AccountFriendshipComponent implements OnInit{
-    friendList: User[];
-    applicationsToFriends: User[];
+    friendList: Friend[];
+    applicationsToFriends: Friend[];
 
     constructor(
         private FriendshipService: FriendshipService

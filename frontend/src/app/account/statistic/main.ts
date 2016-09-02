@@ -1,6 +1,6 @@
 import {Component, OnInit, Input} from '@angular/core';
 import { User } from 'app/user/model';
-import { StatisticService } from 'app/user/statistic.service';
+import { StatisticService } from './service';
 
 @Component({
     selector: 'account-statistic',
