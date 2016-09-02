@@ -7,4 +7,3 @@ class Friends(models.Model):
     friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name='i_am_friend')
     is_friend = models.BooleanField(default=False)
     is_ignore = models.BooleanField(default=False)
-    is_read = models.BooleanField(default=False)
