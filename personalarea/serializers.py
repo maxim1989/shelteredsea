@@ -6,9 +6,9 @@ from loginsys.serializers import AuthenticatedUserSerializer
 
 
 class FriendsSerializer(serializers.ModelSerializer):
-    user = AuthenticatedUserSerializer()
-    user_friend = AuthenticatedUserSerializer()
+    myself = AuthenticatedUserSerializer()
+    friend = AuthenticatedUserSerializer()
 
     class Meta:
         model = Friends
-        fields = ('user_friend', 'user', 'is_friend', 'is_ignore')
+        fields = ('friend', 'myself', 'is_friend', 'is_ignore')

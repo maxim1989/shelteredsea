@@ -14,7 +14,26 @@ class ChatList(APIView):
             filter(chat__in=my_chats_uids).\
             exclude(user=u).\
             order_by('chat__name')
-        serializer = ManyChatsToManyUsersConnectorSerializer(users_in_my_chats, many=True)
+
+        serializer = ManyChatsToManyUsersConnectorSerializer(users_in_my_chats, many=True,
+                                                             context={'users_in_my_chats': users_in_my_chats,
+                                                                      'myself': u})
+        return Response(serializer.data)
+
+
+class LastMessages(APIView):
+    def get(self, request, chat):
+        check_user = ManyChatsToManyUsersConnector.objects.filter(chat=int(chat)).filter(user=request.user.id)
+        if not check_user:
+            return Response(list())
+        messages = Message.objects.filter(chat=chat).filter(is_read=False).exclude(user=request.user.id). \
+            order_by('creation_datetime')
+        uids = list()
+        for mes in messages:
+            uids.append(mes.id)
+            Message.objects.filter(id=mes.id).update(is_read=True)
+        messages = Message.objects.filter(id__in=uids).order_by('creation_datetime')
+        serializer = MessageSerializer(messages, many=True)
         return Response(serializer.data)
 
 
@@ -23,8 +42,14 @@ class SendMessage(APIView):
         check_user = ManyChatsToManyUsersConnector.objects.filter(chat=int(chat)).filter(user=request.user.id)
         if not check_user:
             return Response(list())
+
+        other_users = ManyChatsToManyUsersConnector.objects.filter(chat=int(chat)).exclude(user=request.user.id)
+        for user in other_users:
+            Message.objects.filter(chat=chat).filter(user=user.id).update(is_read=True)
+
         messages = Message.objects.filter(chat=chat).order_by('creation_datetime')
         serializer = MessageSerializer(messages, many=True)
+
         return Response(serializer.data)
 
     def post(self, request, chat):
