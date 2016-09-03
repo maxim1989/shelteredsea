@@ -1948,6 +1948,7 @@ webpackJsonp([2],{
 	    function FriendshipService(http) {
 	        this.http = http;
 	        this.FRIENDSHIP_URL = 'personalarea/';
+	        this.ACCEPT_REQUEST_BODY = '{"accept":true}';
 	    }
 	    FriendshipService.prototype.sendFriendRequest = function (ID) {
 	        var url = this.FRIENDSHIP_URL + ID;
@@ -1960,12 +1961,7 @@ webpackJsonp([2],{
 	        return this.http.post(url, '{}', options)
 	            .toPromise()
 	            .then(function (response) {
-	            var result = response.json();
-	            console.log(result);
-	            // return result as User[];
-	        }, function (error) {
-	            console.log(error);
-	            return [];
+	            return response.json();
 	        })
 	            .catch(this.handlerError);
 	    };
@@ -1984,8 +1980,26 @@ webpackJsonp([2],{
 	        })
 	            .catch(this.handlerError);
 	    };
-	    FriendshipService.prototype.acceptFriendshipWith = function (ID) {
+	    FriendshipService.prototype.confirmFriendshipWith = function (ID, isAssept) {
 	        var url = this.FRIENDSHIP_URL + ID + '/accept';
+	        var requestBody = {
+	            accept: isAssept
+	        };
+	        var headers = new http_1.Headers({
+	            'Content-Type': 'application/json',
+	            'X-CSRFToken': ng2_cookies_1.Cookie.get('csrftoken')
+	        });
+	        var options = new http_1.RequestOptions({ headers: headers });
+	        //noinspection TypeScriptUnresolvedFunction
+	        return this.http.post(url, JSON.stringify(requestBody), options)
+	            .toPromise()
+	            .then(function (response) {
+	            return response.json();
+	        })
+	            .catch(this.handlerError);
+	    };
+	    FriendshipService.prototype.removeFriendshipWith = function (ID) {
+	        var url = this.FRIENDSHIP_URL + ID + '/delete';
 	        var headers = new http_1.Headers({
 	            'Content-Type': 'application/json',
 	            'X-CSRFToken': ng2_cookies_1.Cookie.get('csrftoken')
@@ -1995,9 +2009,7 @@ webpackJsonp([2],{
 	        return this.http.post(url, '{}', options)
 	            .toPromise()
 	            .then(function (response) {
-	            var result = response.json();
-	            console.log(result);
-	            // return result as User[];
+	            return response.json();
 	        })
 	            .catch(this.handlerError);
 	    };
@@ -7831,19 +7843,33 @@ webpackJsonp([2],{
 	            .then(function (data) {
 	            _this.friendList = data.friendList;
 	            _this.applicationsToFriends = data.applicationsToFriends;
+	        })
+	            .catch(function () {
+	            _this.friendList = null;
+	            _this.applicationsToFriends = null;
 	        });
 	    };
-	    AccountFriendshipComponent.prototype.addFriend = function (friend) {
+	    AccountFriendshipComponent.prototype.acceptFriendship = function (friend) {
+	        this.confirmFriendship(friend, true);
+	    };
+	    AccountFriendshipComponent.prototype.declineFriendship = function (friend) {
+	        this.confirmFriendship(friend, false);
+	    };
+	    AccountFriendshipComponent.prototype.confirmFriendship = function (friend, isAssept) {
 	        var _this = this;
 	        friend.is_busy = true;
 	        var friendUid = friend.uid_for_client.name;
-	        this.FriendshipService.acceptFriendshipWith(friendUid)
+	        this.FriendshipService.confirmFriendshipWith(friendUid, isAssept)
 	            .then(function () { return _this.loadFriendList(); })
 	            .catch(function () { return friend.is_busy = false; });
 	    };
-	    AccountFriendshipComponent.prototype.deleteFriend = function (user) {
-	        alert('TODO');
-	        // this.FriendshipService.acceptFriendshipWith(uid);
+	    AccountFriendshipComponent.prototype.removeFriendship = function (friend) {
+	        var _this = this;
+	        friend.is_busy = true;
+	        var friendUid = friend.uid_for_client.name;
+	        this.FriendshipService.removeFriendshipWith(friendUid)
+	            .then(function () { return _this.loadFriendList(); })
+	            .catch(function () { return friend.is_busy = false; });
 	    };
 	    AccountFriendshipComponent = __decorate([
 	        core_1.Component({
@@ -8271,6 +8297,7 @@ webpackJsonp([2],{
 	var ChatComponent = (function () {
 	    function ChatComponent(ChatService) {
 	        this.ChatService = ChatService;
+	        this.CHAT_WATCHER_PERIOD = 5000;
 	        this.messageForSend = "";
 	        this.chatWatcherId = 0;
 	    }
@@ -8321,7 +8348,7 @@ webpackJsonp([2],{
 	        this.chatWatcherId = setInterval(function () {
 	            _this.ChatService.getNewMessages(chatId)
 	                .then(function (messages) { return _this.renderMessages(messages); });
-	        }, 2000);
+	        }, this.CHAT_WATCHER_PERIOD);
 	    };
 	    ChatComponent.prototype.stopChatWatcher = function () {
 	        clearInterval(this.chatWatcherId);
@@ -8579,7 +8606,7 @@ webpackJsonp([2],{
 /***/ 339:
 /***/ function(module, exports) {
 
-	module.exports = "<div *ngIf=\"!friendList || !applicationsToFriends\">\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n</div>\n<div *ngIf=\"friendList && applicationsToFriends && !friendList.length && !applicationsToFriends.length\">\n    <em>У вас нет друзей</em>\n</div>\n<div *ngIf=\"friendList && friendList.length\">\n    <h4>Друзья</h4>\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">№ п/п</th>\n            <th>Имя</th>\n            <th width=\"160\">Действия</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let user of friendList; let i = index\">\n                <td>{{i + 1}}</td>\n                <td>{{user.friend.username}}</td>\n                <td>\n                    <button class=\"btn btn-primary btn-sm\"\n                            (click)=\"deleteFriend(user)\">Удалить из друзей</button>\n                </td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n\n<div *ngIf=\"applicationsToFriends && applicationsToFriends.length\">\n    <h4>Заявки в друзья</h4>\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">№ п/п</th>\n            <th>Имя</th>\n            <th width=\"160\">Действия</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let friendship of applicationsToFriends; let i = index\">\n                <td>{{i + 1}}</td>\n                <td>{{friendship.friend.username}}</td>\n                <td>\n                    <div *ngIf=\"!friendship.friend.is_busy\">\n                        <button class=\"btn btn-primary btn-sm\"\n                                (click)=\"addFriend(friendship.friend)\">\n                            Принять дружбу\n                        </button>\n                    </div>\n                    <div *ngIf=\"friendship.friend.is_busy\">\n                        <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n                    </div>\n                </td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n"
+	module.exports = "<div *ngIf=\"!friendList || !applicationsToFriends\">\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n</div>\n<div *ngIf=\"friendList && applicationsToFriends && !friendList.length && !applicationsToFriends.length\">\n    <em>У вас нет друзей</em>\n</div>\n<div *ngIf=\"friendList && friendList.length\">\n    <h4>Друзья</h4>\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">№ п/п</th>\n            <th>Имя</th>\n            <th width=\"160\">Действия</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let friendship of friendList; let i = index\">\n                <td>{{i + 1}}</td>\n                <td>{{friendship.friend.username}}</td>\n                <td>\n                    <div *ngIf=\"!friendship.friend.is_busy\">\n                        <button class=\"btn btn-primary btn-sm\"\n                                (click)=\"removeFriendship(friendship.friend)\">\n                            Удалить из друзей\n                        </button>\n                    </div>\n                    <div *ngIf=\"friendship.friend.is_busy\">\n                        <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n                    </div>\n                </td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n\n<div *ngIf=\"applicationsToFriends && applicationsToFriends.length\">\n    <h4>Заявки в друзья</h4>\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">№ п/п</th>\n            <th>Имя</th>\n            <th width=\"220\">Действия</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let friendship of applicationsToFriends; let i = index\">\n                <td>{{i + 1}}</td>\n                <td>{{friendship.friend.username}}</td>\n                <td>\n                    <div *ngIf=\"!friendship.friend.is_busy\">\n                        <button *ngIf=\"!friendship.friend.is_busy\"\n                                class=\"btn btn-primary btn-sm\"\n                                (click)=\"acceptFriendship(friendship.friend)\">\n                            Принять дружбу\n                        </button>\n                        <button class=\"btn btn-default btn-sm\"\n                                (click)=\"declineFriendship(friendship.friend)\">\n                            Отклонить\n                        </button>\n                    </div>\n                    <div *ngIf=\"friendship.friend.is_busy\">\n                        <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n                    </div>\n                </td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n"
 
 /***/ },
 
@@ -8593,14 +8620,14 @@ webpackJsonp([2],{
 /***/ 341:
 /***/ function(module, exports) {
 
-	module.exports = "<form>\n    <fieldset [disabled]=\"inSearchState\">\n        <div class=\"form-group\">\n            <label for=\"search-query-field\">Введите ID пользователя для поиска:</label>\n            <div class=\"input-group\">\n                <input\n                        id=\"search-query-field\"\n                        type=\"text\"\n                        name=\"search_uid\"\n                        class=\"form-control\"\n                        placeholder=\"ID пользователя\"\n                        [(ngModel)]=\"IDForSearch\" />\n                <span class=\"input-group-btn\">\n                    <button\n                            class=\"btn btn-primary\"\n                            type=\"button\"\n                            (click)=\"searchUserByID()\">\n                        Поиск\n                    </button>\n                </span>\n            </div>\n        </div>\n    </fieldset>\n    <div\n            class=\"form-group\"\n            [hidden]=\"!inSearchState\">\n        <div class=\"progress\">\n            <div\n                    class=\"progress-bar progress-bar-info progress-bar-striped active\"\n                    role=\"progressbar\"\n                    aria-valuenow=\"60\"\n                    aria-valuemin=\"0\"\n                    aria-valuemax=\"100\"\n                    style=\"width: 100%\">\n            </div>\n        </div>\n    </div>\n</form>\n<search-result-list [user]=\"foundUser\" [showResult]=\"showResultState\"></search-result-list>\n"
+	module.exports = "<form>\n    <fieldset [disabled]=\"inSearchState\">\n        <div class=\"form-group\">\n            <label for=\"search-query-field\">Введите ID пользователя для поиска:</label>\n            <div class=\"input-group\">\n                <input\n                        id=\"search-query-field\"\n                        type=\"text\"\n                        name=\"search_uid\"\n                        class=\"form-control\"\n                        placeholder=\"ID пользователя\"\n                        [(ngModel)]=\"IDForSearch\" />\n                <span class=\"input-group-btn\">\n                    <button\n                            class=\"btn btn-primary\"\n                            type=\"button\"\n                            (click)=\"searchUserByID()\">\n                        Поиск\n                    </button>\n                </span>\n            </div>\n        </div>\n    </fieldset>\n    <div class=\"form-group\"\n         [hidden]=\"!inSearchState\">\n        <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n    </div>\n</form>\n<search-result-list [user]=\"foundUser\" [showResult]=\"showResultState\"></search-result-list>\n"
 
 /***/ },
 
 /***/ 342:
 /***/ function(module, exports) {
 
-	module.exports = "<div *ngIf=\"user\">\n    <h4>Найден пользователь:</h4>\n    <div class=\"row\">\n        <div class=\"col-md-8\">{{user.username}}</div>\n        <div class=\"col-md-4 text-right\">\n            <div *ngIf=\"!user.is_friend && !user.is_busy\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        (click)=\"addFriend()\">\n                    Добавить в друзья\n                </button>\n            </div>\n            <div *ngIf=\"user.is_friend && !user.is_busy\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        disabled>\n                    Уже в друзьях\n                </button>\n            </div>\n            <div *ngIf=\"user.is_busy\">\n                <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n            </div>\n        </div>\n    </div>\n</div>\n<div *ngIf=\"showResult && !user\">\n    <em>Пользователи не найдены</em>\n</div>"
+	module.exports = "<div *ngIf=\"user\">\n    <h4>Найден пользователь:</h4>\n    <div class=\"row\">\n        <div class=\"col-md-8\">{{user.username}}</div>\n        <div class=\"col-md-4 text-right\">\n            <div *ngIf=\"!user.is_friend && !user.is_busy\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        (click)=\"addFriend()\">\n                    Добавить в друзья\n                </button>\n            </div>\n            <div *ngIf=\"user.is_friend && !user.is_busy\">\n                <button\n                        class=\"btn btn-default btn-sm\"\n                        disabled>\n                    Уже в друзьях\n                </button>\n            </div>\n            <div *ngIf=\"user.is_busy\">\n                <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n            </div>\n        </div>\n    </div>\n</div>\n<div *ngIf=\"showResult && !user\">\n    <em>Пользователи не найдены</em>\n</div>"
 
 /***/ },
 

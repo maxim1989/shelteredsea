@@ -10,9 +10,11 @@ import { Message } from 'app/chat/message.model';
     providers: [ChatService]
 })
 export class ChatComponent implements OnChanges, OnDestroy {
-    @Input() chat: Chat;
+    @Input()
+    chat: Chat;
     @ViewChild('history')
     private historyComponent: ChatHistoryComponent;
+    private CHAT_WATCHER_PERIOD: number = 5000;
 
     messageForSend: string = "";
     messages: Message[];
@@ -81,7 +83,7 @@ export class ChatComponent implements OnChanges, OnDestroy {
                         messages => this.renderMessages(messages)
                     );
             },
-            2000
+            this.CHAT_WATCHER_PERIOD
         );
     }
 

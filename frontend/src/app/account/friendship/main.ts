@@ -29,13 +29,27 @@ export class AccountFriendshipComponent implements OnInit{
                     this.friendList = data.friendList;
                     this.applicationsToFriends = data.applicationsToFriends;
                 }
+            )
+            .catch(
+                () => {
+                    this.friendList = null;
+                    this.applicationsToFriends = null;
+                }
             );
     }
 
-    addFriend(friend: User) {
+    acceptFriendship(friend: User) {
+        this.confirmFriendship(friend, true);
+    }
+
+    declineFriendship(friend: User) {
+        this.confirmFriendship(friend, false);
+    }
+
+    private confirmFriendship(friend: User, isAssept: boolean) {
         friend.is_busy = true;
         let friendUid = friend.uid_for_client.name;
-        this.FriendshipService.acceptFriendshipWith(friendUid)
+        this.FriendshipService.confirmFriendshipWith(friendUid, isAssept)
             .then(
                 () => this.loadFriendList()
             )
@@ -43,8 +57,16 @@ export class AccountFriendshipComponent implements OnInit{
                 () => friend.is_busy = false
             );
     }
-    deleteFriend(user: User) {
-        alert('TODO');
-        // this.FriendshipService.acceptFriendshipWith(uid);
+
+    removeFriendship(friend: User) {
+        friend.is_busy = true;
+        let friendUid = friend.uid_for_client.name;
+        this.FriendshipService.removeFriendshipWith(friendUid)
+            .then(
+                () => this.loadFriendList()
+            )
+            .catch(
+                () => friend.is_busy = false
+            );
     }
 }
