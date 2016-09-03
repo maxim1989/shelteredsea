@@ -45,6 +45,20 @@ export class ChatService {
             .catch(this.handlerError);
     }
 
+    getNewMessages(chatId: number) {
+        let url = this.CHAT_URL + chatId + '/new';
+        //noinspection TypeScriptUnresolvedFunction
+        return this.http.get( url )
+            .toPromise()
+            .then(
+                response => {
+                    let result = response.json();
+                    return result as Message[];
+                }
+            )
+            .catch(this.handlerError);
+    }
+
     handlerError(error: any) {
         console.error('An error occurred', error);
         return Promise.reject(error.message || error);

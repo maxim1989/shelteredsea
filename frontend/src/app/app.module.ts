@@ -3,10 +3,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
-import { MdButtonModule } from '@angular2-material/button';
 import { MdTabsModule } from '@angular2-material/tabs';
 import { MdCardModule } from '@angular2-material/card';
 import { MdProgressBarModule } from '@angular2-material/progress-bar';
+import { MdProgressCircleModule } from '@angular2-material/progress-circle';
 
 import {AppComponent} from './app';
 import {routing} from './routes';
@@ -31,30 +31,24 @@ import {AccountStatisticComponent} from './account/statistic/main';
         FormsModule,
         routing,
         HttpModule,
-        MdButtonModule,
+
         MdTabsModule,
         MdCardModule,
-        MdProgressBarModule
+        MdProgressBarModule,
+        MdProgressCircleModule
     ],
     declarations: [
         AppComponent,
         StartPageComponent,
         GameDispute,
 
-        ChatComponent,
-        ChatHistoryComponent,
+        ChatComponent, ChatHistoryComponent,
 
         AccountComponent,
-
         AccountChatComponent,
-
         AccountCardComponent,
-
-        AccountSearchComponent,
-        AccountSearchResultListComponent,
-
+        AccountSearchComponent, AccountSearchResultListComponent,
         AccountFriendshipComponent,
-
         AccountStatisticComponent
     ],
     providers: [

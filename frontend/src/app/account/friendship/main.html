@@ -15,7 +15,7 @@
         <tbody>
             <tr *ngFor="let user of friendList; let i = index">
                 <td>{{i + 1}}</td>
-                <td>{{user.username}} ({{user.dispute_name}})</td>
+                <td>{{user.friend.username}}</td>
                 <td>
                     <button class="btn btn-primary btn-sm"
                             (click)="deleteFriend(user)">Удалить из друзей</button>
@@ -34,12 +34,19 @@
             <th width="160">Действия</th>
         </thead>
         <tbody>
-            <tr *ngFor="let user of applicationsToFriends; let i = index">
+            <tr *ngFor="let friendship of applicationsToFriends; let i = index">
                 <td>{{i + 1}}</td>
-                <td>{{user.user.dispute_name.name}} ({{user.user.username}})</td>
+                <td>{{friendship.friend.username}}</td>
                 <td>
-                    <button class="btn btn-primary btn-sm"
-                            (click)="addFriend(user.user)">Принять дружбу</button>
+                    <div *ngIf="!friendship.friend.is_busy">
+                        <button class="btn btn-primary btn-sm"
+                                (click)="addFriend(friendship.friend)">
+                            Принять дружбу
+                        </button>
+                    </div>
+                    <div *ngIf="friendship.friend.is_busy">
+                        <md-progress-bar mode="indeterminate"></md-progress-bar>
+                    </div>
                 </td>
             </tr>
         </tbody>

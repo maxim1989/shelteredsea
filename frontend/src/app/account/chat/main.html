@@ -12,6 +12,10 @@
                class="list-group-item"
                [class.active]="selectedChat == chat"
                (click)="chooseChat(chat)">
+                <span *ngIf="chat.count_not_read_messages != 0"
+                      class="badge">
+                    <span class="glyphicon glyphicon-envelope"></span> {{chat.count_not_read_messages}}
+                </span>
                 {{chat.user.username}}
             </a>
         </div>

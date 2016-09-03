@@ -21,6 +21,8 @@ export class AccountFriendshipComponent implements OnInit{
     }
 
     loadFriendList() {
+        this.friendList = null;
+        this.applicationsToFriends = null;
         this.FriendshipService.getFriendList()
             .then(
                 (data: any) => {
@@ -30,10 +32,16 @@ export class AccountFriendshipComponent implements OnInit{
             );
     }
 
-    addFriend(user: User) {
-        console.log(user);
-        alert('TODO');
-        // this.FriendshipService.acceptFriendshipWith(uid);
+    addFriend(friend: User) {
+        friend.is_busy = true;
+        let friendUid = friend.uid_for_client.name;
+        this.FriendshipService.acceptFriendshipWith(friendUid)
+            .then(
+                () => this.loadFriendList()
+            )
+            .catch(
+                () => friend.is_busy = false
+            );
     }
     deleteFriend(user: User) {
         alert('TODO');

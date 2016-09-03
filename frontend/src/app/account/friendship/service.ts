@@ -48,19 +48,13 @@ export class FriendshipService {
                         friendList: friendList,
                         applicationsToFriends: applicationsToFriends
                     };
-                },
-                error => {
-                    console.log(error);
-                    return {
-                        friendList: [],
-                        applicationsToFriends: []
-                    };
                 }
-            );
+            )
+            .catch(this.handlerError);
     }
 
     acceptFriendshipWith(ID : string) {
-        let url = this.FRIENDSHIP_URL + ID;
+        let url = this.FRIENDSHIP_URL + ID + '/accept';
         let headers = new Headers({
             'Content-Type': 'application/json',
             'X-CSRFToken': Cookie.get('csrftoken')

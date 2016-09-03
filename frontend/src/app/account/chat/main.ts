@@ -29,6 +29,7 @@ export class AccountChatComponent implements OnInit{
     }
 
     chooseChat(chat: Chat) {
+        chat.count_not_read_messages = 0;
         this.selectedChat = chat;
     }
 

@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild} from '@angular/core';
 import { ChatHistoryComponent } from './history/main';
 import { ChatService } from './service';
 import { Chat } from 'app/chat/model';
@@ -9,14 +9,15 @@ import { Message } from 'app/chat/message.model';
     templateUrl: './main.html',
     providers: [ChatService]
 })
-export class ChatComponent implements OnChanges {
+export class ChatComponent implements OnChanges, OnDestroy {
     @Input() chat: Chat;
     @ViewChild('history')
     private historyComponent: ChatHistoryComponent;
-    messageForSend: string = "";
 
+    messageForSend: string = "";
     messages: Message[];
     isBusy: boolean;
+    chatWatcherId: any = 0;
 
     constructor(
         private ChatService: ChatService
@@ -29,6 +30,10 @@ export class ChatComponent implements OnChanges {
         }
     }
 
+    ngOnDestroy() {
+        this.stopChatWatcher();
+    }
+
     loadChat(chat: Chat) {
         this.isBusy = true;
         let chatId = chat.chat.id;
@@ -37,7 +42,8 @@ export class ChatComponent implements OnChanges {
                 (messages: Message[]) => {
                     this.isBusy = false;
                     this.messages = messages;
-                    setTimeout( () => this.renderMessages(), 0);
+                    setTimeout( () => this.renderMessages(messages), 0);
+                    this.runChatWatcher(chatId);
                 }
             )
             .catch(
@@ -48,8 +54,8 @@ export class ChatComponent implements OnChanges {
             );
     }
 
-    renderMessages() {
-        for (let message of this.messages) {
+    renderMessages(messages: Message[]) {
+        for (let message of messages) {
             this.historyComponent.postNewMessage(message);
         }
     }
@@ -66,4 +72,20 @@ export class ChatComponent implements OnChanges {
             );
     }
 
+    runChatWatcher(chatId: number) {
+        this.stopChatWatcher();
+        this.chatWatcherId = setInterval(
+            () => {
+                this.ChatService.getNewMessages(chatId)
+                    .then(
+                        messages => this.renderMessages(messages)
+                    );
+            },
+            2000
+        );
+    }
+
+    stopChatWatcher() {
+        clearInterval(this.chatWatcherId);
+    }
 }
