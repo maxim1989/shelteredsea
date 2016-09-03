@@ -1,7 +1,7 @@
 import copy
 import random
-import uuid
 
+from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -45,15 +45,17 @@ def add_uid(request_object):
         try:
             max_exists_uuid = AdditionalUuid.objects.order_by('-series').order_by('-number')[0]
         except IndexError:
-            next_uuid_series = 0
+            next_uuid_series = settings._UID_SERIES
             next_uuid_number = 0
         else:
             if max_exists_uuid.number < 999999:
                 next_uuid_series = max_exists_uuid.series
                 next_uuid_number = max_exists_uuid.number + 1
             else:
-                next_uuid_series = max_exists_uuid.series + 1
+                # next_uuid_series = max_exists_uuid.series + 1
+                next_uuid_series = max_exists_uuid.series
                 next_uuid_number = 0
+                raise RuntimeError('Uuids finished')
         user = User.objects.get(pk=request_object.user.id)
         appended_uuid = AdditionalUuid(series=next_uuid_series, number=next_uuid_number, user=user)
         appended_uuid.save()
