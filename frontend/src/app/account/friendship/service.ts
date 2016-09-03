@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions } from '@angular/http';
 import {Cookie} from 'ng2-cookies/ng2-cookies';
-import { User } from './model';
+import { Friend } from 'app/user/friend.model';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class FriendshipService {
     private FRIENDSHIP_URL = 'personalarea/';
+    private ACCEPT_REQUEST_BODY = '{"accept":true}';
+
 
     constructor(private http: Http) { }
 
@@ -22,13 +24,7 @@ export class FriendshipService {
             .toPromise()
             .then(
                 response => {
-                    let result = response.json();
-                    console.log(result);
-                    // return result as User[];
-                },
-                error => {
-                    console.log(error);
-                    return [];
+                    return response.json();
                 }
             )
             .catch(this.handlerError);
@@ -41,26 +37,40 @@ export class FriendshipService {
             .then(
                 response => {
                     let result = response.json();
-                    let friendList: User[] = result.my_friends as User[];
-                    let applicationsToFriends: User[] = result.want_be_their_friend as User[];
+                    let friendList: Friend[] = result.my_friends as Friend[];
+                    let applicationsToFriends: Friend[] = result.want_be_my_friend as Friend[];
                     return {
                         friendList: friendList,
                         applicationsToFriends: applicationsToFriends
-                    };
-                },
-                error => {
-                    console.log(error);
-                    return {
-                        friendList: [],
-                        applicationsToFriends: []
                     };
                 }
             )
             .catch(this.handlerError);
     }
 
-    acceptFriendshipWith(ID : string) {
-        let url = this.FRIENDSHIP_URL + ID;
+    confirmFriendshipWith(ID : string, isAssept) {
+        let url = this.FRIENDSHIP_URL + ID + '/accept';
+        let requestBody = {
+            accept: isAssept
+        };
+        let headers = new Headers({
+            'Content-Type': 'application/json',
+            'X-CSRFToken': Cookie.get('csrftoken')
+        });
+        let options = new RequestOptions({ headers: headers });
+        //noinspection TypeScriptUnresolvedFunction
+        return this.http.post(url, JSON.stringify(requestBody), options)
+            .toPromise()
+            .then(
+                response => {
+                    return response.json();
+                }
+            )
+            .catch(this.handlerError);
+    }
+
+    removeFriendshipWith(ID : string) {
+        let url = this.FRIENDSHIP_URL + ID + '/delete';
         let headers = new Headers({
             'Content-Type': 'application/json',
             'X-CSRFToken': Cookie.get('csrftoken')
@@ -71,9 +81,7 @@ export class FriendshipService {
             .toPromise()
             .then(
                 response => {
-                    let result = response.json();
-                    console.log(result);
-                    // return result as User[];
+                    return response.json();
                 }
             )
             .catch(this.handlerError);

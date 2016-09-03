@@ -1,0 +1,24 @@
+<div *ngIf="chat && messages && messages.length" class="chat__block">
+    <chat-history #history class="chat__history"></chat-history>
+    <form class="chat__editor">
+        <div class="form-group">
+            <textarea class="form-control"
+                      [(ngModel)]="messageForSend" [ngModelOptions]="{standalone: true}">
+            </textarea>
+        </div>
+        <div class="form-group text-right">
+            <button type="button"
+                    class="btn btn-primary"
+                    (click)="sendMessage()"
+                    [disabled]="messageForSend==''">
+                Отправить
+            </button>
+        </div>
+    </form>
+</div>
+<div *ngIf="!chat && !isBusy">
+    <em>Не выбран собеседник</em>
+</div>
+<div *ngIf="isBusy">
+    <md-progress-bar mode="indeterminate"></md-progress-bar>
+</div>

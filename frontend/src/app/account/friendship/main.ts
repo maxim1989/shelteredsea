@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import { User } from 'app/user/model';
-import { FriendshipService } from 'app/user/friendship.service';
+import { Friend } from 'app/user/friend.model';
+import { FriendshipService } from './service';
 
 @Component({
     selector: 'account-friendship',
@@ -8,29 +9,64 @@ import { FriendshipService } from 'app/user/friendship.service';
     providers: [FriendshipService],
 })
 export class AccountFriendshipComponent implements OnInit{
-    friendList: User[];
-    applicationsToFriends: User[];
+    friendList: Friend[];
+    applicationsToFriends: Friend[];
 
     constructor(
         private FriendshipService: FriendshipService
     ) {}
 
     ngOnInit() {
+        this.loadFriendList();
+    }
+
+    loadFriendList() {
+        this.friendList = null;
+        this.applicationsToFriends = null;
         this.FriendshipService.getFriendList()
             .then(
                 (data: any) => {
                     this.friendList = data.friendList;
                     this.applicationsToFriends = data.applicationsToFriends;
                 }
+            )
+            .catch(
+                () => {
+                    this.friendList = null;
+                    this.applicationsToFriends = null;
+                }
             );
     }
 
-    addFriend(user: User) {
-        alert('TODO');
-        // this.FriendshipService.acceptFriendshipWith(uid);
+    acceptFriendship(friend: User) {
+        this.confirmFriendship(friend, true);
     }
-    deleteFriend(user: User) {
-        alert('TODO');
-        // this.FriendshipService.acceptFriendshipWith(uid);
+
+    declineFriendship(friend: User) {
+        this.confirmFriendship(friend, false);
+    }
+
+    private confirmFriendship(friend: User, isAssept: boolean) {
+        friend.is_busy = true;
+        let friendUid = friend.uid_for_client.name;
+        this.FriendshipService.confirmFriendshipWith(friendUid, isAssept)
+            .then(
+                () => this.loadFriendList()
+            )
+            .catch(
+                () => friend.is_busy = false
+            );
+    }
+
+    removeFriendship(friend: User) {
+        friend.is_busy = true;
+        let friendUid = friend.uid_for_client.name;
+        this.FriendshipService.removeFriendshipWith(friendUid)
+            .then(
+                () => this.loadFriendList()
+            )
+            .catch(
+                () => friend.is_busy = false
+            );
     }
 }

@@ -1,5 +1,5 @@
 <div *ngIf="!friendList || !applicationsToFriends">
-     <em>Загрузка данных...</em>
+    <md-progress-bar mode="indeterminate"></md-progress-bar>
 </div>
 <div *ngIf="friendList && applicationsToFriends && !friendList.length && !applicationsToFriends.length">
     <em>У вас нет друзей</em>
@@ -13,12 +13,19 @@
             <th width="160">Действия</th>
         </thead>
         <tbody>
-            <tr *ngFor="let user of friendList; let i = index">
+            <tr *ngFor="let friendship of friendList; let i = index">
                 <td>{{i + 1}}</td>
-                <td>{{user.username}} ({{user.dispute_name}})</td>
+                <td>{{friendship.friend.username}}</td>
                 <td>
-                    <button class="btn btn-primary btn-sm"
-                            (click)="deleteFriend(user)">Удалить из друзей</button>
+                    <div *ngIf="!friendship.friend.is_busy">
+                        <button class="btn btn-primary btn-sm"
+                                (click)="removeFriendship(friendship.friend)">
+                            Удалить из друзей
+                        </button>
+                    </div>
+                    <div *ngIf="friendship.friend.is_busy">
+                        <md-progress-bar mode="indeterminate"></md-progress-bar>
+                    </div>
                 </td>
             </tr>
         </tbody>
@@ -31,15 +38,27 @@
         <thead>
             <th width="80">№ п/п</th>
             <th>Имя</th>
-            <th width="160">Действия</th>
+            <th width="220">Действия</th>
         </thead>
         <tbody>
-            <tr *ngFor="let user of applicationsToFriends; let i = index">
+            <tr *ngFor="let friendship of applicationsToFriends; let i = index">
                 <td>{{i + 1}}</td>
-                <td>{{user.username}}</td>
+                <td>{{friendship.friend.username}}</td>
                 <td>
-                    <button class="btn btn-primary btn-sm"
-                            (click)="addFriend(user)">Принять дружбу</button>
+                    <div *ngIf="!friendship.friend.is_busy">
+                        <button *ngIf="!friendship.friend.is_busy"
+                                class="btn btn-primary btn-sm"
+                                (click)="acceptFriendship(friendship.friend)">
+                            Принять дружбу
+                        </button>
+                        <button class="btn btn-default btn-sm"
+                                (click)="declineFriendship(friendship.friend)">
+                            Отклонить
+                        </button>
+                    </div>
+                    <div *ngIf="friendship.friend.is_busy">
+                        <md-progress-bar mode="indeterminate"></md-progress-bar>
+                    </div>
                 </td>
             </tr>
         </tbody>

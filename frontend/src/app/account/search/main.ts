@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import { User } from 'app/user/model';
-import { SearchUserService } from 'app/user/search.service';
+import { SearchUserService } from './service';
 
 @Component({
     selector: 'account-search',

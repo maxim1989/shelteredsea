@@ -41,15 +41,15 @@ export class UserService {
     }
 
     getUid() {
-        return (this.user) ? this.user.uid_for_client : "";
+        return (this.user) ? this.user.uid_for_client.name : "";
     }
 
     getDisputeName() {
-        return (this.user) ? this.user.dispute_name : "";
+        return (this.user) ? this.user.dispute_name.name : "";
     }
 
     getStatisticName() {
-        return (this.user) ? this.user.statistic_name : "";
+        return (this.user) ? this.user.statistic_name.name : "";
     }
 
     handlerError(error: any) {

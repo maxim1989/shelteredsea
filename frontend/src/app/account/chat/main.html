@@ -1,0 +1,26 @@
+<div *ngIf="!chatList">
+    <md-progress-bar mode="indeterminate"></md-progress-bar>
+</div>
+<div *ngIf="chatList && !chatList.length">
+    <em>Нет активных разговоров</em>
+</div>
+<div *ngIf="chatList && chatList.length"
+        class="row">
+    <div class="col-md-4">
+        <div class="list-group">
+            <a *ngFor="let chat of chatList"
+               class="list-group-item"
+               [class.active]="selectedChat == chat"
+               (click)="chooseChat(chat)">
+                <span *ngIf="chat.count_not_read_messages != 0"
+                      class="badge">
+                    <span class="glyphicon glyphicon-envelope"></span> {{chat.count_not_read_messages}}
+                </span>
+                {{chat.user.username}}
+            </a>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <chat [chat]="selectedChat"></chat>
+    </div>
+</div>

@@ -1,36 +1,39 @@
-<div class="row">
-    <div class="col-md-offset-1 col-md-4">
-        <a
-                class="logo"
-                routerLink="/">
-        </a>
-    </div>
-    <div class="col-md-7 text-right">
-        <div *ngIf="!userLoaded">
-            <em>Идет загрузка данных...</em>
-        </div>
-        <div *ngIf="userLoaded && is_authenticated">
-            <a
-                    class="log-in text-left"
-                    routerLink="account">
-                <span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{userTitle}}
-                <br/>
-                <span class="small">uid: {{uid}}</span>
-            </a>
-            <a
-                    class="log-in"
-                    (click)="routeLogOut()">
-                <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Выйти
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand"
+               routerLink="/">
+                Syfa.pnt
             </a>
         </div>
-        <a
-                class="log-in"
-                 *ngIf="userLoaded && !is_authenticated"
-                 (click)="routeLogIn()">
-            <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> Войти
-        </a>
+        <ul class="nav navbar-nav navbar-right">
+            <li *ngIf="!userLoaded">
+                <em>Загрузка данных...</em>
+            </li>
+            <li *ngIf="userLoaded && is_authenticated">
+                <a class="log-in text-left"
+                   routerLink="account">
+                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{userTitle}}
+                </a>
+            </li>
+            <li *ngIf="userLoaded && is_authenticated">
+                <p class="navbar-text"><em>id: {{uid}}</em></p>
+            </li>
+            <li *ngIf="userLoaded && is_authenticated">
+                <a class="log-in"
+                   (click)="routeLogOut()">
+                    <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Выйти
+                </a>
+            </li>
+            <li *ngIf="userLoaded && !is_authenticated">
+                <a class="log-in"
+                   (click)="routeLogIn()">
+                    <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> Войти
+                </a>
+            </li>
+        </ul>
     </div>
-</div>
+</nav>
 
 <main>
     <router-outlet></router-outlet>

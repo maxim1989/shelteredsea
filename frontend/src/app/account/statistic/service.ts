@@ -1,26 +1,22 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http } from '@angular/http';
-import { User } from './model';
+import { Http } from '@angular/http';
+import { User } from 'app/user/model';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
-export class SearchUserService {
-    private SEARCH_USER_URL = 'personalarea/';
+export class StatisticService {
+    private URL = 'personalarea/statistic';
 
     constructor(private http: Http) { }
-
-    getUserByID(ID : string) {
-        let url = this.SEARCH_USER_URL + ID;
+    
+    getStatistic() {
         //noinspection TypeScriptUnresolvedFunction
-        return this.http.get(url)
+        return this.http.get(this.URL)
             .toPromise()
             .then(
                 response => {
                     let result = response.json();
                     return result as User[];
-                },
-                error => {
-                    return [];
                 }
             )
             .catch(this.handlerError);

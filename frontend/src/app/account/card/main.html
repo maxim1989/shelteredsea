@@ -2,8 +2,21 @@
     <md-card-subtitle>Личные данные</md-card-subtitle>
     <md-card-content>
         <div *ngIf="user">
-            <p>Имя в статистике: <em>{{user.dispute_name}}</em></p>
-            <p>id: {{user.uid_for_client}}</p>
+            <p>Имя в статистике: <strong>{{user.statistic_name.name}}</strong></p>
+            <p>id: <strong>{{user.uid_for_client.name}}</strong></p>
+            <div class="payment text-center">
+                <h4>Баланс</h4>
+                <p>
+                    <strong><em>{{balance}}</em> бубликов</strong>
+                </p>
+                <p>
+                    <button type="button"
+                            class="btn btn-primary"
+                            disabled="disabled">
+                        Пополнить баланс
+                    </button>
+                </p>
+            </div>
         </div>
     </md-card-content>
 </md-card>

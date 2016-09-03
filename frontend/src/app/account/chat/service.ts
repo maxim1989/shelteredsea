@@ -1,22 +1,22 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import { User } from './model';
+import { Chat } from 'app/chat/model';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
-export class StatisticService {
-    private URL = 'personalarea/statistic';
+export class AccountChatService {
+    private CHAT_URL = 'chat/';
 
     constructor(private http: Http) { }
     
-    getStatistic() {
+    getChatList() {
         //noinspection TypeScriptUnresolvedFunction
-        return this.http.get(this.URL)
+        return this.http.get(this.CHAT_URL)
             .toPromise()
             .then(
                 response => {
                     let result = response.json();
-                    return result as User[];
+                    return result as Chat[];
                 }
             )
             .catch(this.handlerError);

@@ -9,6 +9,7 @@ import { UserService } from 'app/user/auth.service';
 })
 export class AccountCardComponent implements OnInit{
     user: User;
+    balance: string = "2 340";
 
     constructor(
         private UserService: UserService
