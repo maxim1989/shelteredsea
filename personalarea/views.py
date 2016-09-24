@@ -3,6 +3,7 @@ import datetime
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -20,6 +21,36 @@ class FriendsList(APIView):
             filter(myself=u).filter(is_friend=True).order_by('friend__username')
         want_be_my_friend = Friends.objects. \
             filter(myself=u).filter(is_friend=False).order_by('friend__username')
+
+
+
+        # paginator_my_friends = Paginator(my_friends, 1)
+        # paginator_want_be_my_friend = Paginator(want_be_my_friend, 1)
+        # print('paginator_my_friends = {0}'.format(paginator_my_friends))
+
+        # page = 1#request.GET.get('page')
+        # try:
+        #     contacts = paginator_my_friends.page(page)
+        #     print('contacts = {0}'.format(contacts))
+        #     print('contacts.has_previous = {0}'.format(contacts.has_previous))
+        #     if contacts.has_previous:
+        #         print('contacts.previous_page_number = {0}'.format(contacts.previous_page_number))
+        #     print('contacts.number = {0}'.format(contacts.number))
+        #     print('contacts.num_pages = {0}'.format(contacts.paginator.num_pages))
+        #     print('contacts.has_next = {0}'.format(contacts.has_next))
+        #     if contacts.has_next:
+        #         print('contacts.next_page_number = {0}'.format(contacts.next_page_number))
+        # except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            # contacts = paginator_my_friends.page(1)
+            # print('contacts = {0}'.format(contacts))
+        # except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            # contacts = paginator_my_friends.page(paginator_my_friends.num_pages)
+            # print('contacts = {0}'.format(contacts))
+        # serializer_friend_test = FriendsSerializer(contacts, many=True)
+        # print('serializer_friend_test.data = {0}'.format(serializer_friend_test.data))
+
         serializer_friend = FriendsSerializer(my_friends, many=True)
         serializer_not_friend = FriendsSerializer(want_be_my_friend, many=True)
         data = dict(my_friends=serializer_friend.data, want_be_my_friend=serializer_not_friend.data)
