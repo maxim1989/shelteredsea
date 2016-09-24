@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'core',
     'chat',
     'personalarea',
+    'disputes',
 ]
 
 MIDDLEWARE_CLASSES = [
