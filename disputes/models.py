@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+from chat.models import Chat
+
 
 class Games(models.Model):
     name = models.CharField(max_length=255)
@@ -18,6 +20,7 @@ class Deals(models.Model):
 
 
 class TempDeals(models.Model):
+    chat = models.OneToOneField(Chat, null=True, on_delete=models.CASCADE)
     steam_game_uid = models.CharField(max_length=255)
     count_of_games = models.PositiveIntegerField()
     left_rate = models.CharField(max_length=255)

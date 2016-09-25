@@ -1,0 +1,10 @@
+[
+  {
+    "model": "disputes.games",
+    "pk": 1,
+    "fields": {
+      "name": "Игра Дота 2",
+      "namespace": "dota2"
+    }
+  }
+]
