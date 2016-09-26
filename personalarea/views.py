@@ -127,7 +127,6 @@ class FindUser(APIView):
             invite_friend(chat, me)
             serializer.save()
             return Response({'success': True, 'created': True, 'exist': True, 'is_friend': False})
-        print(serializer.errors)
         return Response({'success': False, 'created': False, 'exist': True, 'is_friend': False})
 
 

@@ -6,7 +6,7 @@ from chat.models import Chat
 
 class Games(models.Model):
     name = models.CharField(max_length=255)
-    namespace = models.CharField(max_length=255)
+    namespace = models.CharField(max_length=255, unique=True)
 
 
 class Deals(models.Model):
@@ -32,15 +32,15 @@ class TempDeals(models.Model):
 
 class OrderForDeal(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    deal = models.ForeignKey(Deals, on_delete=models.CASCADE)
-    temp_deal = models.ForeignKey(TempDeals, on_delete=models.CASCADE)
+    deal = models.ForeignKey(Deals, on_delete=models.CASCADE, null=True)
+    temp_deal = models.ForeignKey(TempDeals, on_delete=models.CASCADE, null=True)
     game = models.ForeignKey(Games, on_delete=models.CASCADE)
     is_winner = models.BooleanField(default=False)
     left_rate = models.CharField(max_length=255)
     right_rate = models.CharField(max_length=2)
     rate_trent = models.CharField(max_length=2)
-    games_count = models.PositiveIntegerField()
-    team_size = models.PositiveIntegerField()
+    games_count = models.PositiveIntegerField(null=True)
+    team_size = models.PositiveIntegerField(null=True)
     in_negotiations = models.BooleanField(default=False)
     modificate_moment = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
