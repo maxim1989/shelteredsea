@@ -49,4 +49,4 @@ class OrderForDeal(models.Model):
 class CanceledNegotiations(models.Model):
     myself = models.ForeignKey(OrderForDeal, on_delete=models.CASCADE, related_name='myself')
     competitor = models.ForeignKey(OrderForDeal, on_delete=models.CASCADE, related_name='competitor')
-    create_moment = models.DateTimeField(auto_now=True)
+    create_moment = models.DateTimeField(auto_now_add=True)
