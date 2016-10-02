@@ -1,4 +1,4 @@
-import { NgModule, NgModuleMetadataType } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
@@ -25,7 +25,7 @@ import {AccountFriendshipComponent} from './account/friendship/main';
 import {AccountStatisticComponent} from './account/statistic/main';
 
 
-@NgModule(<NgModuleMetadataType>{
+@NgModule({
     imports: [
         BrowserModule,
         FormsModule,
