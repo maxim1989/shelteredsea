@@ -23,7 +23,7 @@ webpackJsonp([1],{
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
-	 * @license Angular v2.0.0-rc.6
+	 * @license Angular v2.0.1
 	 * (c) 2010-2016 Google, Inc. https://angular.io/
 	 * License: MIT
 	 */
@@ -83,11 +83,6 @@ webpackJsonp([1],{
 	    }
 	    function isFunction(obj) {
 	        return typeof obj === 'function';
-	    }
-	    function isPromise(obj) {
-	        // allow any Promise/A+ compliant thenable.
-	        // It's up to the caller to ensure that obj.then conforms to the spec
-	        return isPresent(obj) && isFunction(obj.then);
 	    }
 	    function isArray(obj) {
 	        return Array.isArray(obj);
@@ -208,8 +203,6 @@ webpackJsonp([1],{
 	            }
 	            throw new Error('Invalid integer literal when parsing ' + text + ' in base ' + radix);
 	        };
-	        // TODO: NaN is a valid literal but is returned by parseFloat to indicate an error.
-	        NumberWrapper.parseFloat = function (text) { return parseFloat(text); };
 	        Object.defineProperty(NumberWrapper, "NaN", {
 	            get: function () { return NaN; },
 	            enumerable: true,
@@ -261,299 +254,6 @@ webpackJsonp([1],{
 	    function isPrimitive(obj) {
 	        return !isJsObject(obj);
 	    }
-
-	    /**
-	     * Allows to refer to references which are not yet defined.
-	     *
-	     * For instance, `forwardRef` is used when the `token` which we need to refer to for the purposes of
-	     * DI is declared,
-	     * but not yet defined. It is also used when the `token` which we use when creating a query is not
-	     * yet defined.
-	     *
-	     * ### Example
-	     * {@example core/di/ts/forward_ref/forward_ref_spec.ts region='forward_ref'}
-	     * @experimental
-	     */
-	    function forwardRef(forwardRefFn) {
-	        forwardRefFn.__forward_ref__ = forwardRef;
-	        forwardRefFn.toString = function () { return stringify(this()); };
-	        return forwardRefFn;
-	    }
-	    /**
-	     * Lazily retrieves the reference value from a forwardRef.
-	     *
-	     * Acts as the identity function when given a non-forward-ref value.
-	     *
-	     * ### Example ([live demo](http://plnkr.co/edit/GU72mJrk1fiodChcmiDR?p=preview))
-	     *
-	     * {@example core/di/ts/forward_ref/forward_ref_spec.ts region='resolve_forward_ref'}
-	     *
-	     * See: {@link forwardRef}
-	     * @experimental
-	     */
-	    function resolveForwardRef(type) {
-	        if (isFunction(type) && type.hasOwnProperty('__forward_ref__') &&
-	            type.__forward_ref__ === forwardRef) {
-	            return type();
-	        }
-	        else {
-	            return type;
-	        }
-	    }
-
-	    /**
-	     * A parameter metadata that specifies a dependency.
-	     *
-	     * ### Example ([live demo](http://plnkr.co/edit/6uHYJK?p=preview))
-	     *
-	     * ```typescript
-	     * class Engine {}
-	     *
-	     * @Injectable()
-	     * class Car {
-	     *   engine;
-	     *   constructor(@Inject("MyEngine") engine:Engine) {
-	     *     this.engine = engine;
-	     *   }
-	     * }
-	     *
-	     * var injector = Injector.resolveAndCreate([
-	     *  {provide: "MyEngine", useClass: Engine},
-	     *  Car
-	     * ]);
-	     *
-	     * expect(injector.get(Car).engine instanceof Engine).toBe(true);
-	     * ```
-	     *
-	     * When `@Inject()` is not present, {@link Injector} will use the type annotation of the parameter.
-	     *
-	     * ### Example
-	     *
-	     * ```typescript
-	     * class Engine {}
-	     *
-	     * @Injectable()
-	     * class Car {
-	     *   constructor(public engine: Engine) {} //same as constructor(@Inject(Engine) engine:Engine)
-	     * }
-	     *
-	     * var injector = Injector.resolveAndCreate([Engine, Car]);
-	     * expect(injector.get(Car).engine instanceof Engine).toBe(true);
-	     * ```
-	     * @stable
-	     */
-	    var InjectMetadata = (function () {
-	        function InjectMetadata(token) {
-	            this.token = token;
-	        }
-	        InjectMetadata.prototype.toString = function () { return "@Inject(" + stringify(this.token) + ")"; };
-	        return InjectMetadata;
-	    }());
-	    /**
-	     * A parameter metadata that marks a dependency as optional. {@link Injector} provides `null` if
-	     * the dependency is not found.
-	     *
-	     * ### Example ([live demo](http://plnkr.co/edit/AsryOm?p=preview))
-	     *
-	     * ```typescript
-	     * class Engine {}
-	     *
-	     * @Injectable()
-	     * class Car {
-	     *   engine;
-	     *   constructor(@Optional() engine:Engine) {
-	     *     this.engine = engine;
-	     *   }
-	     * }
-	     *
-	     * var injector = Injector.resolveAndCreate([Car]);
-	     * expect(injector.get(Car).engine).toBeNull();
-	     * ```
-	     * @stable
-	     */
-	    var OptionalMetadata = (function () {
-	        function OptionalMetadata() {
-	        }
-	        OptionalMetadata.prototype.toString = function () { return "@Optional()"; };
-	        return OptionalMetadata;
-	    }());
-	    /**
-	     * `DependencyMetadata` is used by the framework to extend DI.
-	     * This is internal to Angular and should not be used directly.
-	     * @stable
-	     */
-	    var DependencyMetadata = (function () {
-	        function DependencyMetadata() {
-	        }
-	        Object.defineProperty(DependencyMetadata.prototype, "token", {
-	            get: function () { return null; },
-	            enumerable: true,
-	            configurable: true
-	        });
-	        return DependencyMetadata;
-	    }());
-	    /**
-	     * A marker metadata that marks a class as available to {@link Injector} for creation.
-	     *
-	     * ### Example ([live demo](http://plnkr.co/edit/Wk4DMQ?p=preview))
-	     *
-	     * ```typescript
-	     * @Injectable()
-	     * class UsefulService {}
-	     *
-	     * @Injectable()
-	     * class NeedsService {
-	     *   constructor(public service:UsefulService) {}
-	     * }
-	     *
-	     * var injector = Injector.resolveAndCreate([NeedsService, UsefulService]);
-	     * expect(injector.get(NeedsService).service instanceof UsefulService).toBe(true);
-	     * ```
-	     * {@link Injector} will throw {@link NoAnnotationError} when trying to instantiate a class that
-	     * does not have `@Injectable` marker, as shown in the example below.
-	     *
-	     * ```typescript
-	     * class UsefulService {}
-	     *
-	     * class NeedsService {
-	     *   constructor(public service:UsefulService) {}
-	     * }
-	     *
-	     * var injector = Injector.resolveAndCreate([NeedsService, UsefulService]);
-	     * expect(() => injector.get(NeedsService)).toThrowError();
-	     * ```
-	     * @stable
-	     */
-	    var InjectableMetadata = (function () {
-	        function InjectableMetadata() {
-	        }
-	        return InjectableMetadata;
-	    }());
-	    /**
-	     * Specifies that an {@link Injector} should retrieve a dependency only from itself.
-	     *
-	     * ### Example ([live demo](http://plnkr.co/edit/NeagAg?p=preview))
-	     *
-	     * ```typescript
-	     * class Dependency {
-	     * }
-	     *
-	     * @Injectable()
-	     * class NeedsDependency {
-	     *   dependency;
-	     *   constructor(@Self() dependency:Dependency) {
-	     *     this.dependency = dependency;
-	     *   }
-	     * }
-	     *
-	     * var inj = Injector.resolveAndCreate([Dependency, NeedsDependency]);
-	     * var nd = inj.get(NeedsDependency);
-	     *
-	     * expect(nd.dependency instanceof Dependency).toBe(true);
-	     *
-	     * var inj = Injector.resolveAndCreate([Dependency]);
-	     * var child = inj.resolveAndCreateChild([NeedsDependency]);
-	     * expect(() => child.get(NeedsDependency)).toThrowError();
-	     * ```
-	     * @stable
-	     */
-	    var SelfMetadata = (function () {
-	        function SelfMetadata() {
-	        }
-	        SelfMetadata.prototype.toString = function () { return "@Self()"; };
-	        return SelfMetadata;
-	    }());
-	    /**
-	     * Specifies that the dependency resolution should start from the parent injector.
-	     *
-	     * ### Example ([live demo](http://plnkr.co/edit/Wchdzb?p=preview))
-	     *
-	     * ```typescript
-	     * class Dependency {
-	     * }
-	     *
-	     * @Injectable()
-	     * class NeedsDependency {
-	     *   dependency;
-	     *   constructor(@SkipSelf() dependency:Dependency) {
-	     *     this.dependency = dependency;
-	     *   }
-	     * }
-	     *
-	     * var parent = Injector.resolveAndCreate([Dependency]);
-	     * var child = parent.resolveAndCreateChild([NeedsDependency]);
-	     * expect(child.get(NeedsDependency).dependency instanceof Depedency).toBe(true);
-	     *
-	     * var inj = Injector.resolveAndCreate([Dependency, NeedsDependency]);
-	     * expect(() => inj.get(NeedsDependency)).toThrowError();
-	     * ```
-	     * @stable
-	     */
-	    var SkipSelfMetadata = (function () {
-	        function SkipSelfMetadata() {
-	        }
-	        SkipSelfMetadata.prototype.toString = function () { return "@SkipSelf()"; };
-	        return SkipSelfMetadata;
-	    }());
-	    /**
-	     * Specifies that an injector should retrieve a dependency from any injector until reaching the
-	     * closest host.
-	     *
-	     * In Angular, a component element is automatically declared as a host for all the injectors in
-	     * its view.
-	     *
-	     * ### Example ([live demo](http://plnkr.co/edit/GX79pV?p=preview))
-	     *
-	     * In the following example `App` contains `ParentCmp`, which contains `ChildDirective`.
-	     * So `ParentCmp` is the host of `ChildDirective`.
-	     *
-	     * `ChildDirective` depends on two services: `HostService` and `OtherService`.
-	     * `HostService` is defined at `ParentCmp`, and `OtherService` is defined at `App`.
-	     *
-	     *```typescript
-	     * class OtherService {}
-	     * class HostService {}
-	     *
-	     * @Directive({
-	     *   selector: 'child-directive'
-	     * })
-	     * class ChildDirective {
-	     *   constructor(@Optional() @Host() os:OtherService, @Optional() @Host() hs:HostService){
-	     *     console.log("os is null", os);
-	     *     console.log("hs is NOT null", hs);
-	     *   }
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'parent-cmp',
-	     *   providers: [HostService],
-	     *   template: `
-	     *     Dir: <child-directive></child-directive>
-	     *   `,
-	     *   directives: [ChildDirective]
-	     * })
-	     * class ParentCmp {
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'app',
-	     *   providers: [OtherService],
-	     *   template: `
-	     *     Parent: <parent-cmp></parent-cmp>
-	     *   `,
-	     *   directives: [ParentCmp]
-	     * })
-	     * class App {
-	     * }
-	     *```
-	     * @stable
-	     */
-	    var HostMetadata = (function () {
-	        function HostMetadata() {
-	        }
-	        HostMetadata.prototype.toString = function () { return "@Host()"; };
-	        return HostMetadata;
-	    }());
 
 	    var _nextClassId = 0;
 	    function extractAnnotation(annotation) {
@@ -714,22 +414,24 @@ webpackJsonp([1],{
 	        return constructor;
 	    }
 	    var Reflect = global$1.Reflect;
-	    function makeDecorator(annotationCls, chainFn) {
+	    function makeDecorator(name, props, parentClass, chainFn) {
 	        if (chainFn === void 0) { chainFn = null; }
+	        var metaCtor = makeMetadataCtor([props]);
 	        function DecoratorFactory(objOrType) {
 	            if (!(Reflect && Reflect.getMetadata)) {
 	                throw 'reflect-metadata shim is required when using class decorators';
 	            }
-	            var annotationInstance = new annotationCls(objOrType);
-	            if (this instanceof annotationCls) {
-	                return annotationInstance;
+	            if (this instanceof DecoratorFactory) {
+	                metaCtor.call(this, objOrType);
+	                return this;
 	            }
 	            else {
+	                var annotationInstance_1 = new DecoratorFactory(objOrType);
 	                var chainAnnotation = isFunction(this) && this.annotations instanceof Array ? this.annotations : [];
-	                chainAnnotation.push(annotationInstance);
+	                chainAnnotation.push(annotationInstance_1);
 	                var TypeDecorator = function TypeDecorator(cls) {
 	                    var annotations = Reflect.getOwnMetadata('annotations', cls) || [];
-	                    annotations.push(annotationInstance);
+	                    annotations.push(annotationInstance_1);
 	                    Reflect.defineMetadata('annotations', annotations, cls);
 	                    return cls;
 	                };
@@ -740,25 +442,51 @@ webpackJsonp([1],{
 	                return TypeDecorator;
 	            }
 	        }
-	        DecoratorFactory.prototype = Object.create(annotationCls.prototype);
-	        DecoratorFactory.annotationCls = annotationCls;
+	        if (parentClass) {
+	            DecoratorFactory.prototype = Object.create(parentClass.prototype);
+	        }
+	        DecoratorFactory.prototype.toString = function () { return ("@" + name); };
+	        DecoratorFactory.annotationCls = DecoratorFactory;
 	        return DecoratorFactory;
 	    }
-	    function makeParamDecorator(annotationCls) {
+	    function makeMetadataCtor(props) {
+	        function ctor() {
+	            var _this = this;
+	            var args = [];
+	            for (var _i = 0; _i < arguments.length; _i++) {
+	                args[_i - 0] = arguments[_i];
+	            }
+	            props.forEach(function (prop, i) {
+	                var argVal = args[i];
+	                if (Array.isArray(prop)) {
+	                    // plain parameter
+	                    var val = !argVal || argVal === undefined ? prop[1] : argVal;
+	                    _this[prop[0]] = val;
+	                }
+	                else {
+	                    for (var propName in prop) {
+	                        var val = !argVal || argVal[propName] === undefined ? prop[propName] : argVal[propName];
+	                        _this[propName] = val;
+	                    }
+	                }
+	            });
+	        }
+	        return ctor;
+	    }
+	    function makeParamDecorator(name, props, parentClass) {
+	        var metaCtor = makeMetadataCtor(props);
 	        function ParamDecoratorFactory() {
 	            var args = [];
 	            for (var _i = 0; _i < arguments.length; _i++) {
 	                args[_i - 0] = arguments[_i];
 	            }
-	            var annotationInstance = Object.create(annotationCls.prototype);
-	            annotationCls.apply(annotationInstance, args);
-	            if (this instanceof annotationCls) {
-	                return annotationInstance;
+	            if (this instanceof ParamDecoratorFactory) {
+	                metaCtor.apply(this, args);
+	                return this;
 	            }
-	            else {
-	                ParamDecorator.annotation = annotationInstance;
-	                return ParamDecorator;
-	            }
+	            var annotationInstance = new ((_a = ParamDecoratorFactory).bind.apply(_a, [void 0].concat(args)))();
+	            ParamDecorator.annotation = annotationInstance;
+	            return ParamDecorator;
 	            function ParamDecorator(cls, unusedKey, index) {
 	                var parameters = Reflect.getMetadata('parameters', cls) || [];
 	                // there might be gaps if some in between parameters do not have annotations.
@@ -772,23 +500,28 @@ webpackJsonp([1],{
 	                Reflect.defineMetadata('parameters', parameters, cls);
 	                return cls;
 	            }
+	            var _a;
 	        }
-	        ParamDecoratorFactory.prototype = Object.create(annotationCls.prototype);
-	        ParamDecoratorFactory.annotationCls = annotationCls;
+	        if (parentClass) {
+	            ParamDecoratorFactory.prototype = Object.create(parentClass.prototype);
+	        }
+	        ParamDecoratorFactory.prototype.toString = function () { return ("@" + name); };
+	        ParamDecoratorFactory.annotationCls = ParamDecoratorFactory;
 	        return ParamDecoratorFactory;
 	    }
-	    function makePropDecorator(annotationCls) {
+	    function makePropDecorator(name, props, parentClass) {
+	        var metaCtor = makeMetadataCtor(props);
 	        function PropDecoratorFactory() {
 	            var args = [];
 	            for (var _i = 0; _i < arguments.length; _i++) {
 	                args[_i - 0] = arguments[_i];
 	            }
-	            var decoratorInstance = Object.create(annotationCls.prototype);
-	            annotationCls.apply(decoratorInstance, args);
-	            if (this instanceof annotationCls) {
-	                return decoratorInstance;
+	            if (this instanceof PropDecoratorFactory) {
+	                metaCtor.apply(this, args);
+	                return this;
 	            }
 	            else {
+	                var decoratorInstance = new ((_a = PropDecoratorFactory).bind.apply(_a, [void 0].concat(args)))();
 	                return function PropDecorator(target, name) {
 	                    var meta = Reflect.getOwnMetadata('propMetadata', target.constructor) || {};
 	                    meta[name] = meta[name] || [];
@@ -796,48 +529,58 @@ webpackJsonp([1],{
 	                    Reflect.defineMetadata('propMetadata', meta, target.constructor);
 	                };
 	            }
+	            var _a;
 	        }
-	        PropDecoratorFactory.prototype = Object.create(annotationCls.prototype);
-	        PropDecoratorFactory.annotationCls = annotationCls;
+	        if (parentClass) {
+	            PropDecoratorFactory.prototype = Object.create(parentClass.prototype);
+	        }
+	        PropDecoratorFactory.prototype.toString = function () { return ("@" + name); };
+	        PropDecoratorFactory.annotationCls = PropDecoratorFactory;
 	        return PropDecoratorFactory;
 	    }
 
 	    /**
-	     * Factory for creating {@link InjectMetadata}.
+	     * Inject decorator and metadata.
+	     *
 	     * @stable
 	     * @Annotation
 	     */
-	    var Inject = makeParamDecorator(InjectMetadata);
+	    var Inject = makeParamDecorator('Inject', [['token', undefined]]);
 	    /**
-	     * Factory for creating {@link OptionalMetadata}.
+	     * Optional decorator and metadata.
+	     *
 	     * @stable
 	     * @Annotation
 	     */
-	    var Optional = makeParamDecorator(OptionalMetadata);
+	    var Optional = makeParamDecorator('Optional', []);
 	    /**
-	     * Factory for creating {@link InjectableMetadata}.
+	     * Injectable decorator and metadata.
+	     *
 	     * @stable
 	     * @Annotation
 	     */
-	    var Injectable = makeDecorator(InjectableMetadata);
+	    var Injectable = makeParamDecorator('Injectable', []);
 	    /**
-	     * Factory for creating {@link SelfMetadata}.
+	     * Self decorator and metadata.
+	     *
 	     * @stable
 	     * @Annotation
 	     */
-	    var Self = makeParamDecorator(SelfMetadata);
+	    var Self = makeParamDecorator('Self', []);
 	    /**
-	     * Factory for creating {@link HostMetadata}.
+	     * SkipSelf decorator and metadata.
+	     *
 	     * @stable
 	     * @Annotation
 	     */
-	    var Host = makeParamDecorator(HostMetadata);
+	    var SkipSelf = makeParamDecorator('SkipSelf', []);
 	    /**
-	     * Factory for creating {@link SkipSelfMetadata}.
+	     * Host decorator and metadata.
+	     *
 	     * @stable
 	     * @Annotation
 	     */
-	    var SkipSelf = makeParamDecorator(SkipSelfMetadata);
+	    var Host = makeParamDecorator('Host', []);
 
 	    /**
 	     * Creates a token that can be used in a DI Provider.
@@ -878,18 +621,6 @@ webpackJsonp([1],{
 	    }());
 
 	    /**
-	     * @license
-	     * Copyright Google Inc. All Rights Reserved.
-	     *
-	     * Use of this source code is governed by an MIT-style license that can be
-	     * found in the LICENSE file at https://angular.io/license
-	     */
-	    var __extends = (this && this.__extends) || function (d, b) {
-	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	        function __() { this.constructor = d; }
-	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	    };
-	    /**
 	     * This token can be used to create a virtual provider that will populate the
 	     * `entryComponents` fields of components and ng modules based on its `useValue`.
 	     * All components that are referenced in the `useValue` value (either directly
@@ -912,7 +643,7 @@ webpackJsonp([1],{
 	     * // user code
 	     * let routes = [
 	     *   {path: '/root', component: RootComp},
-	     *   {path: /teams', component: TeamsComp}
+	     *   {path: '/teams', component: TeamsComp}
 	     * ];
 	     *
 	     * @NgModule({
@@ -925,470 +656,127 @@ webpackJsonp([1],{
 	     */
 	    var ANALYZE_FOR_ENTRY_COMPONENTS = new OpaqueToken('AnalyzeForEntryComponents');
 	    /**
-	     * Specifies that a constant attribute value should be injected.
+	     * Attribute decorator and metadata.
 	     *
-	     * The directive can inject constant string literals of host element attributes.
+	     * @stable
+	     * @Annotation
+	     */
+	    var Attribute = makeParamDecorator('Attribute', [['attributeName', undefined]]);
+	    /**
+	     * Base class for query metadata.
 	     *
-	     * ### Example
+	     * See {@link ContentChildren}, {@link ContentChild}, {@link ViewChildren}, {@link ViewChild} for
+	     * more information.
 	     *
-	     * Suppose we have an `<input>` element and want to know its `type`.
-	     *
-	     * ```html
-	     * <input type="text">
-	     * ```
-	     *
-	     * A decorator can inject string literal `text` like so:
-	     *
-	     * {@example core/ts/metadata/metadata.ts region='attributeMetadata'}
 	     * @stable
 	     */
-	    var AttributeMetadata = (function (_super) {
-	        __extends(AttributeMetadata, _super);
-	        function AttributeMetadata(attributeName) {
-	            _super.call(this);
-	            this.attributeName = attributeName;
+	    var Query = (function () {
+	        function Query() {
 	        }
-	        Object.defineProperty(AttributeMetadata.prototype, "token", {
-	            get: function () {
-	                // Normally one would default a token to a type of an injected value but here
-	                // the type of a variable is "string" and we can't use primitive type as a return value
-	                // so we use instance of Attribute instead. This doesn't matter much in practice as arguments
-	                // with @Attribute annotation are injected by ElementInjector that doesn't take tokens into
-	                // account.
-	                return this;
-	            },
-	            enumerable: true,
-	            configurable: true
-	        });
-	        AttributeMetadata.prototype.toString = function () { return "@Attribute(" + stringify(this.attributeName) + ")"; };
-	        return AttributeMetadata;
-	    }(DependencyMetadata));
+	        return Query;
+	    }());
 	    /**
-	     * Declares an injectable parameter to be a live list of directives or variable
-	     * bindings from the content children of a directive.
+	     * ContentChildren decorator and metadata.
 	     *
-	     * ### Example ([live demo](http://plnkr.co/edit/lY9m8HLy7z06vDoUaSN2?p=preview))
-	     *
-	     * Assume that `<tabs>` component would like to get a list its children `<pane>`
-	     * components as shown in this example:
-	     *
-	     * ```html
-	     * <tabs>
-	     *   <pane title="Overview">...</pane>
-	     *   <pane *ngFor="let o of objects" [title]="o.title">{{o.text}}</pane>
-	     * </tabs>
-	     * ```
-	     *
-	     * The preferred solution is to query for `Pane` directives using this decorator.
-	     *
-	     * ```javascript
-	     * @Component({
-	     *   selector: 'pane',
-	     *   inputs: ['title']
-	     * })
-	     * class Pane {
-	     *   title:string;
-	     * }
-	     *
-	     * @Component({
-	     *  selector: 'tabs',
-	     *  template: `
-	     *    <ul>
-	     *      <li *ngFor="let pane of panes">{{pane.title}}</li>
-	     *    </ul>
-	     *    <ng-content></ng-content>
-	     *  `
-	     * })
-	     * class Tabs {
-	     *   @ContentChildren(Pane) panes: QueryList<Pane>;
-	     * }
-	     * ```
-	     *
-	     * A query can look for variable bindings by passing in a string with desired binding symbol.
-	     *
-	     * ### Example ([live demo](http://plnkr.co/edit/sT2j25cH1dURAyBRCKx1?p=preview))
-	     * ```html
-	     * <seeker>
-	     *   <div #findme>...</div>
-	     * </seeker>
-	     *
-	     * @Component({ selector: 'seeker' })
-	     * class Seeker {
-	     *   @ContentChildren('findme') elList;
-	     * }
-	     * ```
-	     *
-	     * In this case the object that is injected depend on the type of the variable
-	     * binding. It can be an ElementRef, a directive or a component.
-	     *
-	     * Passing in a comma separated list of variable bindings will query for all of them.
-	     *
-	     * ```html
-	     * <seeker>
-	     *   <div #find-me>...</div>
-	     *   <div #find-me-too>...</div>
-	     * </seeker>
-	     *
-	     *  @Component({
-	     *   selector: 'seeker'
-	     * })
-	     * class Seeker {
-	     *   @ContentChildren('findMe, findMeToo') elList: QueryList<ElementRef>;
-	     * }
-	     * ```
-	     *
-	     * Configure whether query looks for direct children or all descendants
-	     * of the querying element, by using the `descendants` parameter.
-	     * It is set to `false` by default.
-	     *
-	     * ### Example ([live demo](http://plnkr.co/edit/wtGeB977bv7qvA5FTYl9?p=preview))
-	     * ```html
-	     * <container #first>
-	     *   <item>a</item>
-	     *   <item>b</item>
-	     *   <container #second>
-	     *     <item>c</item>
-	     *   </container>
-	     * </container>
-	     * ```
-	     *
-	     * When querying for items, the first container will see only `a` and `b` by default,
-	     * but with `ContentChildren(TextDirective, {descendants: true})` it will see `c` too.
-	     *
-	     * The queried directives are kept in a depth-first pre-order with respect to their
-	     * positions in the DOM.
-	     *
-	     * ContentChildren does not look deep into any subcomponent views.
-	     *
-	     * ContentChildren is updated as part of the change-detection cycle. Since change detection
-	     * happens after construction of a directive, QueryList will always be empty when observed in the
-	     * constructor.
-	     *
-	     * The injected object is an unmodifiable live list.
-	     * See {@link QueryList} for more details.
-	     * @stable
+	     *  @stable
+	     *  @Annotation
 	     */
-	    var QueryMetadata = (function (_super) {
-	        __extends(QueryMetadata, _super);
-	        function QueryMetadata(_selector, _a) {
-	            var _b = _a === void 0 ? {} : _a, _c = _b.descendants, descendants = _c === void 0 ? false : _c, _d = _b.first, first = _d === void 0 ? false : _d, _e = _b.read, read = _e === void 0 ? null : _e;
-	            _super.call(this);
-	            this._selector = _selector;
-	            this.descendants = descendants;
-	            this.first = first;
-	            this.read = read;
+	    var ContentChildren = makePropDecorator('ContentChildren', [
+	        ['selector', undefined], {
+	            first: false,
+	            isViewQuery: false,
+	            descendants: false,
+	            read: undefined,
 	        }
-	        Object.defineProperty(QueryMetadata.prototype, "isViewQuery", {
-	            /**
-	             * always `false` to differentiate it with {@link ViewQueryMetadata}.
-	             */
-	            get: function () { return false; },
-	            enumerable: true,
-	            configurable: true
-	        });
-	        Object.defineProperty(QueryMetadata.prototype, "selector", {
-	            /**
-	             * what this is querying for.
-	             */
-	            get: function () { return resolveForwardRef(this._selector); },
-	            enumerable: true,
-	            configurable: true
-	        });
-	        Object.defineProperty(QueryMetadata.prototype, "isVarBindingQuery", {
-	            /**
-	             * whether this is querying for a variable binding or a directive.
-	             */
-	            get: function () { return isString(this.selector); },
-	            enumerable: true,
-	            configurable: true
-	        });
-	        Object.defineProperty(QueryMetadata.prototype, "varBindings", {
-	            /**
-	             * returns a list of variable bindings this is querying for.
-	             * Only applicable if this is a variable bindings query.
-	             */
-	            get: function () { return StringWrapper.split(this.selector, /\s*,\s*/g); },
-	            enumerable: true,
-	            configurable: true
-	        });
-	        QueryMetadata.prototype.toString = function () { return "@Query(" + stringify(this.selector) + ")"; };
-	        return QueryMetadata;
-	    }(DependencyMetadata));
-	    // TODO: add an example after ContentChildren and ViewChildren are in master
+	    ], Query);
 	    /**
-	     * Configures a content query.
+	     * @whatItDoes Configures a content query.
+	     *
+	     * @howToUse
+	     *
+	     * {@example core/di/ts/contentChild/content_child_howto.ts region='HowTo'}
+	     *
+	     * @description
+	     *
+	     * You can use ContentChild to get the first element or the directive matching the selector from the
+	     * content DOM. If the content DOM changes, and a new child matches the selector,
+	     * the property will be updated.
 	     *
 	     * Content queries are set before the `ngAfterContentInit` callback is called.
 	     *
-	     * ### Example
+	     * **Metadata Properties**:
 	     *
-	     * ```
-	     * @Directive({
-	     *   selector: 'someDir'
-	     * })
-	     * class SomeDir {
-	     *   @ContentChildren(ChildDirective) contentChildren: QueryList<ChildDirective>;
+	     * * **selector** - the directive type or the name used for querying.
+	     * * **read** - read a different token from the queried element.
 	     *
-	     *   ngAfterContentInit() {
-	     *     // contentChildren is set
-	     *   }
-	     * }
-	     * ```
+	     * Let's look at an example:
+	     *
+	     * {@example core/di/ts/contentChild/content_child_example.ts region='Component'}
+	     *
+	     * **npm package**: `@angular/core`
+	     *
 	     * @stable
+	     * @Annotation
 	     */
-	    var ContentChildrenMetadata = (function (_super) {
-	        __extends(ContentChildrenMetadata, _super);
-	        function ContentChildrenMetadata(_selector, _a) {
-	            var _b = _a === void 0 ? {} : _a, _c = _b.descendants, descendants = _c === void 0 ? false : _c, _d = _b.read, read = _d === void 0 ? null : _d;
-	            _super.call(this, _selector, { descendants: descendants, read: read });
+	    var ContentChild = makePropDecorator('ContentChild', [
+	        ['selector', undefined], {
+	            first: true,
+	            isViewQuery: false,
+	            descendants: true,
+	            read: undefined,
 	        }
-	        return ContentChildrenMetadata;
-	    }(QueryMetadata));
-	    // TODO: add an example after ContentChild and ViewChild are in master
+	    ], Query);
 	    /**
-	     * Configures a content query.
+	     * @whatItDoes Configures a view query.
 	     *
-	     * Content queries are set before the `ngAfterContentInit` callback is called.
+	     * @howToUse
 	     *
-	     * ### Example
+	     * {@example core/di/ts/viewChildren/view_children_howto.ts region='HowTo'}
 	     *
-	     * ```
-	     * @Directive({
-	     *   selector: 'someDir'
-	     * })
-	     * class SomeDir {
-	     *   @ContentChild(ChildDirective) contentChild;
+	     * @description
 	     *
-	     *   ngAfterContentInit() {
-	     *     // contentChild is set
-	     *   }
-	     * }
-	     * ```
+	     * You can use ViewChildren to get the {@link QueryList} of elements or directives from the
+	     * view DOM. Any time a child element is added, removed, or moved, the query list will be updated,
+	     * and the changes observable of the query list will emit a new value.
+	     *
+	     * View queries are set before the `ngAfterViewInit` callback is called.
+	     *
+	     * **Metadata Properties**:
+	     *
+	     * * **selector** - the directive type or the name used for querying.
+	     * * **read** - read a different token from the queried elements.
+	     *
+	     * Let's look at an example:
+	     *
+	     * {@example core/di/ts/viewChildren/view_children_example.ts region='Component'}
+	     *
+	     * **npm package**: `@angular/core`
+	     *
 	     * @stable
+	     * @Annotation
 	     */
-	    var ContentChildMetadata = (function (_super) {
-	        __extends(ContentChildMetadata, _super);
-	        function ContentChildMetadata(_selector, _a) {
-	            var _b = (_a === void 0 ? {} : _a).read, read = _b === void 0 ? null : _b;
-	            _super.call(this, _selector, { descendants: true, first: true, read: read });
+	    var ViewChildren = makePropDecorator('ViewChildren', [
+	        ['selector', undefined], {
+	            first: false,
+	            isViewQuery: true,
+	            descendants: true,
+	            read: undefined,
 	        }
-	        return ContentChildMetadata;
-	    }(QueryMetadata));
+	    ], Query);
 	    /**
-	     * Similar to {@link ContentChildMetadata}, but querying the component view, instead
-	     * of the content children.
+	     * ViewChild decorator and metadata.
 	     *
-	     * ### Example ([live demo](http://plnkr.co/edit/eNsFHDf7YjyM6IzKxM1j?p=preview))
-	     *
-	     * ```javascript
-	     * @Component({
-	     *   ...,
-	     *   template: `
-	     *     <item> a </item>
-	     *     <item> b </item>
-	     *     <item> c </item>
-	     *   `
-	     * })
-	     * class MyComponent {
-	     *   shown: boolean;
-	     *
-	     *   constructor(private @ViewChildren(Item) items:QueryList<Item>) {
-	     *     items.changes.subscribe(() => console.log(items.length));
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * As `shown` is flipped between true and false, items will contain zero of one
-	     * items.
-	     *
-	     * Specifies that a {@link QueryList} should be injected.
-	     *
-	     * The injected object is an iterable and observable live list.
-	     * See {@link QueryList} for more details.
 	     * @stable
+	     * @Annotation
 	     */
-	    var ViewQueryMetadata = (function (_super) {
-	        __extends(ViewQueryMetadata, _super);
-	        function ViewQueryMetadata(_selector, _a) {
-	            var _b = _a === void 0 ? {} : _a, _c = _b.descendants, descendants = _c === void 0 ? false : _c, _d = _b.first, first = _d === void 0 ? false : _d, _e = _b.read, read = _e === void 0 ? null : _e;
-	            _super.call(this, _selector, { descendants: descendants, first: first, read: read });
+	    var ViewChild = makePropDecorator('ViewChild', [
+	        ['selector', undefined], {
+	            first: true,
+	            isViewQuery: true,
+	            descendants: true,
+	            read: undefined,
 	        }
-	        Object.defineProperty(ViewQueryMetadata.prototype, "isViewQuery", {
-	            /**
-	             * always `true` to differentiate it with {@link QueryMetadata}.
-	             */
-	            get: function () { return true; },
-	            enumerable: true,
-	            configurable: true
-	        });
-	        return ViewQueryMetadata;
-	    }(QueryMetadata));
-	    /**
-	     * Declares a list of child element references.
-	     *
-	     * Angular automatically updates the list when the DOM is updated.
-	     *
-	     * `ViewChildren` takes an argument to select elements.
-	     *
-	     * - If the argument is a type, directives or components with the type will be bound.
-	     *
-	     * - If the argument is a string, the string is interpreted as a list of comma-separated selectors.
-	     * For each selector, an element containing the matching template variable (e.g. `#child`) will be
-	     * bound.
-	     *
-	     * View children are set before the `ngAfterViewInit` callback is called.
-	     *
-	     * ### Example
-	     *
-	     * With type selector:
-	     *
-	     * ```
-	     * @Component({
-	     *   selector: 'child-cmp',
-	     *   template: '<p>child</p>'
-	     * })
-	     * class ChildCmp {
-	     *   doSomething() {}
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'some-cmp',
-	     *   template: `
-	     *     <child-cmp></child-cmp>
-	     *     <child-cmp></child-cmp>
-	     *     <child-cmp></child-cmp>
-	     *   `,
-	     *   directives: [ChildCmp]
-	     * })
-	     * class SomeCmp {
-	     *   @ViewChildren(ChildCmp) children:QueryList<ChildCmp>;
-	     *
-	     *   ngAfterViewInit() {
-	     *     // children are set
-	     *     this.children.toArray().forEach((child)=>child.doSomething());
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * With string selector:
-	     *
-	     * ```
-	     * @Component({
-	     *   selector: 'child-cmp',
-	     *   template: '<p>child</p>'
-	     * })
-	     * class ChildCmp {
-	     *   doSomething() {}
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'some-cmp',
-	     *   template: `
-	     *     <child-cmp #child1></child-cmp>
-	     *     <child-cmp #child2></child-cmp>
-	     *     <child-cmp #child3></child-cmp>
-	     *   `,
-	     *   directives: [ChildCmp]
-	     * })
-	     * class SomeCmp {
-	     *   @ViewChildren('child1,child2,child3') children:QueryList<ChildCmp>;
-	     *
-	     *   ngAfterViewInit() {
-	     *     // children are set
-	     *     this.children.toArray().forEach((child)=>child.doSomething());
-	     *   }
-	     * }
-	     * ```
-	     * @stable
-	     */
-	    var ViewChildrenMetadata = (function (_super) {
-	        __extends(ViewChildrenMetadata, _super);
-	        function ViewChildrenMetadata(_selector, _a) {
-	            var _b = (_a === void 0 ? {} : _a).read, read = _b === void 0 ? null : _b;
-	            _super.call(this, _selector, { descendants: true, read: read });
-	        }
-	        ViewChildrenMetadata.prototype.toString = function () { return "@ViewChildren(" + stringify(this.selector) + ")"; };
-	        return ViewChildrenMetadata;
-	    }(ViewQueryMetadata));
-	    /**
-	     *
-	     * Declares a reference of child element.
-	     *
-	     * `ViewChildren` takes an argument to select elements.
-	     *
-	     * - If the argument is a type, a directive or a component with the type will be bound.
-	     *
-	     If the argument is a string, the string is interpreted as a selector. An element containing the
-	     matching template variable (e.g. `#child`) will be bound.
-	     *
-	     * In either case, `@ViewChild()` assigns the first (looking from above) element if there are
-	     multiple matches.
-	     *
-	     * View child is set before the `ngAfterViewInit` callback is called.
-	     *
-	     * ### Example
-	     *
-	     * With type selector:
-	     *
-	     * ```
-	     * @Component({
-	     *   selector: 'child-cmp',
-	     *   template: '<p>child</p>'
-	     * })
-	     * class ChildCmp {
-	     *   doSomething() {}
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'some-cmp',
-	     *   template: '<child-cmp></child-cmp>',
-	     *   directives: [ChildCmp]
-	     * })
-	     * class SomeCmp {
-	     *   @ViewChild(ChildCmp) child:ChildCmp;
-	     *
-	     *   ngAfterViewInit() {
-	     *     // child is set
-	     *     this.child.doSomething();
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * With string selector:
-	     *
-	     * ```
-	     * @Component({
-	     *   selector: 'child-cmp',
-	     *   template: '<p>child</p>'
-	     * })
-	     * class ChildCmp {
-	     *   doSomething() {}
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'some-cmp',
-	     *   template: '<child-cmp #child></child-cmp>',
-	     *   directives: [ChildCmp]
-	     * })
-	     * class SomeCmp {
-	     *   @ViewChild('child') child:ChildCmp;
-	     *
-	     *   ngAfterViewInit() {
-	     *     // child is set
-	     *     this.child.doSomething();
-	     *   }
-	     * }
-	     * ```
-	     * @stable
-	     */
-	    var ViewChildMetadata = (function (_super) {
-	        __extends(ViewChildMetadata, _super);
-	        function ViewChildMetadata(_selector, _a) {
-	            var _b = (_a === void 0 ? {} : _a).read, read = _b === void 0 ? null : _b;
-	            _super.call(this, _selector, { descendants: true, first: true, read: read });
-	        }
-	        return ViewChildMetadata;
-	    }(ViewQueryMetadata));
+	    ], Query);
 
 	    /**
 	     * Describes within the change detector which strategy will be used the next time change
@@ -1455,13 +843,417 @@ webpackJsonp([1],{
 	    }
 
 	    /**
+	     * Directive decorator and metadata.
+	     *
+	     * @stable
+	     * @Annotation
+	     */
+	    var Directive = makeDecorator('Directive', {
+	        selector: undefined,
+	        inputs: undefined,
+	        outputs: undefined,
+	        host: undefined,
+	        providers: undefined,
+	        exportAs: undefined,
+	        queries: undefined
+	    });
+	    /**
+	     * Component decorator and metadata.
+	     *
+	     * @stable
+	     * @Annotation
+	     */
+	    var Component = makeDecorator('Component', {
+	        selector: undefined,
+	        inputs: undefined,
+	        outputs: undefined,
+	        host: undefined,
+	        exportAs: undefined,
+	        moduleId: undefined,
+	        providers: undefined,
+	        viewProviders: undefined,
+	        changeDetection: exports.ChangeDetectionStrategy.Default,
+	        queries: undefined,
+	        templateUrl: undefined,
+	        template: undefined,
+	        styleUrls: undefined,
+	        styles: undefined,
+	        animations: undefined,
+	        encapsulation: undefined,
+	        interpolation: undefined,
+	        entryComponents: undefined
+	    }, Directive);
+	    /**
+	     * Pipe decorator and metadata.
+	     *
+	     * @stable
+	     * @Annotation
+	     */
+	    var Pipe = makeDecorator('Pipe', {
+	        name: undefined,
+	        pure: true,
+	    });
+	    /**
+	     * Input decorator and metadata.
+	     *
+	     * @stable
+	     * @Annotation
+	     */
+	    var Input = makePropDecorator('Input', [['bindingPropertyName', undefined]]);
+	    /**
+	     * Output decorator and metadata.
+	     *
+	     * @stable
+	     * @Annotation
+	     */
+	    var Output = makePropDecorator('Output', [['bindingPropertyName', undefined]]);
+	    /**
+	     * HostBinding decorator and metadata.
+	     *
+	     * @stable
+	     * @Annotation
+	     */
+	    var HostBinding = makePropDecorator('HostBinding', [['hostPropertyName', undefined]]);
+	    /**
+	     * HostBinding decorator and metadata.
+	     *
+	     * @stable
+	     * @Annotation
+	     */
+	    var HostListener = makePropDecorator('HostListener', [['eventName', undefined], ['args', []]]);
+
+	    /**
 	     * @license
 	     * Copyright Google Inc. All Rights Reserved.
 	     *
 	     * Use of this source code is governed by an MIT-style license that can be
 	     * found in the LICENSE file at https://angular.io/license
 	     */
-	    var __extends$2 = (this && this.__extends) || function (d, b) {
+	    /**
+	     * @stable
+	     */
+	    var LifecycleHooks;
+	    (function (LifecycleHooks) {
+	        LifecycleHooks[LifecycleHooks["OnInit"] = 0] = "OnInit";
+	        LifecycleHooks[LifecycleHooks["OnDestroy"] = 1] = "OnDestroy";
+	        LifecycleHooks[LifecycleHooks["DoCheck"] = 2] = "DoCheck";
+	        LifecycleHooks[LifecycleHooks["OnChanges"] = 3] = "OnChanges";
+	        LifecycleHooks[LifecycleHooks["AfterContentInit"] = 4] = "AfterContentInit";
+	        LifecycleHooks[LifecycleHooks["AfterContentChecked"] = 5] = "AfterContentChecked";
+	        LifecycleHooks[LifecycleHooks["AfterViewInit"] = 6] = "AfterViewInit";
+	        LifecycleHooks[LifecycleHooks["AfterViewChecked"] = 7] = "AfterViewChecked";
+	    })(LifecycleHooks || (LifecycleHooks = {}));
+	    var LIFECYCLE_HOOKS_VALUES = [
+	        LifecycleHooks.OnInit, LifecycleHooks.OnDestroy, LifecycleHooks.DoCheck, LifecycleHooks.OnChanges,
+	        LifecycleHooks.AfterContentInit, LifecycleHooks.AfterContentChecked, LifecycleHooks.AfterViewInit,
+	        LifecycleHooks.AfterViewChecked
+	    ];
+	    /**
+	     * @whatItDoes Lifecycle hook that is called when any data-bound property of a directive changes.
+	     * @howToUse
+	     * {@example core/ts/metadata/lifecycle_hooks_spec.ts region='OnChanges'}
+	     *
+	     * @description
+	     * `ngOnChanges` is called right after the data-bound properties have been checked and before view
+	     * and content children are checked if at least one of them has changed.
+	     * The `changes` parameter contains the changed properties.
+	     *
+	     * See {@linkDocs guide/lifecycle-hooks#onchanges "Lifecycle Hooks Guide"}.
+	     *
+	     * @stable
+	     */
+	    var OnChanges = (function () {
+	        function OnChanges() {
+	        }
+	        return OnChanges;
+	    }());
+	    /**
+	     * @whatItDoes Lifecycle hook that is called after data-bound properties of a directive are
+	     * initialized.
+	     * @howToUse
+	     * {@example core/ts/metadata/lifecycle_hooks_spec.ts region='OnInit'}
+	     *
+	     * @description
+	     * `ngOnInit` is called right after the directive's data-bound properties have been checked for the
+	     * first time, and before any of its children have been checked. It is invoked only once when the
+	     * directive is instantiated.
+	     *
+	     * See {@linkDocs guide/lifecycle-hooks "Lifecycle Hooks Guide"}.
+	     *
+	     * @stable
+	     */
+	    var OnInit = (function () {
+	        function OnInit() {
+	        }
+	        return OnInit;
+	    }());
+	    /**
+	     * @whatItDoes Lifecycle hook that is called when Angular dirty checks a directive.
+	     * @howToUse
+	     * {@example core/ts/metadata/lifecycle_hooks_spec.ts region='DoCheck'}
+	     *
+	     * @description
+	     * `ngDoCheck` gets called to check the changes in the directives in addition to the default
+	     * algorithm. The default change detection algorithm looks for differences by comparing
+	     * bound-property values by reference across change detection runs.
+	     *
+	     * Note that a directive typically should not use both `DoCheck` and {@link OnChanges} to respond to
+	     * changes on the same input, as `ngOnChanges` will continue to be called when the default change
+	     * detector detects changes.
+	     *
+	     * See {@link KeyValueDiffers} and {@link IterableDiffers} for implementing custom dirty checking
+	     * for collections.
+	     *
+	     * See {@linkDocs guide/lifecycle-hooks#docheck "Lifecycle Hooks Guide"}.
+	     *
+	     * @stable
+	     */
+	    var DoCheck = (function () {
+	        function DoCheck() {
+	        }
+	        return DoCheck;
+	    }());
+	    /**
+	     * @whatItDoes Lifecycle hook that is called when a directive or pipe is destroyed.
+	     * @howToUse
+	     * {@example core/ts/metadata/lifecycle_hooks_spec.ts region='OnDestroy'}
+	     *
+	     * @description
+	     * `ngOnDestroy` callback is typically used for any custom cleanup that needs to occur when the
+	     * instance is destroyed.
+	     *
+	     * See {@linkDocs guide/lifecycle-hooks "Lifecycle Hooks Guide"}.
+	     *
+	     * @stable
+	     */
+	    var OnDestroy = (function () {
+	        function OnDestroy() {
+	        }
+	        return OnDestroy;
+	    }());
+	    /**
+	     *
+	     * @whatItDoes Lifecycle hook that is called after a directive's content has been fully
+	     * initialized.
+	     * @howToUse
+	     * {@example core/ts/metadata/lifecycle_hooks_spec.ts region='AfterContentInit'}
+	     *
+	     * @description
+	     * See {@linkDocs guide/lifecycle-hooks#aftercontent "Lifecycle Hooks Guide"}.
+	     *
+	     * @stable
+	     */
+	    var AfterContentInit = (function () {
+	        function AfterContentInit() {
+	        }
+	        return AfterContentInit;
+	    }());
+	    /**
+	     * @whatItDoes Lifecycle hook that is called after every check of a directive's content.
+	     * @howToUse
+	     * {@example core/ts/metadata/lifecycle_hooks_spec.ts region='AfterContentChecked'}
+	     *
+	     * @description
+	     * See {@linkDocs guide/lifecycle-hooks#aftercontent "Lifecycle Hooks Guide"}.
+	     *
+	     * @stable
+	     */
+	    var AfterContentChecked = (function () {
+	        function AfterContentChecked() {
+	        }
+	        return AfterContentChecked;
+	    }());
+	    /**
+	     * @whatItDoes Lifecycle hook that is called after a component's view has been fully
+	     * initialized.
+	     * @howToUse
+	     * {@example core/ts/metadata/lifecycle_hooks_spec.ts region='AfterViewInit'}
+	     *
+	     * @description
+	     * See {@linkDocs guide/lifecycle-hooks#afterview "Lifecycle Hooks Guide"}.
+	     *
+	     * @stable
+	     */
+	    var AfterViewInit = (function () {
+	        function AfterViewInit() {
+	        }
+	        return AfterViewInit;
+	    }());
+	    /**
+	     * @whatItDoes Lifecycle hook that is called after every check of a component's view.
+	     * @howToUse
+	     * {@example core/ts/metadata/lifecycle_hooks_spec.ts region='AfterViewChecked'}
+	     *
+	     * @description
+	     * See {@linkDocs guide/lifecycle-hooks#afterview "Lifecycle Hooks Guide"}.
+	     *
+	     * @stable
+	     */
+	    var AfterViewChecked = (function () {
+	        function AfterViewChecked() {
+	        }
+	        return AfterViewChecked;
+	    }());
+
+	    /**
+	     * Defines a schema that will allow:
+	     * - any non-angular elements with a `-` in their name,
+	     * - any properties on elements with a `-` in their name which is the common rule for custom
+	     * elements.
+	     *
+	     * @stable
+	     */
+	    var CUSTOM_ELEMENTS_SCHEMA = {
+	        name: 'custom-elements'
+	    };
+	    /**
+	     * Defines a schema that will allow any property on any element.
+	     *
+	     * @experimental
+	     */
+	    var NO_ERRORS_SCHEMA = {
+	        name: 'no-errors-schema'
+	    };
+	    /**
+	     * NgModule decorator and metadata
+	     *
+	     * @stable
+	     * @Annotation
+	     */
+	    var NgModule = makeDecorator('NgModule', {
+	        providers: undefined,
+	        declarations: undefined,
+	        imports: undefined,
+	        exports: undefined,
+	        entryComponents: undefined,
+	        bootstrap: undefined,
+	        schemas: undefined,
+	        id: undefined,
+	    });
+
+	    /**
+	     * @license
+	     * Copyright Google Inc. All Rights Reserved.
+	     *
+	     * Use of this source code is governed by an MIT-style license that can be
+	     * found in the LICENSE file at https://angular.io/license
+	     */
+	    /**
+	     * Defines template and style encapsulation options available for Component's {@link Component}.
+	     *
+	     * See {@link ViewMetadata#encapsulation}.
+	     * @stable
+	     */
+	    exports.ViewEncapsulation;
+	    (function (ViewEncapsulation) {
+	        /**
+	         * Emulate `Native` scoping of styles by adding an attribute containing surrogate id to the Host
+	         * Element and pre-processing the style rules provided via
+	         * {@link ViewMetadata#styles} or {@link ViewMetadata#stylesUrls}, and adding the new Host Element
+	         * attribute to all selectors.
+	         *
+	         * This is the default option.
+	         */
+	        ViewEncapsulation[ViewEncapsulation["Emulated"] = 0] = "Emulated";
+	        /**
+	         * Use the native encapsulation mechanism of the renderer.
+	         *
+	         * For the DOM this means using [Shadow DOM](https://w3c.github.io/webcomponents/spec/shadow/) and
+	         * creating a ShadowRoot for Component's Host Element.
+	         */
+	        ViewEncapsulation[ViewEncapsulation["Native"] = 1] = "Native";
+	        /**
+	         * Don't provide any template or style encapsulation.
+	         */
+	        ViewEncapsulation[ViewEncapsulation["None"] = 2] = "None";
+	    })(exports.ViewEncapsulation || (exports.ViewEncapsulation = {}));
+	    var VIEW_ENCAPSULATION_VALUES = [exports.ViewEncapsulation.Emulated, exports.ViewEncapsulation.Native, exports.ViewEncapsulation.None];
+	    /**
+	     * Metadata properties available for configuring Views.
+	     *
+	     * For details on the `@Component` annotation, see {@link Component}.
+	     *
+	     * ### Example
+	     *
+	     * ```
+	     * @Component({
+	     *   selector: 'greet',
+	     *   template: 'Hello {{name}}!',
+	     * })
+	     * class Greet {
+	     *   name: string;
+	     *
+	     *   constructor() {
+	     *     this.name = 'World';
+	     *   }
+	     * }
+	     * ```
+	     *
+	     * @deprecated Use Component instead.
+	     *
+	     * {@link Component}
+	     */
+	    var ViewMetadata = (function () {
+	        function ViewMetadata(_a) {
+	            var _b = _a === void 0 ? {} : _a, templateUrl = _b.templateUrl, template = _b.template, encapsulation = _b.encapsulation, styles = _b.styles, styleUrls = _b.styleUrls, animations = _b.animations, interpolation = _b.interpolation;
+	            this.templateUrl = templateUrl;
+	            this.template = template;
+	            this.styleUrls = styleUrls;
+	            this.styles = styles;
+	            this.encapsulation = encapsulation;
+	            this.animations = animations;
+	            this.interpolation = interpolation;
+	        }
+	        return ViewMetadata;
+	    }());
+
+	    /**
+	     * Allows to refer to references which are not yet defined.
+	     *
+	     * For instance, `forwardRef` is used when the `token` which we need to refer to for the purposes of
+	     * DI is declared,
+	     * but not yet defined. It is also used when the `token` which we use when creating a query is not
+	     * yet defined.
+	     *
+	     * ### Example
+	     * {@example core/di/ts/forward_ref/forward_ref_spec.ts region='forward_ref'}
+	     * @experimental
+	     */
+	    function forwardRef(forwardRefFn) {
+	        forwardRefFn.__forward_ref__ = forwardRef;
+	        forwardRefFn.toString = function () { return stringify(this()); };
+	        return forwardRefFn;
+	    }
+	    /**
+	     * Lazily retrieves the reference value from a forwardRef.
+	     *
+	     * Acts as the identity function when given a non-forward-ref value.
+	     *
+	     * ### Example ([live demo](http://plnkr.co/edit/GU72mJrk1fiodChcmiDR?p=preview))
+	     *
+	     * {@example core/di/ts/forward_ref/forward_ref_spec.ts region='resolve_forward_ref'}
+	     *
+	     * See: {@link forwardRef}
+	     * @experimental
+	     */
+	    function resolveForwardRef(type) {
+	        if (isFunction(type) && type.hasOwnProperty('__forward_ref__') &&
+	            type.__forward_ref__ === forwardRef) {
+	            return type();
+	        }
+	        else {
+	            return type;
+	        }
+	    }
+
+	    /**
+	     * @license
+	     * Copyright Google Inc. All Rights Reserved.
+	     *
+	     * Use of this source code is governed by an MIT-style license that can be
+	     * found in the LICENSE file at https://angular.io/license
+	     */
+	    var __extends = (this && this.__extends) || function (d, b) {
 	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
 	        function __() { this.constructor = d; }
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1473,7 +1265,7 @@ webpackJsonp([1],{
 	     * @stable
 	     */
 	    var BaseError = (function (_super) {
-	        __extends$2(BaseError, _super);
+	        __extends(BaseError, _super);
 	        function BaseError(message) {
 	            // Errors don't use current this, instead they create a new instance.
 	            // We have to do forward all of our api to the nativeInstance.
@@ -1504,7 +1296,7 @@ webpackJsonp([1],{
 	     * @stable
 	     */
 	    var WrappedError = (function (_super) {
-	        __extends$2(WrappedError, _super);
+	        __extends(WrappedError, _super);
 	        function WrappedError(message, error) {
 	            _super.call(this, message + " caused by: " + (error instanceof Error ? error.message : error));
 	            this.originalError = error;
@@ -1535,6 +1327,23 @@ webpackJsonp([1],{
 	        return _NullInjector;
 	    }());
 	    /**
+	     * @whatItDoes Injector interface
+	     * @howToUse
+	     * ```
+	     * const injector: Injector = ...;
+	     * injector.get(...);
+	     * ```
+	     *
+	     * @description
+	     * For more details, see the {@linkDocs guide/dependency-injection "Dependency Injection Guide"}.
+	     *
+	     * ### Example
+	     *
+	     * {@example core/di/ts/injector_spec.ts region='Injector'}
+	     *
+	     * `Injector` returns itself when given `Injector` as a token:
+	     * {@example core/di/ts/injector_spec.ts region='injectInjector'}
+	     *
 	     * @stable
 	     */
 	    var Injector = (function () {
@@ -1546,23 +1355,6 @@ webpackJsonp([1],{
 	         * - Throws {@link NoProviderError} if no `notFoundValue` that is not equal to
 	         * Injector.THROW_IF_NOT_FOUND is given
 	         * - Returns the `notFoundValue` otherwise
-	         *
-	         * ### Example ([live demo](http://plnkr.co/edit/HeXSHg?p=preview))
-	         *
-	         * ```typescript
-	         * var injector = ReflectiveInjector.resolveAndCreate([
-	         *   {provide: "validToken", useValue: "Value"}
-	         * ]);
-	         * expect(injector.get("validToken")).toEqual("Value");
-	         * expect(() => injector.get("invalidToken")).toThrowError();
-	         * ```
-	         *
-	         * `Injector` returns itself when given `Injector` as a token.
-	         *
-	         * ```typescript
-	         * var injector = ReflectiveInjector.resolveAndCreate([]);
-	         * expect(injector.get(Injector)).toBe(injector);
-	         * ```
 	         */
 	        Injector.prototype.get = function (token, notFoundValue) { return unimplemented(); };
 	        Injector.THROW_IF_NOT_FOUND = _THROW_IF_NOT_FOUND;
@@ -1570,20 +1362,18 @@ webpackJsonp([1],{
 	        return Injector;
 	    }());
 
-	    var Map$1 = global$1.Map;
-	    var Set = global$1.Set;
 	    // Safari and Internet Explorer do not support the iterable parameter to the
 	    // Map constructor.  We work around that by manually adding the items.
 	    var createMapFromPairs = (function () {
 	        try {
-	            if (new Map$1([[1, 2]]).size === 1) {
-	                return function createMapFromPairs(pairs) { return new Map$1(pairs); };
+	            if (new Map([[1, 2]]).size === 1) {
+	                return function createMapFromPairs(pairs) { return new Map(pairs); };
 	            }
 	        }
 	        catch (e) {
 	        }
 	        return function createMapAndPopulateFromPairs(pairs) {
-	            var map = new Map$1();
+	            var map = new Map();
 	            for (var i = 0; i < pairs.length; i++) {
 	                var pair = pairs[i];
 	                map.set(pair[0], pair[1]);
@@ -1591,22 +1381,8 @@ webpackJsonp([1],{
 	            return map;
 	        };
 	    })();
-	    var createMapFromMap = (function () {
-	        try {
-	            if (new Map$1(new Map$1())) {
-	                return function createMapFromMap(m) { return new Map$1(m); };
-	            }
-	        }
-	        catch (e) {
-	        }
-	        return function createMapAndPopulateFromMap(m) {
-	            var map = new Map$1();
-	            m.forEach(function (v, k) { map.set(k, v); });
-	            return map;
-	        };
-	    })();
 	    var _clearValues = (function () {
-	        if ((new Map$1()).keys().next) {
+	        if ((new Map()).keys().next) {
 	            return function _clearValues(m) {
 	                var keyIterator = m.keys();
 	                var k;
@@ -1625,7 +1401,7 @@ webpackJsonp([1],{
 	    // TODO(mlaval): remove the work around once we have a working polyfill of Array.from
 	    var _arrayFromMap = (function () {
 	        try {
-	            if ((new Map$1()).values().next) {
+	            if ((new Map()).values().next) {
 	                return function createArrayFromMap(m, getValues) {
 	                    return getValues ? Array.from(m.values()) : Array.from(m.keys());
 	                };
@@ -1634,7 +1410,7 @@ webpackJsonp([1],{
 	        catch (e) {
 	        }
 	        return function createArrayFromMapWithForeach(m, getValues) {
-	            var res = ListWrapper.createFixedSize(m.size), i = 0;
+	            var res = new Array(m.size), i = 0;
 	            m.forEach(function (v, k) {
 	                res[i] = getValues ? v : k;
 	                i++;
@@ -1645,9 +1421,8 @@ webpackJsonp([1],{
 	    var MapWrapper = (function () {
 	        function MapWrapper() {
 	        }
-	        MapWrapper.clone = function (m) { return createMapFromMap(m); };
 	        MapWrapper.createFromStringMap = function (stringMap) {
-	            var result = new Map$1();
+	            var result = new Map();
 	            for (var prop in stringMap) {
 	                result.set(prop, stringMap[prop]);
 	            }
@@ -1659,7 +1434,6 @@ webpackJsonp([1],{
 	            return r;
 	        };
 	        MapWrapper.createFromPairs = function (pairs) { return createMapFromPairs(pairs); };
-	        MapWrapper.clearValues = function (m) { _clearValues(m); };
 	        MapWrapper.iterable = function (m) { return m; };
 	        MapWrapper.keys = function (m) { return _arrayFromMap(m, false); };
 	        MapWrapper.values = function (m) { return _arrayFromMap(m, true); };
@@ -1671,15 +1445,6 @@ webpackJsonp([1],{
 	    var StringMapWrapper = (function () {
 	        function StringMapWrapper() {
 	        }
-	        StringMapWrapper.create = function () {
-	            // Note: We are not using Object.create(null) here due to
-	            // performance!
-	            // http://jsperf.com/ng2-object-create-null
-	            return {};
-	        };
-	        StringMapWrapper.contains = function (map, key) {
-	            return map.hasOwnProperty(key);
-	        };
 	        StringMapWrapper.get = function (map, key) {
 	            return map.hasOwnProperty(key) ? map[key] : undefined;
 	        };
@@ -1694,7 +1459,6 @@ webpackJsonp([1],{
 	            }
 	            return true;
 	        };
-	        StringMapWrapper.delete = function (map, key) { delete map[key]; };
 	        StringMapWrapper.forEach = function (map, callback) {
 	            for (var _i = 0, _a = Object.keys(map); _i < _a.length; _i++) {
 	                var k = _a[_i];
@@ -1719,9 +1483,8 @@ webpackJsonp([1],{
 	            if (k1.length != k2.length) {
 	                return false;
 	            }
-	            var key;
 	            for (var i = 0; i < k1.length; i++) {
-	                key = k1[i];
+	                var key = k1[i];
 	                if (m1[key] !== m2[key]) {
 	                    return false;
 	                }
@@ -1864,7 +1627,7 @@ webpackJsonp([1],{
 	        if (!isJsObject(obj))
 	            return false;
 	        return isArray(obj) ||
-	            (!(obj instanceof Map$1) &&
+	            (!(obj instanceof Map) &&
 	                getSymbolIterator() in obj); // JS Iterable have a Symbol.iterator prop
 	    }
 	    function areIterablesEqual(a, b, comparator) {
@@ -1930,7 +1693,7 @@ webpackJsonp([1],{
 	     * Use of this source code is governed by an MIT-style license that can be
 	     * found in the LICENSE file at https://angular.io/license
 	     */
-	    var __extends$3 = (this && this.__extends) || function (d, b) {
+	    var __extends$1 = (this && this.__extends) || function (d, b) {
 	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
 	        function __() { this.constructor = d; }
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1959,7 +1722,7 @@ webpackJsonp([1],{
 	     * @stable
 	     */
 	    var AbstractProviderError = (function (_super) {
-	        __extends$3(AbstractProviderError, _super);
+	        __extends$1(AbstractProviderError, _super);
 	        function AbstractProviderError(injector, key, constructResolvingMessage) {
 	            _super.call(this, 'DI Error');
 	            this.keys = [key];
@@ -1990,7 +1753,7 @@ webpackJsonp([1],{
 	     * @stable
 	     */
 	    var NoProviderError = (function (_super) {
-	        __extends$3(NoProviderError, _super);
+	        __extends$1(NoProviderError, _super);
 	        function NoProviderError(injector, key) {
 	            _super.call(this, injector, key, function (keys) {
 	                var first = stringify(ListWrapper.first(keys).token);
@@ -2017,7 +1780,7 @@ webpackJsonp([1],{
 	     * @stable
 	     */
 	    var CyclicDependencyError = (function (_super) {
-	        __extends$3(CyclicDependencyError, _super);
+	        __extends$1(CyclicDependencyError, _super);
 	        function CyclicDependencyError(injector, key) {
 	            _super.call(this, injector, key, function (keys) {
 	                return "Cannot instantiate cyclic dependency!" + constructResolvingPath(keys);
@@ -2053,7 +1816,7 @@ webpackJsonp([1],{
 	     * @stable
 	     */
 	    var InstantiationError = (function (_super) {
-	        __extends$3(InstantiationError, _super);
+	        __extends$1(InstantiationError, _super);
 	        function InstantiationError(injector, originalException, originalStack, key) {
 	            _super.call(this, 'DI Error', originalException);
 	            this.keys = [key];
@@ -2090,7 +1853,7 @@ webpackJsonp([1],{
 	     * @stable
 	     */
 	    var InvalidProviderError = (function (_super) {
-	        __extends$3(InvalidProviderError, _super);
+	        __extends$1(InvalidProviderError, _super);
 	        function InvalidProviderError(provider) {
 	            _super.call(this, "Invalid provider - only instances of Provider and Type are allowed, got: " + provider);
 	        }
@@ -2126,7 +1889,7 @@ webpackJsonp([1],{
 	     * @stable
 	     */
 	    var NoAnnotationError = (function (_super) {
-	        __extends$3(NoAnnotationError, _super);
+	        __extends$1(NoAnnotationError, _super);
 	        function NoAnnotationError(typeOrFunc, params) {
 	            _super.call(this, NoAnnotationError._genMessage(typeOrFunc, params));
 	        }
@@ -2163,7 +1926,7 @@ webpackJsonp([1],{
 	     * @stable
 	     */
 	    var OutOfBoundsError = (function (_super) {
-	        __extends$3(OutOfBoundsError, _super);
+	        __extends$1(OutOfBoundsError, _super);
 	        function OutOfBoundsError(index) {
 	            _super.call(this, "Index " + index + " is out-of-bounds.");
 	        }
@@ -2183,7 +1946,7 @@ webpackJsonp([1],{
 	     * ```
 	     */
 	    var MixingMultiProvidersWithRegularProvidersError = (function (_super) {
-	        __extends$3(MixingMultiProvidersWithRegularProvidersError, _super);
+	        __extends$1(MixingMultiProvidersWithRegularProvidersError, _super);
 	        function MixingMultiProvidersWithRegularProvidersError(provider1, provider2) {
 	            _super.call(this, 'Cannot mix multi providers and regular providers, got: ' + provider1.toString() + ' ' +
 	                provider2.toString());
@@ -2276,7 +2039,9 @@ webpackJsonp([1],{
 	     * found in the LICENSE file at https://angular.io/license
 	     */
 	    /**
-	     * Runtime representation a type that a Component or other object is instances of.
+	     * @whatItDoes Represents a type that a Component or other object is instances of.
+	     *
+	     * @description
 	     *
 	     * An example of a `Type` is `MyCustomComponent` class, which in JavaScript is be represented by
 	     * the `MyCustomComponent` constructor function.
@@ -2443,9 +2208,7 @@ webpackJsonp([1],{
 	            var decoratorType = decoratorInvocation.type;
 	            var annotationCls = decoratorType.annotationCls;
 	            var annotationArgs = decoratorInvocation.args ? decoratorInvocation.args : [];
-	            var annotation = Object.create(annotationCls.prototype);
-	            annotationCls.apply(annotation, annotationArgs);
-	            return annotation;
+	            return new (annotationCls.bind.apply(annotationCls, [void 0].concat(annotationArgs)))();
 	        });
 	    }
 
@@ -2473,7 +2236,7 @@ webpackJsonp([1],{
 	     * Use of this source code is governed by an MIT-style license that can be
 	     * found in the LICENSE file at https://angular.io/license
 	     */
-	    var __extends$4 = (this && this.__extends) || function (d, b) {
+	    var __extends$2 = (this && this.__extends) || function (d, b) {
 	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
 	        function __() { this.constructor = d; }
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2483,19 +2246,20 @@ webpackJsonp([1],{
 	     * to power dependency injection and compilation.
 	     */
 	    var Reflector = (function (_super) {
-	        __extends$4(Reflector, _super);
+	        __extends$2(Reflector, _super);
 	        function Reflector(reflectionCapabilities) {
 	            _super.call(this);
-	            /** @internal */
-	            this._injectableInfo = new Map$1();
-	            /** @internal */
-	            this._getters = new Map$1();
-	            /** @internal */
-	            this._setters = new Map$1();
-	            /** @internal */
-	            this._methods = new Map$1();
-	            this._usedKeys = null;
 	            this.reflectionCapabilities = reflectionCapabilities;
+	            /** @internal */
+	            this._injectableInfo = new Map();
+	            /** @internal */
+	            this._getters = new Map();
+	            /** @internal */
+	            this._setters = new Map();
+	            /** @internal */
+	            this._methods = new Map();
+	            /** @internal */
+	            this._usedKeys = null;
 	        }
 	        Reflector.prototype.updateCapabilities = function (caps) { this.reflectionCapabilities = caps; };
 	        Reflector.prototype.isReflectionEnabled = function () { return this.reflectionCapabilities.isReflectionEnabled(); };
@@ -2800,7 +2564,7 @@ webpackJsonp([1],{
 	        var token = null;
 	        var optional = false;
 	        if (!isArray(metadata)) {
-	            if (metadata instanceof InjectMetadata) {
+	            if (metadata instanceof Inject) {
 	                return _createDependency(metadata.token, optional, null, null, depProps);
 	            }
 	            else {
@@ -2814,26 +2578,20 @@ webpackJsonp([1],{
 	            if (paramMetadata instanceof Type) {
 	                token = paramMetadata;
 	            }
-	            else if (paramMetadata instanceof InjectMetadata) {
+	            else if (paramMetadata instanceof Inject) {
 	                token = paramMetadata.token;
 	            }
-	            else if (paramMetadata instanceof OptionalMetadata) {
+	            else if (paramMetadata instanceof Optional) {
 	                optional = true;
 	            }
-	            else if (paramMetadata instanceof SelfMetadata) {
+	            else if (paramMetadata instanceof Self) {
 	                upperBoundVisibility = paramMetadata;
 	            }
-	            else if (paramMetadata instanceof HostMetadata) {
+	            else if (paramMetadata instanceof Host) {
 	                upperBoundVisibility = paramMetadata;
 	            }
-	            else if (paramMetadata instanceof SkipSelfMetadata) {
+	            else if (paramMetadata instanceof SkipSelf) {
 	                lowerBoundVisibility = paramMetadata;
-	            }
-	            else if (paramMetadata instanceof DependencyMetadata) {
-	                if (isPresent(paramMetadata.token)) {
-	                    token = paramMetadata.token;
-	                }
-	                depProps.push(paramMetadata);
 	            }
 	        }
 	        token = resolveForwardRef(token);
@@ -2948,7 +2706,7 @@ webpackJsonp([1],{
 	        function ReflectiveProtoInjectorDynamicStrategy(protoInj, providers) {
 	            this.providers = providers;
 	            var len = providers.length;
-	            this.keyIds = ListWrapper.createFixedSize(len);
+	            this.keyIds = new Array(len);
 	            for (var i = 0; i < len; i++) {
 	                this.keyIds[i] = providers[i].key.id;
 	            }
@@ -3093,7 +2851,7 @@ webpackJsonp([1],{
 	        function ReflectiveInjectorDynamicStrategy(protoStrategy, injector) {
 	            this.protoStrategy = protoStrategy;
 	            this.injector = injector;
-	            this.objs = ListWrapper.createFixedSize(protoStrategy.providers.length);
+	            this.objs = new Array(protoStrategy.providers.length);
 	            ListWrapper.fill(this.objs, UNDEFINED);
 	        }
 	        ReflectiveInjectorDynamicStrategy.prototype.resetConstructionCounter = function () { this.injector._constructionCounter = 0; };
@@ -3437,7 +3195,7 @@ webpackJsonp([1],{
 	        };
 	        ReflectiveInjector_.prototype._instantiateProvider = function (provider) {
 	            if (provider.multiProvider) {
-	                var res = ListWrapper.createFixedSize(provider.resolvedFactories.length);
+	                var res = new Array(provider.resolvedFactories.length);
 	                for (var i = 0; i < provider.resolvedFactories.length; ++i) {
 	                    res[i] = this._instantiate(provider, provider.resolvedFactories[i]);
 	                }
@@ -3581,7 +3339,7 @@ webpackJsonp([1],{
 	            if (key === INJECTOR_KEY) {
 	                return this;
 	            }
-	            if (upperBoundVisibility instanceof SelfMetadata) {
+	            if (upperBoundVisibility instanceof Self) {
 	                return this._getByKeySelf(key, notFoundValue);
 	            }
 	            else {
@@ -3605,7 +3363,7 @@ webpackJsonp([1],{
 	        /** @internal */
 	        ReflectiveInjector_.prototype._getByKeyDefault = function (key, notFoundValue, lowerBoundVisibility) {
 	            var inj;
-	            if (lowerBoundVisibility instanceof SkipSelfMetadata) {
+	            if (lowerBoundVisibility instanceof SkipSelf) {
 	                inj = this._parent;
 	            }
 	            else {
@@ -3645,2332 +3403,6 @@ webpackJsonp([1],{
 	        }
 	        return res;
 	    }
-
-	    /**
-	     * @license
-	     * Copyright Google Inc. All Rights Reserved.
-	     *
-	     * Use of this source code is governed by an MIT-style license that can be
-	     * found in the LICENSE file at https://angular.io/license
-	     */
-	    var __extends$1 = (this && this.__extends) || function (d, b) {
-	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	        function __() { this.constructor = d; }
-	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	    };
-	    /**
-	     * Directives allow you to attach behavior to elements in the DOM.
-	     *
-	     * {@link DirectiveMetadata}s with an embedded view are called {@link ComponentMetadata}s.
-	     *
-	     * A directive consists of a single directive annotation and a controller class. When the
-	     * directive's `selector` matches
-	     * elements in the DOM, the following steps occur:
-	     *
-	     * 1. For each directive, the `ElementInjector` attempts to resolve the directive's constructor
-	     * arguments.
-	     * 2. Angular instantiates directives for each matched element using `ElementInjector` in a
-	     * depth-first order,
-	     *    as declared in the HTML.
-	     *
-	     * ## Understanding How Injection Works
-	     *
-	     * There are three stages of injection resolution.
-	     * - *Pre-existing Injectors*:
-	     *   - The terminal {@link Injector} cannot resolve dependencies. It either throws an error or, if
-	     * the dependency was
-	     *     specified as `@Optional`, returns `null`.
-	     *   - The platform injector resolves browser singleton resources, such as: cookies, title,
-	     * location, and others.
-	     * - *Component Injectors*: Each component instance has its own {@link Injector}, and they follow
-	     * the same parent-child hierarchy
-	     *     as the component instances in the DOM.
-	     * - *Element Injectors*: Each component instance has a Shadow DOM. Within the Shadow DOM each
-	     * element has an `ElementInjector`
-	     *     which follow the same parent-child hierarchy as the DOM elements themselves.
-	     *
-	     * When a template is instantiated, it also must instantiate the corresponding directives in a
-	     * depth-first order. The
-	     * current `ElementInjector` resolves the constructor dependencies for each directive.
-	     *
-	     * Angular then resolves dependencies as follows, according to the order in which they appear in the
-	     * {@link ComponentMetadata}:
-	     *
-	     * 1. Dependencies on the current element
-	     * 2. Dependencies on element injectors and their parents until it encounters a Shadow DOM boundary
-	     * 3. Dependencies on component injectors and their parents until it encounters the root component
-	     * 4. Dependencies on pre-existing injectors
-	     *
-	     *
-	     * The `ElementInjector` can inject other directives, element-specific special objects, or it can
-	     * delegate to the parent
-	     * injector.
-	     *
-	     * To inject other directives, declare the constructor parameter as:
-	     * - `directive:DirectiveType`: a directive on the current element only
-	     * - `@Host() directive:DirectiveType`: any directive that matches the type between the current
-	     * element and the
-	     *    Shadow DOM root.
-	     * - `@Query(DirectiveType) query:QueryList<DirectiveType>`: A live collection of direct child
-	     * directives.
-	     * - `@QueryDescendants(DirectiveType) query:QueryList<DirectiveType>`: A live collection of any
-	     * child directives.
-	     *
-	     * To inject element-specific special objects, declare the constructor parameter as:
-	     * - `element: ElementRef` to obtain a reference to logical element in the view.
-	     * - `viewContainer: ViewContainerRef` to control child template instantiation, for
-	     * {@link DirectiveMetadata} directives only
-	     * - `bindingPropagation: BindingPropagation` to control change detection in a more granular way.
-	     *
-	     * ### Example
-	     *
-	     * The following example demonstrates how dependency injection resolves constructor arguments in
-	     * practice.
-	     *
-	     *
-	     * Assume this HTML template:
-	     *
-	     * ```
-	     * <div dependency="1">
-	     *   <div dependency="2">
-	     *     <div dependency="3" my-directive>
-	     *       <div dependency="4">
-	     *         <div dependency="5"></div>
-	     *       </div>
-	     *       <div dependency="6"></div>
-	     *     </div>
-	     *   </div>
-	     * </div>
-	     * ```
-	     *
-	     * With the following `dependency` decorator and `SomeService` injectable class.
-	     *
-	     * ```
-	     * @Injectable()
-	     * class SomeService {
-	     * }
-	     *
-	     * @Directive({
-	     *   selector: '[dependency]',
-	     *   inputs: [
-	     *     'id: dependency'
-	     *   ]
-	     * })
-	     * class Dependency {
-	     *   id:string;
-	     * }
-	     * ```
-	     *
-	     * Let's step through the different ways in which `MyDirective` could be declared...
-	     *
-	     *
-	     * ### No injection
-	     *
-	     * Here the constructor is declared with no arguments, therefore nothing is injected into
-	     * `MyDirective`.
-	     *
-	     * ```
-	     * @Directive({ selector: '[my-directive]' })
-	     * class MyDirective {
-	     *   constructor() {
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * This directive would be instantiated with no dependencies.
-	     *
-	     *
-	     * ### Component-level injection
-	     *
-	     * Directives can inject any injectable instance from the closest component injector or any of its
-	     * parents.
-	     *
-	     * Here, the constructor declares a parameter, `someService`, and injects the `SomeService` type
-	     * from the parent
-	     * component's injector.
-	     * ```
-	     * @Directive({ selector: '[my-directive]' })
-	     * class MyDirective {
-	     *   constructor(someService: SomeService) {
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * This directive would be instantiated with a dependency on `SomeService`.
-	     *
-	     *
-	     * ### Injecting a directive from the current element
-	     *
-	     * Directives can inject other directives declared on the current element.
-	     *
-	     * ```
-	     * @Directive({ selector: '[my-directive]' })
-	     * class MyDirective {
-	     *   constructor(dependency: Dependency) {
-	     *     expect(dependency.id).toEqual(3);
-	     *   }
-	     * }
-	     * ```
-	     * This directive would be instantiated with `Dependency` declared at the same element, in this case
-	     * `dependency="3"`.
-	     *
-	     * ### Injecting a directive from any ancestor elements
-	     *
-	     * Directives can inject other directives declared on any ancestor element (in the current Shadow
-	     * DOM), i.e. on the current element, the
-	     * parent element, or its parents.
-	     * ```
-	     * @Directive({ selector: '[my-directive]' })
-	     * class MyDirective {
-	     *   constructor(@Host() dependency: Dependency) {
-	     *     expect(dependency.id).toEqual(2);
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * `@Host` checks the current element, the parent, as well as its parents recursively. If
-	     * `dependency="2"` didn't
-	     * exist on the direct parent, this injection would
-	     * have returned
-	     * `dependency="1"`.
-	     *
-	     *
-	     * ### Injecting a live collection of direct child directives
-	     *
-	     *
-	     * A directive can also query for other child directives. Since parent directives are instantiated
-	     * before child directives, a directive can't simply inject the list of child directives. Instead,
-	     * the directive injects a {@link QueryList}, which updates its contents as children are added,
-	     * removed, or moved by a directive that uses a {@link ViewContainerRef} such as a `ngFor`, an
-	     * `ngIf`, or an `ngSwitch`.
-	     *
-	     * ```
-	     * @Directive({ selector: '[my-directive]' })
-	     * class MyDirective {
-	     *   constructor(@Query(Dependency) dependencies:QueryList<Dependency>) {
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * This directive would be instantiated with a {@link QueryList} which contains `Dependency` 4 and
-	     * `Dependency` 6. Here, `Dependency` 5 would not be included, because it is not a direct child.
-	     *
-	     * ### Injecting a live collection of descendant directives
-	     *
-	     * By passing the descendant flag to `@Query` above, we can include the children of the child
-	     * elements.
-	     *
-	     * ```
-	     * @Directive({ selector: '[my-directive]' })
-	     * class MyDirective {
-	     *   constructor(@Query(Dependency, {descendants: true}) dependencies:QueryList<Dependency>) {
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * This directive would be instantiated with a Query which would contain `Dependency` 4, 5 and 6.
-	     *
-	     * ### Optional injection
-	     *
-	     * The normal behavior of directives is to return an error when a specified dependency cannot be
-	     * resolved. If you
-	     * would like to inject `null` on unresolved dependency instead, you can annotate that dependency
-	     * with `@Optional()`.
-	     * This explicitly permits the author of a template to treat some of the surrounding directives as
-	     * optional.
-	     *
-	     * ```
-	     * @Directive({ selector: '[my-directive]' })
-	     * class MyDirective {
-	     *   constructor(@Optional() dependency:Dependency) {
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * This directive would be instantiated with a `Dependency` directive found on the current element.
-	     * If none can be
-	     * found, the injector supplies `null` instead of throwing an error.
-	     *
-	     * ### Example
-	     *
-	     * Here we use a decorator directive to simply define basic tool-tip behavior.
-	     *
-	     * ```
-	     * @Directive({
-	     *   selector: '[tooltip]',
-	     *   inputs: [
-	     *     'text: tooltip'
-	     *   ],
-	     *   host: {
-	     *     '(mouseenter)': 'onMouseEnter()',
-	     *     '(mouseleave)': 'onMouseLeave()'
-	     *   }
-	     * })
-	     * class Tooltip{
-	     *   text:string;
-	     *   overlay:Overlay; // NOT YET IMPLEMENTED
-	     *   overlayManager:OverlayManager; // NOT YET IMPLEMENTED
-	     *
-	     *   constructor(overlayManager:OverlayManager) {
-	     *     this.overlay = overlay;
-	     *   }
-	     *
-	     *   onMouseEnter() {
-	     *     // exact signature to be determined
-	     *     this.overlay = this.overlayManager.open(text, ...);
-	     *   }
-	     *
-	     *   onMouseLeave() {
-	     *     this.overlay.close();
-	     *     this.overlay = null;
-	     *   }
-	     * }
-	     * ```
-	     * In our HTML template, we can then add this behavior to a `<div>` or any other element with the
-	     * `tooltip` selector,
-	     * like so:
-	     *
-	     * ```
-	     * <div tooltip="some text here"></div>
-	     * ```
-	     *
-	     * Directives can also control the instantiation, destruction, and positioning of inline template
-	     * elements:
-	     *
-	     * A directive uses a {@link ViewContainerRef} to instantiate, insert, move, and destroy views at
-	     * runtime.
-	     * The {@link ViewContainerRef} is created as a result of `<template>` element, and represents a
-	     * location in the current view
-	     * where these actions are performed.
-	     *
-	     * Views are always created as children of the current {@link ComponentMetadata}, and as siblings of
-	     * the
-	     * `<template>` element. Thus a
-	     * directive in a child view cannot inject the directive that created it.
-	     *
-	     * Since directives that create views via ViewContainers are common in Angular, and using the full
-	     * `<template>` element syntax is wordy, Angular
-	     * also supports a shorthand notation: `<li *foo="bar">` and `<li template="foo: bar">` are
-	     * equivalent.
-	     *
-	     * Thus,
-	     *
-	     * ```
-	     * <ul>
-	     *   <li *foo="bar" title="text"></li>
-	     * </ul>
-	     * ```
-	     *
-	     * Expands in use to:
-	     *
-	     * ```
-	     * <ul>
-	     *   <template [foo]="bar">
-	     *     <li title="text"></li>
-	     *   </template>
-	     * </ul>
-	     * ```
-	     *
-	     * Notice that although the shorthand places `*foo="bar"` within the `<li>` element, the binding for
-	     * the directive
-	     * controller is correctly instantiated on the `<template>` element rather than the `<li>` element.
-	     *
-	     * ## Lifecycle hooks
-	     *
-	     * When the directive class implements some {@linkDocs guide/lifecycle-hooks} the
-	     * callbacks are called by the change detection at defined points in time during the life of the
-	     * directive.
-	     *
-	     * ### Example
-	     *
-	     * Let's suppose we want to implement the `unless` behavior, to conditionally include a template.
-	     *
-	     * Here is a simple directive that triggers on an `unless` selector:
-	     *
-	     * ```
-	     * @Directive({
-	     *   selector: '[unless]',
-	     *   inputs: ['unless']
-	     * })
-	     * export class Unless {
-	     *   viewContainer: ViewContainerRef;
-	     *   templateRef: TemplateRef;
-	     *   prevCondition: boolean;
-	     *
-	     *   constructor(viewContainer: ViewContainerRef, templateRef: TemplateRef) {
-	     *     this.viewContainer = viewContainer;
-	     *     this.templateRef = templateRef;
-	     *     this.prevCondition = null;
-	     *   }
-	     *
-	     *   set unless(newCondition) {
-	     *     if (newCondition && (isBlank(this.prevCondition) || !this.prevCondition)) {
-	     *       this.prevCondition = true;
-	     *       this.viewContainer.clear();
-	     *     } else if (!newCondition && (isBlank(this.prevCondition) || this.prevCondition)) {
-	     *       this.prevCondition = false;
-	     *       this.viewContainer.create(this.templateRef);
-	     *     }
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * We can then use this `unless` selector in a template:
-	     * ```
-	     * <ul>
-	     *   <li *unless="expr"></li>
-	     * </ul>
-	     * ```
-	     *
-	     * Once the directive instantiates the child view, the shorthand notation for the template expands
-	     * and the result is:
-	     *
-	     * ```
-	     * <ul>
-	     *   <template [unless]="exp">
-	     *     <li></li>
-	     *   </template>
-	     *   <li></li>
-	     * </ul>
-	     * ```
-	     *
-	     * Note also that although the `<li></li>` template still exists inside the `<template></template>`,
-	     * the instantiated
-	     * view occurs on the second `<li></li>` which is a sibling to the `<template>` element.
-	     * @stable
-	     */
-	    var DirectiveMetadata = (function (_super) {
-	        __extends$1(DirectiveMetadata, _super);
-	        function DirectiveMetadata(_a) {
-	            var _b = _a === void 0 ? {} : _a, selector = _b.selector, inputs = _b.inputs, outputs = _b.outputs, host = _b.host, providers = _b.providers, exportAs = _b.exportAs, queries = _b.queries;
-	            _super.call(this);
-	            this.selector = selector;
-	            this._inputs = inputs;
-	            this._outputs = outputs;
-	            this.host = host;
-	            this.exportAs = exportAs;
-	            this.queries = queries;
-	            this._providers = providers;
-	        }
-	        Object.defineProperty(DirectiveMetadata.prototype, "inputs", {
-	            /**
-	             * Enumerates the set of data-bound input properties for a directive
-	             *
-	             * Angular automatically updates input properties during change detection.
-	             *
-	             * The `inputs` property defines a set of `directiveProperty` to `bindingProperty`
-	             * configuration:
-	             *
-	             * - `directiveProperty` specifies the component property where the value is written.
-	             * - `bindingProperty` specifies the DOM property where the value is read from.
-	             *
-	             * When `bindingProperty` is not provided, it is assumed to be equal to `directiveProperty`.
-	             *
-	             * ### Example ([live demo](http://plnkr.co/edit/ivhfXY?p=preview))
-	             *
-	             * The following example creates a component with two data-bound properties.
-	             *
-	             * ```typescript
-	             * @Component({
-	             *   selector: 'bank-account',
-	             *   inputs: ['bankName', 'id: account-id'],
-	             *   template: `
-	             *     Bank Name: {{bankName}}
-	             *     Account Id: {{id}}
-	             *   `
-	             * })
-	             * class BankAccount {
-	             *   bankName: string;
-	             *   id: string;
-	             *
-	             *   // this property is not bound, and won't be automatically updated by Angular
-	             *   normalizedBankName: string;
-	             * }
-	             *
-	             * @Component({
-	             *   selector: 'app',
-	             *   template: `
-	             *     <bank-account bank-name="RBC" account-id="4747"></bank-account>
-	             *   `
-	             * })
-	             * class App {}
-	             * ```
-	             *
-	             */
-	            get: function () { return this._inputs; },
-	            enumerable: true,
-	            configurable: true
-	        });
-	        Object.defineProperty(DirectiveMetadata.prototype, "outputs", {
-	            /**
-	             * Enumerates the set of event-bound output properties.
-	             *
-	             * When an output property emits an event, an event handler attached to that event
-	             * the template is invoked.
-	             *
-	             * The `outputs` property defines a set of `directiveProperty` to `bindingProperty`
-	             * configuration:
-	             *
-	             * - `directiveProperty` specifies the component property that emits events.
-	             * - `bindingProperty` specifies the DOM property the event handler is attached to.
-	             *
-	             * ### Example ([live demo](http://plnkr.co/edit/d5CNq7?p=preview))
-	             *
-	             * ```typescript
-	             * @Directive({
-	             *   selector: 'interval-dir',
-	             *   outputs: ['everySecond', 'five5Secs: everyFiveSeconds']
-	             * })
-	             * class IntervalDir {
-	             *   everySecond = new EventEmitter();
-	             *   five5Secs = new EventEmitter();
-	             *
-	             *   constructor() {
-	             *     setInterval(() => this.everySecond.emit("event"), 1000);
-	             *     setInterval(() => this.five5Secs.emit("event"), 5000);
-	             *   }
-	             * }
-	             *
-	             * @Component({
-	             *   selector: 'app',
-	             *   template: `
-	             *     <interval-dir (everySecond)="everySecond()" (everyFiveSeconds)="everyFiveSeconds()">
-	             *     </interval-dir>
-	             *   `
-	             * })
-	             * class App {
-	             *   everySecond() { console.log('second'); }
-	             *   everyFiveSeconds() { console.log('five seconds'); }
-	             * }
-	             * ```
-	             *
-	             */
-	            get: function () { return this._outputs; },
-	            enumerable: true,
-	            configurable: true
-	        });
-	        Object.defineProperty(DirectiveMetadata.prototype, "providers", {
-	            /**
-	             * Defines the set of injectable objects that are visible to a Directive and its light DOM
-	             * children.
-	             *
-	             * ## Simple Example
-	             *
-	             * Here is an example of a class that can be injected:
-	             *
-	             * ```
-	             * class Greeter {
-	             *    greet(name:string) {
-	             *      return 'Hello ' + name + '!';
-	             *    }
-	             * }
-	             *
-	             * @Directive({
-	             *   selector: 'greet',
-	             *   providers: [
-	             *     Greeter
-	             *   ]
-	             * })
-	             * class HelloWorld {
-	             *   greeter:Greeter;
-	             *
-	             *   constructor(greeter:Greeter) {
-	             *     this.greeter = greeter;
-	             *   }
-	             * }
-	             * ```
-	             */
-	            get: function () { return this._providers; },
-	            enumerable: true,
-	            configurable: true
-	        });
-	        return DirectiveMetadata;
-	    }(InjectableMetadata));
-	    /**
-	     * Declare reusable UI building blocks for an application.
-	     *
-	     * Each Angular component requires a single `@Component` annotation. The
-	     * `@Component`
-	     * annotation specifies when a component is instantiated, and which properties and hostListeners it
-	     * binds to.
-	     *
-	     * When a component is instantiated, Angular
-	     * - creates a shadow DOM for the component.
-	     * - loads the selected template into the shadow DOM.
-	     * - creates all the injectable objects configured with `providers` and `viewProviders`.
-	     *
-	     * All template expressions and statements are then evaluated against the component instance.
-	     *
-	     * ## Lifecycle hooks
-	     *
-	     * When the component class implements some {@linkDocs guide/lifecycle-hooks} the
-	     * callbacks are called by the change detection at defined points in time during the life of the
-	     * component.
-	     *
-	     * ### Example
-	     *
-	     * {@example core/ts/metadata/metadata.ts region='component'}
-	     * @stable
-	     */
-	    var ComponentMetadata = (function (_super) {
-	        __extends$1(ComponentMetadata, _super);
-	        function ComponentMetadata(_a) {
-	            var _b = _a === void 0 ? {} : _a, selector = _b.selector, inputs = _b.inputs, outputs = _b.outputs, host = _b.host, exportAs = _b.exportAs, moduleId = _b.moduleId, providers = _b.providers, viewProviders = _b.viewProviders, _c = _b.changeDetection, changeDetection = _c === void 0 ? exports.ChangeDetectionStrategy.Default : _c, queries = _b.queries, templateUrl = _b.templateUrl, template = _b.template, styleUrls = _b.styleUrls, styles = _b.styles, animations = _b.animations, encapsulation = _b.encapsulation, interpolation = _b.interpolation, entryComponents = _b.entryComponents;
-	            _super.call(this, {
-	                selector: selector,
-	                inputs: inputs,
-	                outputs: outputs,
-	                host: host,
-	                exportAs: exportAs,
-	                providers: providers,
-	                queries: queries
-	            });
-	            this.changeDetection = changeDetection;
-	            this._viewProviders = viewProviders;
-	            this.templateUrl = templateUrl;
-	            this.template = template;
-	            this.styleUrls = styleUrls;
-	            this.styles = styles;
-	            this.encapsulation = encapsulation;
-	            this.moduleId = moduleId;
-	            this.animations = animations;
-	            this.interpolation = interpolation;
-	            this.entryComponents = entryComponents;
-	        }
-	        Object.defineProperty(ComponentMetadata.prototype, "viewProviders", {
-	            /**
-	             * Defines the set of injectable objects that are visible to its view DOM children.
-	             *
-	             * ## Simple Example
-	             *
-	             * Here is an example of a class that can be injected:
-	             *
-	             * ```
-	             * class Greeter {
-	             *    greet(name:string) {
-	             *      return 'Hello ' + name + '!';
-	             *    }
-	             * }
-	             *
-	             * @Directive({
-	             *   selector: 'needs-greeter'
-	             * })
-	             * class NeedsGreeter {
-	             *   greeter:Greeter;
-	             *
-	             *   constructor(greeter:Greeter) {
-	             *     this.greeter = greeter;
-	             *   }
-	             * }
-	             *
-	             * @Component({
-	             *   selector: 'greet',
-	             *   viewProviders: [
-	             *     Greeter
-	             *   ],
-	             *   template: `<needs-greeter></needs-greeter>`
-	             * })
-	             * class HelloWorld {
-	             * }
-	             *
-	             * ```
-	             */
-	            get: function () { return this._viewProviders; },
-	            enumerable: true,
-	            configurable: true
-	        });
-	        return ComponentMetadata;
-	    }(DirectiveMetadata));
-	    /**
-	     * Declare reusable pipe function.
-	     *
-	     * A "pure" pipe is only re-evaluated when either the input or any of the arguments change.
-	     *
-	     * When not specified, pipes default to being pure.
-	     *
-	     * ### Example
-	     *
-	     * {@example core/ts/metadata/metadata.ts region='pipe'}
-	     * @stable
-	     */
-	    var PipeMetadata = (function (_super) {
-	        __extends$1(PipeMetadata, _super);
-	        function PipeMetadata(_a) {
-	            var name = _a.name, pure = _a.pure;
-	            _super.call(this);
-	            this.name = name;
-	            this._pure = pure;
-	        }
-	        Object.defineProperty(PipeMetadata.prototype, "pure", {
-	            get: function () { return isPresent(this._pure) ? this._pure : true; },
-	            enumerable: true,
-	            configurable: true
-	        });
-	        return PipeMetadata;
-	    }(InjectableMetadata));
-	    /**
-	     * Declares a data-bound input property.
-	     *
-	     * Angular automatically updates data-bound properties during change detection.
-	     *
-	     * `InputMetadata` takes an optional parameter that specifies the name
-	     * used when instantiating a component in the template. When not provided,
-	     * the name of the decorated property is used.
-	     *
-	     * ### Example
-	     *
-	     * The following example creates a component with two input properties.
-	     *
-	     * ```typescript
-	     * @Component({
-	     *   selector: 'bank-account',
-	     *   template: `
-	     *     Bank Name: {{bankName}}
-	     *     Account Id: {{id}}
-	     *   `
-	     * })
-	     * class BankAccount {
-	     *   @Input() bankName: string;
-	     *   @Input('account-id') id: string;
-	     *
-	     *   // this property is not bound, and won't be automatically updated by Angular
-	     *   normalizedBankName: string;
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'app',
-	     *   template: `
-	     *     <bank-account bank-name="RBC" account-id="4747"></bank-account>
-	     *   `
-	     * })
-	     *
-	     * class App {}
-	     * ```
-	     * @stable
-	     */
-	    var InputMetadata = (function () {
-	        function InputMetadata(
-	            /**
-	             * Name used when instantiating a component in the template.
-	             */
-	            bindingPropertyName) {
-	            this.bindingPropertyName = bindingPropertyName;
-	        }
-	        return InputMetadata;
-	    }());
-	    /**
-	     * Declares an event-bound output property.
-	     *
-	     * When an output property emits an event, an event handler attached to that event
-	     * the template is invoked.
-	     *
-	     * `OutputMetadata` takes an optional parameter that specifies the name
-	     * used when instantiating a component in the template. When not provided,
-	     * the name of the decorated property is used.
-	     *
-	     * ### Example
-	     *
-	     * ```typescript
-	     * @Directive({
-	     *   selector: 'interval-dir',
-	     * })
-	     * class IntervalDir {
-	     *   @Output() everySecond = new EventEmitter();
-	     *   @Output('everyFiveSeconds') five5Secs = new EventEmitter();
-	     *
-	     *   constructor() {
-	     *     setInterval(() => this.everySecond.emit("event"), 1000);
-	     *     setInterval(() => this.five5Secs.emit("event"), 5000);
-	     *   }
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'app',
-	     *   template: `
-	     *     <interval-dir (everySecond)="everySecond()" (everyFiveSeconds)="everyFiveSeconds()">
-	     *     </interval-dir>
-	     *   `
-	     * })
-	     * class App {
-	     *   everySecond() { console.log('second'); }
-	     *   everyFiveSeconds() { console.log('five seconds'); }
-	     * }
-	     * ```
-	     * @stable
-	     */
-	    var OutputMetadata = (function () {
-	        function OutputMetadata(bindingPropertyName) {
-	            this.bindingPropertyName = bindingPropertyName;
-	        }
-	        return OutputMetadata;
-	    }());
-	    /**
-	     * Declares a host property binding.
-	     *
-	     * Angular automatically checks host property bindings during change detection.
-	     * If a binding changes, it will update the host element of the directive.
-	     *
-	     * `HostBindingMetadata` takes an optional parameter that specifies the property
-	     * name of the host element that will be updated. When not provided,
-	     * the class property name is used.
-	     *
-	     * ### Example
-	     *
-	     * The following example creates a directive that sets the `valid` and `invalid` classes
-	     * on the DOM element that has ngModel directive on it.
-	     *
-	     * ```typescript
-	     * @Directive({selector: '[ngModel]'})
-	     * class NgModelStatus {
-	     *   constructor(public control:NgModel) {}
-	     *   @HostBinding('class.valid') get valid { return this.control.valid; }
-	     *   @HostBinding('class.invalid') get invalid { return this.control.invalid; }
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'app',
-	     *   template: `<input [(ngModel)]="prop">`
-	     * })
-	     * class App {
-	     *   prop;
-	     * }
-	     * ```
-	     * @stable
-	     */
-	    var HostBindingMetadata = (function () {
-	        function HostBindingMetadata(hostPropertyName) {
-	            this.hostPropertyName = hostPropertyName;
-	        }
-	        return HostBindingMetadata;
-	    }());
-	    /**
-	     * Declares a host listener.
-	     *
-	     * Angular will invoke the decorated method when the host element emits the specified event.
-	     *
-	     * If the decorated method returns `false`, then `preventDefault` is applied on the DOM
-	     * event.
-	     *
-	     * ### Example
-	     *
-	     * The following example declares a directive that attaches a click listener to the button and
-	     * counts clicks.
-	     *
-	     * ```typescript
-	     * @Directive({selector: 'button[counting]'})
-	     * class CountClicks {
-	     *   numberOfClicks = 0;
-	     *
-	     *   @HostListener('click', ['$event.target'])
-	     *   onClick(btn) {
-	     *     console.log("button", btn, "number of clicks:", this.numberOfClicks++);
-	     *   }
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'app',
-	     *   template: `<button counting>Increment</button>`
-	     * })
-	     * class App {}
-	     * ```
-	     * @stable
-	     */
-	    var HostListenerMetadata = (function () {
-	        function HostListenerMetadata(eventName, args) {
-	            this.eventName = eventName;
-	            this.args = args;
-	        }
-	        return HostListenerMetadata;
-	    }());
-
-	    /**
-	     * @license
-	     * Copyright Google Inc. All Rights Reserved.
-	     *
-	     * Use of this source code is governed by an MIT-style license that can be
-	     * found in the LICENSE file at https://angular.io/license
-	     */
-	    var __extends$5 = (this && this.__extends) || function (d, b) {
-	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	        function __() { this.constructor = d; }
-	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	    };
-	    /**
-	     * Defines a schema that will allow:
-	     * - any non-angular elements with a `-` in their name,
-	     * - any properties on elements with a `-` in their name which is the common rule for custom
-	     * elements.
-	     *
-	     * @stable
-	     */
-	    var CUSTOM_ELEMENTS_SCHEMA = {
-	        name: 'custom-elements'
-	    };
-	    /**
-	     * Defines a schema that will allow any property on any element.
-	     *
-	     * @experimental
-	     */
-	    var NO_ERRORS_SCHEMA = {
-	        name: 'no-errors-schema'
-	    };
-	    /**
-	     * Declares an Angular Module.
-	     * @stable
-	     */
-	    var NgModuleMetadata = (function (_super) {
-	        __extends$5(NgModuleMetadata, _super);
-	        function NgModuleMetadata(options) {
-	            if (options === void 0) { options = {}; }
-	            // We cannot use destructuring of the constructor argument because `exports` is a
-	            // protected symbol in CommonJS and closure tries to aggressively optimize it away.
-	            _super.call(this);
-	            this._providers = options.providers;
-	            this.declarations = options.declarations;
-	            this.imports = options.imports;
-	            this.exports = options.exports;
-	            this.entryComponents = options.entryComponents;
-	            this.bootstrap = options.bootstrap;
-	            this.schemas = options.schemas;
-	        }
-	        Object.defineProperty(NgModuleMetadata.prototype, "providers", {
-	            /**
-	             * Defines the set of injectable objects that are available in the injector
-	             * of this module.
-	             *
-	             * ## Simple Example
-	             *
-	             * Here is an example of a class that can be injected:
-	             *
-	             * ```
-	             * class Greeter {
-	             *    greet(name:string) {
-	             *      return 'Hello ' + name + '!';
-	             *    }
-	             * }
-	             *
-	             * @NgModule({
-	             *   providers: [
-	             *     Greeter
-	             *   ]
-	             * })
-	             * class HelloWorld {
-	             *   greeter:Greeter;
-	             *
-	             *   constructor(greeter:Greeter) {
-	             *     this.greeter = greeter;
-	             *   }
-	             * }
-	             * ```
-	             */
-	            get: function () { return this._providers; },
-	            enumerable: true,
-	            configurable: true
-	        });
-	        return NgModuleMetadata;
-	    }(InjectableMetadata));
-
-	    /**
-	     * @license
-	     * Copyright Google Inc. All Rights Reserved.
-	     *
-	     * Use of this source code is governed by an MIT-style license that can be
-	     * found in the LICENSE file at https://angular.io/license
-	     */
-	    /**
-	     * @stable
-	     */
-	    var LifecycleHooks;
-	    (function (LifecycleHooks) {
-	        LifecycleHooks[LifecycleHooks["OnInit"] = 0] = "OnInit";
-	        LifecycleHooks[LifecycleHooks["OnDestroy"] = 1] = "OnDestroy";
-	        LifecycleHooks[LifecycleHooks["DoCheck"] = 2] = "DoCheck";
-	        LifecycleHooks[LifecycleHooks["OnChanges"] = 3] = "OnChanges";
-	        LifecycleHooks[LifecycleHooks["AfterContentInit"] = 4] = "AfterContentInit";
-	        LifecycleHooks[LifecycleHooks["AfterContentChecked"] = 5] = "AfterContentChecked";
-	        LifecycleHooks[LifecycleHooks["AfterViewInit"] = 6] = "AfterViewInit";
-	        LifecycleHooks[LifecycleHooks["AfterViewChecked"] = 7] = "AfterViewChecked";
-	    })(LifecycleHooks || (LifecycleHooks = {}));
-	    var LIFECYCLE_HOOKS_VALUES = [
-	        LifecycleHooks.OnInit, LifecycleHooks.OnDestroy, LifecycleHooks.DoCheck, LifecycleHooks.OnChanges,
-	        LifecycleHooks.AfterContentInit, LifecycleHooks.AfterContentChecked, LifecycleHooks.AfterViewInit,
-	        LifecycleHooks.AfterViewChecked
-	    ];
-	    /**
-	     * Lifecycle hooks are guaranteed to be called in the following order:
-	     * - `OnChanges` (if any bindings have changed),
-	     * - `OnInit` (after the first check only),
-	     * - `DoCheck`,
-	     * - `AfterContentInit`,
-	     * - `AfterContentChecked`,
-	     * - `AfterViewInit`,
-	     * - `AfterViewChecked`,
-	     * - `OnDestroy` (at the very end before destruction)
-	     */
-	    /**
-	     * Implement this interface to get notified when any data-bound property of your directive changes.
-	     *
-	     * `ngOnChanges` is called right after the data-bound properties have been checked and before view
-	     * and content children are checked if at least one of them has changed.
-	     *
-	     * The `changes` parameter contains an entry for each of the changed data-bound property. The key is
-	     * the property name and the value is an instance of {@link SimpleChange}.
-	     *
-	     * ### Example ([live example](http://plnkr.co/edit/AHrB6opLqHDBPkt4KpdT?p=preview)):
-	     *
-	     * ```typescript
-	     * @Component({
-	     *   selector: 'my-cmp',
-	     *   template: `<p>myProp = {{myProp}}</p>`
-	     * })
-	     * class MyComponent implements OnChanges {
-	     *   @Input() myProp: any;
-	     *
-	     *   ngOnChanges(changes: SimpleChanges) {
-	     *     console.log('ngOnChanges - myProp = ' + changes['myProp'].currentValue);
-	     *   }
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'app',
-	     *   template: `
-	     *     <button (click)="value = value + 1">Change MyComponent</button>
-	     *     <my-cmp [my-prop]="value"></my-cmp>`,
-	     *   directives: [MyComponent]
-	     * })
-	     * export class App {
-	     *   value = 0;
-	     * }
-	     * ```
-	     * @stable
-	     */
-	    var OnChanges = (function () {
-	        function OnChanges() {
-	        }
-	        return OnChanges;
-	    }());
-	    /**
-	     * Implement this interface to execute custom initialization logic after your directive's
-	     * data-bound properties have been initialized.
-	     *
-	     * `ngOnInit` is called right after the directive's data-bound properties have been checked for the
-	     * first time, and before any of its children have been checked. It is invoked only once when the
-	     * directive is instantiated.
-	     *
-	     * ### Example ([live example](http://plnkr.co/edit/1MBypRryXd64v4pV03Yn?p=preview))
-	     *
-	     * ```typescript
-	     * @Component({
-	     *   selector: 'my-cmp',
-	     *   template: `<p>my-component</p>`
-	     * })
-	     * class MyComponent implements OnInit, OnDestroy {
-	     *   ngOnInit() {
-	     *     console.log('ngOnInit');
-	     *   }
-	     *
-	     *   ngOnDestroy() {
-	     *     console.log('ngOnDestroy');
-	     *   }
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'app',
-	     *   template: `
-	     *     <button (click)="hasChild = !hasChild">
-	     *       {{hasChild ? 'Destroy' : 'Create'}} MyComponent
-	     *     </button>
-	     *     <my-cmp *ngIf="hasChild"></my-cmp>`,
-	     *   directives: [MyComponent, NgIf]
-	     * })
-	     * export class App {
-	     *   hasChild = true;
-	     * }
-	     * ```
-	     * @stable
-	     */
-	    var OnInit = (function () {
-	        function OnInit() {
-	        }
-	        return OnInit;
-	    }());
-	    /**
-	     * Implement this interface to supplement the default change detection algorithm in your directive.
-	     *
-	     * `ngDoCheck` gets called to check the changes in the directives in addition to the default
-	     * algorithm.
-	     *
-	     * The default change detection algorithm looks for differences by comparing bound-property values
-	     * by reference across change detection runs.
-	     *
-	     * Note that a directive typically should not use both `DoCheck` and {@link OnChanges} to respond to
-	     * changes on the same input. `ngOnChanges` will continue to be called when the default change
-	     * detector
-	     * detects changes, so it is usually unnecessary to respond to changes on the same input in both
-	     * hooks.
-	     * Reaction to the changes have to be handled from within the `ngDoCheck` callback.
-	     *
-	     * You can use {@link KeyValueDiffers} and {@link IterableDiffers} to help add your custom check
-	     * mechanisms.
-	     *
-	     * ### Example ([live demo](http://plnkr.co/edit/QpnIlF0CR2i5bcYbHEUJ?p=preview))
-	     *
-	     * In the following example `ngDoCheck` uses an {@link IterableDiffers} to detect the updates to the
-	     * array `list`:
-	     *
-	     * ```typescript
-	     * @Component({
-	     *   selector: 'custom-check',
-	     *   template: `
-	     *     <p>Changes:</p>
-	     *     <ul>
-	     *       <li *ngFor="let line of logs">{{line}}</li>
-	     *     </ul>`,
-	     *   directives: [NgFor]
-	     * })
-	     * class CustomCheckComponent implements DoCheck {
-	     *   @Input() list: any[];
-	     *   differ: any;
-	     *   logs = [];
-	     *
-	     *   constructor(differs: IterableDiffers) {
-	     *     this.differ = differs.find([]).create(null);
-	     *   }
-	     *
-	     *   ngDoCheck() {
-	     *     var changes = this.differ.diff(this.list);
-	     *
-	     *     if (changes) {
-	     *       changes.forEachAddedItem(r => this.logs.push('added ' + r.item));
-	     *       changes.forEachRemovedItem(r => this.logs.push('removed ' + r.item))
-	     *     }
-	     *   }
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'app',
-	     *   template: `
-	     *     <button (click)="list.push(list.length)">Push</button>
-	     *     <button (click)="list.pop()">Pop</button>
-	     *     <custom-check [list]="list"></custom-check>`,
-	     *   directives: [CustomCheckComponent]
-	     * })
-	     * export class App {
-	     *   list = [];
-	     * }
-	     * ```
-	     * @stable
-	     */
-	    var DoCheck = (function () {
-	        function DoCheck() {
-	        }
-	        return DoCheck;
-	    }());
-	    /**
-	     * Implement this interface to get notified when your directive is destroyed.
-	     *
-	     * `ngOnDestroy` callback is typically used for any custom cleanup that needs to occur when the
-	     * instance is destroyed
-	     *
-	     * ### Example ([live example](http://plnkr.co/edit/1MBypRryXd64v4pV03Yn?p=preview))
-	     *
-	     * ```typesript
-	     * @Component({
-	     *   selector: 'my-cmp',
-	     *   template: `<p>my-component</p>`
-	     * })
-	     * class MyComponent implements OnInit, OnDestroy {
-	     *   ngOnInit() {
-	     *     console.log('ngOnInit');
-	     *   }
-	     *
-	     *   ngOnDestroy() {
-	     *     console.log('ngOnDestroy');
-	     *   }
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'app',
-	     *   template: `
-	     *     <button (click)="hasChild = !hasChild">
-	     *       {{hasChild ? 'Destroy' : 'Create'}} MyComponent
-	     *     </button>
-	     *     <my-cmp *ngIf="hasChild"></my-cmp>`,
-	     *   directives: [MyComponent, NgIf]
-	     * })
-	     * export class App {
-	     *   hasChild = true;
-	     * }
-	     * ```
-	     *
-	     *
-	     * To create a stateful Pipe, you should implement this interface and set the `pure`
-	     * parameter to `false` in the {@link PipeMetadata}.
-	     *
-	     * A stateful pipe may produce different output, given the same input. It is
-	     * likely that a stateful pipe may contain state that should be cleaned up when
-	     * a binding is destroyed. For example, a subscription to a stream of data may need to
-	     * be disposed, or an interval may need to be cleared.
-	     *
-	     * ### Example ([live demo](http://plnkr.co/edit/i8pm5brO4sPaLxBx56MR?p=preview))
-	     *
-	     * In this example, a pipe is created to countdown its input value, updating it every
-	     * 50ms. Because it maintains an internal interval, it automatically clears
-	     * the interval when the binding is destroyed or the countdown completes.
-	     *
-	     * ```
-	     * import {OnDestroy, Pipe, PipeTransform} from '@angular/core'
-	     * @Pipe({name: 'countdown', pure: false})
-	     * class CountDown implements PipeTransform, OnDestroy {
-	     *   remainingTime:Number;
-	     *   interval:SetInterval;
-	     *   ngOnDestroy() {
-	     *     if (this.interval) {
-	     *       clearInterval(this.interval);
-	     *     }
-	     *   }
-	     *   transform(value: any, args: any[] = []) {
-	     *     if (!parseInt(value, 10)) return null;
-	     *     if (typeof this.remainingTime !== 'number') {
-	     *       this.remainingTime = parseInt(value, 10);
-	     *     }
-	     *     if (!this.interval) {
-	     *       this.interval = setInterval(() => {
-	     *         this.remainingTime-=50;
-	     *         if (this.remainingTime <= 0) {
-	     *           this.remainingTime = 0;
-	     *           clearInterval(this.interval);
-	     *           delete this.interval;
-	     *         }
-	     *       }, 50);
-	     *     }
-	     *     return this.remainingTime;
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * Invoking `{{ 10000 | countdown }}` would cause the value to be decremented by 50,
-	     * every 50ms, until it reaches 0.
-	     *
-	     * @stable
-	     */
-	    var OnDestroy = (function () {
-	        function OnDestroy() {
-	        }
-	        return OnDestroy;
-	    }());
-	    /**
-	     * Implement this interface to get notified when your directive's content has been fully
-	     * initialized.
-	     *
-	     * ### Example ([live demo](http://plnkr.co/edit/plamXUpsLQbIXpViZhUO?p=preview))
-	     *
-	     * ```typescript
-	     * @Component({
-	     *   selector: 'child-cmp',
-	     *   template: `{{where}} child`
-	     * })
-	     * class ChildComponent {
-	     *   @Input() where: string;
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'parent-cmp',
-	     *   template: `<ng-content></ng-content>`
-	     * })
-	     * class ParentComponent implements AfterContentInit {
-	     *   @ContentChild(ChildComponent) contentChild: ChildComponent;
-	     *
-	     *   constructor() {
-	     *     // contentChild is not initialized yet
-	     *     console.log(this.getMessage(this.contentChild));
-	     *   }
-	     *
-	     *   ngAfterContentInit() {
-	     *     // contentChild is updated after the content has been checked
-	     *     console.log('AfterContentInit: ' + this.getMessage(this.contentChild));
-	     *   }
-	     *
-	     *   private getMessage(cmp: ChildComponent): string {
-	     *     return cmp ? cmp.where + ' child' : 'no child';
-	     *   }
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'app',
-	     *   template: `
-	     *     <parent-cmp>
-	     *       <child-cmp where="content"></child-cmp>
-	     *     </parent-cmp>`,
-	     *   directives: [ParentComponent, ChildComponent]
-	     * })
-	     * export class App {
-	     * }
-	     * ```
-	     * @stable
-	     */
-	    var AfterContentInit = (function () {
-	        function AfterContentInit() {
-	        }
-	        return AfterContentInit;
-	    }());
-	    /**
-	     * Implement this interface to get notified after every check of your directive's content.
-	     *
-	     * ### Example ([live demo](http://plnkr.co/edit/tGdrytNEKQnecIPkD7NU?p=preview))
-	     *
-	     * ```typescript
-	     * @Component({selector: 'child-cmp', template: `{{where}} child`})
-	     * class ChildComponent {
-	     *   @Input() where: string;
-	     * }
-	     *
-	     * @Component({selector: 'parent-cmp', template: `<ng-content></ng-content>`})
-	     * class ParentComponent implements AfterContentChecked {
-	     *   @ContentChild(ChildComponent) contentChild: ChildComponent;
-	     *
-	     *   constructor() {
-	     *     // contentChild is not initialized yet
-	     *     console.log(this.getMessage(this.contentChild));
-	     *   }
-	     *
-	     *   ngAfterContentChecked() {
-	     *     // contentChild is updated after the content has been checked
-	     *     console.log('AfterContentChecked: ' + this.getMessage(this.contentChild));
-	     *   }
-	     *
-	     *   private getMessage(cmp: ChildComponent): string {
-	     *     return cmp ? cmp.where + ' child' : 'no child';
-	     *   }
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'app',
-	     *   template: `
-	     *     <parent-cmp>
-	     *       <button (click)="hasContent = !hasContent">Toggle content child</button>
-	     *       <child-cmp *ngIf="hasContent" where="content"></child-cmp>
-	     *     </parent-cmp>`,
-	     *   directives: [NgIf, ParentComponent, ChildComponent]
-	     * })
-	     * export class App {
-	     *   hasContent = true;
-	     * }
-	     * ```
-	     * @stable
-	     */
-	    var AfterContentChecked = (function () {
-	        function AfterContentChecked() {
-	        }
-	        return AfterContentChecked;
-	    }());
-	    /**
-	     * Implement this interface to get notified when your component's view has been fully initialized.
-	     *
-	     * ### Example ([live demo](http://plnkr.co/edit/LhTKVMEM0fkJgyp4CI1W?p=preview))
-	     *
-	     * ```typescript
-	     * @Component({selector: 'child-cmp', template: `{{where}} child`})
-	     * class ChildComponent {
-	     *   @Input() where: string;
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'parent-cmp',
-	     *   template: `<child-cmp where="view"></child-cmp>`,
-	     *   directives: [ChildComponent]
-	     * })
-	     * class ParentComponent implements AfterViewInit {
-	     *   @ViewChild(ChildComponent) viewChild: ChildComponent;
-	     *
-	     *   constructor() {
-	     *     // viewChild is not initialized yet
-	     *     console.log(this.getMessage(this.viewChild));
-	     *   }
-	     *
-	     *   ngAfterViewInit() {
-	     *     // viewChild is updated after the view has been initialized
-	     *     console.log('ngAfterViewInit: ' + this.getMessage(this.viewChild));
-	     *   }
-	     *
-	     *   private getMessage(cmp: ChildComponent): string {
-	     *     return cmp ? cmp.where + ' child' : 'no child';
-	     *   }
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'app',
-	     *   template: `<parent-cmp></parent-cmp>`,
-	     *   directives: [ParentComponent]
-	     * })
-	     * export class App {
-	     * }
-	     * ```
-	     * @stable
-	     */
-	    var AfterViewInit = (function () {
-	        function AfterViewInit() {
-	        }
-	        return AfterViewInit;
-	    }());
-	    /**
-	     * Implement this interface to get notified after every check of your component's view.
-	     *
-	     * ### Example ([live demo](http://plnkr.co/edit/0qDGHcPQkc25CXhTNzKU?p=preview))
-	     *
-	     * ```typescript
-	     * @Component({selector: 'child-cmp', template: `{{where}} child`})
-	     * class ChildComponent {
-	     *   @Input() where: string;
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'parent-cmp',
-	     *   template: `
-	     *     <button (click)="showView = !showView">Toggle view child</button>
-	     *     <child-cmp *ngIf="showView" where="view"></child-cmp>`,
-	     *   directives: [NgIf, ChildComponent]
-	     * })
-	     * class ParentComponent implements AfterViewChecked {
-	     *   @ViewChild(ChildComponent) viewChild: ChildComponent;
-	     *   showView = true;
-	     *
-	     *   constructor() {
-	     *     // viewChild is not initialized yet
-	     *     console.log(this.getMessage(this.viewChild));
-	     *   }
-	     *
-	     *   ngAfterViewChecked() {
-	     *     // viewChild is updated after the view has been checked
-	     *     console.log('AfterViewChecked: ' + this.getMessage(this.viewChild));
-	     *   }
-	     *
-	     *   private getMessage(cmp: ChildComponent): string {
-	     *     return cmp ? cmp.where + ' child' : 'no child';
-	     *   }
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'app',
-	     *   template: `<parent-cmp></parent-cmp>`,
-	     *   directives: [ParentComponent]
-	     * })
-	     * export class App {
-	     * }
-	     * ```
-	     * @stable
-	     */
-	    var AfterViewChecked = (function () {
-	        function AfterViewChecked() {
-	        }
-	        return AfterViewChecked;
-	    }());
-
-	    /**
-	     * @license
-	     * Copyright Google Inc. All Rights Reserved.
-	     *
-	     * Use of this source code is governed by an MIT-style license that can be
-	     * found in the LICENSE file at https://angular.io/license
-	     */
-	    /**
-	     * Defines template and style encapsulation options available for Component's {@link Component}.
-	     *
-	     * See {@link ViewMetadata#encapsulation}.
-	     * @stable
-	     */
-	    exports.ViewEncapsulation;
-	    (function (ViewEncapsulation) {
-	        /**
-	         * Emulate `Native` scoping of styles by adding an attribute containing surrogate id to the Host
-	         * Element and pre-processing the style rules provided via
-	         * {@link ViewMetadata#styles} or {@link ViewMetadata#stylesUrls}, and adding the new Host Element
-	         * attribute to all selectors.
-	         *
-	         * This is the default option.
-	         */
-	        ViewEncapsulation[ViewEncapsulation["Emulated"] = 0] = "Emulated";
-	        /**
-	         * Use the native encapsulation mechanism of the renderer.
-	         *
-	         * For the DOM this means using [Shadow DOM](https://w3c.github.io/webcomponents/spec/shadow/) and
-	         * creating a ShadowRoot for Component's Host Element.
-	         */
-	        ViewEncapsulation[ViewEncapsulation["Native"] = 1] = "Native";
-	        /**
-	         * Don't provide any template or style encapsulation.
-	         */
-	        ViewEncapsulation[ViewEncapsulation["None"] = 2] = "None";
-	    })(exports.ViewEncapsulation || (exports.ViewEncapsulation = {}));
-	    var VIEW_ENCAPSULATION_VALUES = [exports.ViewEncapsulation.Emulated, exports.ViewEncapsulation.Native, exports.ViewEncapsulation.None];
-	    /**
-	     * Metadata properties available for configuring Views.
-	     *
-	     * Each Angular component requires a single `@Component` and at least one `@View` annotation. The
-	     * `@View` annotation specifies the HTML template to use, and lists the directives that are active
-	     * within the template.
-	     *
-	     * When a component is instantiated, the template is loaded into the component's shadow root, and
-	     * the expressions and statements in the template are evaluated against the component.
-	     *
-	     * For details on the `@Component` annotation, see {@link ComponentMetadata}.
-	     *
-	     * ### Example
-	     *
-	     * ```
-	     * @Component({
-	     *   selector: 'greet',
-	     *   template: 'Hello {{name}}!',
-	     *   directives: [GreetUser, Bold]
-	     * })
-	     * class Greet {
-	     *   name: string;
-	     *
-	     *   constructor() {
-	     *     this.name = 'World';
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * @deprecated Use ComponentMetadata instead.
-	     */
-	    var ViewMetadata = (function () {
-	        function ViewMetadata(_a) {
-	            var _b = _a === void 0 ? {} : _a, templateUrl = _b.templateUrl, template = _b.template, encapsulation = _b.encapsulation, styles = _b.styles, styleUrls = _b.styleUrls, animations = _b.animations, interpolation = _b.interpolation;
-	            this.templateUrl = templateUrl;
-	            this.template = template;
-	            this.styleUrls = styleUrls;
-	            this.styles = styles;
-	            this.encapsulation = encapsulation;
-	            this.animations = animations;
-	            this.interpolation = interpolation;
-	        }
-	        return ViewMetadata;
-	    }());
-
-	    // TODO(alexeagle): remove the duplication of this doc. It is copied from ComponentMetadata.
-	    /**
-	     * Declare reusable UI building blocks for an application.
-	     *
-	     * Each Angular component requires a single `@Component` annotation. The `@Component`
-	     * annotation specifies when a component is instantiated, and which properties and hostListeners it
-	     * binds to.
-	     *
-	     * When a component is instantiated, Angular
-	     * - creates a shadow DOM for the component.
-	     * - loads the selected template into the shadow DOM.
-	     * - creates all the injectable objects configured with `providers` and `viewProviders`.
-	     *
-	     * All template expressions and statements are then evaluated against the component instance.
-	     *
-	     * ## Lifecycle hooks
-	     *
-	     * When the component class implements some {@linkDocs guide/lifecycle-hooks} the
-	     * callbacks are called by the change detection at defined points in time during the life of the
-	     * component.
-	     *
-	     * ### Example
-	     *
-	     * {@example core/ts/metadata/metadata.ts region='component'}
-	     * @stable
-	     * @Annotation
-	     */
-	    var Component = makeDecorator(ComponentMetadata);
-	    // TODO(alexeagle): remove the duplication of this doc. It is copied from DirectiveMetadata.
-	    /**
-	     * Directives allow you to attach behavior to elements in the DOM.
-	     *
-	     * {@link DirectiveMetadata}s with an embedded view are called {@link ComponentMetadata}s.
-	     *
-	     * A directive consists of a single directive annotation and a controller class. When the
-	     * directive's `selector` matches
-	     * elements in the DOM, the following steps occur:
-	     *
-	     * 1. For each directive, the `ElementInjector` attempts to resolve the directive's constructor
-	     * arguments.
-	     * 2. Angular instantiates directives for each matched element using `ElementInjector` in a
-	     * depth-first order,
-	     *    as declared in the HTML.
-	     *
-	     * ## Understanding How Injection Works
-	     *
-	     * There are three stages of injection resolution.
-	     * - *Pre-existing Injectors*:
-	     *   - The terminal {@link Injector} cannot resolve dependencies. It either throws an error or, if
-	     * the dependency was
-	     *     specified as `@Optional`, returns `null`.
-	     *   - The platform injector resolves browser singleton resources, such as: cookies, title,
-	     * location, and others.
-	     * - *Component Injectors*: Each component instance has its own {@link Injector}, and they follow
-	     * the same parent-child hierarchy
-	     *     as the component instances in the DOM.
-	     * - *Element Injectors*: Each component instance has a Shadow DOM. Within the Shadow DOM each
-	     * element has an `ElementInjector`
-	     *     which follow the same parent-child hierarchy as the DOM elements themselves.
-	     *
-	     * When a template is instantiated, it also must instantiate the corresponding directives in a
-	     * depth-first order. The
-	     * current `ElementInjector` resolves the constructor dependencies for each directive.
-	     *
-	     * Angular then resolves dependencies as follows, according to the order in which they appear in the
-	     * {@link ComponentMetadata}:
-	     *
-	     * 1. Dependencies on the current element
-	     * 2. Dependencies on element injectors and their parents until it encounters a Shadow DOM boundary
-	     * 3. Dependencies on component injectors and their parents until it encounters the root component
-	     * 4. Dependencies on pre-existing injectors
-	     *
-	     *
-	     * The `ElementInjector` can inject other directives, element-specific special objects, or it can
-	     * delegate to the parent
-	     * injector.
-	     *
-	     * To inject other directives, declare the constructor parameter as:
-	     * - `directive:DirectiveType`: a directive on the current element only
-	     * - `@Host() directive:DirectiveType`: any directive that matches the type between the current
-	     * element and the
-	     *    Shadow DOM root.
-	     * - `@Query(DirectiveType) query:QueryList<DirectiveType>`: A live collection of direct child
-	     * directives.
-	     * - `@QueryDescendants(DirectiveType) query:QueryList<DirectiveType>`: A live collection of any
-	     * child directives.
-	     *
-	     * To inject element-specific special objects, declare the constructor parameter as:
-	     * - `element: ElementRef` to obtain a reference to logical element in the view.
-	     * - `viewContainer: ViewContainerRef` to control child template instantiation, for
-	     * {@link DirectiveMetadata} directives only
-	     * - `bindingPropagation: BindingPropagation` to control change detection in a more granular way.
-	     *
-	     * ### Example
-	     *
-	     * The following example demonstrates how dependency injection resolves constructor arguments in
-	     * practice.
-	     *
-	     *
-	     * Assume this HTML template:
-	     *
-	     * ```
-	     * <div dependency="1">
-	     *   <div dependency="2">
-	     *     <div dependency="3" my-directive>
-	     *       <div dependency="4">
-	     *         <div dependency="5"></div>
-	     *       </div>
-	     *       <div dependency="6"></div>
-	     *     </div>
-	     *   </div>
-	     * </div>
-	     * ```
-	     *
-	     * With the following `dependency` decorator and `SomeService` injectable class.
-	     *
-	     * ```
-	     * @Injectable()
-	     * class SomeService {
-	     * }
-	     *
-	     * @Directive({
-	     *   selector: '[dependency]',
-	     *   inputs: [
-	     *     'id: dependency'
-	     *   ]
-	     * })
-	     * class Dependency {
-	     *   id:string;
-	     * }
-	     * ```
-	     *
-	     * Let's step through the different ways in which `MyDirective` could be declared...
-	     *
-	     *
-	     * ### No injection
-	     *
-	     * Here the constructor is declared with no arguments, therefore nothing is injected into
-	     * `MyDirective`.
-	     *
-	     * ```
-	     * @Directive({ selector: '[my-directive]' })
-	     * class MyDirective {
-	     *   constructor() {
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * This directive would be instantiated with no dependencies.
-	     *
-	     *
-	     * ### Component-level injection
-	     *
-	     * Directives can inject any injectable instance from the closest component injector or any of its
-	     * parents.
-	     *
-	     * Here, the constructor declares a parameter, `someService`, and injects the `SomeService` type
-	     * from the parent
-	     * component's injector.
-	     * ```
-	     * @Directive({ selector: '[my-directive]' })
-	     * class MyDirective {
-	     *   constructor(someService: SomeService) {
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * This directive would be instantiated with a dependency on `SomeService`.
-	     *
-	     *
-	     * ### Injecting a directive from the current element
-	     *
-	     * Directives can inject other directives declared on the current element.
-	     *
-	     * ```
-	     * @Directive({ selector: '[my-directive]' })
-	     * class MyDirective {
-	     *   constructor(dependency: Dependency) {
-	     *     expect(dependency.id).toEqual(3);
-	     *   }
-	     * }
-	     * ```
-	     * This directive would be instantiated with `Dependency` declared at the same element, in this case
-	     * `dependency="3"`.
-	     *
-	     * ### Injecting a directive from any ancestor elements
-	     *
-	     * Directives can inject other directives declared on any ancestor element (in the current Shadow
-	     * DOM), i.e. on the current element, the
-	     * parent element, or its parents.
-	     * ```
-	     * @Directive({ selector: '[my-directive]' })
-	     * class MyDirective {
-	     *   constructor(@Host() dependency: Dependency) {
-	     *     expect(dependency.id).toEqual(2);
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * `@Host` checks the current element, the parent, as well as its parents recursively. If
-	     * `dependency="2"` didn't
-	     * exist on the direct parent, this injection would
-	     * have returned
-	     * `dependency="1"`.
-	     *
-	     *
-	     * ### Injecting a live collection of direct child directives
-	     *
-	     *
-	     * A directive can also query for other child directives. Since parent directives are instantiated
-	     * before child directives, a directive can't simply inject the list of child directives. Instead,
-	     * the directive injects a {@link QueryList}, which updates its contents as children are added,
-	     * removed, or moved by a directive that uses a {@link ViewContainerRef} such as a `ngFor`, an
-	     * `ngIf`, or an `ngSwitch`.
-	     *
-	     * ```
-	     * @Directive({ selector: '[my-directive]' })
-	     * class MyDirective {
-	     *   constructor(@Query(Dependency) dependencies:QueryList<Dependency>) {
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * This directive would be instantiated with a {@link QueryList} which contains `Dependency` 4 and
-	     * 6. Here, `Dependency` 5 would not be included, because it is not a direct child.
-	     *
-	     * ### Injecting a live collection of descendant directives
-	     *
-	     * By passing the descendant flag to `@Query` above, we can include the children of the child
-	     * elements.
-	     *
-	     * ```
-	     * @Directive({ selector: '[my-directive]' })
-	     * class MyDirective {
-	     *   constructor(@Query(Dependency, {descendants: true}) dependencies:QueryList<Dependency>) {
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * This directive would be instantiated with a Query which would contain `Dependency` 4, 5 and 6.
-	     *
-	     * ### Optional injection
-	     *
-	     * The normal behavior of directives is to return an error when a specified dependency cannot be
-	     * resolved. If you
-	     * would like to inject `null` on unresolved dependency instead, you can annotate that dependency
-	     * with `@Optional()`.
-	     * This explicitly permits the author of a template to treat some of the surrounding directives as
-	     * optional.
-	     *
-	     * ```
-	     * @Directive({ selector: '[my-directive]' })
-	     * class MyDirective {
-	     *   constructor(@Optional() dependency:Dependency) {
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * This directive would be instantiated with a `Dependency` directive found on the current element.
-	     * If none can be
-	     * found, the injector supplies `null` instead of throwing an error.
-	     *
-	     * ### Example
-	     *
-	     * Here we use a decorator directive to simply define basic tool-tip behavior.
-	     *
-	     * ```
-	     * @Directive({
-	     *   selector: '[tooltip]',
-	     *   inputs: [
-	     *     'text: tooltip'
-	     *   ],
-	     *   host: {
-	     *     '(mouseenter)': 'onMouseEnter()',
-	     *     '(mouseleave)': 'onMouseLeave()'
-	     *   }
-	     * })
-	     * class Tooltip{
-	     *   text:string;
-	     *   overlay:Overlay; // NOT YET IMPLEMENTED
-	     *   overlayManager:OverlayManager; // NOT YET IMPLEMENTED
-	     *
-	     *   constructor(overlayManager:OverlayManager) {
-	     *     this.overlayManager = overlayManager;
-	     *   }
-	     *
-	     *   onMouseEnter() {
-	     *     // exact signature to be determined
-	     *     this.overlay = this.overlayManager.open(text, ...);
-	     *   }
-	     *
-	     *   onMouseLeave() {
-	     *     this.overlay.close();
-	     *     this.overlay = null;
-	     *   }
-	     * }
-	     * ```
-	     * In our HTML template, we can then add this behavior to a `<div>` or any other element with the
-	     * `tooltip` selector,
-	     * like so:
-	     *
-	     * ```
-	     * <div tooltip="some text here"></div>
-	     * ```
-	     *
-	     * Directives can also control the instantiation, destruction, and positioning of inline template
-	     * elements:
-	     *
-	     * A directive uses a {@link ViewContainerRef} to instantiate, insert, move, and destroy views at
-	     * runtime.
-	     * The {@link ViewContainerRef} is created as a result of `<template>` element, and represents a
-	     * location in the current view
-	     * where these actions are performed.
-	     *
-	     * Views are always created as children of the current {@link ComponentMetadata}, and as siblings of
-	     * the
-	     * `<template>` element. Thus a
-	     * directive in a child view cannot inject the directive that created it.
-	     *
-	     * Since directives that create views via ViewContainers are common in Angular, and using the full
-	     * `<template>` element syntax is wordy, Angular
-	     * also supports a shorthand notation: `<li *foo="bar">` and `<li template="foo: bar">` are
-	     * equivalent.
-	     *
-	     * Thus,
-	     *
-	     * ```
-	     * <ul>
-	     *   <li *foo="bar" title="text"></li>
-	     * </ul>
-	     * ```
-	     *
-	     * Expands in use to:
-	     *
-	     * ```
-	     * <ul>
-	     *   <template [foo]="bar">
-	     *     <li title="text"></li>
-	     *   </template>
-	     * </ul>
-	     * ```
-	     *
-	     * Notice that although the shorthand places `*foo="bar"` within the `<li>` element, the binding for
-	     * the directive
-	     * controller is correctly instantiated on the `<template>` element rather than the `<li>` element.
-	     *
-	     * ## Lifecycle hooks
-	     *
-	     * When the directive class implements some {@linkDocs guide/lifecycle-hooks} the
-	     * callbacks are called by the change detection at defined points in time during the life of the
-	     * directive.
-	     *
-	     * ### Example
-	     *
-	     * Let's suppose we want to implement the `unless` behavior, to conditionally include a template.
-	     *
-	     * Here is a simple directive that triggers on an `unless` selector:
-	     *
-	     * ```
-	     * @Directive({
-	     *   selector: '[unless]',
-	     *   inputs: ['unless']
-	     * })
-	     * export class Unless {
-	     *   viewContainer: ViewContainerRef;
-	     *   templateRef: TemplateRef;
-	     *   prevCondition: boolean;
-	     *
-	     *   constructor(viewContainer: ViewContainerRef, templateRef: TemplateRef) {
-	     *     this.viewContainer = viewContainer;
-	     *     this.templateRef = templateRef;
-	     *     this.prevCondition = null;
-	     *   }
-	     *
-	     *   set unless(newCondition) {
-	     *     if (newCondition && (isBlank(this.prevCondition) || !this.prevCondition)) {
-	     *       this.prevCondition = true;
-	     *       this.viewContainer.clear();
-	     *     } else if (!newCondition && (isBlank(this.prevCondition) || this.prevCondition)) {
-	     *       this.prevCondition = false;
-	     *       this.viewContainer.create(this.templateRef);
-	     *     }
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * We can then use this `unless` selector in a template:
-	     * ```
-	     * <ul>
-	     *   <li *unless="expr"></li>
-	     * </ul>
-	     * ```
-	     *
-	     * Once the directive instantiates the child view, the shorthand notation for the template expands
-	     * and the result is:
-	     *
-	     * ```
-	     * <ul>
-	     *   <template [unless]="exp">
-	     *     <li></li>
-	     *   </template>
-	     *   <li></li>
-	     * </ul>
-	     * ```
-	     *
-	     * Note also that although the `<li></li>` template still exists inside the `<template></template>`,
-	     * the instantiated
-	     * view occurs on the second `<li></li>` which is a sibling to the `<template>` element.
-	     * @stable
-	     * @Annotation
-	     */
-	    var Directive = makeDecorator(DirectiveMetadata);
-	    /**
-	     * Specifies that a constant attribute value should be injected.
-	     *
-	     * The directive can inject constant string literals of host element attributes.
-	     *
-	     * ### Example
-	     *
-	     * Suppose we have an `<input>` element and want to know its `type`.
-	     *
-	     * ```html
-	     * <input type="text">
-	     * ```
-	     *
-	     * A decorator can inject string literal `text` like so:
-	     *
-	     * {@example core/ts/metadata/metadata.ts region='attributeMetadata'}
-	     * @stable
-	     * @Annotation
-	     */
-	    var Attribute = makeParamDecorator(AttributeMetadata);
-	    // TODO(alexeagle): remove the duplication of this doc. It is copied from ContentChildrenMetadata.
-	    /**
-	     * Configures a content query.
-	     *
-	     * Content queries are set before the `ngAfterContentInit` callback is called.
-	     *
-	     * ### Example
-	     *
-	     * ```
-	     * @Directive({
-	     *   selector: 'someDir'
-	     * })
-	     * class SomeDir {
-	     *   @ContentChildren(ChildDirective) contentChildren: QueryList<ChildDirective>;
-	     *
-	     *   ngAfterContentInit() {
-	     *     // contentChildren is set
-	     *   }
-	     * }
-	     * ```
-	     * @stable
-	     * @Annotation
-	     */
-	    var ContentChildren = makePropDecorator(ContentChildrenMetadata);
-	    // TODO(alexeagle): remove the duplication of this doc. It is copied from ContentChildMetadata.
-	    /**
-	     * Configures a content query.
-	     *
-	     * Content queries are set before the `ngAfterContentInit` callback is called.
-	     *
-	     * ### Example
-	     *
-	     * ```
-	     * @Directive({
-	     *   selector: 'someDir'
-	     * })
-	     * class SomeDir {
-	     *   @ContentChild(ChildDirective) contentChild;
-	     *   @ContentChild('container_ref') containerChild
-	     *
-	     *   ngAfterContentInit() {
-	     *     // contentChild is set
-	     *     // containerChild is set
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * ```html
-	     * <container #container_ref>
-	     *   <item>a</item>
-	     *   <item>b</item>
-	     * </container>
-	     * ```
-	     * @stable
-	     * @Annotation
-	     */
-	    var ContentChild = makePropDecorator(ContentChildMetadata);
-	    // TODO(alexeagle): remove the duplication of this doc. It is copied from ViewChildrenMetadata.
-	    /**
-	     * Declares a list of child element references.
-	     *
-	     * Angular automatically updates the list when the DOM is updated.
-	     *
-	     * `ViewChildren` takes a argument to select elements.
-	     *
-	     * - If the argument is a type, directives or components with the type will be bound.
-	     *
-	     * - If the argument is a string, the string is interpreted as a list of comma-separated selectors.
-	     * For each selector, an element containing the matching template variable (e.g. `#child`) will be
-	     * bound.
-	     *
-	     * View children are set before the `ngAfterViewInit` callback is called.
-	     *
-	     * ### Example
-	     *
-	     * With type selector:
-	     *
-	     * ```
-	     * @Component({
-	     *   selector: 'child-cmp',
-	     *   template: '<p>child</p>'
-	     * })
-	     * class ChildCmp {
-	     *   doSomething() {}
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'some-cmp',
-	     *   template: `
-	     *     <child-cmp></child-cmp>
-	     *     <child-cmp></child-cmp>
-	     *     <child-cmp></child-cmp>
-	     *   `,
-	     *   directives: [ChildCmp]
-	     * })
-	     * class SomeCmp {
-	     *   @ViewChildren(ChildCmp) children:QueryList<ChildCmp>;
-	     *
-	     *   ngAfterViewInit() {
-	     *     // children are set
-	     *     this.children.toArray().forEach((child)=>child.doSomething());
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * With string selector:
-	     *
-	     * ```
-	     * @Component({
-	     *   selector: 'child-cmp',
-	     *   template: '<p>child</p>'
-	     * })
-	     * class ChildCmp {
-	     *   doSomething() {}
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'some-cmp',
-	     *   template: `
-	     *     <child-cmp #child1></child-cmp>
-	     *     <child-cmp #child2></child-cmp>
-	     *     <child-cmp #child3></child-cmp>
-	     *   `,
-	     *   directives: [ChildCmp]
-	     * })
-	     * class SomeCmp {
-	     *   @ViewChildren('child1,child2,child3') children:QueryList<ChildCmp>;
-	     *
-	     *   ngAfterViewInit() {
-	     *     // children are set
-	     *     this.children.toArray().forEach((child)=>child.doSomething());
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * See also: [ViewChildrenMetadata]
-	     * @stable
-	     * @Annotation
-	     */
-	    var ViewChildren = makePropDecorator(ViewChildrenMetadata);
-	    // TODO(alexeagle): remove the duplication of this doc. It is copied from ViewChildMetadata.
-	    /**
-	     * Declares a reference to a child element.
-	     *
-	     * `ViewChildren` takes a argument to select elements.
-	     *
-	     * - If the argument is a type, a directive or a component with the type will be bound.
-	     *
-	     * - If the argument is a string, the string is interpreted as a selector. An element containing the
-	     * matching template variable (e.g. `#child`) will be bound.
-	     *
-	     * In either case, `@ViewChild()` assigns the first (looking from above) element if there are
-	     * multiple matches.
-	     *
-	     * View child is set before the `ngAfterViewInit` callback is called.
-	     *
-	     * ### Example
-	     *
-	     * With type selector:
-	     *
-	     * ```
-	     * @Component({
-	     *   selector: 'child-cmp',
-	     *   template: '<p>child</p>'
-	     * })
-	     * class ChildCmp {
-	     *   doSomething() {}
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'some-cmp',
-	     *   template: '<child-cmp></child-cmp>',
-	     *   directives: [ChildCmp]
-	     * })
-	     * class SomeCmp {
-	     *   @ViewChild(ChildCmp) child:ChildCmp;
-	     *
-	     *   ngAfterViewInit() {
-	     *     // child is set
-	     *     this.child.doSomething();
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * With string selector:
-	     *
-	     * ```
-	     * @Component({
-	     *   selector: 'child-cmp',
-	     *   template: '<p>child</p>'
-	     * })
-	     * class ChildCmp {
-	     *   doSomething() {}
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'some-cmp',
-	     *   template: '<child-cmp #child></child-cmp>',
-	     *   directives: [ChildCmp]
-	     * })
-	     * class SomeCmp {
-	     *   @ViewChild('child') child:ChildCmp;
-	     *
-	     *   ngAfterViewInit() {
-	     *     // child is set
-	     *     this.child.doSomething();
-	     *   }
-	     * }
-	     * ```
-	     * See also: [ViewChildMetadata]
-	     * @stable
-	     * @Annotation
-	     */
-	    var ViewChild = makePropDecorator(ViewChildMetadata);
-	    // TODO(alexeagle): remove the duplication of this doc. It is copied from PipeMetadata.
-	    /**
-	     * Declare reusable pipe function.
-	     *
-	     * ### Example
-	     *
-	     * {@example core/ts/metadata/metadata.ts region='pipe'}
-	     * @stable
-	     * @Annotation
-	     */
-	    var Pipe = makeDecorator(PipeMetadata);
-	    // TODO(alexeagle): remove the duplication of this doc. It is copied from InputMetadata.
-	    /**
-	     * Declares a data-bound input property.
-	     *
-	     * Angular automatically updates data-bound properties during change detection.
-	     *
-	     * `InputMetadata` takes an optional parameter that specifies the name
-	     * used when instantiating a component in the template. When not provided,
-	     * the name of the decorated property is used.
-	     *
-	     * ### Example
-	     *
-	     * The following example creates a component with two input properties.
-	     *
-	     * ```typescript
-	     * @Component({
-	     *   selector: 'bank-account',
-	     *   template: `
-	     *     Bank Name: {{bankName}}
-	     *     Account Id: {{id}}
-	     *   `
-	     * })
-	     * class BankAccount {
-	     *   @Input() bankName: string;
-	     *   @Input('account-id') id: string;
-	     *
-	     *   // this property is not bound, and won't be automatically updated by Angular
-	     *   normalizedBankName: string;
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'app',
-	     *   template: `
-	     *     <bank-account bank-name="RBC" account-id="4747"></bank-account>
-	     *   `,
-	     *   directives: [BankAccount]
-	     * })
-	     * class App {}
-	     * ```
-	     * @stable
-	     * @Annotation
-	     */
-	    var Input = makePropDecorator(InputMetadata);
-	    // TODO(alexeagle): remove the duplication of this doc. It is copied from OutputMetadata.
-	    /**
-	     * Declares an event-bound output property.
-	     *
-	     * When an output property emits an event, an event handler attached to that event
-	     * the template is invoked.
-	     *
-	     * `OutputMetadata` takes an optional parameter that specifies the name
-	     * used when instantiating a component in the template. When not provided,
-	     * the name of the decorated property is used.
-	     *
-	     * ### Example
-	     *
-	     * ```typescript
-	     * @Directive({
-	     *   selector: 'interval-dir',
-	     * })
-	     * class IntervalDir {
-	     *   @Output() everySecond = new EventEmitter();
-	     *   @Output('everyFiveSeconds') five5Secs = new EventEmitter();
-	     *
-	     *   constructor() {
-	     *     setInterval(() => this.everySecond.emit("event"), 1000);
-	     *     setInterval(() => this.five5Secs.emit("event"), 5000);
-	     *   }
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'app',
-	     *   template: `
-	     *     <interval-dir (everySecond)="everySecond()" (everyFiveSeconds)="everyFiveSeconds()">
-	     *     </interval-dir>
-	     *   `,
-	     *   directives: [IntervalDir]
-	     * })
-	     * class App {
-	     *   everySecond() { console.log('second'); }
-	     *   everyFiveSeconds() { console.log('five seconds'); }
-	     * }
-	     * ```
-	     * @stable
-	     * @Annotation
-	     */
-	    var Output = makePropDecorator(OutputMetadata);
-	    // TODO(alexeagle): remove the duplication of this doc. It is copied from HostBindingMetadata.
-	    /**
-	     * Declares a host property binding.
-	     *
-	     * Angular automatically checks host property bindings during change detection.
-	     * If a binding changes, it will update the host element of the directive.
-	     *
-	     * `HostBindingMetadata` takes an optional parameter that specifies the property
-	     * name of the host element that will be updated. When not provided,
-	     * the class property name is used.
-	     *
-	     * ### Example
-	     *
-	     * The following example creates a directive that sets the `valid` and `invalid` classes
-	     * on the DOM element that has ngModel directive on it.
-	     *
-	     * ```typescript
-	     * @Directive({selector: '[ngModel]'})
-	     * class NgModelStatus {
-	     *   constructor(public control:NgModel) {}
-	     *   @HostBinding('class.valid') get valid() { return this.control.valid; }
-	     *   @HostBinding('class.invalid') get invalid() { return this.control.invalid; }
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'app',
-	     *   template: `<input [(ngModel)]="prop">`,
-	     *   directives: [FORM_DIRECTIVES, NgModelStatus]
-	     * })
-	     * class App {
-	     *   prop;
-	     * }
-	     * ```
-	     * @stable
-	     * @Annotation
-	     */
-	    var HostBinding = makePropDecorator(HostBindingMetadata);
-	    // TODO(alexeagle): remove the duplication of this doc. It is copied from HostListenerMetadata.
-	    /**
-	     * Declares a host listener.
-	     *
-	     * Angular will invoke the decorated method when the host element emits the specified event.
-	     *
-	     * If the decorated method returns `false`, then `preventDefault` is applied on the DOM
-	     * event.
-	     *
-	     * ### Example
-	     *
-	     * The following example declares a directive that attaches a click listener to the button and
-	     * counts clicks.
-	     *
-	     * ```typescript
-	     * @Directive({selector: 'button[counting]'})
-	     * class CountClicks {
-	     *   numberOfClicks = 0;
-	     *
-	     *   @HostListener('click', ['$event.target'])
-	     *   onClick(btn) {
-	     *     console.log("button", btn, "number of clicks:", this.numberOfClicks++);
-	     *   }
-	     * }
-	     *
-	     * @Component({
-	     *   selector: 'app',
-	     *   template: `<button counting>Increment</button>`,
-	     *   directives: [CountClicks]
-	     * })
-	     * class App {}
-	     * ```
-	     * @stable
-	     * @Annotation
-	     */
-	    var HostListener = makePropDecorator(HostListenerMetadata);
-	    /**
-	     * Declares an ng module.
-	     * @stable
-	     * @Annotation
-	     */
-	    var NgModule = makeDecorator(NgModuleMetadata);
 
 	    /**
 	     * @license
@@ -6073,6 +3505,19 @@ webpackJsonp([1],{
 	    }());
 
 	    /**
+	     * @license
+	     * Copyright Google Inc. All Rights Reserved.
+	     *
+	     * Use of this source code is governed by an MIT-style license that can be
+	     * found in the LICENSE file at https://angular.io/license
+	     */
+	    function isPromise(obj) {
+	        // allow any Promise/A+ compliant thenable.
+	        // It's up to the caller to ensure that obj.then conforms to the spec
+	        return !!obj && typeof obj.then === 'function';
+	    }
+
+	    /**
 	     * A function that will be executed when an application is initialized.
 	     * @experimental
 	     */
@@ -6141,7 +3586,7 @@ webpackJsonp([1],{
 	    var APP_ID_RANDOM_PROVIDER = {
 	        provide: APP_ID,
 	        useFactory: _appIdRandomProviderFactory,
-	        deps: []
+	        deps: [],
 	    };
 	    function _randomChar() {
 	        return StringWrapper.fromCharCode(97 + Math.floor(Math.random() * 25));
@@ -6187,7 +3632,7 @@ webpackJsonp([1],{
 	     * Use of this source code is governed by an MIT-style license that can be
 	     * found in the LICENSE file at https://angular.io/license
 	     */
-	    var __extends$7 = (this && this.__extends) || function (d, b) {
+	    var __extends$4 = (this && this.__extends) || function (d, b) {
 	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
 	        function __() { this.constructor = d; }
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -6198,7 +3643,7 @@ webpackJsonp([1],{
 	     * @stable
 	     */
 	    var ComponentStillLoadingError = (function (_super) {
-	        __extends$7(ComponentStillLoadingError, _super);
+	        __extends$4(ComponentStillLoadingError, _super);
 	        function ComponentStillLoadingError(compType) {
 	            _super.call(this, "Can't compile synchronously as " + stringify(compType) + " is still being loaded!");
 	            this.compType = compType;
@@ -6244,19 +3689,19 @@ webpackJsonp([1],{
 	         */
 	        Compiler.prototype.compileModuleAsync = function (moduleType) { throw _throwError(); };
 	        /**
-	         * Same as {@link compileModuleSync} put also creates ComponentFactories for all components.
+	         * Same as {@link compileModuleSync} but also creates ComponentFactories for all components.
 	         */
 	        Compiler.prototype.compileModuleAndAllComponentsSync = function (moduleType) {
 	            throw _throwError();
 	        };
 	        /**
-	         * Same as {@link compileModuleAsync} put also creates ComponentFactories for all components.
+	         * Same as {@link compileModuleAsync} but also creates ComponentFactories for all components.
 	         */
 	        Compiler.prototype.compileModuleAndAllComponentsAsync = function (moduleType) {
 	            throw _throwError();
 	        };
 	        /**
-	         * Clears all caches
+	         * Clears all caches.
 	         */
 	        Compiler.prototype.clearCache = function () { };
 	        /**
@@ -7339,7 +4784,7 @@ webpackJsonp([1],{
 	                    return IterableDiffers.create(factories, parent);
 	                },
 	                // Dependency technically isn't optional, but we can provide a better error message this way.
-	                deps: [[IterableDiffers, new SkipSelfMetadata(), new OptionalMetadata()]]
+	                deps: [[IterableDiffers, new SkipSelf(), new Optional()]]
 	            };
 	        };
 	        IterableDiffers.prototype.find = function (iterable) {
@@ -7404,7 +4849,7 @@ webpackJsonp([1],{
 	                    return KeyValueDiffers.create(factories, parent);
 	                },
 	                // Dependency technically isn't optional, but we can provide a better error message this way.
-	                deps: [[KeyValueDiffers, new SkipSelfMetadata(), new OptionalMetadata()]]
+	                deps: [[KeyValueDiffers, new SkipSelf(), new Optional()]]
 	            };
 	        };
 	        KeyValueDiffers.prototype.find = function (kv) {
@@ -7434,7 +4879,7 @@ webpackJsonp([1],{
 	        }
 	    }
 	    /**
-	     * Indicates that the result of a {@link PipeMetadata} transformation has changed even though the
+	     * Indicates that the result of a {@link Pipe} transformation has changed even though the
 	     * reference
 	     * has not changed.
 	     *
@@ -8051,7 +5496,7 @@ webpackJsonp([1],{
 	     * Use of this source code is governed by an MIT-style license that can be
 	     * found in the LICENSE file at https://angular.io/license
 	     */
-	    var __extends$9 = (this && this.__extends) || function (d, b) {
+	    var __extends$6 = (this && this.__extends) || function (d, b) {
 	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
 	        function __() { this.constructor = d; }
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -8091,7 +5536,7 @@ webpackJsonp([1],{
 	     * @stable
 	     */
 	    var ExpressionChangedAfterItHasBeenCheckedError = (function (_super) {
-	        __extends$9(ExpressionChangedAfterItHasBeenCheckedError, _super);
+	        __extends$6(ExpressionChangedAfterItHasBeenCheckedError, _super);
 	        function ExpressionChangedAfterItHasBeenCheckedError(oldValue, currValue) {
 	            var msg = "Expression has changed after it was checked. Previous value: '" + oldValue + "'. Current value: '" + currValue + "'.";
 	            if (oldValue === UNINITIALIZED) {
@@ -8111,7 +5556,7 @@ webpackJsonp([1],{
 	     * @stable
 	     */
 	    var ViewWrappedError = (function (_super) {
-	        __extends$9(ViewWrappedError, _super);
+	        __extends$6(ViewWrappedError, _super);
 	        function ViewWrappedError(originalError, context) {
 	            _super.call(this, "Error in " + context.source, originalError);
 	            this.context = context;
@@ -8127,7 +5572,7 @@ webpackJsonp([1],{
 	     * @stable
 	     */
 	    var ViewDestroyedError = (function (_super) {
-	        __extends$9(ViewDestroyedError, _super);
+	        __extends$6(ViewDestroyedError, _super);
 	        function ViewDestroyedError(details) {
 	            _super.call(this, "Attempt to use a destroyed view: " + details);
 	        }
@@ -8192,7 +5637,7 @@ webpackJsonp([1],{
 	        }
 	        else if (projectableNodes.length < expectedSlotCount) {
 	            var givenSlotCount = projectableNodes.length;
-	            res = ListWrapper.createFixedSize(expectedSlotCount);
+	            res = new Array(expectedSlotCount);
 	            for (var i = 0; i < expectedSlotCount; i++) {
 	                res[i] = (i < givenSlotCount) ? projectableNodes[i] : EMPTY_ARR;
 	            }
@@ -8441,7 +5886,7 @@ webpackJsonp([1],{
 	     * Use of this source code is governed by an MIT-style license that can be
 	     * found in the LICENSE file at https://angular.io/license
 	     */
-	    var __extends$8 = (this && this.__extends) || function (d, b) {
+	    var __extends$5 = (this && this.__extends) || function (d, b) {
 	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
 	        function __() { this.constructor = d; }
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -8510,7 +5955,7 @@ webpackJsonp([1],{
 	        return ComponentRef;
 	    }());
 	    var ComponentRef_ = (function (_super) {
-	        __extends$8(ComponentRef_, _super);
+	        __extends$5(ComponentRef_, _super);
 	        function ComponentRef_(_hostElement, _componentType) {
 	            _super.call(this);
 	            this._hostElement = _hostElement;
@@ -8596,7 +6041,7 @@ webpackJsonp([1],{
 	     * Use of this source code is governed by an MIT-style license that can be
 	     * found in the LICENSE file at https://angular.io/license
 	     */
-	    var __extends$10 = (this && this.__extends) || function (d, b) {
+	    var __extends$7 = (this && this.__extends) || function (d, b) {
 	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
 	        function __() { this.constructor = d; }
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -8605,7 +6050,7 @@ webpackJsonp([1],{
 	     * @stable
 	     */
 	    var NoComponentFactoryError = (function (_super) {
-	        __extends$10(NoComponentFactoryError, _super);
+	        __extends$7(NoComponentFactoryError, _super);
 	        function NoComponentFactoryError(component) {
 	            _super.call(this, "No component factory found for " + stringify(component));
 	            this.component = component;
@@ -8655,7 +6100,7 @@ webpackJsonp([1],{
 	     * Use of this source code is governed by an MIT-style license that can be
 	     * found in the LICENSE file at https://angular.io/license
 	     */
-	    var __extends$11 = (this && this.__extends) || function (d, b) {
+	    var __extends$8 = (this && this.__extends) || function (d, b) {
 	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
 	        function __() { this.constructor = d; }
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -8708,7 +6153,7 @@ webpackJsonp([1],{
 	     * @stable
 	     */
 	    var EventEmitter = (function (_super) {
-	        __extends$11(EventEmitter, _super);
+	        __extends$8(EventEmitter, _super);
 	        /**
 	         * Creates an instance of [EventEmitter], which depending on [isAsync],
 	         * delivers events synchronously or asynchronously.
@@ -8770,58 +6215,57 @@ webpackJsonp([1],{
 	            this.setMicrotask = setMicrotask;
 	            this.setMacrotask = setMacrotask;
 	            this.onError = onError;
-	            if (Zone) {
-	                this.outer = this.inner = Zone.current;
-	                if (Zone['wtfZoneSpec']) {
-	                    this.inner = this.inner.fork(Zone['wtfZoneSpec']);
-	                }
-	                if (trace && Zone['longStackTraceZoneSpec']) {
-	                    this.inner = this.inner.fork(Zone['longStackTraceZoneSpec']);
-	                }
-	                this.inner = this.inner.fork({
-	                    name: 'angular',
-	                    properties: { 'isAngularZone': true },
-	                    onInvokeTask: function (delegate, current, target, task, applyThis, applyArgs) {
-	                        try {
-	                            _this.onEnter();
-	                            return delegate.invokeTask(target, task, applyThis, applyArgs);
-	                        }
-	                        finally {
-	                            _this.onLeave();
-	                        }
-	                    },
-	                    onInvoke: function (delegate, current, target, callback, applyThis, applyArgs, source) {
-	                        try {
-	                            _this.onEnter();
-	                            return delegate.invoke(target, callback, applyThis, applyArgs, source);
-	                        }
-	                        finally {
-	                            _this.onLeave();
-	                        }
-	                    },
-	                    onHasTask: function (delegate, current, target, hasTaskState) {
-	                        delegate.hasTask(target, hasTaskState);
-	                        if (current == target) {
-	                            // We are only interested in hasTask events which originate from our zone
-	                            // (A child hasTask event is not interesting to us)
-	                            if (hasTaskState.change == 'microTask') {
-	                                _this.setMicrotask(hasTaskState.microTask);
-	                            }
-	                            else if (hasTaskState.change == 'macroTask') {
-	                                _this.setMacrotask(hasTaskState.macroTask);
-	                            }
-	                        }
-	                    },
-	                    onHandleError: function (delegate, current, target, error) {
-	                        delegate.handleError(target, error);
-	                        _this.onError(error);
-	                        return false;
+	            if (typeof Zone == 'undefined') {
+	                throw new Error('Angular requires Zone.js prolyfill.');
+	            }
+	            Zone.assertZonePatched();
+	            this.outer = this.inner = Zone.current;
+	            if (Zone['wtfZoneSpec']) {
+	                this.inner = this.inner.fork(Zone['wtfZoneSpec']);
+	            }
+	            if (trace && Zone['longStackTraceZoneSpec']) {
+	                this.inner = this.inner.fork(Zone['longStackTraceZoneSpec']);
+	            }
+	            this.inner = this.inner.fork({
+	                name: 'angular',
+	                properties: { 'isAngularZone': true },
+	                onInvokeTask: function (delegate, current, target, task, applyThis, applyArgs) {
+	                    try {
+	                        _this.onEnter();
+	                        return delegate.invokeTask(target, task, applyThis, applyArgs);
 	                    }
-	                });
-	            }
-	            else {
-	                throw new Error('Angular requires Zone.js polyfill.');
-	            }
+	                    finally {
+	                        _this.onLeave();
+	                    }
+	                },
+	                onInvoke: function (delegate, current, target, callback, applyThis, applyArgs, source) {
+	                    try {
+	                        _this.onEnter();
+	                        return delegate.invoke(target, callback, applyThis, applyArgs, source);
+	                    }
+	                    finally {
+	                        _this.onLeave();
+	                    }
+	                },
+	                onHasTask: function (delegate, current, target, hasTaskState) {
+	                    delegate.hasTask(target, hasTaskState);
+	                    if (current === target) {
+	                        // We are only interested in hasTask events which originate from our zone
+	                        // (A child hasTask event is not interesting to us)
+	                        if (hasTaskState.change == 'microTask') {
+	                            _this.setMicrotask(hasTaskState.microTask);
+	                        }
+	                        else if (hasTaskState.change == 'macroTask') {
+	                            _this.setMacrotask(hasTaskState.macroTask);
+	                        }
+	                    }
+	                },
+	                onHandleError: function (delegate, current, target, error) {
+	                    delegate.handleError(target, error);
+	                    _this.onError(error);
+	                    return false;
+	                }
+	            });
 	        }
 	        NgZoneImpl.isInAngularZone = function () { return Zone.current.get('isAngularZone') === true; };
 	        NgZoneImpl.prototype.runInner = function (fn) { return this.inner.run(fn); };
@@ -9159,6 +6603,7 @@ webpackJsonp([1],{
 	            this._runCallbacksIfReady();
 	        };
 	        Testability.prototype.getPendingRequestCount = function () { return this._pendingCount; };
+	        /** @deprecated use findProviders */
 	        Testability.prototype.findBindings = function (using, provider, exactMatch) {
 	            // TODO(juliemr): implement.
 	            return [];
@@ -9183,7 +6628,7 @@ webpackJsonp([1],{
 	    var TestabilityRegistry = (function () {
 	        function TestabilityRegistry() {
 	            /** @internal */
-	            this._applications = new Map$1();
+	            this._applications = new Map();
 	            _testabilityGetter.addToWindow(this);
 	        }
 	        TestabilityRegistry.prototype.registerApplication = function (token, testability) {
@@ -9228,7 +6673,7 @@ webpackJsonp([1],{
 	     * Use of this source code is governed by an MIT-style license that can be
 	     * found in the LICENSE file at https://angular.io/license
 	     */
-	    var __extends$6 = (this && this.__extends) || function (d, b) {
+	    var __extends$3 = (this && this.__extends) || function (d, b) {
 	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
 	        function __() { this.constructor = d; }
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -9271,12 +6716,12 @@ webpackJsonp([1],{
 	     * @experimental APIs related to application bootstrap are currently under review.
 	     */
 	    function createPlatform(injector) {
-	        if (isPresent(_platform) && !_platform.destroyed) {
+	        if (_platform && !_platform.destroyed) {
 	            throw new Error('There can be only one platform. Destroy the previous one to create a new one.');
 	        }
 	        _platform = injector.get(PlatformRef);
 	        var inits = injector.get(PLATFORM_INITIALIZER, null);
-	        if (isPresent(inits))
+	        if (inits)
 	            inits.forEach(function (init) { return init(); });
 	        return _platform;
 	    }
@@ -9309,10 +6754,10 @@ webpackJsonp([1],{
 	     */
 	    function assertPlatform(requiredToken) {
 	        var platform = getPlatform();
-	        if (isBlank(platform)) {
+	        if (!platform) {
 	            throw new Error('No platform exists!');
 	        }
-	        if (isPresent(platform) && isBlank(platform.injector.get(requiredToken, null))) {
+	        if (!platform.injector.get(requiredToken, null)) {
 	            throw new Error('A platform with a different configuration has been created. Please destroy it first.');
 	        }
 	        return platform;
@@ -9323,7 +6768,7 @@ webpackJsonp([1],{
 	     * @experimental APIs related to application bootstrap are currently under review.
 	     */
 	    function destroyPlatform() {
-	        if (isPresent(_platform) && !_platform.destroyed) {
+	        if (_platform && !_platform.destroyed) {
 	            _platform.destroy();
 	        }
 	    }
@@ -9333,7 +6778,7 @@ webpackJsonp([1],{
 	     * @experimental APIs related to application bootstrap are currently under review.
 	     */
 	    function getPlatform() {
-	        return isPresent(_platform) && !_platform.destroyed ? _platform : null;
+	        return _platform && !_platform.destroyed ? _platform : null;
 	    }
 	    /**
 	     * The Angular platform is the entry point for Angular on a web page. Each page
@@ -9420,9 +6865,7 @@ webpackJsonp([1],{
 	                    throw e;
 	                });
 	            }
-	            else {
-	                return result;
-	            }
+	            return result;
 	        }
 	        catch (e) {
 	            errorHandler.handleError(e);
@@ -9431,7 +6874,7 @@ webpackJsonp([1],{
 	        }
 	    }
 	    var PlatformRef_ = (function (_super) {
-	        __extends$6(PlatformRef_, _super);
+	        __extends$3(PlatformRef_, _super);
 	        function PlatformRef_(_injector) {
 	            _super.call(this);
 	            this._injector = _injector;
@@ -9454,8 +6897,8 @@ webpackJsonp([1],{
 	            if (this._destroyed) {
 	                throw new Error('The platform has already been destroyed!');
 	            }
-	            ListWrapper.clone(this._modules).forEach(function (app) { return app.destroy(); });
-	            this._destroyListeners.forEach(function (dispose) { return dispose(); });
+	            this._modules.slice().forEach(function (module) { return module.destroy(); });
+	            this._destroyListeners.forEach(function (listener) { return listener(); });
 	            this._destroyed = true;
 	        };
 	        PlatformRef_.prototype.bootstrapModuleFactory = function (moduleFactory) {
@@ -9497,7 +6940,7 @@ webpackJsonp([1],{
 	            var _this = this;
 	            if (compilerOptions === void 0) { compilerOptions = []; }
 	            var compilerFactory = this.injector.get(CompilerFactory);
-	            var compiler = compilerFactory.createCompiler(compilerOptions instanceof Array ? compilerOptions : [compilerOptions]);
+	            var compiler = compilerFactory.createCompiler(Array.isArray(compilerOptions) ? compilerOptions : [compilerOptions]);
 	            // ugly internal api hack: generate host component factories for all declared components and
 	            // pass the factories into the callback - this is used by UpdateAdapter to get hold of all
 	            // factories.
@@ -9566,7 +7009,7 @@ webpackJsonp([1],{
 	        return ApplicationRef;
 	    }());
 	    var ApplicationRef_ = (function (_super) {
-	        __extends$6(ApplicationRef_, _super);
+	        __extends$3(ApplicationRef_, _super);
 	        function ApplicationRef_(_zone, _console, _injector, _exceptionHandler, _componentFactoryResolver, _initStatus, _testabilityRegistry, _testability) {
 	            var _this = this;
 	            _super.call(this);
@@ -9609,7 +7052,7 @@ webpackJsonp([1],{
 	            var compRef = componentFactory.create(this._injector, [], componentFactory.selector);
 	            compRef.onDestroy(function () { _this._unloadComponent(compRef); });
 	            var testability = compRef.injector.get(Testability, null);
-	            if (isPresent(testability)) {
+	            if (testability) {
 	                compRef.injector.get(TestabilityRegistry)
 	                    .registerApplication(compRef.location.nativeElement, testability);
 	            }
@@ -9631,7 +7074,7 @@ webpackJsonp([1],{
 	        };
 	        /** @internal */
 	        ApplicationRef_.prototype._unloadComponent = function (componentRef) {
-	            if (!ListWrapper.contains(this._rootComponents, componentRef)) {
+	            if (this._rootComponents.indexOf(componentRef) == -1) {
 	                return;
 	            }
 	            this.unregisterChangeDetector(componentRef.changeDetectorRef);
@@ -9641,7 +7084,7 @@ webpackJsonp([1],{
 	            if (this._runningTick) {
 	                throw new Error('ApplicationRef.tick is called recursively');
 	            }
-	            var s = ApplicationRef_._tickScope();
+	            var scope = ApplicationRef_._tickScope();
 	            try {
 	                this._runningTick = true;
 	                this._changeDetectorRefs.forEach(function (detector) { return detector.detectChanges(); });
@@ -9651,12 +7094,12 @@ webpackJsonp([1],{
 	            }
 	            finally {
 	                this._runningTick = false;
-	                wtfLeave(s);
+	                wtfLeave(scope);
 	            }
 	        };
 	        ApplicationRef_.prototype.ngOnDestroy = function () {
 	            // TODO(alxhub): Dispose of the NgZone.
-	            ListWrapper.clone(this._rootComponents).forEach(function (ref) { return ref.destroy(); });
+	            this._rootComponents.slice().forEach(function (component) { return component.destroy(); });
 	        };
 	        Object.defineProperty(ApplicationRef_.prototype, "componentTypes", {
 	            get: function () { return this._rootComponentTypes; },
@@ -9694,7 +7137,7 @@ webpackJsonp([1],{
 	     * Use of this source code is governed by an MIT-style license that can be
 	     * found in the LICENSE file at https://angular.io/license
 	     */
-	    var __extends$12 = (this && this.__extends) || function (d, b) {
+	    var __extends$9 = (this && this.__extends) || function (d, b) {
 	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
 	        function __() { this.constructor = d; }
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -9762,7 +7205,7 @@ webpackJsonp([1],{
 	    }());
 	    var _UNDEFINED = new Object();
 	    var NgModuleInjector = (function (_super) {
-	        __extends$12(NgModuleInjector, _super);
+	        __extends$9(NgModuleInjector, _super);
 	        function NgModuleInjector(parent, factories, bootstrapFactories) {
 	            _super.call(this, factories, parent.get(ComponentFactoryResolver, ComponentFactoryResolver.NULL));
 	            this.parent = parent;
@@ -9817,12 +7260,36 @@ webpackJsonp([1],{
 	        }
 	        return NgModuleFactoryLoader;
 	    }());
+	    var moduleFactories = new Map();
+	    /**
+	     * Registers a loaded module. Should only be called from generated NgModuleFactory code.
+	     * @experimental
+	     */
+	    function registerModuleFactory(id, factory) {
+	        var existing = moduleFactories.get(id);
+	        if (existing) {
+	            throw new Error("Duplicate module registered for " + id + " - " + existing.moduleType.name + " vs " + factory.moduleType.name);
+	        }
+	        moduleFactories.set(id, factory);
+	    }
+	    /**
+	     * Returns the NgModuleFactory with the given id, if it exists and has been loaded.
+	     * Factories for modules that do not specify an `id` cannot be retrieved. Throws if the module
+	     * cannot be found.
+	     * @experimental
+	     */
+	    function getModuleFactory(id) {
+	        var factory = moduleFactories.get(id);
+	        if (!factory)
+	            throw new Error("No module with ID " + id + " loaded");
+	        return factory;
+	    }
 
 	    /**
 	     * An unmodifiable list of items that Angular keeps up to date when the state
 	     * of the application changes.
 	     *
-	     * The type of object that {@link QueryMetadata} and {@link ViewQueryMetadata} provide.
+	     * The type of object that {@link Query} and {@link ViewQueryMetadata} provide.
 	     *
 	     * Implements an iterable interface, therefore it can be used in both ES6
 	     * javascript `for (var i of items)` loops as well as in Angular templates with
@@ -9941,7 +7408,6 @@ webpackJsonp([1],{
 	    var SystemJsNgModuleLoader = (function () {
 	        function SystemJsNgModuleLoader(_compiler, config) {
 	            this._compiler = _compiler;
-	            this._system = function () { return System; };
 	            this._config = config || DEFAULT_CONFIG;
 	        }
 	        SystemJsNgModuleLoader.prototype.load = function (path) {
@@ -9953,8 +7419,7 @@ webpackJsonp([1],{
 	            var _a = path.split(_SEPARATOR), module = _a[0], exportName = _a[1];
 	            if (exportName === undefined)
 	                exportName = 'default';
-	            return this._system()
-	                .import(module)
+	            return System.import(module)
 	                .then(function (module) { return module[exportName]; })
 	                .then(function (type) { return checkNotEmpty(type, module, exportName); })
 	                .then(function (type) { return _this._compiler.compileModuleAsync(type); });
@@ -9966,8 +7431,7 @@ webpackJsonp([1],{
 	                exportName = 'default';
 	                factoryClassSuffix = '';
 	            }
-	            return this._system()
-	                .import(this._config.factoryPathPrefix + module + this._config.factoryPathSuffix)
+	            return System.import(this._config.factoryPathPrefix + module + this._config.factoryPathSuffix)
 	                .then(function (module) { return module[exportName + factoryClassSuffix]; })
 	                .then(function (factory) { return checkNotEmpty(factory, module, exportName); });
 	        };
@@ -9995,7 +7459,7 @@ webpackJsonp([1],{
 	     * Use of this source code is governed by an MIT-style license that can be
 	     * found in the LICENSE file at https://angular.io/license
 	     */
-	    var __extends$13 = (this && this.__extends) || function (d, b) {
+	    var __extends$10 = (this && this.__extends) || function (d, b) {
 	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
 	        function __() { this.constructor = d; }
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -10036,7 +7500,7 @@ webpackJsonp([1],{
 	        return TemplateRef;
 	    }());
 	    var TemplateRef_ = (function (_super) {
-	        __extends$13(TemplateRef_, _super);
+	        __extends$10(TemplateRef_, _super);
 	        function TemplateRef_(_appElement, _viewFactory) {
 	            _super.call(this);
 	            this._appElement = _appElement;
@@ -10062,7 +7526,28 @@ webpackJsonp([1],{
 	     * Use of this source code is governed by an MIT-style license that can be
 	     * found in the LICENSE file at https://angular.io/license
 	     */
-	    var __extends$14 = (this && this.__extends) || function (d, b) {
+	    var _queuedAnimations = [];
+	    /** @internal */
+	    function queueAnimation(player) {
+	        _queuedAnimations.push(player);
+	    }
+	    /** @internal */
+	    function triggerQueuedAnimations() {
+	        for (var i = 0; i < _queuedAnimations.length; i++) {
+	            var player = _queuedAnimations[i];
+	            player.play();
+	        }
+	        _queuedAnimations = [];
+	    }
+
+	    /**
+	     * @license
+	     * Copyright Google Inc. All Rights Reserved.
+	     *
+	     * Use of this source code is governed by an MIT-style license that can be
+	     * found in the LICENSE file at https://angular.io/license
+	     */
+	    var __extends$11 = (this && this.__extends) || function (d, b) {
 	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
 	        function __() { this.constructor = d; }
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -10135,7 +7620,7 @@ webpackJsonp([1],{
 	     * @experimental
 	     */
 	    var EmbeddedViewRef = (function (_super) {
-	        __extends$14(EmbeddedViewRef, _super);
+	        __extends$11(EmbeddedViewRef, _super);
 	        function EmbeddedViewRef() {
 	            _super.apply(this, arguments);
 	        }
@@ -10180,7 +7665,10 @@ webpackJsonp([1],{
 	        });
 	        ViewRef_.prototype.markForCheck = function () { this._view.markPathToRootAsCheckOnce(); };
 	        ViewRef_.prototype.detach = function () { this._view.cdMode = ChangeDetectorStatus.Detached; };
-	        ViewRef_.prototype.detectChanges = function () { this._view.detectChanges(false); };
+	        ViewRef_.prototype.detectChanges = function () {
+	            this._view.detectChanges(false);
+	            triggerQueuedAnimations();
+	        };
 	        ViewRef_.prototype.checkNoChanges = function () { this._view.detectChanges(true); };
 	        ViewRef_.prototype.reattach = function () {
 	            this._view.cdMode = this._originalMode;
@@ -10198,7 +7686,7 @@ webpackJsonp([1],{
 	     * Use of this source code is governed by an MIT-style license that can be
 	     * found in the LICENSE file at https://angular.io/license
 	     */
-	    var __extends$15 = (this && this.__extends) || function (d, b) {
+	    var __extends$12 = (this && this.__extends) || function (d, b) {
 	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
 	        function __() { this.constructor = d; }
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -10268,7 +7756,7 @@ webpackJsonp([1],{
 	     * @experimental All debugging apis are currently experimental.
 	     */
 	    var DebugElement = (function (_super) {
-	        __extends$15(DebugElement, _super);
+	        __extends$12(DebugElement, _super);
 	        function DebugElement(nativeNode, parent, _debugInfo) {
 	            _super.call(this, nativeNode, parent, _debugInfo);
 	            this.properties = {};
@@ -10390,9 +7878,12 @@ webpackJsonp([1],{
 	        return reflector;
 	    }
 	    var _CORE_PLATFORM_PROVIDERS = [
-	        PlatformRef_, { provide: PlatformRef, useExisting: PlatformRef_ },
+	        PlatformRef_,
+	        { provide: PlatformRef, useExisting: PlatformRef_ },
 	        { provide: Reflector, useFactory: _reflector, deps: [] },
-	        { provide: ReflectorReader, useExisting: Reflector }, TestabilityRegistry, Console
+	        { provide: ReflectorReader, useExisting: Reflector },
+	        TestabilityRegistry,
+	        Console,
 	    ];
 	    /**
 	     * This platform has to be included in any other platform
@@ -10705,7 +8196,7 @@ webpackJsonp([1],{
 	     * Use of this source code is governed by an MIT-style license that can be
 	     * found in the LICENSE file at https://angular.io/license
 	     */
-	    var __extends$16 = (this && this.__extends) || function (d, b) {
+	    var __extends$13 = (this && this.__extends) || function (d, b) {
 	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
 	        function __() { this.constructor = d; }
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -10744,7 +8235,7 @@ webpackJsonp([1],{
 	     * @experimental Animation support is experimental.
 	     */
 	    var AnimationStateDeclarationMetadata = (function (_super) {
-	        __extends$16(AnimationStateDeclarationMetadata, _super);
+	        __extends$13(AnimationStateDeclarationMetadata, _super);
 	        function AnimationStateDeclarationMetadata(stateNameExpr, styles) {
 	            _super.call(this);
 	            this.stateNameExpr = stateNameExpr;
@@ -10760,7 +8251,7 @@ webpackJsonp([1],{
 	     * @experimental Animation support is experimental.
 	     */
 	    var AnimationStateTransitionMetadata = (function (_super) {
-	        __extends$16(AnimationStateTransitionMetadata, _super);
+	        __extends$13(AnimationStateTransitionMetadata, _super);
 	        function AnimationStateTransitionMetadata(stateChangeExpr, steps) {
 	            _super.call(this);
 	            this.stateChangeExpr = stateChangeExpr;
@@ -10784,7 +8275,7 @@ webpackJsonp([1],{
 	     * @experimental Animation support is experimental.
 	     */
 	    var AnimationKeyframesSequenceMetadata = (function (_super) {
-	        __extends$16(AnimationKeyframesSequenceMetadata, _super);
+	        __extends$13(AnimationKeyframesSequenceMetadata, _super);
 	        function AnimationKeyframesSequenceMetadata(steps) {
 	            _super.call(this);
 	            this.steps = steps;
@@ -10799,7 +8290,7 @@ webpackJsonp([1],{
 	     * @experimental Animation support is experimental.
 	     */
 	    var AnimationStyleMetadata = (function (_super) {
-	        __extends$16(AnimationStyleMetadata, _super);
+	        __extends$13(AnimationStyleMetadata, _super);
 	        function AnimationStyleMetadata(styles, offset) {
 	            if (offset === void 0) { offset = null; }
 	            _super.call(this);
@@ -10816,7 +8307,7 @@ webpackJsonp([1],{
 	     * @experimental Animation support is experimental.
 	     */
 	    var AnimationAnimateMetadata = (function (_super) {
-	        __extends$16(AnimationAnimateMetadata, _super);
+	        __extends$13(AnimationAnimateMetadata, _super);
 	        function AnimationAnimateMetadata(timings, styles) {
 	            _super.call(this);
 	            this.timings = timings;
@@ -10828,7 +8319,7 @@ webpackJsonp([1],{
 	     * @experimental Animation support is experimental.
 	     */
 	    var AnimationWithStepsMetadata = (function (_super) {
-	        __extends$16(AnimationWithStepsMetadata, _super);
+	        __extends$13(AnimationWithStepsMetadata, _super);
 	        function AnimationWithStepsMetadata() {
 	            _super.call(this);
 	        }
@@ -10847,7 +8338,7 @@ webpackJsonp([1],{
 	     * @experimental Animation support is experimental.
 	     */
 	    var AnimationSequenceMetadata = (function (_super) {
-	        __extends$16(AnimationSequenceMetadata, _super);
+	        __extends$13(AnimationSequenceMetadata, _super);
 	        function AnimationSequenceMetadata(_steps) {
 	            _super.call(this);
 	            this._steps = _steps;
@@ -10867,7 +8358,7 @@ webpackJsonp([1],{
 	     * @experimental Animation support is experimental.
 	     */
 	    var AnimationGroupMetadata = (function (_super) {
-	        __extends$16(AnimationGroupMetadata, _super);
+	        __extends$13(AnimationGroupMetadata, _super);
 	        function AnimationGroupMetadata(_steps) {
 	            _super.call(this);
 	            this._steps = _steps;
@@ -10883,7 +8374,7 @@ webpackJsonp([1],{
 	     * `animate` is an animation-specific function that is designed to be used inside of Angular2's
 	     * animation
 	     * DSL language. If this information is new, please navigate to the
-	     * {@link ComponentMetadata#animations-anchor component animations metadata
+	     * {@link Component#animations-anchor component animations metadata
 	     * page} to gain a better understanding of how animations in Angular2 are used.
 	     *
 	     * `animate` specifies an animation step that will apply the provided `styles` data for a given
@@ -10944,7 +8435,7 @@ webpackJsonp([1],{
 	     * `group` is an animation-specific function that is designed to be used inside of Angular2's
 	     * animation
 	     * DSL language. If this information is new, please navigate to the
-	     * {@link ComponentMetadata#animations-anchor component animations metadata
+	     * {@link Component#animations-anchor component animations metadata
 	     * page} to gain a better understanding of how animations in Angular2 are used.
 	     *
 	     * `group` specifies a list of animation steps that are all run in parallel. Grouped animations
@@ -10985,7 +8476,7 @@ webpackJsonp([1],{
 	     * `sequence` is an animation-specific function that is designed to be used inside of Angular2's
 	     * animation
 	     * DSL language. If this information is new, please navigate to the
-	     * {@link ComponentMetadata#animations-anchor component animations metadata
+	     * {@link Component#animations-anchor component animations metadata
 	     * page} to gain a better understanding of how animations in Angular2 are used.
 	     *
 	     * `sequence` Specifies a list of animation steps that are run one by one. (`sequence` is used
@@ -11027,7 +8518,7 @@ webpackJsonp([1],{
 	     * `style` is an animation-specific function that is designed to be used inside of Angular2's
 	     * animation
 	     * DSL language. If this information is new, please navigate to the
-	     * {@link ComponentMetadata#animations-anchor component animations metadata
+	     * {@link Component#animations-anchor component animations metadata
 	     * page} to gain a better understanding of how animations in Angular2 are used.
 	     *
 	     * `style` declares a key/value object containing CSS properties/styles that can then
@@ -11086,7 +8577,7 @@ webpackJsonp([1],{
 	            input.forEach(function (entry) {
 	                var entryOffset = entry['offset'];
 	                if (isPresent(entryOffset)) {
-	                    offset = offset == null ? NumberWrapper.parseFloat(entryOffset) : offset;
+	                    offset = offset == null ? parseFloat(entryOffset) : offset;
 	                }
 	            });
 	        }
@@ -11096,7 +8587,7 @@ webpackJsonp([1],{
 	     * `state` is an animation-specific function that is designed to be used inside of Angular2's
 	     * animation
 	     * DSL language. If this information is new, please navigate to the
-	     * {@link ComponentMetadata#animations-anchor component animations metadata
+	     * {@link Component#animations-anchor component animations metadata
 	     * page} to gain a better understanding of how animations in Angular2 are used.
 	     *
 	     * `state` declares an animation state within the given trigger. When a state is
@@ -11153,7 +8644,7 @@ webpackJsonp([1],{
 	     * `keyframes` is an animation-specific function that is designed to be used inside of Angular2's
 	     * animation
 	     * DSL language. If this information is new, please navigate to the
-	     * {@link ComponentMetadata#animations-anchor component animations metadata
+	     * {@link Component#animations-anchor component animations metadata
 	     * page} to gain a better understanding of how animations in Angular2 are used.
 	     *
 	     * `keyframes` specifies a collection of {@link style style} entries each optionally characterized
@@ -11205,7 +8696,7 @@ webpackJsonp([1],{
 	     * `transition` is an animation-specific function that is designed to be used inside of Angular2's
 	     * animation
 	     * DSL language. If this information is new, please navigate to the
-	     * {@link ComponentMetadata#animations-anchor component animations metadata
+	     * {@link Component#animations-anchor component animations metadata
 	     * page} to gain a better understanding of how animations in Angular2 are used.
 	     *
 	     * `transition` declares the {@link sequence sequence of animation steps} that will be run when the
@@ -11298,7 +8789,7 @@ webpackJsonp([1],{
 	     * `trigger` is an animation-specific function that is designed to be used inside of Angular2's
 	     * animation
 	     * DSL language. If this information is new, please navigate to the
-	     * {@link ComponentMetadata#animations-anchor component animations metadata
+	     * {@link Component#animations-anchor component animations metadata
 	     * page} to gain a better understanding of how animations in Angular2 are used.
 	     *
 	     * `trigger` Creates an animation trigger which will a list of {@link state state} and {@link
@@ -11306,7 +8797,7 @@ webpackJsonp([1],{
 	     * entries that will be evaluated when the expression bound to the trigger changes.
 	     *
 	     * Triggers are registered within the component annotation data under the
-	     * {@link ComponentMetadata#animations-anchor animations section}. An animation trigger can
+	     * {@link Component#animations-anchor animations section}. An animation trigger can
 	     * be placed on an element within a template by referencing the name of the
 	     * trigger followed by the expression value that the trigger is bound to
 	     * (in the form of `[@triggerName]="expression"`.
@@ -11739,7 +9230,7 @@ webpackJsonp([1],{
 
 	    var ViewAnimationMap = (function () {
 	        function ViewAnimationMap() {
-	            this._map = new Map$1();
+	            this._map = new Map();
 	            this._allPlayers = [];
 	        }
 	        Object.defineProperty(ViewAnimationMap.prototype, "length", {
@@ -11773,11 +9264,11 @@ webpackJsonp([1],{
 	        ViewAnimationMap.prototype.getAllPlayers = function () { return this._allPlayers; };
 	        ViewAnimationMap.prototype.remove = function (element, animationName) {
 	            var playersByAnimation = this._map.get(element);
-	            if (isPresent(playersByAnimation)) {
+	            if (playersByAnimation) {
 	                var player = playersByAnimation[animationName];
 	                delete playersByAnimation[animationName];
 	                var index = this._allPlayers.indexOf(player);
-	                ListWrapper.removeAt(this._allPlayers, index);
+	                this._allPlayers.splice(index, 1);
 	                if (StringMapWrapper.isEmpty(playersByAnimation)) {
 	                    this._map.delete(element);
 	                }
@@ -11793,14 +9284,14 @@ webpackJsonp([1],{
 	     * Use of this source code is governed by an MIT-style license that can be
 	     * found in the LICENSE file at https://angular.io/license
 	     */
-	    var __extends$18 = (this && this.__extends) || function (d, b) {
+	    var __extends$15 = (this && this.__extends) || function (d, b) {
 	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
 	        function __() { this.constructor = d; }
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	    };
 	    var _UNDEFINED$1 = new Object();
 	    var ElementInjector = (function (_super) {
-	        __extends$18(ElementInjector, _super);
+	        __extends$15(ElementInjector, _super);
 	        function ElementInjector(_view, _nodeIndex) {
 	            _super.call(this);
 	            this._view = _view;
@@ -11827,7 +9318,7 @@ webpackJsonp([1],{
 	     * Use of this source code is governed by an MIT-style license that can be
 	     * found in the LICENSE file at https://angular.io/license
 	     */
-	    var __extends$17 = (this && this.__extends) || function (d, b) {
+	    var __extends$14 = (this && this.__extends) || function (d, b) {
 	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
 	        function __() { this.constructor = d; }
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -11879,6 +9370,7 @@ webpackJsonp([1],{
 	        };
 	        AppView.prototype.queueAnimation = function (element, animationName, player, totalTime, fromState, toState) {
 	            var _this = this;
+	            queueAnimation(player);
 	            var event = new AnimationTransitionEvent({ 'fromState': fromState, 'toState': toState, 'totalTime': totalTime });
 	            this.animationPlayers.set(element, animationName, player);
 	            player.onDone(function () {
@@ -11887,13 +9379,6 @@ webpackJsonp([1],{
 	                _this.animationPlayers.remove(element, animationName);
 	            });
 	            player.onStart(function () { _this.triggerAnimationOutput(element, animationName, 'start', event); });
-	        };
-	        AppView.prototype.triggerQueuedAnimations = function () {
-	            this.animationPlayers.getAllPlayers().forEach(function (player) {
-	                if (!player.hasStarted()) {
-	                    player.play();
-	                }
-	            });
 	        };
 	        AppView.prototype.triggerAnimationOutput = function (element, animationName, phase, event) {
 	            var listeners = this._animationListeners.get(element);
@@ -12138,7 +9623,7 @@ webpackJsonp([1],{
 	        return AppView;
 	    }());
 	    var DebugAppView = (function (_super) {
-	        __extends$17(DebugAppView, _super);
+	        __extends$14(DebugAppView, _super);
 	        function DebugAppView(clazz, componentType, type, viewUtils, parentInjector, declarationAppElement, cdMode, staticNodeDebugInfos) {
 	            _super.call(this, clazz, componentType, type, viewUtils, parentInjector, declarationAppElement, cdMode);
 	            this.staticNodeDebugInfos = staticNodeDebugInfos;
@@ -12265,6 +9750,7 @@ webpackJsonp([1],{
 	        AppView: AppView,
 	        DebugAppView: DebugAppView,
 	        NgModuleInjector: NgModuleInjector,
+	        registerModuleFactory: registerModuleFactory,
 	        ViewType: ViewType,
 	        MAX_INTERPOLATION_VALUES: MAX_INTERPOLATION_VALUES,
 	        checkBinding: checkBinding,
@@ -12316,7 +9802,8 @@ webpackJsonp([1],{
 	        DEFAULT_STATE: DEFAULT_STATE,
 	        EMPTY_STATE: EMPTY_STATE,
 	        FILL_STYLE_FLAG: FILL_STYLE_FLAG,
-	        ComponentStillLoadingError: ComponentStillLoadingError
+	        ComponentStillLoadingError: ComponentStillLoadingError,
+	        isPromise: isPromise
 	    };
 
 	    exports.createPlatform = createPlatform;
@@ -12355,34 +9842,20 @@ webpackJsonp([1],{
 	    exports.AnimationTransitionEvent = AnimationTransitionEvent;
 	    exports.AnimationPlayer = AnimationPlayer;
 	    exports.Sanitizer = Sanitizer;
+	    exports.ANALYZE_FOR_ENTRY_COMPONENTS = ANALYZE_FOR_ENTRY_COMPONENTS;
+	    exports.Attribute = Attribute;
+	    exports.ContentChild = ContentChild;
+	    exports.ContentChildren = ContentChildren;
+	    exports.Query = Query;
+	    exports.ViewChild = ViewChild;
+	    exports.ViewChildren = ViewChildren;
 	    exports.Component = Component;
 	    exports.Directive = Directive;
-	    exports.Attribute = Attribute;
-	    exports.ContentChildren = ContentChildren;
-	    exports.ContentChild = ContentChild;
-	    exports.ViewChildren = ViewChildren;
-	    exports.ViewChild = ViewChild;
-	    exports.Pipe = Pipe;
-	    exports.Input = Input;
-	    exports.Output = Output;
 	    exports.HostBinding = HostBinding;
 	    exports.HostListener = HostListener;
-	    exports.NgModule = NgModule;
-	    exports.ANALYZE_FOR_ENTRY_COMPONENTS = ANALYZE_FOR_ENTRY_COMPONENTS;
-	    exports.AttributeMetadata = AttributeMetadata;
-	    exports.ContentChildMetadata = ContentChildMetadata;
-	    exports.ContentChildrenMetadata = ContentChildrenMetadata;
-	    exports.QueryMetadata = QueryMetadata;
-	    exports.ViewChildMetadata = ViewChildMetadata;
-	    exports.ViewChildrenMetadata = ViewChildrenMetadata;
-	    exports.ViewQueryMetadata = ViewQueryMetadata;
-	    exports.ComponentMetadata = ComponentMetadata;
-	    exports.DirectiveMetadata = DirectiveMetadata;
-	    exports.HostBindingMetadata = HostBindingMetadata;
-	    exports.HostListenerMetadata = HostListenerMetadata;
-	    exports.InputMetadata = InputMetadata;
-	    exports.OutputMetadata = OutputMetadata;
-	    exports.PipeMetadata = PipeMetadata;
+	    exports.Input = Input;
+	    exports.Output = Output;
+	    exports.Pipe = Pipe;
 	    exports.AfterContentChecked = AfterContentChecked;
 	    exports.AfterContentInit = AfterContentInit;
 	    exports.AfterViewChecked = AfterViewChecked;
@@ -12393,14 +9866,8 @@ webpackJsonp([1],{
 	    exports.OnInit = OnInit;
 	    exports.CUSTOM_ELEMENTS_SCHEMA = CUSTOM_ELEMENTS_SCHEMA;
 	    exports.NO_ERRORS_SCHEMA = NO_ERRORS_SCHEMA;
-	    exports.NgModuleMetadata = NgModuleMetadata;
+	    exports.NgModule = NgModule;
 	    exports.Class = Class;
-	    exports.HostMetadata = HostMetadata;
-	    exports.InjectMetadata = InjectMetadata;
-	    exports.InjectableMetadata = InjectableMetadata;
-	    exports.OptionalMetadata = OptionalMetadata;
-	    exports.SelfMetadata = SelfMetadata;
-	    exports.SkipSelfMetadata = SkipSelfMetadata;
 	    exports.forwardRef = forwardRef;
 	    exports.resolveForwardRef = resolveForwardRef;
 	    exports.Injector = Injector;
@@ -12412,8 +9879,8 @@ webpackJsonp([1],{
 	    exports.Optional = Optional;
 	    exports.Injectable = Injectable;
 	    exports.Self = Self;
-	    exports.Host = Host;
 	    exports.SkipSelf = SkipSelf;
+	    exports.Host = Host;
 	    exports.NgZone = NgZone;
 	    exports.RenderComponentType = RenderComponentType;
 	    exports.Renderer = Renderer;
@@ -12429,6 +9896,7 @@ webpackJsonp([1],{
 	    exports.NgModuleFactory = NgModuleFactory;
 	    exports.NgModuleRef = NgModuleRef;
 	    exports.NgModuleFactoryLoader = NgModuleFactoryLoader;
+	    exports.getModuleFactory = getModuleFactory;
 	    exports.QueryList = QueryList;
 	    exports.SystemJsNgModuleLoader = SystemJsNgModuleLoader;
 	    exports.SystemJsNgModuleLoaderConfig = SystemJsNgModuleLoaderConfig;
@@ -12878,7 +10346,7 @@ webpackJsonp([1],{
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
-	 * @license Angular v2.0.0-rc.6
+	 * @license Angular v2.0.1
 	 * (c) 2010-2016 Google, Inc. https://angular.io/
 	 * License: MIT
 	 */
@@ -13047,8 +10515,6 @@ webpackJsonp([1],{
 	            }
 	            throw new Error('Invalid integer literal when parsing ' + text + ' in base ' + radix);
 	        };
-	        // TODO: NaN is a valid literal but is returned by parseFloat to indicate an error.
-	        NumberWrapper.parseFloat = function (text) { return parseFloat(text); };
 	        Object.defineProperty(NumberWrapper, "NaN", {
 	            get: function () { return NaN; },
 	            enumerable: true,
@@ -13169,20 +10635,18 @@ webpackJsonp([1],{
 	        ResponseContentType[ResponseContentType["Blob"] = 3] = "Blob";
 	    })(exports.ResponseContentType || (exports.ResponseContentType = {}));
 
-	    var Map$1 = global$1.Map;
-	    var Set = global$1.Set;
 	    // Safari and Internet Explorer do not support the iterable parameter to the
 	    // Map constructor.  We work around that by manually adding the items.
 	    var createMapFromPairs = (function () {
 	        try {
-	            if (new Map$1([[1, 2]]).size === 1) {
-	                return function createMapFromPairs(pairs) { return new Map$1(pairs); };
+	            if (new Map([[1, 2]]).size === 1) {
+	                return function createMapFromPairs(pairs) { return new Map(pairs); };
 	            }
 	        }
 	        catch (e) {
 	        }
 	        return function createMapAndPopulateFromPairs(pairs) {
-	            var map = new Map$1();
+	            var map = new Map();
 	            for (var i = 0; i < pairs.length; i++) {
 	                var pair = pairs[i];
 	                map.set(pair[0], pair[1]);
@@ -13190,22 +10654,8 @@ webpackJsonp([1],{
 	            return map;
 	        };
 	    })();
-	    var createMapFromMap = (function () {
-	        try {
-	            if (new Map$1(new Map$1())) {
-	                return function createMapFromMap(m) { return new Map$1(m); };
-	            }
-	        }
-	        catch (e) {
-	        }
-	        return function createMapAndPopulateFromMap(m) {
-	            var map = new Map$1();
-	            m.forEach(function (v, k) { map.set(k, v); });
-	            return map;
-	        };
-	    })();
 	    var _clearValues = (function () {
-	        if ((new Map$1()).keys().next) {
+	        if ((new Map()).keys().next) {
 	            return function _clearValues(m) {
 	                var keyIterator = m.keys();
 	                var k;
@@ -13224,7 +10674,7 @@ webpackJsonp([1],{
 	    // TODO(mlaval): remove the work around once we have a working polyfill of Array.from
 	    var _arrayFromMap = (function () {
 	        try {
-	            if ((new Map$1()).values().next) {
+	            if ((new Map()).values().next) {
 	                return function createArrayFromMap(m, getValues) {
 	                    return getValues ? Array.from(m.values()) : Array.from(m.keys());
 	                };
@@ -13233,7 +10683,7 @@ webpackJsonp([1],{
 	        catch (e) {
 	        }
 	        return function createArrayFromMapWithForeach(m, getValues) {
-	            var res = ListWrapper.createFixedSize(m.size), i = 0;
+	            var res = new Array(m.size), i = 0;
 	            m.forEach(function (v, k) {
 	                res[i] = getValues ? v : k;
 	                i++;
@@ -13244,9 +10694,8 @@ webpackJsonp([1],{
 	    var MapWrapper = (function () {
 	        function MapWrapper() {
 	        }
-	        MapWrapper.clone = function (m) { return createMapFromMap(m); };
 	        MapWrapper.createFromStringMap = function (stringMap) {
-	            var result = new Map$1();
+	            var result = new Map();
 	            for (var prop in stringMap) {
 	                result.set(prop, stringMap[prop]);
 	            }
@@ -13258,7 +10707,6 @@ webpackJsonp([1],{
 	            return r;
 	        };
 	        MapWrapper.createFromPairs = function (pairs) { return createMapFromPairs(pairs); };
-	        MapWrapper.clearValues = function (m) { _clearValues(m); };
 	        MapWrapper.iterable = function (m) { return m; };
 	        MapWrapper.keys = function (m) { return _arrayFromMap(m, false); };
 	        MapWrapper.values = function (m) { return _arrayFromMap(m, true); };
@@ -13270,15 +10718,6 @@ webpackJsonp([1],{
 	    var StringMapWrapper = (function () {
 	        function StringMapWrapper() {
 	        }
-	        StringMapWrapper.create = function () {
-	            // Note: We are not using Object.create(null) here due to
-	            // performance!
-	            // http://jsperf.com/ng2-object-create-null
-	            return {};
-	        };
-	        StringMapWrapper.contains = function (map, key) {
-	            return map.hasOwnProperty(key);
-	        };
 	        StringMapWrapper.get = function (map, key) {
 	            return map.hasOwnProperty(key) ? map[key] : undefined;
 	        };
@@ -13293,7 +10732,6 @@ webpackJsonp([1],{
 	            }
 	            return true;
 	        };
-	        StringMapWrapper.delete = function (map, key) { delete map[key]; };
 	        StringMapWrapper.forEach = function (map, callback) {
 	            for (var _i = 0, _a = Object.keys(map); _i < _a.length; _i++) {
 	                var k = _a[_i];
@@ -13318,9 +10756,8 @@ webpackJsonp([1],{
 	            if (k1.length != k2.length) {
 	                return false;
 	            }
-	            var key;
 	            for (var i = 0; i < k1.length; i++) {
-	                key = k1[i];
+	                var key = k1[i];
 	                if (m1[key] !== m2[key]) {
 	                    return false;
 	                }
@@ -13463,7 +10900,7 @@ webpackJsonp([1],{
 	        if (!isJsObject(obj))
 	            return false;
 	        return isArray(obj) ||
-	            (!(obj instanceof Map$1) &&
+	            (!(obj instanceof Map) &&
 	                getSymbolIterator() in obj); // JS Iterable have a Symbol.iterator prop
 	    }
 	    function iterateListLike(obj, fn) {
@@ -13480,25 +10917,6 @@ webpackJsonp([1],{
 	            }
 	        }
 	    }
-	    // Safari and Internet Explorer do not support the iterable parameter to the
-	    // Set constructor.  We work around that by manually adding the items.
-	    var createSetFromList = (function () {
-	        var test = new Set([1, 2, 3]);
-	        if (test.size === 3) {
-	            return function createSetFromList(lst) { return new Set(lst); };
-	        }
-	        else {
-	            return function createSetAndPopulateFromList(lst) {
-	                var res = new Set(lst);
-	                if (res.size !== lst.length) {
-	                    for (var i = 0; i < lst.length; i++) {
-	                        res.add(lst[i]);
-	                    }
-	                }
-	                return res;
-	            };
-	        }
-	    })();
 
 	    /**
 	     * Polyfill for [Headers](https://developer.mozilla.org/en-US/docs/Web/API/Headers/Headers), as
@@ -13532,10 +10950,10 @@ webpackJsonp([1],{
 	        function Headers(headers) {
 	            var _this = this;
 	            if (headers instanceof Headers) {
-	                this._headersMap = new Map$1(headers._headersMap);
+	                this._headersMap = new Map(headers._headersMap);
 	                return;
 	            }
-	            this._headersMap = new Map$1();
+	            this._headersMap = new Map();
 	            if (isBlank(headers)) {
 	                return;
 	            }
@@ -13856,9 +11274,16 @@ webpackJsonp([1],{
 	        return view.buffer;
 	    }
 
+	    /**
+	     * @license
+	     * Copyright Google Inc. All Rights Reserved.
+	     *
+	     * Use of this source code is governed by an MIT-style license that can be
+	     * found in the LICENSE file at https://angular.io/license
+	     */
 	    function paramParser(rawParams) {
 	        if (rawParams === void 0) { rawParams = ''; }
-	        var map = new Map$1();
+	        var map = new Map();
 	        if (rawParams.length > 0) {
 	            var params = rawParams.split('&');
 	            params.forEach(function (param) {
@@ -13944,21 +11369,12 @@ webpackJsonp([1],{
 	        URLSearchParams.prototype.has = function (param) { return this.paramsMap.has(param); };
 	        URLSearchParams.prototype.get = function (param) {
 	            var storedParam = this.paramsMap.get(param);
-	            if (isListLikeIterable(storedParam)) {
-	                return ListWrapper.first(storedParam);
-	            }
-	            else {
-	                return null;
-	            }
+	            return Array.isArray(storedParam) ? storedParam[0] : null;
 	        };
-	        URLSearchParams.prototype.getAll = function (param) {
-	            var mapParam = this.paramsMap.get(param);
-	            return isPresent(mapParam) ? mapParam : [];
-	        };
+	        URLSearchParams.prototype.getAll = function (param) { return this.paramsMap.get(param) || []; };
 	        URLSearchParams.prototype.set = function (param, val) {
-	            var mapParam = this.paramsMap.get(param);
-	            var list = isPresent(mapParam) ? mapParam : [];
-	            ListWrapper.clear(list);
+	            var list = this.paramsMap.get(param) || [];
+	            list.length = 0;
 	            list.push(val);
 	            this.paramsMap.set(param, list);
 	        };
@@ -13971,16 +11387,14 @@ webpackJsonp([1],{
 	        URLSearchParams.prototype.setAll = function (searchParams) {
 	            var _this = this;
 	            searchParams.paramsMap.forEach(function (value, param) {
-	                var mapParam = _this.paramsMap.get(param);
-	                var list = isPresent(mapParam) ? mapParam : [];
-	                ListWrapper.clear(list);
+	                var list = _this.paramsMap.get(param) || [];
+	                list.length = 0;
 	                list.push(value[0]);
 	                _this.paramsMap.set(param, list);
 	            });
 	        };
 	        URLSearchParams.prototype.append = function (param, val) {
-	            var mapParam = this.paramsMap.get(param);
-	            var list = isPresent(mapParam) ? mapParam : [];
+	            var list = this.paramsMap.get(param) || [];
 	            list.push(val);
 	            this.paramsMap.set(param, list);
 	        };
@@ -13994,8 +11408,7 @@ webpackJsonp([1],{
 	        URLSearchParams.prototype.appendAll = function (searchParams) {
 	            var _this = this;
 	            searchParams.paramsMap.forEach(function (value, param) {
-	                var mapParam = _this.paramsMap.get(param);
-	                var list = isPresent(mapParam) ? mapParam : [];
+	                var list = _this.paramsMap.get(param) || [];
 	                for (var i = 0; i < value.length; ++i) {
 	                    list.push(value[i]);
 	                }
@@ -14012,9 +11425,8 @@ webpackJsonp([1],{
 	        URLSearchParams.prototype.replaceAll = function (searchParams) {
 	            var _this = this;
 	            searchParams.paramsMap.forEach(function (value, param) {
-	                var mapParam = _this.paramsMap.get(param);
-	                var list = isPresent(mapParam) ? mapParam : [];
-	                ListWrapper.clear(list);
+	                var list = _this.paramsMap.get(param) || [];
+	                list.length = 0;
 	                for (var i = 0; i < value.length; ++i) {
 	                    list.push(value[i]);
 	                }
@@ -15154,9 +12566,9 @@ webpackJsonp([1],{
 /***/ },
 
 /***/ 34:
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(module, global) {"use strict";
+	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
 	var objectTypes = {
 	    'boolean': false,
 	    'function': true,
@@ -15166,15 +12578,12 @@ webpackJsonp([1],{
 	    'undefined': false
 	};
 	exports.root = (objectTypes[typeof self] && self) || (objectTypes[typeof window] && window);
-	/* tslint:disable:no-unused-variable */
-	var freeExports = objectTypes[typeof exports] && exports && !exports.nodeType && exports;
-	var freeModule = objectTypes[typeof module] && module && !module.nodeType && module;
 	var freeGlobal = objectTypes[typeof global] && global;
 	if (freeGlobal && (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal)) {
 	    exports.root = freeGlobal;
 	}
 	//# sourceMappingURL=root.js.map
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(373)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
 
@@ -15182,7 +12591,7 @@ webpackJsonp([1],{
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
-	 * @license Angular v2.0.0-rc.6
+	 * @license Angular v2.0.1
 	 * (c) 2010-2016 Google, Inc. https://angular.io/
 	 * License: MIT
 	 */
@@ -15377,8 +12786,6 @@ webpackJsonp([1],{
 	            }
 	            throw new Error('Invalid integer literal when parsing ' + text + ' in base ' + radix);
 	        };
-	        // TODO: NaN is a valid literal but is returned by parseFloat to indicate an error.
-	        NumberWrapper.parseFloat = function (text) { return parseFloat(text); };
 	        Object.defineProperty(NumberWrapper, "NaN", {
 	            get: function () { return NaN; },
 	            enumerable: true,
@@ -15437,43 +12844,8 @@ webpackJsonp([1],{
 	        obj[parts.shift()] = value;
 	    }
 
-	    var Map$1 = global$1.Map;
-	    var Set$1 = global$1.Set;
-	    // Safari and Internet Explorer do not support the iterable parameter to the
-	    // Map constructor.  We work around that by manually adding the items.
-	    var createMapFromPairs = (function () {
-	        try {
-	            if (new Map$1([[1, 2]]).size === 1) {
-	                return function createMapFromPairs(pairs) { return new Map$1(pairs); };
-	            }
-	        }
-	        catch (e) {
-	        }
-	        return function createMapAndPopulateFromPairs(pairs) {
-	            var map = new Map$1();
-	            for (var i = 0; i < pairs.length; i++) {
-	                var pair = pairs[i];
-	                map.set(pair[0], pair[1]);
-	            }
-	            return map;
-	        };
-	    })();
-	    var createMapFromMap = (function () {
-	        try {
-	            if (new Map$1(new Map$1())) {
-	                return function createMapFromMap(m) { return new Map$1(m); };
-	            }
-	        }
-	        catch (e) {
-	        }
-	        return function createMapAndPopulateFromMap(m) {
-	            var map = new Map$1();
-	            m.forEach(function (v, k) { map.set(k, v); });
-	            return map;
-	        };
-	    })();
 	    var _clearValues = (function () {
-	        if ((new Map$1()).keys().next) {
+	        if ((new Map()).keys().next) {
 	            return function _clearValues(m) {
 	                var keyIterator = m.keys();
 	                var k;
@@ -15492,7 +12864,7 @@ webpackJsonp([1],{
 	    // TODO(mlaval): remove the work around once we have a working polyfill of Array.from
 	    var _arrayFromMap = (function () {
 	        try {
-	            if ((new Map$1()).values().next) {
+	            if ((new Map()).values().next) {
 	                return function createArrayFromMap(m, getValues) {
 	                    return getValues ? Array.from(m.values()) : Array.from(m.keys());
 	                };
@@ -15501,7 +12873,7 @@ webpackJsonp([1],{
 	        catch (e) {
 	        }
 	        return function createArrayFromMapWithForeach(m, getValues) {
-	            var res = ListWrapper.createFixedSize(m.size), i = 0;
+	            var res = new Array(m.size), i = 0;
 	            m.forEach(function (v, k) {
 	                res[i] = getValues ? v : k;
 	                i++;
@@ -15515,15 +12887,6 @@ webpackJsonp([1],{
 	    var StringMapWrapper = (function () {
 	        function StringMapWrapper() {
 	        }
-	        StringMapWrapper.create = function () {
-	            // Note: We are not using Object.create(null) here due to
-	            // performance!
-	            // http://jsperf.com/ng2-object-create-null
-	            return {};
-	        };
-	        StringMapWrapper.contains = function (map, key) {
-	            return map.hasOwnProperty(key);
-	        };
 	        StringMapWrapper.get = function (map, key) {
 	            return map.hasOwnProperty(key) ? map[key] : undefined;
 	        };
@@ -15538,7 +12901,6 @@ webpackJsonp([1],{
 	            }
 	            return true;
 	        };
-	        StringMapWrapper.delete = function (map, key) { delete map[key]; };
 	        StringMapWrapper.forEach = function (map, callback) {
 	            for (var _i = 0, _a = Object.keys(map); _i < _a.length; _i++) {
 	                var k = _a[_i];
@@ -15563,9 +12925,8 @@ webpackJsonp([1],{
 	            if (k1.length != k2.length) {
 	                return false;
 	            }
-	            var key;
 	            for (var i = 0; i < k1.length; i++) {
-	                key = k1[i];
+	                var key = k1[i];
 	                if (m1[key] !== m2[key]) {
 	                    return false;
 	                }
@@ -15704,25 +13065,6 @@ webpackJsonp([1],{
 	        }
 	        return target;
 	    }
-	    // Safari and Internet Explorer do not support the iterable parameter to the
-	    // Set constructor.  We work around that by manually adding the items.
-	    var createSetFromList = (function () {
-	        var test = new Set$1([1, 2, 3]);
-	        if (test.size === 3) {
-	            return function createSetFromList(lst) { return new Set$1(lst); };
-	        }
-	        else {
-	            return function createSetAndPopulateFromList(lst) {
-	                var res = new Set$1(lst);
-	                if (res.size !== lst.length) {
-	                    for (var i = 0; i < lst.length; i++) {
-	                        res.add(lst[i]);
-	                    }
-	                }
-	                return res;
-	            };
-	        }
-	    })();
 
 	    var CAMEL_CASE_REGEXP = /([A-Z])/g;
 	    var DASH_CASE_REGEXP = /-([a-z])/g;
@@ -16207,7 +13549,7 @@ webpackJsonp([1],{
 	        BrowserDomAdapter.prototype.childNodes = function (el /** TODO #9100 */) { return el.childNodes; };
 	        BrowserDomAdapter.prototype.childNodesAsList = function (el /** TODO #9100 */) {
 	            var childNodes = el.childNodes;
-	            var res = ListWrapper.createFixedSize(childNodes.length);
+	            var res = new Array(childNodes.length);
 	            for (var i = 0; i < childNodes.length; i++) {
 	                res[i] = childNodes[i];
 	            }
@@ -16654,6 +13996,32 @@ webpackJsonp([1],{
 	    }());
 
 	    /**
+	     * A service that can be used to get and set the title of a current HTML document.
+	     *
+	     * Since an Angular 2 application can't be bootstrapped on the entire HTML document (`<html>` tag)
+	     * it is not possible to bind to the `text` property of the `HTMLTitleElement` elements
+	     * (representing the `<title>` tag). Instead, this service can be used to set and get the current
+	     * title value.
+	     *
+	     * @experimental
+	     */
+	    var Title = (function () {
+	        function Title() {
+	        }
+	        /**
+	         * Get the title of the current HTML document.
+	         * @returns {string}
+	         */
+	        Title.prototype.getTitle = function () { return getDOM().getTitle(); };
+	        /**
+	         * Set the title of the current HTML document.
+	         * @param newTitle
+	         */
+	        Title.prototype.setTitle = function (newTitle) { getDOM().setTitle(newTitle); };
+	        return Title;
+	    }());
+
+	    /**
 	     * A DI Token representing the main rendering context. In a browser this is the DOM Document.
 	     *
 	     * Note: Document might not be available in the Application Context when Application and Rendering
@@ -16675,7 +14043,7 @@ webpackJsonp([1],{
 	            var _this = this;
 	            this._zone = _zone;
 	            plugins.forEach(function (p) { return p.manager = _this; });
-	            this._plugins = ListWrapper.reversed(plugins);
+	            this._plugins = plugins.slice().reverse();
 	        }
 	        EventManager.prototype.addEventListener = function (element, eventName, handler) {
 	            var plugin = this._findPluginFor(eventName);
@@ -17219,8 +14587,7 @@ webpackJsonp([1],{
 	            _super.call(this);
 	        }
 	        HammerGesturesPluginCommon.prototype.supports = function (eventName) {
-	            eventName = eventName.toLowerCase();
-	            return StringMapWrapper.contains(_eventNames, eventName);
+	            return _eventNames.hasOwnProperty(eventName.toLowerCase());
 	        };
 	        return HammerGesturesPluginCommon;
 	    }(EventManagerPlugin));
@@ -17365,7 +14732,7 @@ webpackJsonp([1],{
 	                // returning null instead of throwing to let another plugin process the event
 	                return null;
 	            }
-	            var result = StringMapWrapper.create();
+	            var result = {};
 	            StringMapWrapper.set(result, 'domEventName', domEventName);
 	            StringMapWrapper.set(result, 'fullKey', fullKey);
 	            return result;
@@ -18016,7 +15383,7 @@ webpackJsonp([1],{
 	                            { provide: _angular_core.RootRenderer, useExisting: DomRootRenderer },
 	                            { provide: SharedStylesHost, useExisting: DomSharedStylesHost },
 	                            { provide: AnimationDriver, useFactory: _resolveDefaultAnimationDriver }, DomSharedStylesHost,
-	                            _angular_core.Testability, EventManager, ELEMENT_PROBE_PROVIDERS
+	                            _angular_core.Testability, EventManager, ELEMENT_PROBE_PROVIDERS, Title
 	                        ],
 	                        exports: [_angular_common.CommonModule, _angular_core.ApplicationModule]
 	                    },] },
@@ -18026,32 +15393,6 @@ webpackJsonp([1],{
 	            { type: BrowserModule, decorators: [{ type: _angular_core.Optional }, { type: _angular_core.SkipSelf },] },
 	        ];
 	        return BrowserModule;
-	    }());
-
-	    /**
-	     * A service that can be used to get and set the title of a current HTML document.
-	     *
-	     * Since an Angular 2 application can't be bootstrapped on the entire HTML document (`<html>` tag)
-	     * it is not possible to bind to the `text` property of the `HTMLTitleElement` elements
-	     * (representing the `<title>` tag). Instead, this service can be used to set and get the current
-	     * title value.
-	     *
-	     * @experimental
-	     */
-	    var Title = (function () {
-	        function Title() {
-	        }
-	        /**
-	         * Get the title of the current HTML document.
-	         * @returns {string}
-	         */
-	        Title.prototype.getTitle = function () { return getDOM().getTitle(); };
-	        /**
-	         * Set the title of the current HTML document.
-	         * @param newTitle
-	         */
-	        Title.prototype.setTitle = function (newTitle) { getDOM().setTitle(newTitle); };
-	        return Title;
 	    }());
 
 	    /**
@@ -18253,7 +15594,7 @@ webpackJsonp([1],{
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
-	 * @license Angular v2.0.0-rc.6
+	 * @license Angular v2.0.1
 	 * (c) 2010-2016 Google, Inc. https://angular.io/
 	 * License: MIT
 	 */
@@ -18262,6 +15603,107 @@ webpackJsonp([1],{
 	    typeof define === 'function' && define.amd ? define(['exports', '@angular/core'], factory) :
 	    (factory((global.ng = global.ng || {}, global.ng.common = global.ng.common || {}),global.ng.core));
 	}(this, function (exports,_angular_core) { 'use strict';
+
+	    /**
+	     * @license
+	     * Copyright Google Inc. All Rights Reserved.
+	     *
+	     * Use of this source code is governed by an MIT-style license that can be
+	     * found in the LICENSE file at https://angular.io/license
+	     */
+	    /**
+	     * This class should not be used directly by an application developer. Instead, use
+	     * {@link Location}.
+	     *
+	     * `PlatformLocation` encapsulates all calls to DOM apis, which allows the Router to be platform
+	     * agnostic.
+	     * This means that we can have different implementation of `PlatformLocation` for the different
+	     * platforms
+	     * that angular supports. For example, the default `PlatformLocation` is {@link
+	     * BrowserPlatformLocation},
+	     * however when you run your app in a WebWorker you use {@link WebWorkerPlatformLocation}.
+	     *
+	     * The `PlatformLocation` class is used directly by all implementations of {@link LocationStrategy}
+	     * when
+	     * they need to interact with the DOM apis like pushState, popState, etc...
+	     *
+	     * {@link LocationStrategy} in turn is used by the {@link Location} service which is used directly
+	     * by
+	     * the {@link Router} in order to navigate between routes. Since all interactions between {@link
+	     * Router} /
+	     * {@link Location} / {@link LocationStrategy} and DOM apis flow through the `PlatformLocation`
+	     * class
+	     * they are all platform independent.
+	     *
+	     * @stable
+	     */
+	    var PlatformLocation = (function () {
+	        function PlatformLocation() {
+	        }
+	        Object.defineProperty(PlatformLocation.prototype, "pathname", {
+	            get: function () { return null; },
+	            enumerable: true,
+	            configurable: true
+	        });
+	        Object.defineProperty(PlatformLocation.prototype, "search", {
+	            get: function () { return null; },
+	            enumerable: true,
+	            configurable: true
+	        });
+	        Object.defineProperty(PlatformLocation.prototype, "hash", {
+	            get: function () { return null; },
+	            enumerable: true,
+	            configurable: true
+	        });
+	        return PlatformLocation;
+	    }());
+
+	    /**
+	     * `LocationStrategy` is responsible for representing and reading route state
+	     * from the browser's URL. Angular provides two strategies:
+	     * {@link HashLocationStrategy} and {@link PathLocationStrategy} (default).
+	     *
+	     * This is used under the hood of the {@link Location} service.
+	     *
+	     * Applications should use the {@link Router} or {@link Location} services to
+	     * interact with application route state.
+	     *
+	     * For instance, {@link HashLocationStrategy} produces URLs like
+	     * `http://example.com#/foo`, and {@link PathLocationStrategy} produces
+	     * `http://example.com/foo` as an equivalent URL.
+	     *
+	     * See these two classes for more.
+	     *
+	     * @stable
+	     */
+	    var LocationStrategy = (function () {
+	        function LocationStrategy() {
+	        }
+	        return LocationStrategy;
+	    }());
+	    /**
+	     * The `APP_BASE_HREF` token represents the base href to be used with the
+	     * {@link PathLocationStrategy}.
+	     *
+	     * If you're using {@link PathLocationStrategy}, you must provide a provider to a string
+	     * representing the URL prefix that should be preserved when generating and recognizing
+	     * URLs.
+	     *
+	     * ### Example
+	     *
+	     * ```typescript
+	     * import {Component, NgModule} from '@angular/core';
+	     * import {APP_BASE_HREF} from '@angular/common';
+	     *
+	     * @NgModule({
+	     *   providers: [{provide: APP_BASE_HREF, useValue: '/my/app'}]
+	     * })
+	     * class AppModule {}
+	     * ```
+	     *
+	     * @stable
+	     */
+	    var APP_BASE_HREF = new _angular_core.OpaqueToken('appBaseHref');
 
 	    /**
 	     * @license
@@ -18285,18 +15727,18 @@ webpackJsonp([1],{
 	    }
 	    // Need to declare a new variable for global here since TypeScript
 	    // exports the original value of the symbol.
-	    var global$1 = globalScope;
+	    var _global = globalScope;
 	    function getTypeNameForDebugging(type) {
 	        if (type['name']) {
 	            return type['name'];
 	        }
 	        return typeof type;
 	    }
-	    var Date = global$1.Date;
+	    var Date$1 = _global.Date;
 	    // TODO: remove calls to assert in production environment
 	    // Note: Can't just export this and import in in other files
 	    // as `assert` is a reserved keyword in Dart
-	    global$1.assert = function assert(condition) {
+	    _global.assert = function assert(condition) {
 	        // TODO: to be fixed properly via #2830, noop for now
 	    };
 	    function isPresent(obj) {
@@ -18305,28 +15747,14 @@ webpackJsonp([1],{
 	    function isBlank(obj) {
 	        return obj === undefined || obj === null;
 	    }
-	    function isNumber(obj) {
-	        return typeof obj === 'number';
-	    }
-	    function isString(obj) {
-	        return typeof obj === 'string';
-	    }
-	    function isFunction(obj) {
-	        return typeof obj === 'function';
-	    }
 	    function isStringMap(obj) {
 	        return typeof obj === 'object' && obj !== null;
-	    }
-	    function isPromise(obj) {
-	        // allow any Promise/A+ compliant thenable.
-	        // It's up to the caller to ensure that obj.then conforms to the spec
-	        return isPresent(obj) && isFunction(obj.then);
 	    }
 	    function isArray(obj) {
 	        return Array.isArray(obj);
 	    }
 	    function isDate(obj) {
-	        return obj instanceof Date && !isNaN(obj.valueOf());
+	        return obj instanceof Date$1 && !isNaN(obj.valueOf());
 	    }
 	    function stringify(token) {
 	        if (typeof token === 'string') {
@@ -18345,74 +15773,6 @@ webpackJsonp([1],{
 	        var newLineIndex = res.indexOf('\n');
 	        return (newLineIndex === -1) ? res : res.substring(0, newLineIndex);
 	    }
-	    var StringWrapper = (function () {
-	        function StringWrapper() {
-	        }
-	        StringWrapper.fromCharCode = function (code) { return String.fromCharCode(code); };
-	        StringWrapper.charCodeAt = function (s, index) { return s.charCodeAt(index); };
-	        StringWrapper.split = function (s, regExp) { return s.split(regExp); };
-	        StringWrapper.equals = function (s, s2) { return s === s2; };
-	        StringWrapper.stripLeft = function (s, charVal) {
-	            if (s && s.length) {
-	                var pos = 0;
-	                for (var i = 0; i < s.length; i++) {
-	                    if (s[i] != charVal)
-	                        break;
-	                    pos++;
-	                }
-	                s = s.substring(pos);
-	            }
-	            return s;
-	        };
-	        StringWrapper.stripRight = function (s, charVal) {
-	            if (s && s.length) {
-	                var pos = s.length;
-	                for (var i = s.length - 1; i >= 0; i--) {
-	                    if (s[i] != charVal)
-	                        break;
-	                    pos--;
-	                }
-	                s = s.substring(0, pos);
-	            }
-	            return s;
-	        };
-	        StringWrapper.replace = function (s, from, replace) {
-	            return s.replace(from, replace);
-	        };
-	        StringWrapper.replaceAll = function (s, from, replace) {
-	            return s.replace(from, replace);
-	        };
-	        StringWrapper.slice = function (s, from, to) {
-	            if (from === void 0) { from = 0; }
-	            if (to === void 0) { to = null; }
-	            return s.slice(from, to === null ? undefined : to);
-	        };
-	        StringWrapper.replaceAllMapped = function (s, from, cb) {
-	            return s.replace(from, function () {
-	                var matches = [];
-	                for (var _i = 0; _i < arguments.length; _i++) {
-	                    matches[_i - 0] = arguments[_i];
-	                }
-	                // Remove offset & string from the result array
-	                matches.splice(-2, 2);
-	                // The callback receives match, p1, ..., pn
-	                return cb(matches);
-	            });
-	        };
-	        StringWrapper.contains = function (s, substr) { return s.indexOf(substr) != -1; };
-	        StringWrapper.compare = function (a, b) {
-	            if (a < b) {
-	                return -1;
-	            }
-	            else if (a > b) {
-	                return 1;
-	            }
-	            else {
-	                return 0;
-	            }
-	        };
-	        return StringWrapper;
-	    }());
 	    var NumberWrapper = (function () {
 	        function NumberWrapper() {
 	        }
@@ -18444,8 +15804,6 @@ webpackJsonp([1],{
 	            }
 	            throw new Error('Invalid integer literal when parsing ' + text + ' in base ' + radix);
 	        };
-	        // TODO: NaN is a valid literal but is returned by parseFloat to indicate an error.
-	        NumberWrapper.parseFloat = function (text) { return parseFloat(text); };
 	        Object.defineProperty(NumberWrapper, "NaN", {
 	            get: function () { return NaN; },
 	            enumerable: true,
@@ -18456,9 +15814,6 @@ webpackJsonp([1],{
 	        NumberWrapper.isInteger = function (value) { return Number.isInteger(value); };
 	        return NumberWrapper;
 	    }());
-	    function normalizeBlank(obj) {
-	        return isBlank(obj) ? null : obj;
-	    }
 	    function isJsObject(o) {
 	        return o !== null && (typeof o === 'function' || typeof o === 'object');
 	    }
@@ -18466,31 +15821,12 @@ webpackJsonp([1],{
 	    var Json = (function () {
 	        function Json() {
 	        }
-	        Json.parse = function (s) { return global$1.JSON.parse(s); };
+	        Json.parse = function (s) { return _global.JSON.parse(s); };
 	        Json.stringify = function (data) {
 	            // Dart doesn't take 3 arguments
-	            return global$1.JSON.stringify(data, null, 2);
+	            return _global.JSON.stringify(data, null, 2);
 	        };
 	        return Json;
-	    }());
-	    var DateWrapper = (function () {
-	        function DateWrapper() {
-	        }
-	        DateWrapper.create = function (year, month, day, hour, minutes, seconds, milliseconds) {
-	            if (month === void 0) { month = 1; }
-	            if (day === void 0) { day = 1; }
-	            if (hour === void 0) { hour = 0; }
-	            if (minutes === void 0) { minutes = 0; }
-	            if (seconds === void 0) { seconds = 0; }
-	            if (milliseconds === void 0) { milliseconds = 0; }
-	            return new Date(year, month - 1, day, hour, minutes, seconds, milliseconds);
-	        };
-	        DateWrapper.fromISOString = function (str) { return new Date(str); };
-	        DateWrapper.fromMillis = function (ms) { return new Date(ms); };
-	        DateWrapper.toMillis = function (date) { return date.getTime(); };
-	        DateWrapper.now = function () { return new Date(); };
-	        DateWrapper.toJson = function (date) { return date.toJSON(); };
-	        return DateWrapper;
 	    }());
 	    var _symbolIterator = null;
 	    function getSymbolIterator() {
@@ -18514,67 +15850,184 @@ webpackJsonp([1],{
 	    }
 
 	    /**
-	     * @license
-	     * Copyright Google Inc. All Rights Reserved.
+	     * `Location` is a service that applications can use to interact with a browser's URL.
+	     * Depending on which {@link LocationStrategy} is used, `Location` will either persist
+	     * to the URL's path or the URL's hash segment.
 	     *
-	     * Use of this source code is governed by an MIT-style license that can be
-	     * found in the LICENSE file at https://angular.io/license
-	     */
-	    var __extends$1 = (this && this.__extends) || function (d, b) {
-	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	        function __() { this.constructor = d; }
-	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	    };
-	    /**
+	     * Note: it's better to use {@link Router#navigate} service to trigger route changes. Use
+	     * `Location` only if you need to interact with or create normalized URLs outside of
+	     * routing.
+	     *
+	     * `Location` is responsible for normalizing the URL against the application's base href.
+	     * A normalized URL is absolute from the URL host, includes the application's base href, and has no
+	     * trailing slash:
+	     * - `/my/app/user/123` is normalized
+	     * - `my/app/user/123` **is not** normalized
+	     * - `/my/app/user/123/` **is not** normalized
+	     *
+	     * ### Example
+	     *
+	     * ```
+	     * import {Component} from '@angular/core';
+	     * import {Location} from '@angular/common';
+	     *
+	     * @Component({selector: 'app-component'})
+	     * class AppCmp {
+	     *   constructor(location: Location) {
+	     *     location.go('/foo');
+	     *   }
+	     * }
+	     * ```
+	     *
 	     * @stable
 	     */
-	    var BaseError = (function (_super) {
-	        __extends$1(BaseError, _super);
-	        function BaseError(message) {
-	            // Errors don't use current this, instead they create a new instance.
-	            // We have to do forward all of our api to the nativeInstance.
-	            var nativeError = _super.call(this, message);
-	            this._nativeError = nativeError;
+	    var Location = (function () {
+	        function Location(platformStrategy) {
+	            var _this = this;
+	            /** @internal */
+	            this._subject = new _angular_core.EventEmitter();
+	            this._platformStrategy = platformStrategy;
+	            var browserBaseHref = this._platformStrategy.getBaseHref();
+	            this._baseHref = Location.stripTrailingSlash(_stripIndexHtml(browserBaseHref));
+	            this._platformStrategy.onPopState(function (ev) {
+	                _this._subject.emit({
+	                    'url': _this.path(true),
+	                    'pop': true,
+	                    'type': ev.type,
+	                });
+	            });
 	        }
-	        Object.defineProperty(BaseError.prototype, "message", {
-	            get: function () { return this._nativeError.message; },
-	            set: function (message) { this._nativeError.message = message; },
-	            enumerable: true,
-	            configurable: true
-	        });
-	        Object.defineProperty(BaseError.prototype, "name", {
-	            get: function () { return this._nativeError.name; },
-	            enumerable: true,
-	            configurable: true
-	        });
-	        Object.defineProperty(BaseError.prototype, "stack", {
-	            get: function () { return this._nativeError.stack; },
-	            set: function (value) { this._nativeError.stack = value; },
-	            enumerable: true,
-	            configurable: true
-	        });
-	        BaseError.prototype.toString = function () { return this._nativeError.toString(); };
-	        return BaseError;
-	    }(Error));
-	    /**
-	     * @stable
-	     */
-	    var WrappedError = (function (_super) {
-	        __extends$1(WrappedError, _super);
-	        function WrappedError(message, error) {
-	            _super.call(this, message + " caused by: " + (error instanceof Error ? error.message : error));
-	            this.originalError = error;
+	        /**
+	         * Returns the normalized URL path.
+	         */
+	        // TODO: vsavkin. Remove the boolean flag and always include hash once the deprecated router is
+	        // removed.
+	        Location.prototype.path = function (includeHash) {
+	            if (includeHash === void 0) { includeHash = false; }
+	            return this.normalize(this._platformStrategy.path(includeHash));
+	        };
+	        /**
+	         * Normalizes the given path and compares to the current normalized path.
+	         */
+	        Location.prototype.isCurrentPathEqualTo = function (path, query) {
+	            if (query === void 0) { query = ''; }
+	            return this.path() == this.normalize(path + Location.normalizeQueryParams(query));
+	        };
+	        /**
+	         * Given a string representing a URL, returns the normalized URL path without leading or
+	         * trailing slashes.
+	         */
+	        Location.prototype.normalize = function (url) {
+	            return Location.stripTrailingSlash(_stripBaseHref(this._baseHref, _stripIndexHtml(url)));
+	        };
+	        /**
+	         * Given a string representing a URL, returns the platform-specific external URL path.
+	         * If the given URL doesn't begin with a leading slash (`'/'`), this method adds one
+	         * before normalizing. This method will also add a hash if `HashLocationStrategy` is
+	         * used, or the `APP_BASE_HREF` if the `PathLocationStrategy` is in use.
+	         */
+	        Location.prototype.prepareExternalUrl = function (url) {
+	            if (url.length > 0 && !url.startsWith('/')) {
+	                url = '/' + url;
+	            }
+	            return this._platformStrategy.prepareExternalUrl(url);
+	        };
+	        // TODO: rename this method to pushState
+	        /**
+	         * Changes the browsers URL to the normalized version of the given URL, and pushes a
+	         * new item onto the platform's history.
+	         */
+	        Location.prototype.go = function (path, query) {
+	            if (query === void 0) { query = ''; }
+	            this._platformStrategy.pushState(null, '', path, query);
+	        };
+	        /**
+	         * Changes the browsers URL to the normalized version of the given URL, and replaces
+	         * the top item on the platform's history stack.
+	         */
+	        Location.prototype.replaceState = function (path, query) {
+	            if (query === void 0) { query = ''; }
+	            this._platformStrategy.replaceState(null, '', path, query);
+	        };
+	        /**
+	         * Navigates forward in the platform's history.
+	         */
+	        Location.prototype.forward = function () { this._platformStrategy.forward(); };
+	        /**
+	         * Navigates back in the platform's history.
+	         */
+	        Location.prototype.back = function () { this._platformStrategy.back(); };
+	        /**
+	         * Subscribe to the platform's `popState` events.
+	         */
+	        Location.prototype.subscribe = function (onNext, onThrow, onReturn) {
+	            if (onThrow === void 0) { onThrow = null; }
+	            if (onReturn === void 0) { onReturn = null; }
+	            return this._subject.subscribe({ next: onNext, error: onThrow, complete: onReturn });
+	        };
+	        /**
+	         * Given a string of url parameters, prepend with '?' if needed, otherwise return parameters as
+	         * is.
+	         */
+	        Location.normalizeQueryParams = function (params) {
+	            return (params.length > 0 && params.substring(0, 1) != '?') ? ('?' + params) : params;
+	        };
+	        /**
+	         * Given 2 parts of a url, join them with a slash if needed.
+	         */
+	        Location.joinWithSlash = function (start, end) {
+	            if (start.length == 0) {
+	                return end;
+	            }
+	            if (end.length == 0) {
+	                return start;
+	            }
+	            var slashes = 0;
+	            if (start.endsWith('/')) {
+	                slashes++;
+	            }
+	            if (end.startsWith('/')) {
+	                slashes++;
+	            }
+	            if (slashes == 2) {
+	                return start + end.substring(1);
+	            }
+	            if (slashes == 1) {
+	                return start + end;
+	            }
+	            return start + '/' + end;
+	        };
+	        /**
+	         * If url has a trailing slash, remove it, otherwise return url as is.
+	         */
+	        Location.stripTrailingSlash = function (url) {
+	            if (/\/$/g.test(url)) {
+	                url = url.substring(0, url.length - 1);
+	            }
+	            return url;
+	        };
+	        Location.decorators = [
+	            { type: _angular_core.Injectable },
+	        ];
+	        /** @nocollapse */
+	        Location.ctorParameters = [
+	            { type: LocationStrategy, },
+	        ];
+	        return Location;
+	    }());
+	    function _stripBaseHref(baseHref, url) {
+	        if (baseHref.length > 0 && url.startsWith(baseHref)) {
+	            return url.substring(baseHref.length);
 	        }
-	        Object.defineProperty(WrappedError.prototype, "stack", {
-	            get: function () {
-	                return (this.originalError instanceof Error ? this.originalError : this._nativeError)
-	                    .stack;
-	            },
-	            enumerable: true,
-	            configurable: true
-	        });
-	        return WrappedError;
-	    }(BaseError));
+	        return url;
+	    }
+	    function _stripIndexHtml(url) {
+	        if (/\/index.html$/g.test(url)) {
+	            // '/index.html'.length == 11
+	            return url.substring(0, url.length - 11);
+	        }
+	        return url;
+	    }
 
 	    /**
 	     * @license
@@ -18588,439 +16041,86 @@ webpackJsonp([1],{
 	        function __() { this.constructor = d; }
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	    };
-	    var InvalidPipeArgumentError = (function (_super) {
-	        __extends(InvalidPipeArgumentError, _super);
-	        function InvalidPipeArgumentError(type, value) {
-	            _super.call(this, "Invalid argument '" + value + "' for pipe '" + stringify(type) + "'");
-	        }
-	        return InvalidPipeArgumentError;
-	    }(BaseError));
-
-	    var ObservableStrategy = (function () {
-	        function ObservableStrategy() {
-	        }
-	        ObservableStrategy.prototype.createSubscription = function (async, updateLatestValue) {
-	            return async.subscribe({ next: updateLatestValue, error: function (e) { throw e; } });
-	        };
-	        ObservableStrategy.prototype.dispose = function (subscription) { subscription.unsubscribe(); };
-	        ObservableStrategy.prototype.onDestroy = function (subscription) { subscription.unsubscribe(); };
-	        return ObservableStrategy;
-	    }());
-	    var PromiseStrategy = (function () {
-	        function PromiseStrategy() {
-	        }
-	        PromiseStrategy.prototype.createSubscription = function (async, updateLatestValue) {
-	            return async.then(updateLatestValue, function (e) { throw e; });
-	        };
-	        PromiseStrategy.prototype.dispose = function (subscription) { };
-	        PromiseStrategy.prototype.onDestroy = function (subscription) { };
-	        return PromiseStrategy;
-	    }());
-	    var _promiseStrategy = new PromiseStrategy();
-	    var _observableStrategy = new ObservableStrategy();
-	    // avoid unused import when Promise union types are erased
 	    /**
-	     * The `async` pipe subscribes to an `Observable` or `Promise` and returns the latest value it has
-	     * emitted.
-	     * When a new value is emitted, the `async` pipe marks the component to be checked for changes.
-	     * When the component gets destroyed, the `async` pipe unsubscribes automatically to avoid
-	     * potential memory leaks.
+	     * `HashLocationStrategy` is a {@link LocationStrategy} used to configure the
+	     * {@link Location} service to represent its state in the
+	     * [hash fragment](https://en.wikipedia.org/wiki/Uniform_Resource_Locator#Syntax)
+	     * of the browser's URL.
 	     *
-	     * ## Usage
+	     * For instance, if you call `location.go('/foo')`, the browser's URL will become
+	     * `example.com#/foo`.
 	     *
-	     *     object | async
+	     * ### Example
 	     *
-	     * where `object` is of type `Observable` or of type `Promise`.
+	     * ```
+	     * import {Component, NgModule} from '@angular/core';
+	     * import {
+	     *   LocationStrategy,
+	     *   HashLocationStrategy
+	     * } from '@angular/common';
 	     *
-	     * ## Examples
-	     *
-	     * This example binds a `Promise` to the view. Clicking the `Resolve` button resolves the
-	     * promise.
-	     *
-	     * {@example core/pipes/ts/async_pipe/async_pipe_example.ts region='AsyncPipePromise'}
-	     *
-	     * It's also possible to use `async` with Observables. The example below binds the `time` Observable
-	     * to the view. Every 500ms, the `time` Observable updates the view with the current time.
-	     *
-	     * {@example core/pipes/ts/async_pipe/async_pipe_example.ts region='AsyncPipeObservable'}
+	     * @NgModule({
+	     *   providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}]
+	     * })
+	     * class AppModule {}
+	     * ```
 	     *
 	     * @stable
 	     */
-	    var AsyncPipe = (function () {
-	        function AsyncPipe(_ref) {
-	            /** @internal */
-	            this._latestValue = null;
-	            /** @internal */
-	            this._latestReturnedValue = null;
-	            /** @internal */
-	            this._subscription = null;
-	            /** @internal */
-	            this._obj = null;
-	            this._strategy = null;
-	            this._ref = _ref;
+	    var HashLocationStrategy = (function (_super) {
+	        __extends(HashLocationStrategy, _super);
+	        function HashLocationStrategy(_platformLocation, _baseHref) {
+	            _super.call(this);
+	            this._platformLocation = _platformLocation;
+	            this._baseHref = '';
+	            if (isPresent(_baseHref)) {
+	                this._baseHref = _baseHref;
+	            }
 	        }
-	        AsyncPipe.prototype.ngOnDestroy = function () {
-	            if (isPresent(this._subscription)) {
-	                this._dispose();
-	            }
+	        HashLocationStrategy.prototype.onPopState = function (fn) {
+	            this._platformLocation.onPopState(fn);
+	            this._platformLocation.onHashChange(fn);
 	        };
-	        AsyncPipe.prototype.transform = function (obj) {
-	            if (isBlank(this._obj)) {
-	                if (isPresent(obj)) {
-	                    this._subscribe(obj);
-	                }
-	                this._latestReturnedValue = this._latestValue;
-	                return this._latestValue;
-	            }
-	            if (obj !== this._obj) {
-	                this._dispose();
-	                return this.transform(obj);
-	            }
-	            if (this._latestValue === this._latestReturnedValue) {
-	                return this._latestReturnedValue;
-	            }
-	            else {
-	                this._latestReturnedValue = this._latestValue;
-	                return _angular_core.WrappedValue.wrap(this._latestValue);
-	            }
+	        HashLocationStrategy.prototype.getBaseHref = function () { return this._baseHref; };
+	        HashLocationStrategy.prototype.path = function (includeHash) {
+	            if (includeHash === void 0) { includeHash = false; }
+	            // the hash value is always prefixed with a `#`
+	            // and if it is empty then it will stay empty
+	            var path = this._platformLocation.hash;
+	            if (!isPresent(path))
+	                path = '#';
+	            return path.length > 0 ? path.substring(1) : path;
 	        };
-	        /** @internal */
-	        AsyncPipe.prototype._subscribe = function (obj) {
-	            var _this = this;
-	            this._obj = obj;
-	            this._strategy = this._selectStrategy(obj);
-	            this._subscription = this._strategy.createSubscription(obj, function (value) { return _this._updateLatestValue(obj, value); });
+	        HashLocationStrategy.prototype.prepareExternalUrl = function (internal) {
+	            var url = Location.joinWithSlash(this._baseHref, internal);
+	            return url.length > 0 ? ('#' + url) : url;
 	        };
-	        /** @internal */
-	        AsyncPipe.prototype._selectStrategy = function (obj) {
-	            if (isPromise(obj)) {
-	                return _promiseStrategy;
+	        HashLocationStrategy.prototype.pushState = function (state, title, path, queryParams) {
+	            var url = this.prepareExternalUrl(path + Location.normalizeQueryParams(queryParams));
+	            if (url.length == 0) {
+	                url = this._platformLocation.pathname;
 	            }
-	            else if (obj.subscribe) {
-	                return _observableStrategy;
-	            }
-	            else {
-	                throw new InvalidPipeArgumentError(AsyncPipe, obj);
-	            }
+	            this._platformLocation.pushState(state, title, url);
 	        };
-	        /** @internal */
-	        AsyncPipe.prototype._dispose = function () {
-	            this._strategy.dispose(this._subscription);
-	            this._latestValue = null;
-	            this._latestReturnedValue = null;
-	            this._subscription = null;
-	            this._obj = null;
-	        };
-	        /** @internal */
-	        AsyncPipe.prototype._updateLatestValue = function (async, value) {
-	            if (async === this._obj) {
-	                this._latestValue = value;
-	                this._ref.markForCheck();
+	        HashLocationStrategy.prototype.replaceState = function (state, title, path, queryParams) {
+	            var url = this.prepareExternalUrl(path + Location.normalizeQueryParams(queryParams));
+	            if (url.length == 0) {
+	                url = this._platformLocation.pathname;
 	            }
+	            this._platformLocation.replaceState(state, title, url);
 	        };
-	        AsyncPipe.decorators = [
-	            { type: _angular_core.Pipe, args: [{ name: 'async', pure: false },] },
+	        HashLocationStrategy.prototype.forward = function () { this._platformLocation.forward(); };
+	        HashLocationStrategy.prototype.back = function () { this._platformLocation.back(); };
+	        HashLocationStrategy.decorators = [
+	            { type: _angular_core.Injectable },
 	        ];
 	        /** @nocollapse */
-	        AsyncPipe.ctorParameters = [
-	            { type: _angular_core.ChangeDetectorRef, },
+	        HashLocationStrategy.ctorParameters = [
+	            { type: PlatformLocation, },
+	            { type: undefined, decorators: [{ type: _angular_core.Optional }, { type: _angular_core.Inject, args: [APP_BASE_HREF,] },] },
 	        ];
-	        return AsyncPipe;
-	    }());
-
-	    var Map$1 = global$1.Map;
-	    var Set$1 = global$1.Set;
-	    // Safari and Internet Explorer do not support the iterable parameter to the
-	    // Map constructor.  We work around that by manually adding the items.
-	    var createMapFromPairs = (function () {
-	        try {
-	            if (new Map$1([[1, 2]]).size === 1) {
-	                return function createMapFromPairs(pairs) { return new Map$1(pairs); };
-	            }
-	        }
-	        catch (e) {
-	        }
-	        return function createMapAndPopulateFromPairs(pairs) {
-	            var map = new Map$1();
-	            for (var i = 0; i < pairs.length; i++) {
-	                var pair = pairs[i];
-	                map.set(pair[0], pair[1]);
-	            }
-	            return map;
-	        };
-	    })();
-	    var createMapFromMap = (function () {
-	        try {
-	            if (new Map$1(new Map$1())) {
-	                return function createMapFromMap(m) { return new Map$1(m); };
-	            }
-	        }
-	        catch (e) {
-	        }
-	        return function createMapAndPopulateFromMap(m) {
-	            var map = new Map$1();
-	            m.forEach(function (v, k) { map.set(k, v); });
-	            return map;
-	        };
-	    })();
-	    var _clearValues = (function () {
-	        if ((new Map$1()).keys().next) {
-	            return function _clearValues(m) {
-	                var keyIterator = m.keys();
-	                var k;
-	                while (!((k = keyIterator.next()).done)) {
-	                    m.set(k.value, null);
-	                }
-	            };
-	        }
-	        else {
-	            return function _clearValuesWithForeEach(m) {
-	                m.forEach(function (v, k) { m.set(k, null); });
-	            };
-	        }
-	    })();
-	    // Safari doesn't implement MapIterator.next(), which is used is Traceur's polyfill of Array.from
-	    // TODO(mlaval): remove the work around once we have a working polyfill of Array.from
-	    var _arrayFromMap = (function () {
-	        try {
-	            if ((new Map$1()).values().next) {
-	                return function createArrayFromMap(m, getValues) {
-	                    return getValues ? Array.from(m.values()) : Array.from(m.keys());
-	                };
-	            }
-	        }
-	        catch (e) {
-	        }
-	        return function createArrayFromMapWithForeach(m, getValues) {
-	            var res = ListWrapper.createFixedSize(m.size), i = 0;
-	            m.forEach(function (v, k) {
-	                res[i] = getValues ? v : k;
-	                i++;
-	            });
-	            return res;
-	        };
-	    })();
-	    /**
-	     * Wraps Javascript Objects
-	     */
-	    var StringMapWrapper = (function () {
-	        function StringMapWrapper() {
-	        }
-	        StringMapWrapper.create = function () {
-	            // Note: We are not using Object.create(null) here due to
-	            // performance!
-	            // http://jsperf.com/ng2-object-create-null
-	            return {};
-	        };
-	        StringMapWrapper.contains = function (map, key) {
-	            return map.hasOwnProperty(key);
-	        };
-	        StringMapWrapper.get = function (map, key) {
-	            return map.hasOwnProperty(key) ? map[key] : undefined;
-	        };
-	        StringMapWrapper.set = function (map, key, value) { map[key] = value; };
-	        StringMapWrapper.keys = function (map) { return Object.keys(map); };
-	        StringMapWrapper.values = function (map) {
-	            return Object.keys(map).map(function (k) { return map[k]; });
-	        };
-	        StringMapWrapper.isEmpty = function (map) {
-	            for (var prop in map) {
-	                return false;
-	            }
-	            return true;
-	        };
-	        StringMapWrapper.delete = function (map, key) { delete map[key]; };
-	        StringMapWrapper.forEach = function (map, callback) {
-	            for (var _i = 0, _a = Object.keys(map); _i < _a.length; _i++) {
-	                var k = _a[_i];
-	                callback(map[k], k);
-	            }
-	        };
-	        StringMapWrapper.merge = function (m1, m2) {
-	            var m = {};
-	            for (var _i = 0, _a = Object.keys(m1); _i < _a.length; _i++) {
-	                var k = _a[_i];
-	                m[k] = m1[k];
-	            }
-	            for (var _b = 0, _c = Object.keys(m2); _b < _c.length; _b++) {
-	                var k = _c[_b];
-	                m[k] = m2[k];
-	            }
-	            return m;
-	        };
-	        StringMapWrapper.equals = function (m1, m2) {
-	            var k1 = Object.keys(m1);
-	            var k2 = Object.keys(m2);
-	            if (k1.length != k2.length) {
-	                return false;
-	            }
-	            var key;
-	            for (var i = 0; i < k1.length; i++) {
-	                key = k1[i];
-	                if (m1[key] !== m2[key]) {
-	                    return false;
-	                }
-	            }
-	            return true;
-	        };
-	        return StringMapWrapper;
-	    }());
-	    var ListWrapper = (function () {
-	        function ListWrapper() {
-	        }
-	        // JS has no way to express a statically fixed size list, but dart does so we
-	        // keep both methods.
-	        ListWrapper.createFixedSize = function (size) { return new Array(size); };
-	        ListWrapper.createGrowableSize = function (size) { return new Array(size); };
-	        ListWrapper.clone = function (array) { return array.slice(0); };
-	        ListWrapper.forEachWithIndex = function (array, fn) {
-	            for (var i = 0; i < array.length; i++) {
-	                fn(array[i], i);
-	            }
-	        };
-	        ListWrapper.first = function (array) {
-	            if (!array)
-	                return null;
-	            return array[0];
-	        };
-	        ListWrapper.last = function (array) {
-	            if (!array || array.length == 0)
-	                return null;
-	            return array[array.length - 1];
-	        };
-	        ListWrapper.indexOf = function (array, value, startIndex) {
-	            if (startIndex === void 0) { startIndex = 0; }
-	            return array.indexOf(value, startIndex);
-	        };
-	        ListWrapper.contains = function (list, el) { return list.indexOf(el) !== -1; };
-	        ListWrapper.reversed = function (array) {
-	            var a = ListWrapper.clone(array);
-	            return a.reverse();
-	        };
-	        ListWrapper.concat = function (a, b) { return a.concat(b); };
-	        ListWrapper.insert = function (list, index, value) { list.splice(index, 0, value); };
-	        ListWrapper.removeAt = function (list, index) {
-	            var res = list[index];
-	            list.splice(index, 1);
-	            return res;
-	        };
-	        ListWrapper.removeAll = function (list, items) {
-	            for (var i = 0; i < items.length; ++i) {
-	                var index = list.indexOf(items[i]);
-	                list.splice(index, 1);
-	            }
-	        };
-	        ListWrapper.remove = function (list, el) {
-	            var index = list.indexOf(el);
-	            if (index > -1) {
-	                list.splice(index, 1);
-	                return true;
-	            }
-	            return false;
-	        };
-	        ListWrapper.clear = function (list) { list.length = 0; };
-	        ListWrapper.isEmpty = function (list) { return list.length == 0; };
-	        ListWrapper.fill = function (list, value, start, end) {
-	            if (start === void 0) { start = 0; }
-	            if (end === void 0) { end = null; }
-	            list.fill(value, start, end === null ? list.length : end);
-	        };
-	        ListWrapper.equals = function (a, b) {
-	            if (a.length != b.length)
-	                return false;
-	            for (var i = 0; i < a.length; ++i) {
-	                if (a[i] !== b[i])
-	                    return false;
-	            }
-	            return true;
-	        };
-	        ListWrapper.slice = function (l, from, to) {
-	            if (from === void 0) { from = 0; }
-	            if (to === void 0) { to = null; }
-	            return l.slice(from, to === null ? undefined : to);
-	        };
-	        ListWrapper.splice = function (l, from, length) { return l.splice(from, length); };
-	        ListWrapper.sort = function (l, compareFn) {
-	            if (isPresent(compareFn)) {
-	                l.sort(compareFn);
-	            }
-	            else {
-	                l.sort();
-	            }
-	        };
-	        ListWrapper.toString = function (l) { return l.toString(); };
-	        ListWrapper.toJSON = function (l) { return JSON.stringify(l); };
-	        ListWrapper.maximum = function (list, predicate) {
-	            if (list.length == 0) {
-	                return null;
-	            }
-	            var solution = null;
-	            var maxValue = -Infinity;
-	            for (var index = 0; index < list.length; index++) {
-	                var candidate = list[index];
-	                if (isBlank(candidate)) {
-	                    continue;
-	                }
-	                var candidateValue = predicate(candidate);
-	                if (candidateValue > maxValue) {
-	                    solution = candidate;
-	                    maxValue = candidateValue;
-	                }
-	            }
-	            return solution;
-	        };
-	        ListWrapper.flatten = function (list) {
-	            var target = [];
-	            _flattenArray(list, target);
-	            return target;
-	        };
-	        ListWrapper.addAll = function (list, source) {
-	            for (var i = 0; i < source.length; i++) {
-	                list.push(source[i]);
-	            }
-	        };
-	        return ListWrapper;
-	    }());
-	    function _flattenArray(source, target) {
-	        if (isPresent(source)) {
-	            for (var i = 0; i < source.length; i++) {
-	                var item = source[i];
-	                if (isArray(item)) {
-	                    _flattenArray(item, target);
-	                }
-	                else {
-	                    target.push(item);
-	                }
-	            }
-	        }
-	        return target;
-	    }
-	    function isListLikeIterable(obj) {
-	        if (!isJsObject(obj))
-	            return false;
-	        return isArray(obj) ||
-	            (!(obj instanceof Map$1) &&
-	                getSymbolIterator() in obj); // JS Iterable have a Symbol.iterator prop
-	    }
-	    // Safari and Internet Explorer do not support the iterable parameter to the
-	    // Set constructor.  We work around that by manually adding the items.
-	    var createSetFromList = (function () {
-	        var test = new Set$1([1, 2, 3]);
-	        if (test.size === 3) {
-	            return function createSetFromList(lst) { return new Set$1(lst); };
-	        }
-	        else {
-	            return function createSetAndPopulateFromList(lst) {
-	                var res = new Set$1(lst);
-	                if (res.size !== lst.length) {
-	                    for (var i = 0; i < lst.length; i++) {
-	                        res.add(lst[i]);
-	                    }
-	                }
-	                return res;
-	            };
-	        }
-	    })();
+	        return HashLocationStrategy;
+	    }(LocationStrategy));
 
 	    /**
 	     * @license
@@ -19029,313 +16129,82 @@ webpackJsonp([1],{
 	     * Use of this source code is governed by an MIT-style license that can be
 	     * found in the LICENSE file at https://angular.io/license
 	     */
-	    var NumberFormatStyle;
-	    (function (NumberFormatStyle) {
-	        NumberFormatStyle[NumberFormatStyle["Decimal"] = 0] = "Decimal";
-	        NumberFormatStyle[NumberFormatStyle["Percent"] = 1] = "Percent";
-	        NumberFormatStyle[NumberFormatStyle["Currency"] = 2] = "Currency";
-	    })(NumberFormatStyle || (NumberFormatStyle = {}));
-	    var NumberFormatter = (function () {
-	        function NumberFormatter() {
-	        }
-	        NumberFormatter.format = function (num, locale, style, _a) {
-	            var _b = _a === void 0 ? {} : _a, minimumIntegerDigits = _b.minimumIntegerDigits, minimumFractionDigits = _b.minimumFractionDigits, maximumFractionDigits = _b.maximumFractionDigits, currency = _b.currency, _c = _b.currencyAsSymbol, currencyAsSymbol = _c === void 0 ? false : _c;
-	            var options = {
-	                minimumIntegerDigits: minimumIntegerDigits,
-	                minimumFractionDigits: minimumFractionDigits,
-	                maximumFractionDigits: maximumFractionDigits,
-	                style: NumberFormatStyle[style].toLowerCase()
-	            };
-	            if (style == NumberFormatStyle.Currency) {
-	                options.currency = currency;
-	                options.currencyDisplay = currencyAsSymbol ? 'symbol' : 'code';
-	            }
-	            return new Intl.NumberFormat(locale, options).format(num);
-	        };
-	        return NumberFormatter;
-	    }());
-	    var DATE_FORMATS_SPLIT = /((?:[^yMLdHhmsazZEwGjJ']+)|(?:'(?:[^']|'')*')|(?:E+|y+|M+|L+|d+|H+|h+|J+|j+|m+|s+|a|z|Z|G+|w+))(.*)/;
-	    var PATTERN_ALIASES = {
-	        yMMMdjms: datePartGetterFactory(combine([
-	            digitCondition('year', 1),
-	            nameCondition('month', 3),
-	            digitCondition('day', 1),
-	            digitCondition('hour', 1),
-	            digitCondition('minute', 1),
-	            digitCondition('second', 1),
-	        ])),
-	        yMdjm: datePartGetterFactory(combine([
-	            digitCondition('year', 1), digitCondition('month', 1), digitCondition('day', 1),
-	            digitCondition('hour', 1), digitCondition('minute', 1)
-	        ])),
-	        yMMMMEEEEd: datePartGetterFactory(combine([
-	            digitCondition('year', 1), nameCondition('month', 4), nameCondition('weekday', 4),
-	            digitCondition('day', 1)
-	        ])),
-	        yMMMMd: datePartGetterFactory(combine([digitCondition('year', 1), nameCondition('month', 4), digitCondition('day', 1)])),
-	        yMMMd: datePartGetterFactory(combine([digitCondition('year', 1), nameCondition('month', 3), digitCondition('day', 1)])),
-	        yMd: datePartGetterFactory(combine([digitCondition('year', 1), digitCondition('month', 1), digitCondition('day', 1)])),
-	        jms: datePartGetterFactory(combine([digitCondition('hour', 1), digitCondition('second', 1), digitCondition('minute', 1)])),
-	        jm: datePartGetterFactory(combine([digitCondition('hour', 1), digitCondition('minute', 1)]))
+	    var __extends$1 = (this && this.__extends) || function (d, b) {
+	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	    };
-	    var DATE_FORMATS = {
-	        yyyy: datePartGetterFactory(digitCondition('year', 4)),
-	        yy: datePartGetterFactory(digitCondition('year', 2)),
-	        y: datePartGetterFactory(digitCondition('year', 1)),
-	        MMMM: datePartGetterFactory(nameCondition('month', 4)),
-	        MMM: datePartGetterFactory(nameCondition('month', 3)),
-	        MM: datePartGetterFactory(digitCondition('month', 2)),
-	        M: datePartGetterFactory(digitCondition('month', 1)),
-	        LLLL: datePartGetterFactory(nameCondition('month', 4)),
-	        dd: datePartGetterFactory(digitCondition('day', 2)),
-	        d: datePartGetterFactory(digitCondition('day', 1)),
-	        HH: digitModifier(hourExtracter(datePartGetterFactory(hour12Modify(digitCondition('hour', 2), false)))),
-	        H: hourExtracter(datePartGetterFactory(hour12Modify(digitCondition('hour', 1), false))),
-	        hh: digitModifier(hourExtracter(datePartGetterFactory(hour12Modify(digitCondition('hour', 2), true)))),
-	        h: hourExtracter(datePartGetterFactory(hour12Modify(digitCondition('hour', 1), true))),
-	        jj: datePartGetterFactory(digitCondition('hour', 2)),
-	        j: datePartGetterFactory(digitCondition('hour', 1)),
-	        mm: digitModifier(datePartGetterFactory(digitCondition('minute', 2))),
-	        m: datePartGetterFactory(digitCondition('minute', 1)),
-	        ss: digitModifier(datePartGetterFactory(digitCondition('second', 2))),
-	        s: datePartGetterFactory(digitCondition('second', 1)),
-	        // while ISO 8601 requires fractions to be prefixed with `.` or `,`
-	        // we can be just safely rely on using `sss` since we currently don't support single or two digit
-	        // fractions
-	        sss: datePartGetterFactory(digitCondition('second', 3)),
-	        EEEE: datePartGetterFactory(nameCondition('weekday', 4)),
-	        EEE: datePartGetterFactory(nameCondition('weekday', 3)),
-	        EE: datePartGetterFactory(nameCondition('weekday', 2)),
-	        E: datePartGetterFactory(nameCondition('weekday', 1)),
-	        a: hourClockExtracter(datePartGetterFactory(hour12Modify(digitCondition('hour', 1), true))),
-	        Z: timeZoneGetter('short'),
-	        z: timeZoneGetter('long'),
-	        ww: datePartGetterFactory({}),
-	        // first Thursday of the year. not support ?
-	        w: datePartGetterFactory({}),
-	        // of the year not support ?
-	        G: datePartGetterFactory(nameCondition('era', 1)),
-	        GG: datePartGetterFactory(nameCondition('era', 2)),
-	        GGG: datePartGetterFactory(nameCondition('era', 3)),
-	        GGGG: datePartGetterFactory(nameCondition('era', 4))
-	    };
-	    function digitModifier(inner) {
-	        return function (date, locale) {
-	            var result = inner(date, locale);
-	            return result.length == 1 ? '0' + result : result;
-	        };
-	    }
-	    function hourClockExtracter(inner) {
-	        return function (date, locale) {
-	            var result = inner(date, locale);
-	            return result.split(' ')[1];
-	        };
-	    }
-	    function hourExtracter(inner) {
-	        return function (date, locale) {
-	            var result = inner(date, locale);
-	            return result.split(' ')[0];
-	        };
-	    }
-	    function intlDateFormat(date, locale, options) {
-	        return new Intl.DateTimeFormat(locale, options).format(date).replace(/[\u200e\u200f]/g, '');
-	    }
-	    function timeZoneGetter(timezone) {
-	        // To workaround `Intl` API restriction for single timezone let format with 24 hours
-	        var options = { hour: '2-digit', hour12: false, timeZoneName: timezone };
-	        return function (date, locale) {
-	            var result = intlDateFormat(date, locale, options);
-	            // Then extract first 3 letters that related to hours
-	            return result ? result.substring(3) : '';
-	        };
-	    }
-	    function hour12Modify(options, value) {
-	        options.hour12 = value;
-	        return options;
-	    }
-	    function digitCondition(prop, len) {
-	        var result = {};
-	        result[prop] = len == 2 ? '2-digit' : 'numeric';
-	        return result;
-	    }
-	    function nameCondition(prop, len) {
-	        var result = {};
-	        result[prop] = len < 4 ? 'short' : 'long';
-	        return result;
-	    }
-	    function combine(options) {
-	        var result = {};
-	        options.forEach(function (option) { Object.assign(result, option); });
-	        return result;
-	    }
-	    function datePartGetterFactory(ret) {
-	        return function (date, locale) { return intlDateFormat(date, locale, ret); };
-	    }
-	    var datePartsFormatterCache = new Map();
-	    function dateFormatter(format, date, locale) {
-	        var text = '';
-	        var match;
-	        var fn;
-	        var parts = [];
-	        if (PATTERN_ALIASES[format]) {
-	            return PATTERN_ALIASES[format](date, locale);
-	        }
-	        if (datePartsFormatterCache.has(format)) {
-	            parts = datePartsFormatterCache.get(format);
-	        }
-	        else {
-	            var matches = DATE_FORMATS_SPLIT.exec(format);
-	            while (format) {
-	                match = DATE_FORMATS_SPLIT.exec(format);
-	                if (match) {
-	                    parts = concat(parts, match, 1);
-	                    format = parts.pop();
-	                }
-	                else {
-	                    parts.push(format);
-	                    format = null;
-	                }
-	            }
-	            datePartsFormatterCache.set(format, parts);
-	        }
-	        parts.forEach(function (part) {
-	            fn = DATE_FORMATS[part];
-	            text += fn ? fn(date, locale) :
-	                part === '\'\'' ? '\'' : part.replace(/(^'|'$)/g, '').replace(/''/g, '\'');
-	        });
-	        return text;
-	    }
-	    var slice = [].slice;
-	    function concat(array1 /** TODO #9100 */, array2 /** TODO #9100 */, index /** TODO #9100 */) {
-	        return array1.concat(slice.call(array2, index));
-	    }
-	    var DateFormatter = (function () {
-	        function DateFormatter() {
-	        }
-	        DateFormatter.format = function (date, locale, pattern) {
-	            return dateFormatter(pattern, date, locale);
-	        };
-	        return DateFormatter;
-	    }());
-
 	    /**
-	     * Formats a date value to a string based on the requested format.
+	     * `PathLocationStrategy` is a {@link LocationStrategy} used to configure the
+	     * {@link Location} service to represent its state in the
+	     * [path](https://en.wikipedia.org/wiki/Uniform_Resource_Locator#Syntax) of the
+	     * browser's URL.
 	     *
-	     * WARNINGS:
-	     * - this pipe is marked as pure hence it will not be re-evaluated when the input is mutated.
-	     *   Instead users should treat the date as an immutable object and change the reference when the
-	     *   pipe needs to re-run (this is to avoid reformatting the date on every change detection run
-	     *   which would be an expensive operation).
-	     * - this pipe uses the Internationalization API. Therefore it is only reliable in Chrome and Opera
-	     *   browsers.
+	     * `PathLocationStrategy` is the default binding for {@link LocationStrategy}
+	     * provided in {@link ROUTER_PROVIDERS}.
 	     *
-	     * ## Usage
+	     * If you're using `PathLocationStrategy`, you must provide a {@link APP_BASE_HREF}
+	     * or add a base element to the document. This URL prefix that will be preserved
+	     * when generating and recognizing URLs.
 	     *
-	     *     expression | date[:format]
+	     * For instance, if you provide an `APP_BASE_HREF` of `'/my/app'` and call
+	     * `location.go('/foo')`, the browser's URL will become
+	     * `example.com/my/app/foo`.
 	     *
-	     * where `expression` is a date object or a number (milliseconds since UTC epoch) or an ISO string
-	     * (https://www.w3.org/TR/NOTE-datetime) and `format` indicates which date/time components to
-	     * include:
-	     *
-	     *  | Component | Symbol | Short Form   | Long Form         | Numeric   | 2-digit   |
-	     *  |-----------|:------:|--------------|-------------------|-----------|-----------|
-	     *  | era       |   G    | G (AD)       | GGGG (Anno Domini)| -         | -         |
-	     *  | year      |   y    | -            | -                 | y (2015)  | yy (15)   |
-	     *  | month     |   M    | MMM (Sep)    | MMMM (September)  | M (9)     | MM (09)   |
-	     *  | day       |   d    | -            | -                 | d (3)     | dd (03)   |
-	     *  | weekday   |   E    | EEE (Sun)    | EEEE (Sunday)     | -         | -         |
-	     *  | hour      |   j    | -            | -                 | j (13)    | jj (13)   |
-	     *  | hour12    |   h    | -            | -                 | h (1 PM)  | hh (01 PM)|
-	     *  | hour24    |   H    | -            | -                 | H (13)    | HH (13)   |
-	     *  | minute    |   m    | -            | -                 | m (5)     | mm (05)   |
-	     *  | second    |   s    | -            | -                 | s (9)     | ss (09)   |
-	     *  | timezone  |   z    | -            | z (Pacific Standard Time)| -  | -         |
-	     *  | timezone  |   Z    | Z (GMT-8:00) | -                 | -         | -         |
-	     *  | timezone  |   a    | a (PM)       | -                 | -         | -         |
-	     *
-	     * In javascript, only the components specified will be respected (not the ordering,
-	     * punctuations, ...) and details of the formatting will be dependent on the locale.
-	     *
-	     * `format` can also be one of the following predefined formats:
-	     *
-	     *  - `'medium'`: equivalent to `'yMMMdjms'` (e.g. Sep 3, 2010, 12:05:08 PM for en-US)
-	     *  - `'short'`: equivalent to `'yMdjm'` (e.g. 9/3/2010, 12:05 PM for en-US)
-	     *  - `'fullDate'`: equivalent to `'yMMMMEEEEd'` (e.g. Friday, September 3, 2010 for en-US)
-	     *  - `'longDate'`: equivalent to `'yMMMMd'` (e.g. September 3, 2010)
-	     *  - `'mediumDate'`: equivalent to `'yMMMd'` (e.g. Sep 3, 2010 for en-US)
-	     *  - `'shortDate'`: equivalent to `'yMd'` (e.g. 9/3/2010 for en-US)
-	     *  - `'mediumTime'`: equivalent to `'jms'` (e.g. 12:05:08 PM for en-US)
-	     *  - `'shortTime'`: equivalent to `'jm'` (e.g. 12:05 PM for en-US)
-	     *
-	     * Timezone of the formatted text will be the local system timezone of the end-users machine.
-	     *
-	     * ### Examples
-	     *
-	     * Assuming `dateObj` is (year: 2015, month: 6, day: 15, hour: 21, minute: 43, second: 11)
-	     * in the _local_ time and locale is 'en-US':
-	     *
-	     * ```
-	     *     {{ dateObj | date }}               // output is 'Jun 15, 2015'
-	     *     {{ dateObj | date:'medium' }}      // output is 'Jun 15, 2015, 9:43:11 PM'
-	     *     {{ dateObj | date:'shortTime' }}   // output is '9:43 PM'
-	     *     {{ dateObj | date:'mmss' }}        // output is '43:11'
-	     * ```
-	     *
-	     * {@example core/pipes/ts/date_pipe/date_pipe_example.ts region='DatePipe'}
+	     * Similarly, if you add `<base href='/my/app'/>` to the document and call
+	     * `location.go('/foo')`, the browser's URL will become
+	     * `example.com/my/app/foo`.
 	     *
 	     * @stable
 	     */
-	    var DatePipe = (function () {
-	        function DatePipe(_locale) {
-	            this._locale = _locale;
+	    var PathLocationStrategy = (function (_super) {
+	        __extends$1(PathLocationStrategy, _super);
+	        function PathLocationStrategy(_platformLocation, href) {
+	            _super.call(this);
+	            this._platformLocation = _platformLocation;
+	            if (isBlank(href)) {
+	                href = this._platformLocation.getBaseHrefFromDOM();
+	            }
+	            if (isBlank(href)) {
+	                throw new Error("No base href set. Please provide a value for the APP_BASE_HREF token or add a base element to the document.");
+	            }
+	            this._baseHref = href;
 	        }
-	        DatePipe.prototype.transform = function (value, pattern) {
-	            if (pattern === void 0) { pattern = 'mediumDate'; }
-	            if (isBlank(value))
-	                return null;
-	            if (!this.supports(value)) {
-	                throw new InvalidPipeArgumentError(DatePipe, value);
-	            }
-	            if (NumberWrapper.isNumeric(value)) {
-	                value = DateWrapper.fromMillis(parseFloat(value));
-	            }
-	            else if (isString(value)) {
-	                value = DateWrapper.fromISOString(value);
-	            }
-	            if (StringMapWrapper.contains(DatePipe._ALIASES, pattern)) {
-	                pattern = StringMapWrapper.get(DatePipe._ALIASES, pattern);
-	            }
-	            return DateFormatter.format(value, this._locale, pattern);
+	        PathLocationStrategy.prototype.onPopState = function (fn) {
+	            this._platformLocation.onPopState(fn);
+	            this._platformLocation.onHashChange(fn);
 	        };
-	        DatePipe.prototype.supports = function (obj) {
-	            if (isDate(obj) || NumberWrapper.isNumeric(obj)) {
-	                return true;
-	            }
-	            if (isString(obj) && isDate(DateWrapper.fromISOString(obj))) {
-	                return true;
-	            }
-	            return false;
+	        PathLocationStrategy.prototype.getBaseHref = function () { return this._baseHref; };
+	        PathLocationStrategy.prototype.prepareExternalUrl = function (internal) {
+	            return Location.joinWithSlash(this._baseHref, internal);
 	        };
-	        /** @internal */
-	        DatePipe._ALIASES = {
-	            'medium': 'yMMMdjms',
-	            'short': 'yMdjm',
-	            'fullDate': 'yMMMMEEEEd',
-	            'longDate': 'yMMMMd',
-	            'mediumDate': 'yMMMd',
-	            'shortDate': 'yMd',
-	            'mediumTime': 'jms',
-	            'shortTime': 'jm'
+	        PathLocationStrategy.prototype.path = function (includeHash) {
+	            if (includeHash === void 0) { includeHash = false; }
+	            var pathname = this._platformLocation.pathname +
+	                Location.normalizeQueryParams(this._platformLocation.search);
+	            var hash = this._platformLocation.hash;
+	            return hash && includeHash ? "" + pathname + hash : pathname;
 	        };
-	        DatePipe.decorators = [
-	            { type: _angular_core.Pipe, args: [{ name: 'date', pure: true },] },
+	        PathLocationStrategy.prototype.pushState = function (state, title, url, queryParams) {
+	            var externalUrl = this.prepareExternalUrl(url + Location.normalizeQueryParams(queryParams));
+	            this._platformLocation.pushState(state, title, externalUrl);
+	        };
+	        PathLocationStrategy.prototype.replaceState = function (state, title, url, queryParams) {
+	            var externalUrl = this.prepareExternalUrl(url + Location.normalizeQueryParams(queryParams));
+	            this._platformLocation.replaceState(state, title, externalUrl);
+	        };
+	        PathLocationStrategy.prototype.forward = function () { this._platformLocation.forward(); };
+	        PathLocationStrategy.prototype.back = function () { this._platformLocation.back(); };
+	        PathLocationStrategy.decorators = [
+	            { type: _angular_core.Injectable },
 	        ];
 	        /** @nocollapse */
-	        DatePipe.ctorParameters = [
-	            { type: undefined, decorators: [{ type: _angular_core.Inject, args: [_angular_core.LOCALE_ID,] },] },
+	        PathLocationStrategy.ctorParameters = [
+	            { type: PlatformLocation, },
+	            { type: undefined, decorators: [{ type: _angular_core.Optional }, { type: _angular_core.Inject, args: [APP_BASE_HREF,] },] },
 	        ];
-	        return DatePipe;
-	    }());
+	        return PathLocationStrategy;
+	    }(LocationStrategy));
 
 	    /**
 	     * @license
@@ -19433,7 +16302,7 @@ webpackJsonp([1],{
 	        var v = nDecimal.length;
 	        var f = parseInt(nDecimal, 10);
 	        var t = parseInt(n.toString().replace(/^[^.]*\.?|0+$/g, ''), 10) || 0;
-	        var lang = locale.split('_')[0].toLowerCase();
+	        var lang = locale.split('-')[0].toLowerCase();
 	        switch (lang) {
 	            case 'af':
 	            case 'asa':
@@ -19823,499 +16692,204 @@ webpackJsonp([1],{
 	        }
 	    }
 
-	    var _INTERPOLATION_REGEXP = /#/g;
-	    /**
-	     *  Maps a value to a string that pluralizes the value properly.
-	     *
-	     *  ## Usage
-	     *
-	     *  expression | i18nPlural:mapping
-	     *
-	     *  where `expression` is a number and `mapping` is an object that mimics the ICU format,
-	     *  see http://userguide.icu-project.org/formatparse/messages
-	     *
-	     *  ## Example
-	     *
-	     *  ```
-	     *  @Component({
-	     *    selector: 'app',
-	     *    template: `
-	     *      <div>
-	     *        {{ messages.length | i18nPlural: messageMapping }}
-	     *      </div>
-	     *    `,
-	     *    // best practice is to define the locale at the application level
-	     *    providers: [{provide: LOCALE_ID, useValue: 'en_US'}]
-	     *  })
-	     *
-	     *  class MyApp {
-	     *    messages: any[];
-	     *    messageMapping: {[k:string]: string} = {
-	     *      '=0': 'No messages.',
-	     *      '=1': 'One message.',
-	     *      'other': '# messages.'
-	     *    }
-	     *    ...
-	     *  }
-	     *  ```
-	     *
-	     * @experimental
-	     */
-	    var I18nPluralPipe = (function () {
-	        function I18nPluralPipe(_localization) {
-	            this._localization = _localization;
+	    var _clearValues = (function () {
+	        if ((new Map()).keys().next) {
+	            return function _clearValues(m) {
+	                var keyIterator = m.keys();
+	                var k;
+	                while (!((k = keyIterator.next()).done)) {
+	                    m.set(k.value, null);
+	                }
+	            };
 	        }
-	        I18nPluralPipe.prototype.transform = function (value, pluralMap) {
-	            if (isBlank(value))
-	                return '';
-	            if (!isStringMap(pluralMap)) {
-	                throw new InvalidPipeArgumentError(I18nPluralPipe, pluralMap);
+	        else {
+	            return function _clearValuesWithForeEach(m) {
+	                m.forEach(function (v, k) { m.set(k, null); });
+	            };
+	        }
+	    })();
+	    // Safari doesn't implement MapIterator.next(), which is used is Traceur's polyfill of Array.from
+	    // TODO(mlaval): remove the work around once we have a working polyfill of Array.from
+	    var _arrayFromMap = (function () {
+	        try {
+	            if ((new Map()).values().next) {
+	                return function createArrayFromMap(m, getValues) {
+	                    return getValues ? Array.from(m.values()) : Array.from(m.keys());
+	                };
 	            }
-	            var key = getPluralCategory(value, Object.keys(pluralMap), this._localization);
-	            return StringWrapper.replaceAll(pluralMap[key], _INTERPOLATION_REGEXP, value.toString());
+	        }
+	        catch (e) {
+	        }
+	        return function createArrayFromMapWithForeach(m, getValues) {
+	            var res = new Array(m.size), i = 0;
+	            m.forEach(function (v, k) {
+	                res[i] = getValues ? v : k;
+	                i++;
+	            });
+	            return res;
 	        };
-	        I18nPluralPipe.decorators = [
-	            { type: _angular_core.Pipe, args: [{ name: 'i18nPlural', pure: true },] },
-	        ];
-	        /** @nocollapse */
-	        I18nPluralPipe.ctorParameters = [
-	            { type: NgLocalization, },
-	        ];
-	        return I18nPluralPipe;
-	    }());
-
-	    /**
-	     *
-	     *  Generic selector that displays the string that matches the current value.
-	     *
-	     *  ## Usage
-	     *
-	     *  expression | i18nSelect:mapping
-	     *
-	     *  where `mapping` is an object that indicates the text that should be displayed
-	     *  for different values of the provided `expression`.
-	     *
-	     *  ## Example
-	     *
-	     *  ```
-	     *  <div>
-	     *    {{ gender | i18nSelect: inviteMap }}
-	     *  </div>
-	     *
-	     *  class MyApp {
-	     *    gender: string = 'male';
-	     *    inviteMap: any = {
-	     *      'male': 'Invite him.',
-	     *      'female': 'Invite her.',
-	     *      'other': 'Invite them.'
-	     *    }
-	     *    ...
-	     *  }
-	     *  ```
-	     *
-	     *  @experimental
-	     */
-	    var I18nSelectPipe = (function () {
-	        function I18nSelectPipe() {
+	    })();
+	    var ListWrapper = (function () {
+	        function ListWrapper() {
 	        }
-	        I18nSelectPipe.prototype.transform = function (value, mapping) {
-	            if (isBlank(value))
-	                return '';
-	            if (!isStringMap(mapping)) {
-	                throw new InvalidPipeArgumentError(I18nSelectPipe, mapping);
+	        // JS has no way to express a statically fixed size list, but dart does so we
+	        // keep both methods.
+	        ListWrapper.createFixedSize = function (size) { return new Array(size); };
+	        ListWrapper.createGrowableSize = function (size) { return new Array(size); };
+	        ListWrapper.clone = function (array) { return array.slice(0); };
+	        ListWrapper.forEachWithIndex = function (array, fn) {
+	            for (var i = 0; i < array.length; i++) {
+	                fn(array[i], i);
 	            }
-	            return mapping.hasOwnProperty(value) ? mapping[value] : '';
 	        };
-	        I18nSelectPipe.decorators = [
-	            { type: _angular_core.Pipe, args: [{ name: 'i18nSelect', pure: true },] },
-	        ];
-	        /** @nocollapse */
-	        I18nSelectPipe.ctorParameters = [];
-	        return I18nSelectPipe;
-	    }());
-
-	    /**
-	     * Transforms any input value using `JSON.stringify`. Useful for debugging.
-	     *
-	     * ### Example
-	     * {@example core/pipes/ts/json_pipe/json_pipe_example.ts region='JsonPipe'}
-	     *
-	     * @stable
-	     */
-	    var JsonPipe = (function () {
-	        function JsonPipe() {
-	        }
-	        JsonPipe.prototype.transform = function (value) { return Json.stringify(value); };
-	        JsonPipe.decorators = [
-	            { type: _angular_core.Pipe, args: [{ name: 'json', pure: false },] },
-	        ];
-	        /** @nocollapse */
-	        JsonPipe.ctorParameters = [];
-	        return JsonPipe;
-	    }());
-
-	    /**
-	     * Transforms text to lowercase.
-	     *
-	     * ### Example
-	     *
-	     * {@example core/pipes/ts/lowerupper_pipe/lowerupper_pipe_example.ts region='LowerUpperPipe'}
-	     *
-	     * @stable
-	     */
-	    var LowerCasePipe = (function () {
-	        function LowerCasePipe() {
-	        }
-	        LowerCasePipe.prototype.transform = function (value) {
-	            if (isBlank(value))
-	                return value;
-	            if (!isString(value)) {
-	                throw new InvalidPipeArgumentError(LowerCasePipe, value);
-	            }
-	            return value.toLowerCase();
+	        ListWrapper.first = function (array) {
+	            if (!array)
+	                return null;
+	            return array[0];
 	        };
-	        LowerCasePipe.decorators = [
-	            { type: _angular_core.Pipe, args: [{ name: 'lowercase' },] },
-	        ];
-	        /** @nocollapse */
-	        LowerCasePipe.ctorParameters = [];
-	        return LowerCasePipe;
-	    }());
-
-	    var _NUMBER_FORMAT_REGEXP = /^(\d+)?\.((\d+)(\-(\d+))?)?$/;
-	    function formatNumber(pipe, locale, value, style, digits, currency, currencyAsSymbol) {
-	        if (currency === void 0) { currency = null; }
-	        if (currencyAsSymbol === void 0) { currencyAsSymbol = false; }
-	        if (isBlank(value))
-	            return null;
-	        // Convert strings to numbers
-	        value = isString(value) && NumberWrapper.isNumeric(value) ? +value : value;
-	        if (!isNumber(value)) {
-	            throw new InvalidPipeArgumentError(pipe, value);
-	        }
-	        var minInt;
-	        var minFraction;
-	        var maxFraction;
-	        if (style !== NumberFormatStyle.Currency) {
-	            // rely on Intl default for currency
-	            minInt = 1;
-	            minFraction = 0;
-	            maxFraction = 3;
-	        }
-	        if (isPresent(digits)) {
-	            var parts = digits.match(_NUMBER_FORMAT_REGEXP);
-	            if (parts === null) {
-	                throw new Error(digits + " is not a valid digit info for number pipes");
-	            }
-	            if (isPresent(parts[1])) {
-	                minInt = NumberWrapper.parseIntAutoRadix(parts[1]);
-	            }
-	            if (isPresent(parts[3])) {
-	                minFraction = NumberWrapper.parseIntAutoRadix(parts[3]);
-	            }
-	            if (isPresent(parts[5])) {
-	                maxFraction = NumberWrapper.parseIntAutoRadix(parts[5]);
-	            }
-	        }
-	        return NumberFormatter.format(value, locale, style, {
-	            minimumIntegerDigits: minInt,
-	            minimumFractionDigits: minFraction,
-	            maximumFractionDigits: maxFraction,
-	            currency: currency,
-	            currencyAsSymbol: currencyAsSymbol
-	        });
-	    }
-	    /**
-	     * WARNING: this pipe uses the Internationalization API.
-	     * Therefore it is only reliable in Chrome and Opera browsers. For other browsers please use an
-	     * polyfill, for example: [https://github.com/andyearnshaw/Intl.js/].
-	     *
-	     * Formats a number as local text. i.e. group sizing and separator and other locale-specific
-	     * configurations are based on the active locale.
-	     *
-	     * ### Usage
-	     *
-	     *     expression | number[:digitInfo]
-	     *
-	     * where `expression` is a number and `digitInfo` has the following format:
-	     *
-	     *     {minIntegerDigits}.{minFractionDigits}-{maxFractionDigits}
-	     *
-	     * - minIntegerDigits is the minimum number of integer digits to use. Defaults to 1.
-	     * - minFractionDigits is the minimum number of digits after fraction. Defaults to 0.
-	     * - maxFractionDigits is the maximum number of digits after fraction. Defaults to 3.
-	     *
-	     * For more information on the acceptable range for each of these numbers and other
-	     * details see your native internationalization library.
-	     *
-	     * ### Example
-	     *
-	     * {@example core/pipes/ts/number_pipe/number_pipe_example.ts region='NumberPipe'}
-	     *
-	     * @stable
-	     */
-	    var DecimalPipe = (function () {
-	        function DecimalPipe(_locale) {
-	            this._locale = _locale;
-	        }
-	        DecimalPipe.prototype.transform = function (value, digits) {
-	            if (digits === void 0) { digits = null; }
-	            return formatNumber(DecimalPipe, this._locale, value, NumberFormatStyle.Decimal, digits);
+	        ListWrapper.last = function (array) {
+	            if (!array || array.length == 0)
+	                return null;
+	            return array[array.length - 1];
 	        };
-	        DecimalPipe.decorators = [
-	            { type: _angular_core.Pipe, args: [{ name: 'number' },] },
-	        ];
-	        /** @nocollapse */
-	        DecimalPipe.ctorParameters = [
-	            { type: undefined, decorators: [{ type: _angular_core.Inject, args: [_angular_core.LOCALE_ID,] },] },
-	        ];
-	        return DecimalPipe;
-	    }());
-	    /**
-	     * WARNING: this pipe uses the Internationalization API.
-	     * Therefore it is only reliable in Chrome and Opera browsers. For other browsers please use an
-	     * polyfill, for example: [https://github.com/andyearnshaw/Intl.js/].
-	     *
-	     * Formats a number as local percent.
-	     *
-	     * ### Usage
-	     *
-	     *     expression | percent[:digitInfo]
-	     *
-	     * For more information about `digitInfo` see {@link DecimalPipe}
-	     *
-	     * ### Example
-	     *
-	     * {@example core/pipes/ts/number_pipe/number_pipe_example.ts region='PercentPipe'}
-	     *
-	     * @stable
-	     */
-	    var PercentPipe = (function () {
-	        function PercentPipe(_locale) {
-	            this._locale = _locale;
-	        }
-	        PercentPipe.prototype.transform = function (value, digits) {
-	            if (digits === void 0) { digits = null; }
-	            return formatNumber(PercentPipe, this._locale, value, NumberFormatStyle.Percent, digits);
+	        ListWrapper.indexOf = function (array, value, startIndex) {
+	            if (startIndex === void 0) { startIndex = 0; }
+	            return array.indexOf(value, startIndex);
 	        };
-	        PercentPipe.decorators = [
-	            { type: _angular_core.Pipe, args: [{ name: 'percent' },] },
-	        ];
-	        /** @nocollapse */
-	        PercentPipe.ctorParameters = [
-	            { type: undefined, decorators: [{ type: _angular_core.Inject, args: [_angular_core.LOCALE_ID,] },] },
-	        ];
-	        return PercentPipe;
-	    }());
-	    /**
-	     * WARNING: this pipe uses the Internationalization API.
-	     * Therefore it is only reliable in Chrome and Opera browsers. For other browsers please use an
-	     * polyfill, for example: [https://github.com/andyearnshaw/Intl.js/].
-	     *
-	     *
-	     * Formats a number as local currency.
-	     *
-	     * ### Usage
-	     *
-	     *     expression | currency[:currencyCode[:symbolDisplay[:digitInfo]]]
-	     *
-	     * where `currencyCode` is the ISO 4217 currency code, such as "USD" for the US dollar and
-	     * "EUR" for the euro. `symbolDisplay` is a boolean indicating whether to use the currency
-	     * symbol (e.g. $) or the currency code (e.g. USD) in the output. The default for this value
-	     * is `false`.
-	     * For more information about `digitInfo` see {@link DecimalPipe}
-	     *
-	     * ### Example
-	     *
-	     * {@example core/pipes/ts/number_pipe/number_pipe_example.ts region='CurrencyPipe'}
-	     *
-	     * @stable
-	     */
-	    var CurrencyPipe = (function () {
-	        function CurrencyPipe(_locale) {
-	            this._locale = _locale;
-	        }
-	        CurrencyPipe.prototype.transform = function (value, currencyCode, symbolDisplay, digits) {
-	            if (currencyCode === void 0) { currencyCode = 'USD'; }
-	            if (symbolDisplay === void 0) { symbolDisplay = false; }
-	            if (digits === void 0) { digits = null; }
-	            return formatNumber(CurrencyPipe, this._locale, value, NumberFormatStyle.Currency, digits, currencyCode, symbolDisplay);
+	        ListWrapper.contains = function (list, el) { return list.indexOf(el) !== -1; };
+	        ListWrapper.reversed = function (array) {
+	            var a = ListWrapper.clone(array);
+	            return a.reverse();
 	        };
-	        CurrencyPipe.decorators = [
-	            { type: _angular_core.Pipe, args: [{ name: 'currency' },] },
-	        ];
-	        /** @nocollapse */
-	        CurrencyPipe.ctorParameters = [
-	            { type: undefined, decorators: [{ type: _angular_core.Inject, args: [_angular_core.LOCALE_ID,] },] },
-	        ];
-	        return CurrencyPipe;
-	    }());
-
-	    /**
-	     * Creates a new List or String containing only a subset (slice) of the
-	     * elements.
-	     *
-	     * The starting index of the subset to return is specified by the `start` parameter.
-	     *
-	     * The ending index of the subset to return is specified by the optional `end` parameter.
-	     *
-	     * ### Usage
-	     *
-	     *     expression | slice:start[:end]
-	     *
-	     * All behavior is based on the expected behavior of the JavaScript API
-	     * Array.prototype.slice() and String.prototype.slice()
-	     *
-	     * Where the input expression is a [List] or [String], and `start` is:
-	     *
-	     * - **a positive integer**: return the item at _start_ index and all items after
-	     * in the list or string expression.
-	     * - **a negative integer**: return the item at _start_ index from the end and all items after
-	     * in the list or string expression.
-	     * - **`|start|` greater than the size of the expression**: return an empty list or string.
-	     * - **`|start|` negative greater than the size of the expression**: return entire list or
-	     * string expression.
-	     *
-	     * and where `end` is:
-	     *
-	     * - **omitted**: return all items until the end of the input
-	     * - **a positive integer**: return all items before _end_ index of the list or string
-	     * expression.
-	     * - **a negative integer**: return all items before _end_ index from the end of the list
-	     * or string expression.
-	     *
-	     * When operating on a [List], the returned list is always a copy even when all
-	     * the elements are being returned.
-	     *
-	     * When operating on a blank value, returns it.
-	     *
-	     * ## List Example
-	     *
-	     * This `ngFor` example:
-	     *
-	     * {@example core/pipes/ts/slice_pipe/slice_pipe_example.ts region='SlicePipe_list'}
-	     *
-	     * produces the following:
-	     *
-	     *     <li>b</li>
-	     *     <li>c</li>
-	     *
-	     * ## String Examples
-	     *
-	     * {@example core/pipes/ts/slice_pipe/slice_pipe_example.ts region='SlicePipe_string'}
-	     *
-	     * @stable
-	     */
-	    var SlicePipe = (function () {
-	        function SlicePipe() {
-	        }
-	        SlicePipe.prototype.transform = function (value, start, end) {
+	        ListWrapper.concat = function (a, b) { return a.concat(b); };
+	        ListWrapper.insert = function (list, index, value) { list.splice(index, 0, value); };
+	        ListWrapper.removeAt = function (list, index) {
+	            var res = list[index];
+	            list.splice(index, 1);
+	            return res;
+	        };
+	        ListWrapper.removeAll = function (list, items) {
+	            for (var i = 0; i < items.length; ++i) {
+	                var index = list.indexOf(items[i]);
+	                list.splice(index, 1);
+	            }
+	        };
+	        ListWrapper.remove = function (list, el) {
+	            var index = list.indexOf(el);
+	            if (index > -1) {
+	                list.splice(index, 1);
+	                return true;
+	            }
+	            return false;
+	        };
+	        ListWrapper.clear = function (list) { list.length = 0; };
+	        ListWrapper.isEmpty = function (list) { return list.length == 0; };
+	        ListWrapper.fill = function (list, value, start, end) {
+	            if (start === void 0) { start = 0; }
 	            if (end === void 0) { end = null; }
-	            if (isBlank(value))
-	                return value;
-	            if (!this.supports(value)) {
-	                throw new InvalidPipeArgumentError(SlicePipe, value);
-	            }
-	            if (isString(value)) {
-	                return StringWrapper.slice(value, start, end);
-	            }
-	            return ListWrapper.slice(value, start, end);
+	            list.fill(value, start, end === null ? list.length : end);
 	        };
-	        SlicePipe.prototype.supports = function (obj) { return isString(obj) || isArray(obj); };
-	        SlicePipe.decorators = [
-	            { type: _angular_core.Pipe, args: [{ name: 'slice', pure: false },] },
-	        ];
-	        /** @nocollapse */
-	        SlicePipe.ctorParameters = [];
-	        return SlicePipe;
+	        ListWrapper.equals = function (a, b) {
+	            if (a.length != b.length)
+	                return false;
+	            for (var i = 0; i < a.length; ++i) {
+	                if (a[i] !== b[i])
+	                    return false;
+	            }
+	            return true;
+	        };
+	        ListWrapper.slice = function (l, from, to) {
+	            if (from === void 0) { from = 0; }
+	            if (to === void 0) { to = null; }
+	            return l.slice(from, to === null ? undefined : to);
+	        };
+	        ListWrapper.splice = function (l, from, length) { return l.splice(from, length); };
+	        ListWrapper.sort = function (l, compareFn) {
+	            if (isPresent(compareFn)) {
+	                l.sort(compareFn);
+	            }
+	            else {
+	                l.sort();
+	            }
+	        };
+	        ListWrapper.toString = function (l) { return l.toString(); };
+	        ListWrapper.toJSON = function (l) { return JSON.stringify(l); };
+	        ListWrapper.maximum = function (list, predicate) {
+	            if (list.length == 0) {
+	                return null;
+	            }
+	            var solution = null;
+	            var maxValue = -Infinity;
+	            for (var index = 0; index < list.length; index++) {
+	                var candidate = list[index];
+	                if (isBlank(candidate)) {
+	                    continue;
+	                }
+	                var candidateValue = predicate(candidate);
+	                if (candidateValue > maxValue) {
+	                    solution = candidate;
+	                    maxValue = candidateValue;
+	                }
+	            }
+	            return solution;
+	        };
+	        ListWrapper.flatten = function (list) {
+	            var target = [];
+	            _flattenArray(list, target);
+	            return target;
+	        };
+	        ListWrapper.addAll = function (list, source) {
+	            for (var i = 0; i < source.length; i++) {
+	                list.push(source[i]);
+	            }
+	        };
+	        return ListWrapper;
 	    }());
-
-	    /**
-	     * Implements uppercase transforms to text.
-	     *
-	     * ### Example
-	     *
-	     * {@example core/pipes/ts/lowerupper_pipe/lowerupper_pipe_example.ts region='LowerUpperPipe'}
-	     *
-	     * @stable
-	     */
-	    var UpperCasePipe = (function () {
-	        function UpperCasePipe() {
+	    function _flattenArray(source, target) {
+	        if (isPresent(source)) {
+	            for (var i = 0; i < source.length; i++) {
+	                var item = source[i];
+	                if (isArray(item)) {
+	                    _flattenArray(item, target);
+	                }
+	                else {
+	                    target.push(item);
+	                }
+	            }
 	        }
-	        UpperCasePipe.prototype.transform = function (value) {
-	            if (isBlank(value))
-	                return value;
-	            if (!isString(value)) {
-	                throw new InvalidPipeArgumentError(UpperCasePipe, value);
-	            }
-	            return value.toUpperCase();
-	        };
-	        UpperCasePipe.decorators = [
-	            { type: _angular_core.Pipe, args: [{ name: 'uppercase' },] },
-	        ];
-	        /** @nocollapse */
-	        UpperCasePipe.ctorParameters = [];
-	        return UpperCasePipe;
-	    }());
+	        return target;
+	    }
+	    function isListLikeIterable(obj) {
+	        if (!isJsObject(obj))
+	            return false;
+	        return isArray(obj) ||
+	            (!(obj instanceof Map) &&
+	                getSymbolIterator() in obj); // JS Iterable have a Symbol.iterator prop
+	    }
 
 	    /**
-	     * The `NgClass` directive conditionally adds and removes CSS classes on an HTML element based on
-	     * an expression's evaluation result.
+	     * @ngModule CommonModule
 	     *
-	     * The result of an expression evaluation is interpreted differently depending on type of
-	     * the expression evaluation result:
-	     * - `string` - all the CSS classes listed in a string (space delimited) are added
-	     * - `Array` - all the CSS classes (Array elements) are added
-	     * - `Object` - each key corresponds to a CSS class name while values are interpreted as expressions
-	     * evaluating to `Boolean`. If a given expression evaluates to `true` a corresponding CSS class
-	     * is added - otherwise it is removed.
+	     * @whatItDoes Adds and removes CSS classes on an HTML element.
 	     *
-	     * While the `NgClass` directive can interpret expressions evaluating to `string`, `Array`
-	     * or `Object`, the `Object`-based version is the most often used and has an advantage of keeping
-	     * all the CSS class names in a template.
-	     *
-	     * ### Example ([live demo](http://plnkr.co/edit/a4YdtmWywhJ33uqfpPPn?p=preview)):
-	     *
+	     * @howToUse
 	     * ```
-	     * import {Component} from '@angular/core';
-	     * import {NgClass} from '@angular/common';
+	     *     <some-element [ngClass]="'first second'">...</some-element>
 	     *
-	     * @Component({
-	     *   selector: 'toggle-button',
-	     *   inputs: ['isDisabled'],
-	     *   template: `
-	     *      <div class="button" [ngClass]="{active: isOn, disabled: isDisabled}"
-	     *          (click)="toggle(!isOn)">
-	     *          Click me!
-	     *      </div>`,
-	     *   styles: [`
-	     *     .button {
-	     *       width: 120px;
-	     *       border: medium solid black;
-	     *     }
+	     *     <some-element [ngClass]="['first', 'second']">...</some-element>
 	     *
-	     *     .active {
-	     *       background-color: red;
-	     *    }
+	     *     <some-element [ngClass]="{'first': true, 'second': true, 'third': false}">...</some-element>
 	     *
-	     *     .disabled {
-	     *       color: gray;
-	     *       border: medium solid gray;
-	     *     }
-	     *   `],
-	     *   directives: [NgClass]
-	     * })
-	     * class ToggleButton {
-	     *   isOn = false;
-	     *   isDisabled = false;
-	     *
-	     *   toggle(newState) {
-	     *     if (!this.isDisabled) {
-	     *       this.isOn = newState;
-	     *     }
-	     *   }
-	     * }
+	     *     <some-element [ngClass]="stringExp|arrayExp|objExp">...</some-element>
 	     * ```
+	     *
+	     * @description
+	     *
+	     * The CSS classes are updated as follow depending on the type of the expression evaluation:
+	     * - `string` - the CSS classes listed in a string (space delimited) are added,
+	     * - `Array` - the CSS classes (Array elements) are added,
+	     * - `Object` - keys are CSS class names that get added when the expression given in the value
+	     *              evaluates to a truthy value, otherwise class are removed.
 	     *
 	     * @stable
 	     */
@@ -20327,10 +16901,10 @@ webpackJsonp([1],{
 	            this._renderer = _renderer;
 	            this._initialClasses = [];
 	        }
-	        Object.defineProperty(NgClass.prototype, "initialClasses", {
+	        Object.defineProperty(NgClass.prototype, "klass", {
 	            set: function (v) {
 	                this._applyInitialClasses(true);
-	                this._initialClasses = isPresent(v) && isString(v) ? v.split(' ') : [];
+	                this._initialClasses = typeof v === 'string' ? v.split(/\s+/) : [];
 	                this._applyInitialClasses(false);
 	                this._applyClasses(this._rawClass, false);
 	            },
@@ -20340,18 +16914,15 @@ webpackJsonp([1],{
 	        Object.defineProperty(NgClass.prototype, "ngClass", {
 	            set: function (v) {
 	                this._cleanupClasses(this._rawClass);
-	                if (isString(v)) {
-	                    v = v.split(' ');
-	                }
-	                this._rawClass = v;
 	                this._iterableDiffer = null;
 	                this._keyValueDiffer = null;
-	                if (isPresent(v)) {
-	                    if (isListLikeIterable(v)) {
-	                        this._iterableDiffer = this._iterableDiffers.find(v).create(null);
+	                this._rawClass = typeof v === 'string' ? v.split(/\s+/) : v;
+	                if (this._rawClass) {
+	                    if (isListLikeIterable(this._rawClass)) {
+	                        this._iterableDiffer = this._iterableDiffers.find(this._rawClass).create(null);
 	                    }
 	                    else {
-	                        this._keyValueDiffer = this._keyValueDiffers.find(v).create(null);
+	                        this._keyValueDiffer = this._keyValueDiffers.find(this._rawClass).create(null);
 	                    }
 	                }
 	            },
@@ -20359,15 +16930,15 @@ webpackJsonp([1],{
 	            configurable: true
 	        });
 	        NgClass.prototype.ngDoCheck = function () {
-	            if (isPresent(this._iterableDiffer)) {
+	            if (this._iterableDiffer) {
 	                var changes = this._iterableDiffer.diff(this._rawClass);
-	                if (isPresent(changes)) {
+	                if (changes) {
 	                    this._applyIterableChanges(changes);
 	                }
 	            }
-	            if (isPresent(this._keyValueDiffer)) {
+	            else if (this._keyValueDiffer) {
 	                var changes = this._keyValueDiffer.diff(this._rawClass);
-	                if (isPresent(changes)) {
+	                if (changes) {
 	                    this._applyKeyValueChanges(changes);
 	                }
 	            }
@@ -20378,8 +16949,8 @@ webpackJsonp([1],{
 	        };
 	        NgClass.prototype._applyKeyValueChanges = function (changes) {
 	            var _this = this;
-	            changes.forEachAddedItem(function (record) { _this._toggleClass(record.key, record.currentValue); });
-	            changes.forEachChangedItem(function (record) { _this._toggleClass(record.key, record.currentValue); });
+	            changes.forEachAddedItem(function (record) { return _this._toggleClass(record.key, record.currentValue); });
+	            changes.forEachChangedItem(function (record) { return _this._toggleClass(record.key, record.currentValue); });
 	            changes.forEachRemovedItem(function (record) {
 	                if (record.previousValue) {
 	                    _this._toggleClass(record.key, false);
@@ -20388,42 +16959,32 @@ webpackJsonp([1],{
 	        };
 	        NgClass.prototype._applyIterableChanges = function (changes) {
 	            var _this = this;
-	            changes.forEachAddedItem(function (record) { _this._toggleClass(record.item, true); });
-	            changes.forEachRemovedItem(function (record) { _this._toggleClass(record.item, false); });
+	            changes.forEachAddedItem(function (record) { return _this._toggleClass(record.item, true); });
+	            changes.forEachRemovedItem(function (record) { return _this._toggleClass(record.item, false); });
 	        };
 	        NgClass.prototype._applyInitialClasses = function (isCleanup) {
 	            var _this = this;
-	            this._initialClasses.forEach(function (className) { return _this._toggleClass(className, !isCleanup); });
+	            this._initialClasses.forEach(function (klass) { return _this._toggleClass(klass, !isCleanup); });
 	        };
 	        NgClass.prototype._applyClasses = function (rawClassVal, isCleanup) {
 	            var _this = this;
-	            if (isPresent(rawClassVal)) {
-	                if (isArray(rawClassVal)) {
-	                    rawClassVal.forEach(function (className) { return _this._toggleClass(className, !isCleanup); });
-	                }
-	                else if (rawClassVal instanceof Set) {
-	                    rawClassVal.forEach(function (className) { return _this._toggleClass(className, !isCleanup); });
+	            if (rawClassVal) {
+	                if (Array.isArray(rawClassVal) || rawClassVal instanceof Set) {
+	                    rawClassVal.forEach(function (klass) { return _this._toggleClass(klass, !isCleanup); });
 	                }
 	                else {
-	                    StringMapWrapper.forEach(rawClassVal, function (expVal, className) {
-	                        if (isPresent(expVal))
-	                            _this._toggleClass(className, !isCleanup);
+	                    Object.keys(rawClassVal).forEach(function (klass) {
+	                        if (isPresent(rawClassVal[klass]))
+	                            _this._toggleClass(klass, !isCleanup);
 	                    });
 	                }
 	            }
 	        };
-	        NgClass.prototype._toggleClass = function (className, enabled) {
-	            className = className.trim();
-	            if (className.length > 0) {
-	                if (className.indexOf(' ') > -1) {
-	                    var classes = className.split(/\s+/g);
-	                    for (var i = 0, len = classes.length; i < len; i++) {
-	                        this._renderer.setElementClass(this._ngEl.nativeElement, classes[i], enabled);
-	                    }
-	                }
-	                else {
-	                    this._renderer.setElementClass(this._ngEl.nativeElement, className, enabled);
-	                }
+	        NgClass.prototype._toggleClass = function (klass, enabled) {
+	            var _this = this;
+	            klass = klass.trim();
+	            if (klass) {
+	                klass.split(/\s+/g).forEach(function (klass) { _this._renderer.setElementClass(_this._ngEl.nativeElement, klass, enabled); });
 	            }
 	        };
 	        NgClass.decorators = [
@@ -20437,7 +16998,7 @@ webpackJsonp([1],{
 	            { type: _angular_core.Renderer, },
 	        ];
 	        NgClass.propDecorators = {
-	            'initialClasses': [{ type: _angular_core.Input, args: ['class',] },],
+	            'klass': [{ type: _angular_core.Input, args: ['class',] },],
 	            'ngClass': [{ type: _angular_core.Input },],
 	        };
 	        return NgClass;
@@ -20536,16 +17097,17 @@ webpackJsonp([1],{
 	     * @stable
 	     */
 	    var NgFor = (function () {
-	        function NgFor(_viewContainer, _templateRef, _iterableDiffers, _cdr) {
+	        function NgFor(_viewContainer, _template, _differs, _cdr) {
 	            this._viewContainer = _viewContainer;
-	            this._templateRef = _templateRef;
-	            this._iterableDiffers = _iterableDiffers;
+	            this._template = _template;
+	            this._differs = _differs;
 	            this._cdr = _cdr;
+	            this._differ = null;
 	        }
 	        Object.defineProperty(NgFor.prototype, "ngForTemplate", {
 	            set: function (value) {
-	                if (isPresent(value)) {
-	                    this._templateRef = value;
+	                if (value) {
+	                    this._template = value;
 	                }
 	            },
 	            enumerable: true,
@@ -20555,9 +17117,9 @@ webpackJsonp([1],{
 	            if ('ngForOf' in changes) {
 	                // React on ngForOf changes only once all inputs have been initialized
 	                var value = changes['ngForOf'].currentValue;
-	                if (isBlank(this._differ) && isPresent(value)) {
+	                if (!this._differ && value) {
 	                    try {
-	                        this._differ = this._iterableDiffers.find(value).create(this._cdr, this.ngForTrackBy);
+	                        this._differ = this._differs.find(value).create(this._cdr, this.ngForTrackBy);
 	                    }
 	                    catch (e) {
 	                        throw new Error("Cannot find a differ supporting object '" + value + "' of type '" + getTypeNameForDebugging(value) + "'. NgFor only supports binding to Iterables such as Arrays.");
@@ -20566,9 +17128,9 @@ webpackJsonp([1],{
 	            }
 	        };
 	        NgFor.prototype.ngDoCheck = function () {
-	            if (isPresent(this._differ)) {
+	            if (this._differ) {
 	                var changes = this._differ.diff(this.ngForOf);
-	                if (isPresent(changes))
+	                if (changes)
 	                    this._applyChanges(changes);
 	            }
 	        };
@@ -20577,7 +17139,7 @@ webpackJsonp([1],{
 	            var insertTuples = [];
 	            changes.forEachOperation(function (item, adjustedPreviousIndex, currentIndex) {
 	                if (item.previousIndex == null) {
-	                    var view = _this._viewContainer.createEmbeddedView(_this._templateRef, new NgForRow(null, null, null), currentIndex);
+	                    var view = _this._viewContainer.createEmbeddedView(_this._template, new NgForRow(null, null, null), currentIndex);
 	                    var tuple = new RecordViewTuple(item, view);
 	                    insertTuples.push(tuple);
 	                }
@@ -20657,19 +17219,19 @@ webpackJsonp([1],{
 	     * @stable
 	     */
 	    var NgIf = (function () {
-	        function NgIf(_viewContainer, _templateRef) {
+	        function NgIf(_viewContainer, _template) {
 	            this._viewContainer = _viewContainer;
-	            this._templateRef = _templateRef;
-	            this._prevCondition = null;
+	            this._template = _template;
+	            this._hasView = false;
 	        }
 	        Object.defineProperty(NgIf.prototype, "ngIf", {
-	            set: function (newCondition) {
-	                if (newCondition && (isBlank(this._prevCondition) || !this._prevCondition)) {
-	                    this._prevCondition = true;
-	                    this._viewContainer.createEmbeddedView(this._templateRef);
+	            set: function (condition) {
+	                if (condition && !this._hasView) {
+	                    this._hasView = true;
+	                    this._viewContainer.createEmbeddedView(this._template);
 	                }
-	                else if (!newCondition && (isBlank(this._prevCondition) || this._prevCondition)) {
-	                    this._prevCondition = false;
+	                else if (!condition && this._hasView) {
+	                    this._hasView = false;
 	                    this._viewContainer.clear();
 	                }
 	            },
@@ -20701,58 +17263,44 @@ webpackJsonp([1],{
 	        return SwitchView;
 	    }());
 	    /**
-	     * Adds or removes DOM sub-trees when their match expressions match the switch expression.
+	     * @ngModule CommonModule
 	     *
-	     * Elements within `NgSwitch` but without `NgSwitchCase` or `NgSwitchDefault` directives will be
-	     * preserved at the location as specified in the template.
+	     * @whatItDoes Adds / removes DOM sub-trees when the nest match expressions matches the switch
+	     *             expression.
 	     *
-	     * `NgSwitch` simply inserts nested elements based on which match expression matches the value
-	     * obtained from the evaluated switch expression. In other words, you define a container element
-	     * (where you place the directive with a switch expression on the
-	     * `[ngSwitch]="..."` attribute), define any inner elements inside of the directive and
-	     * place a `[ngSwitchCase]` attribute per element.
-	     *
-	     * The `ngSwitchCase` property is used to inform `NgSwitch` which element to display when the
-	     * expression is evaluated. If a matching expression is not found via a `ngSwitchCase` property
-	     * then an element with the `ngSwitchDefault` attribute is displayed.
-	     *
-	     * ### Example ([live demo](http://plnkr.co/edit/DQMTII95CbuqWrl3lYAs?p=preview))
-	     *
-	     * ```typescript
-	     * @Component({
-	     *   selector: 'app',
-	     *   template: `
-	     *     <p>Value = {{value}}</p>
-	     *     <button (click)="inc()">Increment</button>
-	     *
-	     *     <div [ngSwitch]="value">
-	     *       <p *ngSwitchCase="'init'">increment to start</p>
-	     *       <p *ngSwitchCase="0">0, increment again</p>
-	     *       <p *ngSwitchCase="1">1, increment again</p>
-	     *       <p *ngSwitchCase="2">2, stop incrementing</p>
-	     *       <p *ngSwitchDefault>&gt; 2, STOP!</p>
-	     *     </div>
-	     *
-	     *     <!-- alternate syntax -->
-	     *
-	     *     <p [ngSwitch]="value">
-	     *       <template ngSwitchCase="init">increment to start</template>
-	     *       <template [ngSwitchCase]="0">0, increment again</template>
-	     *       <template [ngSwitchCase]="1">1, increment again</template>
-	     *       <template [ngSwitchCase]="2">2, stop incrementing</template>
-	     *       <template ngSwitchDefault>&gt; 2, STOP!</template>
-	     *     </p>
-	     *   `,
-	     *   directives: [NgSwitch, NgSwitchCase, NgSwitchDefault]
-	     * })
-	     * export class App {
-	     *   value = 'init';
-	     *
-	     *   inc() {
-	     *     this.value = this.value === 'init' ? 0 : this.value + 1;
-	     *   }
-	     * }
+	     * @howToUse
 	     * ```
+	     *     <container-element [ngSwitch]="switch_expression">
+	     *       <some-element *ngSwitchCase="match_expression_1">...</some-element>
+	     *       <some-element *ngSwitchCase="match_expression_2">...</some-element>
+	     *       <some-other-element *ngSwitchCase="match_expression_3">...</some-other-element>
+	     *       <ng-container *ngSwitchCase="match_expression_3">
+	     *         <!-- use a ng-container to group multiple root nodes -->
+	     *         <inner-element></inner-element>
+	     *         <inner-other-element></inner-other-element>
+	     *       </ng-container>
+	     *       <some-element *ngSwitchDefault>...</p>
+	     *     </container-element>
+	     * ```
+	     * @description
+	     *
+	     * `NgSwitch` stamps out nested views when their match expression value matches the value of the
+	     * switch expression.
+	     *
+	     * In other words:
+	     * - you define a container element (where you place the directive with a switch expression on the
+	     * `[ngSwitch]="..."` attribute)
+	     * - you define inner views inside the `NgSwitch` and place a `*ngSwitchCase` attribute on the view
+	     * root elements.
+	     *
+	     * Elements within `NgSwitch` but outside of a `NgSwitchCase` or `NgSwitchDefault` directives will
+	     * be
+	     * preserved at the location.
+	     *
+	     * The `ngSwitchCase` directive informs the parent `NgSwitch` of which view to display when the
+	     * expression is evaluated.
+	     * When no matching expression is found on a `ngSwitchCase` view, the `ngSwitchDefault` view is
+	     * stamped out.
 	     *
 	     * @stable
 	     */
@@ -20769,9 +17317,9 @@ webpackJsonp([1],{
 	                // Add the ViewContainers matching the value (with a fallback to default)
 	                this._useDefault = false;
 	                var views = this._valueViews.get(value);
-	                if (isBlank(views)) {
+	                if (!views) {
 	                    this._useDefault = true;
-	                    views = normalizeBlank(this._valueViews.get(_CASE_DEFAULT));
+	                    views = this._valueViews.get(_CASE_DEFAULT) || null;
 	                }
 	                this._activateViews(views);
 	                this._switchValue = value;
@@ -20801,7 +17349,6 @@ webpackJsonp([1],{
 	                this._activateViews(this._valueViews.get(_CASE_DEFAULT));
 	            }
 	        };
-	        /** @internal */
 	        NgSwitch.prototype._emptyAllActiveViews = function () {
 	            var activeContainers = this._activeViews;
 	            for (var i = 0; i < activeContainers.length; i++) {
@@ -20809,10 +17356,8 @@ webpackJsonp([1],{
 	            }
 	            this._activeViews = [];
 	        };
-	        /** @internal */
 	        NgSwitch.prototype._activateViews = function (views) {
-	            // TODO(vicb): assert(this._activeViews.length === 0);
-	            if (isPresent(views)) {
+	            if (views) {
 	                for (var i = 0; i < views.length; i++) {
 	                    views[i].create();
 	                }
@@ -20822,13 +17367,12 @@ webpackJsonp([1],{
 	        /** @internal */
 	        NgSwitch.prototype._registerView = function (value, view) {
 	            var views = this._valueViews.get(value);
-	            if (isBlank(views)) {
+	            if (!views) {
 	                views = [];
 	                this._valueViews.set(value, views);
 	            }
 	            views.push(view);
 	        };
-	        /** @internal */
 	        NgSwitch.prototype._deregisterView = function (value, view) {
 	            // `_CASE_DEFAULT` is used a marker for non-registered cases
 	            if (value === _CASE_DEFAULT)
@@ -20852,10 +17396,24 @@ webpackJsonp([1],{
 	        return NgSwitch;
 	    }());
 	    /**
-	     * Insert the sub-tree when the `ngSwitchCase` expression evaluates to the same value as the
-	     * enclosing switch expression.
+	     * @ngModule CommonModule
 	     *
-	     * If multiple match expression match the switch expression value, all of them are displayed.
+	     * @whatItDoes Creates a view that will be added/removed from the parent {@link NgSwitch} when the
+	     *             given expression evaluate to respectively the same/different value as the switch
+	     *             expression.
+	     *
+	     * @howToUse
+	     * ```
+	     * <container-element [ngSwitch]="switch_expression">
+	     *   <some-element *ngSwitchCase="match_expression_1">...</some-element>
+	     * </container-element>
+	     *```
+	     * @description
+	     *
+	     * Insert the sub-tree when the expression evaluates to the same value as the enclosing switch
+	     * expression.
+	     *
+	     * If multiple match expressions match the switch expression value, all of them are displayed.
 	     *
 	     * See {@link NgSwitch} for more details and example.
 	     *
@@ -20864,7 +17422,6 @@ webpackJsonp([1],{
 	    var NgSwitchCase = (function () {
 	        function NgSwitchCase(viewContainer, templateRef, ngSwitch) {
 	            // `_CASE_DEFAULT` is used as a marker for a not yet initialized value
-	            /** @internal */
 	            this._value = _CASE_DEFAULT;
 	            this._switch = ngSwitch;
 	            this._view = new SwitchView(viewContainer, templateRef);
@@ -20892,8 +17449,23 @@ webpackJsonp([1],{
 	        return NgSwitchCase;
 	    }());
 	    /**
-	     * Default case statements are displayed when no match expression matches the switch expression
-	     * value.
+	     * @ngModule CommonModule
+	     * @whatItDoes Creates a view that is added to the parent {@link NgSwitch} when no case expressions
+	     * match the
+	     *             switch expression.
+	     *
+	     * @howToUse
+	     * ```
+	     * <container-element [ngSwitch]="switch_expression">
+	     *   <some-element *ngSwitchCase="match_expression_1">...</some-element>
+	     *   <some-other-element *ngSwitchDefault>...</some-other-element>
+	     * </container-element>
+	     * ```
+	     *
+	     * @description
+	     *
+	     * Insert the sub-tree when no case expressions evaluate to the same value as the enclosing switch
+	     * expression.
 	     *
 	     * See {@link NgSwitch} for more details and example.
 	     *
@@ -20916,48 +17488,35 @@ webpackJsonp([1],{
 	    }());
 
 	    /**
-	     * `ngPlural` is an i18n directive that displays DOM sub-trees that match the switch expression
-	     * value, or failing that, DOM sub-trees that match the switch expression's pluralization category.
+	     * @ngModule CommonModule
+	     *
+	     * @whatItDoes Adds / removes DOM sub-trees based on a numeric value. Tailored for pluralization.
+	     *
+	     * @howToUse
+	     * ```
+	     * <some-element [ngPlural]="value">
+	     *   <ng-container *ngPluralCase="'=0'">there is nothing</ng-container>
+	     *   <ng-container *ngPluralCase="'=1'">there is one</ng-container>
+	     *   <ng-container *ngPluralCase="'few'">there are a few</ng-container>
+	     *   <ng-container *ngPluralCase="'other'">there are exactly #</ng-container>
+	     * </some-element>
+	     * ```
+	     *
+	     * @description
+	     *
+	     * Displays DOM sub-trees that match the switch expression value, or failing that, DOM sub-trees
+	     * that match the switch expression's pluralization category.
 	     *
 	     * To use this directive you must provide a container element that sets the `[ngPlural]` attribute
-	     * to a
-	     * switch expression.
-	     *    - Inner elements defined with an `[ngPluralCase]` attribute will display based on their
-	     * expression.
-	     *    - If `[ngPluralCase]` is set to a value starting with `=`, it will only display if the value
-	     * matches the switch expression exactly.
-	     *    - Otherwise, the view will be treated as a "category match", and will only display if exact
-	     * value matches aren't found and the value maps to its category for the defined locale.
+	     * to a switch expression. Inner elements with a `[ngPluralCase]` will display based on their
+	     * expression:
+	     * - if `[ngPluralCase]` is set to a value starting with `=`, it will only display if the value
+	     *   matches the switch expression exactly,
+	     * - otherwise, the view will be treated as a "category match", and will only display if exact
+	     *   value matches aren't found and the value maps to its category for the defined locale.
 	     *
-	     * ```typescript
-	     * @Component({
-	     *    selector: 'app',
-	     *    // best practice is to define the locale at the application level
-	     *    providers: [{provide: LOCALE_ID, useValue: 'en_US'}]
-	     * })
-	     * @View({
-	     *   template: `
-	     *     <p>Value = {{value}}</p>
-	     *     <button (click)="inc()">Increment</button>
+	     * See http://cldr.unicode.org/index/cldr-spec/plural-rules
 	     *
-	     *     <div [ngPlural]="value">
-	     *       <template ngPluralCase="=0">there is nothing</template>
-	     *       <template ngPluralCase="=1">there is one</template>
-	     *       <template ngPluralCase="few">there are a few</template>
-	     *       <template ngPluralCase="other">there is some number</template>
-	     *     </div>
-	     *   `,
-	     *   directives: [NgPlural, NgPluralCase]
-	     * })
-	     * export class App {
-	     *   value = 'init';
-	     *
-	     *   inc() {
-	     *     this.value = this.value === 'init' ? 0 : this.value + 1;
-	     *   }
-	     * }
-	     *
-	     * ```
 	     * @experimental
 	     */
 	    var NgPlural = (function () {
@@ -20974,23 +17533,21 @@ webpackJsonp([1],{
 	            configurable: true
 	        });
 	        NgPlural.prototype.addCase = function (value, switchView) { this._caseViews[value] = switchView; };
-	        /** @internal */
 	        NgPlural.prototype._updateView = function () {
 	            this._clearViews();
-	            var key = getPluralCategory(this._switchValue, Object.keys(this._caseViews), this._localization);
+	            var cases = Object.keys(this._caseViews);
+	            var key = getPluralCategory(this._switchValue, cases, this._localization);
 	            this._activateView(this._caseViews[key]);
 	        };
-	        /** @internal */
 	        NgPlural.prototype._clearViews = function () {
-	            if (isPresent(this._activeView))
+	            if (this._activeView)
 	                this._activeView.destroy();
 	        };
-	        /** @internal */
 	        NgPlural.prototype._activateView = function (view) {
-	            if (!isPresent(view))
-	                return;
-	            this._activeView = view;
-	            this._activeView.create();
+	            if (view) {
+	                this._activeView = view;
+	                this._activeView.create();
+	            }
 	        };
 	        NgPlural.decorators = [
 	            { type: _angular_core.Directive, args: [{ selector: '[ngPlural]' },] },
@@ -21005,6 +17562,21 @@ webpackJsonp([1],{
 	        return NgPlural;
 	    }());
 	    /**
+	     * @ngModule CommonModule
+	     *
+	     * @whatItDoes Creates a view that will be added/removed from the parent {@link NgPlural} when the
+	     *             given expression matches the plural expression according to CLDR rules.
+	     *
+	     * @howToUse
+	     * ```
+	     * <some-element [ngPlural]="value">
+	     *   <ng-container *ngPluralCase="'=0'">...</ng-container>
+	     *   <ng-container *ngPluralCase="'other'">...</ng-container>
+	     * </some-element>
+	     *```
+	     *
+	     * See {@link NgPlural} for more details and example.
+	     *
 	     * @experimental
 	     */
 	    var NgPluralCase = (function () {
@@ -21026,56 +17598,24 @@ webpackJsonp([1],{
 	    }());
 
 	    /**
-	     * The `NgStyle` directive changes styles based on a result of expression evaluation.
+	     * @ngModule CommonModule
 	     *
-	     * An expression assigned to the `ngStyle` property must evaluate to an object and the
-	     * corresponding element styles are updated based on changes to this object. Style names to update
-	     * are taken from the object's keys, and values - from the corresponding object's values.
+	     * @whatItDoes Update an HTML element styles.
 	     *
-	     * ### Syntax
-	     *
-	     * - `<div [ngStyle]="{'font-style': styleExp}"></div>`
-	     * - `<div [ngStyle]="{'max-width.px': widthExp}"></div>`
-	     * - `<div [ngStyle]="styleExp"></div>` - here the `styleExp` must evaluate to an object
-	     *
-	     * ### Example ([live demo](http://plnkr.co/edit/YamGS6GkUh9GqWNQhCyM?p=preview)):
-	     *
+	     * @howToUse
 	     * ```
-	     * import {Component} from '@angular/core';
-	     * import {NgStyle} from '@angular/common';
+	     * <some-element [ngStyle]="{'font-style': styleExp}">...</some-element>
 	     *
-	     * @Component({
-	     *  selector: 'ngStyle-example',
-	     *  template: `
-	     *    <h1 [ngStyle]="{'font-style': style, 'font-size': size, 'font-weight': weight}">
-	     *      Change style of this text!
-	     *    </h1>
+	     * <some-element [ngStyle]="{'max-width.px': widthExp}">...</some-element>
 	     *
-	     *    <hr>
-	     *
-	     *    <label>Italic: <input type="checkbox" (change)="changeStyle($event)"></label>
-	     *    <label>Bold: <input type="checkbox" (change)="changeWeight($event)"></label>
-	     *    <label>Size: <input type="text" [value]="size" (change)="size = $event.target.value"></label>
-	     *  `,
-	     *  directives: [NgStyle]
-	     * })
-	     * export class NgStyleExample {
-	     *    style = 'normal';
-	     *    weight = 'normal';
-	     *    size = '20px';
-	     *
-	     *    changeStyle($event: any) {
-	     *      this.style = $event.target.checked ? 'italic' : 'normal';
-	     *    }
-	     *
-	     *    changeWeight($event: any) {
-	     *      this.weight = $event.target.checked ? 'bold' : 'normal';
-	     *    }
-	     * }
+	     * <some-element [ngStyle]="objExp">...</some-element>
 	     * ```
 	     *
-	     * In this example the `font-style`, `font-size` and `font-weight` styles will be updated
-	     * based on the `style` property's value changes.
+	     * @description
+	     *
+	     * The styles are updated according to the value of the expression evaluation:
+	     * - keys are style names with an option `.<unit>` suffix (ie 'top.px', 'font-style.em'),
+	     * - values are the values assigned to those properties (expressed in the given unit).
 	     *
 	     * @stable
 	     */
@@ -21088,32 +17628,31 @@ webpackJsonp([1],{
 	        Object.defineProperty(NgStyle.prototype, "ngStyle", {
 	            set: function (v) {
 	                this._ngStyle = v;
-	                if (isBlank(this._differ) && isPresent(v)) {
-	                    this._differ = this._differs.find(this._ngStyle).create(null);
+	                if (!this._differ && v) {
+	                    this._differ = this._differs.find(v).create(null);
 	                }
 	            },
 	            enumerable: true,
 	            configurable: true
 	        });
 	        NgStyle.prototype.ngDoCheck = function () {
-	            if (isPresent(this._differ)) {
+	            if (this._differ) {
 	                var changes = this._differ.diff(this._ngStyle);
-	                if (isPresent(changes)) {
+	                if (changes) {
 	                    this._applyChanges(changes);
 	                }
 	            }
 	        };
 	        NgStyle.prototype._applyChanges = function (changes) {
 	            var _this = this;
-	            changes.forEachRemovedItem(function (record) { _this._setStyle(record.key, null); });
-	            changes.forEachAddedItem(function (record) { _this._setStyle(record.key, record.currentValue); });
-	            changes.forEachChangedItem(function (record) { _this._setStyle(record.key, record.currentValue); });
+	            changes.forEachRemovedItem(function (record) { return _this._setStyle(record.key, null); });
+	            changes.forEachAddedItem(function (record) { return _this._setStyle(record.key, record.currentValue); });
+	            changes.forEachChangedItem(function (record) { return _this._setStyle(record.key, record.currentValue); });
 	        };
-	        NgStyle.prototype._setStyle = function (name, val) {
-	            var nameParts = name.split('.');
-	            var nameToSet = nameParts[0];
-	            var valToSet = isPresent(val) && nameParts.length === 2 ? "" + val + nameParts[1] : val;
-	            this._renderer.setElementStyle(this._ngEl.nativeElement, nameToSet, valToSet);
+	        NgStyle.prototype._setStyle = function (nameAndUnit, value) {
+	            var _a = nameAndUnit.split('.'), name = _a[0], unit = _a[1];
+	            value = value !== null && value !== void (0) && unit ? "" + value + unit : value;
+	            this._renderer.setElementStyle(this._ngEl.nativeElement, name, value);
 	        };
 	        NgStyle.decorators = [
 	            { type: _angular_core.Directive, args: [{ selector: '[ngStyle]' },] },
@@ -21131,20 +17670,24 @@ webpackJsonp([1],{
 	    }());
 
 	    /**
-	     * Creates and inserts an embedded view based on a prepared `TemplateRef`.
-	     * You can attach a context object to the `EmbeddedViewRef` by setting `[ngOutletContext]`.
-	     * `[ngOutletContext]` should be an object, the object's keys will be the local template variables
-	     * available within the `TemplateRef`.
+	     * @ngModule CommonModule
 	     *
-	     * Note: using the key `$implicit` in the context object will set it's value as default.
+	     * @whatItDoes Inserts an embedded view from a prepared `TemplateRef`
 	     *
-	     * ### Syntax
-	     *
+	     * @howToUse
 	     * ```
 	     * <template [ngTemplateOutlet]="templateRefExpression"
 	     *           [ngOutletContext]="objectExpression">
 	     * </template>
 	     * ```
+	     *
+	     * @description
+	     *
+	     * You can attach a context object to the `EmbeddedViewRef` by setting `[ngOutletContext]`.
+	     * `[ngOutletContext]` should be an object, the object's keys will be the local template variables
+	     * available within the `TemplateRef`.
+	     *
+	     * Note: using the key `$implicit` in the context object will set it's value as default.
 	     *
 	     * @experimental
 	     */
@@ -21162,7 +17705,7 @@ webpackJsonp([1],{
 	            enumerable: true,
 	            configurable: true
 	        });
-	        NgTemplateOutlet.prototype.ngOnChanges = function () {
+	        NgTemplateOutlet.prototype.ngOnChanges = function (changes) {
 	            if (this._viewRef) {
 	                this._viewContainerRef.remove(this._viewContainerRef.indexOf(this._viewRef));
 	            }
@@ -21185,371 +17728,23 @@ webpackJsonp([1],{
 	    }());
 
 	    /**
-	     * @license
-	     * Copyright Google Inc. All Rights Reserved.
-	     *
-	     * Use of this source code is governed by an MIT-style license that can be
-	     * found in the LICENSE file at https://angular.io/license
+	     * A collection of Angular directives that are likely to be used in each and every Angular
+	     * application.
 	     */
-	    /**
-	     * This class should not be used directly by an application developer. Instead, use
-	     * {@link Location}.
-	     *
-	     * `PlatformLocation` encapsulates all calls to DOM apis, which allows the Router to be platform
-	     * agnostic.
-	     * This means that we can have different implementation of `PlatformLocation` for the different
-	     * platforms
-	     * that angular supports. For example, the default `PlatformLocation` is {@link
-	     * BrowserPlatformLocation},
-	     * however when you run your app in a WebWorker you use {@link WebWorkerPlatformLocation}.
-	     *
-	     * The `PlatformLocation` class is used directly by all implementations of {@link LocationStrategy}
-	     * when
-	     * they need to interact with the DOM apis like pushState, popState, etc...
-	     *
-	     * {@link LocationStrategy} in turn is used by the {@link Location} service which is used directly
-	     * by
-	     * the {@link Router} in order to navigate between routes. Since all interactions between {@link
-	     * Router} /
-	     * {@link Location} / {@link LocationStrategy} and DOM apis flow through the `PlatformLocation`
-	     * class
-	     * they are all platform independent.
-	     *
-	     * @stable
-	     */
-	    var PlatformLocation = (function () {
-	        function PlatformLocation() {
-	        }
-	        Object.defineProperty(PlatformLocation.prototype, "pathname", {
-	            get: function () { return null; },
-	            enumerable: true,
-	            configurable: true
-	        });
-	        Object.defineProperty(PlatformLocation.prototype, "search", {
-	            get: function () { return null; },
-	            enumerable: true,
-	            configurable: true
-	        });
-	        Object.defineProperty(PlatformLocation.prototype, "hash", {
-	            get: function () { return null; },
-	            enumerable: true,
-	            configurable: true
-	        });
-	        return PlatformLocation;
-	    }());
+	    var COMMON_DIRECTIVES = [
+	        NgClass,
+	        NgFor,
+	        NgIf,
+	        NgTemplateOutlet,
+	        NgStyle,
+	        NgSwitch,
+	        NgSwitchCase,
+	        NgSwitchDefault,
+	        NgPlural,
+	        NgPluralCase,
+	    ];
 
-	    /**
-	     * `LocationStrategy` is responsible for representing and reading route state
-	     * from the browser's URL. Angular provides two strategies:
-	     * {@link HashLocationStrategy} and {@link PathLocationStrategy} (default).
-	     *
-	     * This is used under the hood of the {@link Location} service.
-	     *
-	     * Applications should use the {@link Router} or {@link Location} services to
-	     * interact with application route state.
-	     *
-	     * For instance, {@link HashLocationStrategy} produces URLs like
-	     * `http://example.com#/foo`, and {@link PathLocationStrategy} produces
-	     * `http://example.com/foo` as an equivalent URL.
-	     *
-	     * See these two classes for more.
-	     *
-	     * @stable
-	     */
-	    var LocationStrategy = (function () {
-	        function LocationStrategy() {
-	        }
-	        return LocationStrategy;
-	    }());
-	    /**
-	     * The `APP_BASE_HREF` token represents the base href to be used with the
-	     * {@link PathLocationStrategy}.
-	     *
-	     * If you're using {@link PathLocationStrategy}, you must provide a provider to a string
-	     * representing the URL prefix that should be preserved when generating and recognizing
-	     * URLs.
-	     *
-	     * ### Example
-	     *
-	     * import {Component, NgModule} from '@angular/core';
-	     * import {APP_BASE_HREF} from '@angular/common';
-	     *
-	     * @NgModule({
-	     *   providers: [{provide: APP_BASE_HREF, useValue: '/my/app'}]
-	     * })
-	     * class AppModule {}
-	     * ```
-	     *
-	     * @stable
-	     */
-	    var APP_BASE_HREF = new _angular_core.OpaqueToken('appBaseHref');
-
-	    /**
-	     * `Location` is a service that applications can use to interact with a browser's URL.
-	     * Depending on which {@link LocationStrategy} is used, `Location` will either persist
-	     * to the URL's path or the URL's hash segment.
-	     *
-	     * Note: it's better to use {@link Router#navigate} service to trigger route changes. Use
-	     * `Location` only if you need to interact with or create normalized URLs outside of
-	     * routing.
-	     *
-	     * `Location` is responsible for normalizing the URL against the application's base href.
-	     * A normalized URL is absolute from the URL host, includes the application's base href, and has no
-	     * trailing slash:
-	     * - `/my/app/user/123` is normalized
-	     * - `my/app/user/123` **is not** normalized
-	     * - `/my/app/user/123/` **is not** normalized
-	     *
-	     * ### Example
-	     *
-	     * ```
-	     * import {Component} from '@angular/core';
-	     * import {Location} from '@angular/common';
-	     *
-	     * @Component({selector: 'app-component'})
-	     * class AppCmp {
-	     *   constructor(location: Location) {
-	     *     location.go('/foo');
-	     *   }
-	     * }
-	     * ```
-	     *
-	     * @stable
-	     */
-	    var Location = (function () {
-	        function Location(platformStrategy) {
-	            var _this = this;
-	            /** @internal */
-	            this._subject = new _angular_core.EventEmitter();
-	            this._platformStrategy = platformStrategy;
-	            var browserBaseHref = this._platformStrategy.getBaseHref();
-	            this._baseHref = Location.stripTrailingSlash(_stripIndexHtml(browserBaseHref));
-	            this._platformStrategy.onPopState(function (ev) { _this._subject.emit({ 'url': _this.path(true), 'pop': true, 'type': ev.type }); });
-	        }
-	        /**
-	         * Returns the normalized URL path.
-	         */
-	        // TODO: vsavkin. Remove the boolean flag and always include hash once the deprecated router is
-	        // removed.
-	        Location.prototype.path = function (includeHash) {
-	            if (includeHash === void 0) { includeHash = false; }
-	            return this.normalize(this._platformStrategy.path(includeHash));
-	        };
-	        /**
-	         * Normalizes the given path and compares to the current normalized path.
-	         */
-	        Location.prototype.isCurrentPathEqualTo = function (path, query) {
-	            if (query === void 0) { query = ''; }
-	            return this.path() == this.normalize(path + Location.normalizeQueryParams(query));
-	        };
-	        /**
-	         * Given a string representing a URL, returns the normalized URL path without leading or
-	         * trailing slashes
-	         */
-	        Location.prototype.normalize = function (url) {
-	            return Location.stripTrailingSlash(_stripBaseHref(this._baseHref, _stripIndexHtml(url)));
-	        };
-	        /**
-	         * Given a string representing a URL, returns the platform-specific external URL path.
-	         * If the given URL doesn't begin with a leading slash (`'/'`), this method adds one
-	         * before normalizing. This method will also add a hash if `HashLocationStrategy` is
-	         * used, or the `APP_BASE_HREF` if the `PathLocationStrategy` is in use.
-	         */
-	        Location.prototype.prepareExternalUrl = function (url) {
-	            if (url.length > 0 && !url.startsWith('/')) {
-	                url = '/' + url;
-	            }
-	            return this._platformStrategy.prepareExternalUrl(url);
-	        };
-	        // TODO: rename this method to pushState
-	        /**
-	         * Changes the browsers URL to the normalized version of the given URL, and pushes a
-	         * new item onto the platform's history.
-	         */
-	        Location.prototype.go = function (path, query) {
-	            if (query === void 0) { query = ''; }
-	            this._platformStrategy.pushState(null, '', path, query);
-	        };
-	        /**
-	         * Changes the browsers URL to the normalized version of the given URL, and replaces
-	         * the top item on the platform's history stack.
-	         */
-	        Location.prototype.replaceState = function (path, query) {
-	            if (query === void 0) { query = ''; }
-	            this._platformStrategy.replaceState(null, '', path, query);
-	        };
-	        /**
-	         * Navigates forward in the platform's history.
-	         */
-	        Location.prototype.forward = function () { this._platformStrategy.forward(); };
-	        /**
-	         * Navigates back in the platform's history.
-	         */
-	        Location.prototype.back = function () { this._platformStrategy.back(); };
-	        /**
-	         * Subscribe to the platform's `popState` events.
-	         */
-	        Location.prototype.subscribe = function (onNext, onThrow, onReturn) {
-	            if (onThrow === void 0) { onThrow = null; }
-	            if (onReturn === void 0) { onReturn = null; }
-	            return this._subject.subscribe({ next: onNext, error: onThrow, complete: onReturn });
-	        };
-	        /**
-	         * Given a string of url parameters, prepend with '?' if needed, otherwise return parameters as
-	         * is.
-	         */
-	        Location.normalizeQueryParams = function (params) {
-	            return (params.length > 0 && params.substring(0, 1) != '?') ? ('?' + params) : params;
-	        };
-	        /**
-	         * Given 2 parts of a url, join them with a slash if needed.
-	         */
-	        Location.joinWithSlash = function (start, end) {
-	            if (start.length == 0) {
-	                return end;
-	            }
-	            if (end.length == 0) {
-	                return start;
-	            }
-	            var slashes = 0;
-	            if (start.endsWith('/')) {
-	                slashes++;
-	            }
-	            if (end.startsWith('/')) {
-	                slashes++;
-	            }
-	            if (slashes == 2) {
-	                return start + end.substring(1);
-	            }
-	            if (slashes == 1) {
-	                return start + end;
-	            }
-	            return start + '/' + end;
-	        };
-	        /**
-	         * If url has a trailing slash, remove it, otherwise return url as is.
-	         */
-	        Location.stripTrailingSlash = function (url) {
-	            if (/\/$/g.test(url)) {
-	                url = url.substring(0, url.length - 1);
-	            }
-	            return url;
-	        };
-	        Location.decorators = [
-	            { type: _angular_core.Injectable },
-	        ];
-	        /** @nocollapse */
-	        Location.ctorParameters = [
-	            { type: LocationStrategy, },
-	        ];
-	        return Location;
-	    }());
-	    function _stripBaseHref(baseHref, url) {
-	        if (baseHref.length > 0 && url.startsWith(baseHref)) {
-	            return url.substring(baseHref.length);
-	        }
-	        return url;
-	    }
-	    function _stripIndexHtml(url) {
-	        if (/\/index.html$/g.test(url)) {
-	            // '/index.html'.length == 11
-	            return url.substring(0, url.length - 11);
-	        }
-	        return url;
-	    }
-
-	    /**
-	     * @license
-	     * Copyright Google Inc. All Rights Reserved.
-	     *
-	     * Use of this source code is governed by an MIT-style license that can be
-	     * found in the LICENSE file at https://angular.io/license
-	     */
-	    var __extends$3 = (this && this.__extends) || function (d, b) {
-	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	        function __() { this.constructor = d; }
-	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	    };
-	    /**
-	     * `HashLocationStrategy` is a {@link LocationStrategy} used to configure the
-	     * {@link Location} service to represent its state in the
-	     * [hash fragment](https://en.wikipedia.org/wiki/Uniform_Resource_Locator#Syntax)
-	     * of the browser's URL.
-	     *
-	     * For instance, if you call `location.go('/foo')`, the browser's URL will become
-	     * `example.com#/foo`.
-	     *
-	     * ### Example
-	     *
-	     * ```
-	     * import {Component, NgModule} from '@angular/core';
-	     * import {
-	     *   LocationStrategy,
-	     *   HashLocationStrategy
-	     * } from '@angular/common';
-	     *
-	     * @NgModule({
-	     *   providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}]
-	     * })
-	     * class AppModule {}
-	     * ```
-	     *
-	     * @stable
-	     */
-	    var HashLocationStrategy = (function (_super) {
-	        __extends$3(HashLocationStrategy, _super);
-	        function HashLocationStrategy(_platformLocation, _baseHref) {
-	            _super.call(this);
-	            this._platformLocation = _platformLocation;
-	            this._baseHref = '';
-	            if (isPresent(_baseHref)) {
-	                this._baseHref = _baseHref;
-	            }
-	        }
-	        HashLocationStrategy.prototype.onPopState = function (fn) {
-	            this._platformLocation.onPopState(fn);
-	            this._platformLocation.onHashChange(fn);
-	        };
-	        HashLocationStrategy.prototype.getBaseHref = function () { return this._baseHref; };
-	        HashLocationStrategy.prototype.path = function (includeHash) {
-	            if (includeHash === void 0) { includeHash = false; }
-	            // the hash value is always prefixed with a `#`
-	            // and if it is empty then it will stay empty
-	            var path = this._platformLocation.hash;
-	            if (!isPresent(path))
-	                path = '#';
-	            return path.length > 0 ? path.substring(1) : path;
-	        };
-	        HashLocationStrategy.prototype.prepareExternalUrl = function (internal) {
-	            var url = Location.joinWithSlash(this._baseHref, internal);
-	            return url.length > 0 ? ('#' + url) : url;
-	        };
-	        HashLocationStrategy.prototype.pushState = function (state, title, path, queryParams) {
-	            var url = this.prepareExternalUrl(path + Location.normalizeQueryParams(queryParams));
-	            if (url.length == 0) {
-	                url = this._platformLocation.pathname;
-	            }
-	            this._platformLocation.pushState(state, title, url);
-	        };
-	        HashLocationStrategy.prototype.replaceState = function (state, title, path, queryParams) {
-	            var url = this.prepareExternalUrl(path + Location.normalizeQueryParams(queryParams));
-	            if (url.length == 0) {
-	                url = this._platformLocation.pathname;
-	            }
-	            this._platformLocation.replaceState(state, title, url);
-	        };
-	        HashLocationStrategy.prototype.forward = function () { this._platformLocation.forward(); };
-	        HashLocationStrategy.prototype.back = function () { this._platformLocation.back(); };
-	        HashLocationStrategy.decorators = [
-	            { type: _angular_core.Injectable },
-	        ];
-	        /** @nocollapse */
-	        HashLocationStrategy.ctorParameters = [
-	            { type: PlatformLocation, },
-	            { type: undefined, decorators: [{ type: _angular_core.Optional }, { type: _angular_core.Inject, args: [APP_BASE_HREF,] },] },
-	        ];
-	        return HashLocationStrategy;
-	    }(LocationStrategy));
+	    var isPromise = _angular_core.__core_private__.isPromise;
 
 	    /**
 	     * @license
@@ -21564,187 +17759,897 @@ webpackJsonp([1],{
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	    };
 	    /**
-	     * `PathLocationStrategy` is a {@link LocationStrategy} used to configure the
-	     * {@link Location} service to represent its state in the
-	     * [path](https://en.wikipedia.org/wiki/Uniform_Resource_Locator#Syntax) of the
-	     * browser's URL.
+	     * @stable
+	     */
+	    var BaseError = (function (_super) {
+	        __extends$4(BaseError, _super);
+	        function BaseError(message) {
+	            // Errors don't use current this, instead they create a new instance.
+	            // We have to do forward all of our api to the nativeInstance.
+	            var nativeError = _super.call(this, message);
+	            this._nativeError = nativeError;
+	        }
+	        Object.defineProperty(BaseError.prototype, "message", {
+	            get: function () { return this._nativeError.message; },
+	            set: function (message) { this._nativeError.message = message; },
+	            enumerable: true,
+	            configurable: true
+	        });
+	        Object.defineProperty(BaseError.prototype, "name", {
+	            get: function () { return this._nativeError.name; },
+	            enumerable: true,
+	            configurable: true
+	        });
+	        Object.defineProperty(BaseError.prototype, "stack", {
+	            get: function () { return this._nativeError.stack; },
+	            set: function (value) { this._nativeError.stack = value; },
+	            enumerable: true,
+	            configurable: true
+	        });
+	        BaseError.prototype.toString = function () { return this._nativeError.toString(); };
+	        return BaseError;
+	    }(Error));
+	    /**
+	     * @stable
+	     */
+	    var WrappedError = (function (_super) {
+	        __extends$4(WrappedError, _super);
+	        function WrappedError(message, error) {
+	            _super.call(this, message + " caused by: " + (error instanceof Error ? error.message : error));
+	            this.originalError = error;
+	        }
+	        Object.defineProperty(WrappedError.prototype, "stack", {
+	            get: function () {
+	                return (this.originalError instanceof Error ? this.originalError : this._nativeError)
+	                    .stack;
+	            },
+	            enumerable: true,
+	            configurable: true
+	        });
+	        return WrappedError;
+	    }(BaseError));
+
+	    /**
+	     * @license
+	     * Copyright Google Inc. All Rights Reserved.
 	     *
-	     * `PathLocationStrategy` is the default binding for {@link LocationStrategy}
-	     * provided in {@link ROUTER_PROVIDERS}.
+	     * Use of this source code is governed by an MIT-style license that can be
+	     * found in the LICENSE file at https://angular.io/license
+	     */
+	    var __extends$3 = (this && this.__extends) || function (d, b) {
+	        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	    var InvalidPipeArgumentError = (function (_super) {
+	        __extends$3(InvalidPipeArgumentError, _super);
+	        function InvalidPipeArgumentError(type, value) {
+	            _super.call(this, "Invalid argument '" + value + "' for pipe '" + stringify(type) + "'");
+	        }
+	        return InvalidPipeArgumentError;
+	    }(BaseError));
+
+	    var ObservableStrategy = (function () {
+	        function ObservableStrategy() {
+	        }
+	        ObservableStrategy.prototype.createSubscription = function (async, updateLatestValue) {
+	            return async.subscribe({ next: updateLatestValue, error: function (e) { throw e; } });
+	        };
+	        ObservableStrategy.prototype.dispose = function (subscription) { subscription.unsubscribe(); };
+	        ObservableStrategy.prototype.onDestroy = function (subscription) { subscription.unsubscribe(); };
+	        return ObservableStrategy;
+	    }());
+	    var PromiseStrategy = (function () {
+	        function PromiseStrategy() {
+	        }
+	        PromiseStrategy.prototype.createSubscription = function (async, updateLatestValue) {
+	            return async.then(updateLatestValue, function (e) { throw e; });
+	        };
+	        PromiseStrategy.prototype.dispose = function (subscription) { };
+	        PromiseStrategy.prototype.onDestroy = function (subscription) { };
+	        return PromiseStrategy;
+	    }());
+	    var _promiseStrategy = new PromiseStrategy();
+	    var _observableStrategy = new ObservableStrategy();
+	    /**
+	     * @ngModule CommonModule
+	     * @whatItDoes Unwraps a value from an asynchronous primitive.
+	     * @howToUse `observable_or_promise_expression | async`
+	     * @description
+	     * The `async` pipe subscribes to an `Observable` or `Promise` and returns the latest value it has
+	     * emitted. When a new value is emitted, the `async` pipe marks the component to be checked for
+	     * changes. When the component gets destroyed, the `async` pipe unsubscribes automatically to avoid
+	     * potential memory leaks.
 	     *
-	     * If you're using `PathLocationStrategy`, you must provide a {@link APP_BASE_HREF}
-	     * or add a base element to the document. This URL prefix that will be preserved
-	     * when generating and recognizing URLs.
 	     *
-	     * For instance, if you provide an `APP_BASE_HREF` of `'/my/app'` and call
-	     * `location.go('/foo')`, the browser's URL will become
-	     * `example.com/my/app/foo`.
+	     * ## Examples
 	     *
-	     * Similarly, if you add `<base href='/my/app'/>` to the document and call
-	     * `location.go('/foo')`, the browser's URL will become
-	     * `example.com/my/app/foo`.
+	     * This example binds a `Promise` to the view. Clicking the `Resolve` button resolves the
+	     * promise.
+	     *
+	     * {@example common/pipes/ts/async_pipe.ts region='AsyncPipePromise'}
+	     *
+	     * It's also possible to use `async` with Observables. The example below binds the `time` Observable
+	     * to the view. The Observable continuesly updates the view with the current time.
+	     *
+	     * {@example common/pipes/ts/async_pipe.ts region='AsyncPipeObservable'}
 	     *
 	     * @stable
 	     */
-	    var PathLocationStrategy = (function (_super) {
-	        __extends$4(PathLocationStrategy, _super);
-	        function PathLocationStrategy(_platformLocation, href) {
-	            _super.call(this);
-	            this._platformLocation = _platformLocation;
-	            if (isBlank(href)) {
-	                href = this._platformLocation.getBaseHrefFromDOM();
-	            }
-	            if (isBlank(href)) {
-	                throw new Error("No base href set. Please provide a value for the APP_BASE_HREF token or add a base element to the document.");
-	            }
-	            this._baseHref = href;
+	    var AsyncPipe = (function () {
+	        function AsyncPipe(_ref) {
+	            this._ref = _ref;
+	            this._latestValue = null;
+	            this._latestReturnedValue = null;
+	            this._subscription = null;
+	            this._obj = null;
+	            this._strategy = null;
 	        }
-	        PathLocationStrategy.prototype.onPopState = function (fn) {
-	            this._platformLocation.onPopState(fn);
-	            this._platformLocation.onHashChange(fn);
+	        AsyncPipe.prototype.ngOnDestroy = function () {
+	            if (this._subscription) {
+	                this._dispose();
+	            }
 	        };
-	        PathLocationStrategy.prototype.getBaseHref = function () { return this._baseHref; };
-	        PathLocationStrategy.prototype.prepareExternalUrl = function (internal) {
-	            return Location.joinWithSlash(this._baseHref, internal);
+	        AsyncPipe.prototype.transform = function (obj) {
+	            if (!this._obj) {
+	                if (obj) {
+	                    this._subscribe(obj);
+	                }
+	                this._latestReturnedValue = this._latestValue;
+	                return this._latestValue;
+	            }
+	            if (obj !== this._obj) {
+	                this._dispose();
+	                return this.transform(obj);
+	            }
+	            if (this._latestValue === this._latestReturnedValue) {
+	                return this._latestReturnedValue;
+	            }
+	            this._latestReturnedValue = this._latestValue;
+	            return _angular_core.WrappedValue.wrap(this._latestValue);
 	        };
-	        PathLocationStrategy.prototype.path = function (includeHash) {
-	            if (includeHash === void 0) { includeHash = false; }
-	            var pathname = this._platformLocation.pathname +
-	                Location.normalizeQueryParams(this._platformLocation.search);
-	            var hash = this._platformLocation.hash;
-	            return hash && includeHash ? "" + pathname + hash : pathname;
+	        AsyncPipe.prototype._subscribe = function (obj) {
+	            var _this = this;
+	            this._obj = obj;
+	            this._strategy = this._selectStrategy(obj);
+	            this._subscription = this._strategy.createSubscription(obj, function (value) { return _this._updateLatestValue(obj, value); });
 	        };
-	        PathLocationStrategy.prototype.pushState = function (state, title, url, queryParams) {
-	            var externalUrl = this.prepareExternalUrl(url + Location.normalizeQueryParams(queryParams));
-	            this._platformLocation.pushState(state, title, externalUrl);
+	        AsyncPipe.prototype._selectStrategy = function (obj) {
+	            if (isPromise(obj)) {
+	                return _promiseStrategy;
+	            }
+	            if (obj.subscribe) {
+	                return _observableStrategy;
+	            }
+	            throw new InvalidPipeArgumentError(AsyncPipe, obj);
 	        };
-	        PathLocationStrategy.prototype.replaceState = function (state, title, url, queryParams) {
-	            var externalUrl = this.prepareExternalUrl(url + Location.normalizeQueryParams(queryParams));
-	            this._platformLocation.replaceState(state, title, externalUrl);
+	        AsyncPipe.prototype._dispose = function () {
+	            this._strategy.dispose(this._subscription);
+	            this._latestValue = null;
+	            this._latestReturnedValue = null;
+	            this._subscription = null;
+	            this._obj = null;
 	        };
-	        PathLocationStrategy.prototype.forward = function () { this._platformLocation.forward(); };
-	        PathLocationStrategy.prototype.back = function () { this._platformLocation.back(); };
-	        PathLocationStrategy.decorators = [
-	            { type: _angular_core.Injectable },
+	        AsyncPipe.prototype._updateLatestValue = function (async, value) {
+	            if (async === this._obj) {
+	                this._latestValue = value;
+	                this._ref.markForCheck();
+	            }
+	        };
+	        AsyncPipe.decorators = [
+	            { type: _angular_core.Pipe, args: [{ name: 'async', pure: false },] },
 	        ];
 	        /** @nocollapse */
-	        PathLocationStrategy.ctorParameters = [
-	            { type: PlatformLocation, },
-	            { type: undefined, decorators: [{ type: _angular_core.Optional }, { type: _angular_core.Inject, args: [APP_BASE_HREF,] },] },
+	        AsyncPipe.ctorParameters = [
+	            { type: _angular_core.ChangeDetectorRef, },
 	        ];
-	        return PathLocationStrategy;
-	    }(LocationStrategy));
+	        return AsyncPipe;
+	    }());
 
 	    /**
-	     * A collection of Angular core directives that are likely to be used in each and every Angular
-	     * application.
+	     * @license
+	     * Copyright Google Inc. All Rights Reserved.
 	     *
-	     * This collection can be used to quickly enumerate all the built-in directives in the `directives`
-	     * property of the `@Component` annotation.
+	     * Use of this source code is governed by an MIT-style license that can be
+	     * found in the LICENSE file at https://angular.io/license
+	     */
+	    var NumberFormatStyle;
+	    (function (NumberFormatStyle) {
+	        NumberFormatStyle[NumberFormatStyle["Decimal"] = 0] = "Decimal";
+	        NumberFormatStyle[NumberFormatStyle["Percent"] = 1] = "Percent";
+	        NumberFormatStyle[NumberFormatStyle["Currency"] = 2] = "Currency";
+	    })(NumberFormatStyle || (NumberFormatStyle = {}));
+	    var NumberFormatter = (function () {
+	        function NumberFormatter() {
+	        }
+	        NumberFormatter.format = function (num, locale, style, _a) {
+	            var _b = _a === void 0 ? {} : _a, minimumIntegerDigits = _b.minimumIntegerDigits, minimumFractionDigits = _b.minimumFractionDigits, maximumFractionDigits = _b.maximumFractionDigits, currency = _b.currency, _c = _b.currencyAsSymbol, currencyAsSymbol = _c === void 0 ? false : _c;
+	            var options = {
+	                minimumIntegerDigits: minimumIntegerDigits,
+	                minimumFractionDigits: minimumFractionDigits,
+	                maximumFractionDigits: maximumFractionDigits,
+	                style: NumberFormatStyle[style].toLowerCase()
+	            };
+	            if (style == NumberFormatStyle.Currency) {
+	                options.currency = currency;
+	                options.currencyDisplay = currencyAsSymbol ? 'symbol' : 'code';
+	            }
+	            return new Intl.NumberFormat(locale, options).format(num);
+	        };
+	        return NumberFormatter;
+	    }());
+	    var DATE_FORMATS_SPLIT = /((?:[^yMLdHhmsazZEwGjJ']+)|(?:'(?:[^']|'')*')|(?:E+|y+|M+|L+|d+|H+|h+|J+|j+|m+|s+|a|z|Z|G+|w+))(.*)/;
+	    var PATTERN_ALIASES = {
+	        yMMMdjms: datePartGetterFactory(combine([
+	            digitCondition('year', 1),
+	            nameCondition('month', 3),
+	            digitCondition('day', 1),
+	            digitCondition('hour', 1),
+	            digitCondition('minute', 1),
+	            digitCondition('second', 1),
+	        ])),
+	        yMdjm: datePartGetterFactory(combine([
+	            digitCondition('year', 1), digitCondition('month', 1), digitCondition('day', 1),
+	            digitCondition('hour', 1), digitCondition('minute', 1)
+	        ])),
+	        yMMMMEEEEd: datePartGetterFactory(combine([
+	            digitCondition('year', 1), nameCondition('month', 4), nameCondition('weekday', 4),
+	            digitCondition('day', 1)
+	        ])),
+	        yMMMMd: datePartGetterFactory(combine([digitCondition('year', 1), nameCondition('month', 4), digitCondition('day', 1)])),
+	        yMMMd: datePartGetterFactory(combine([digitCondition('year', 1), nameCondition('month', 3), digitCondition('day', 1)])),
+	        yMd: datePartGetterFactory(combine([digitCondition('year', 1), digitCondition('month', 1), digitCondition('day', 1)])),
+	        jms: datePartGetterFactory(combine([digitCondition('hour', 1), digitCondition('second', 1), digitCondition('minute', 1)])),
+	        jm: datePartGetterFactory(combine([digitCondition('hour', 1), digitCondition('minute', 1)]))
+	    };
+	    var DATE_FORMATS = {
+	        yyyy: datePartGetterFactory(digitCondition('year', 4)),
+	        yy: datePartGetterFactory(digitCondition('year', 2)),
+	        y: datePartGetterFactory(digitCondition('year', 1)),
+	        MMMM: datePartGetterFactory(nameCondition('month', 4)),
+	        MMM: datePartGetterFactory(nameCondition('month', 3)),
+	        MM: datePartGetterFactory(digitCondition('month', 2)),
+	        M: datePartGetterFactory(digitCondition('month', 1)),
+	        LLLL: datePartGetterFactory(nameCondition('month', 4)),
+	        dd: datePartGetterFactory(digitCondition('day', 2)),
+	        d: datePartGetterFactory(digitCondition('day', 1)),
+	        HH: digitModifier(hourExtracter(datePartGetterFactory(hour12Modify(digitCondition('hour', 2), false)))),
+	        H: hourExtracter(datePartGetterFactory(hour12Modify(digitCondition('hour', 1), false))),
+	        hh: digitModifier(hourExtracter(datePartGetterFactory(hour12Modify(digitCondition('hour', 2), true)))),
+	        h: hourExtracter(datePartGetterFactory(hour12Modify(digitCondition('hour', 1), true))),
+	        jj: datePartGetterFactory(digitCondition('hour', 2)),
+	        j: datePartGetterFactory(digitCondition('hour', 1)),
+	        mm: digitModifier(datePartGetterFactory(digitCondition('minute', 2))),
+	        m: datePartGetterFactory(digitCondition('minute', 1)),
+	        ss: digitModifier(datePartGetterFactory(digitCondition('second', 2))),
+	        s: datePartGetterFactory(digitCondition('second', 1)),
+	        // while ISO 8601 requires fractions to be prefixed with `.` or `,`
+	        // we can be just safely rely on using `sss` since we currently don't support single or two digit
+	        // fractions
+	        sss: datePartGetterFactory(digitCondition('second', 3)),
+	        EEEE: datePartGetterFactory(nameCondition('weekday', 4)),
+	        EEE: datePartGetterFactory(nameCondition('weekday', 3)),
+	        EE: datePartGetterFactory(nameCondition('weekday', 2)),
+	        E: datePartGetterFactory(nameCondition('weekday', 1)),
+	        a: hourClockExtracter(datePartGetterFactory(hour12Modify(digitCondition('hour', 1), true))),
+	        Z: timeZoneGetter('short'),
+	        z: timeZoneGetter('long'),
+	        ww: datePartGetterFactory({}),
+	        // first Thursday of the year. not support ?
+	        w: datePartGetterFactory({}),
+	        // of the year not support ?
+	        G: datePartGetterFactory(nameCondition('era', 1)),
+	        GG: datePartGetterFactory(nameCondition('era', 2)),
+	        GGG: datePartGetterFactory(nameCondition('era', 3)),
+	        GGGG: datePartGetterFactory(nameCondition('era', 4))
+	    };
+	    function digitModifier(inner) {
+	        return function (date, locale) {
+	            var result = inner(date, locale);
+	            return result.length == 1 ? '0' + result : result;
+	        };
+	    }
+	    function hourClockExtracter(inner) {
+	        return function (date, locale) {
+	            var result = inner(date, locale);
+	            return result.split(' ')[1];
+	        };
+	    }
+	    function hourExtracter(inner) {
+	        return function (date, locale) {
+	            var result = inner(date, locale);
+	            return result.split(' ')[0];
+	        };
+	    }
+	    function intlDateFormat(date, locale, options) {
+	        return new Intl.DateTimeFormat(locale, options).format(date).replace(/[\u200e\u200f]/g, '');
+	    }
+	    function timeZoneGetter(timezone) {
+	        // To workaround `Intl` API restriction for single timezone let format with 24 hours
+	        var options = { hour: '2-digit', hour12: false, timeZoneName: timezone };
+	        return function (date, locale) {
+	            var result = intlDateFormat(date, locale, options);
+	            // Then extract first 3 letters that related to hours
+	            return result ? result.substring(3) : '';
+	        };
+	    }
+	    function hour12Modify(options, value) {
+	        options.hour12 = value;
+	        return options;
+	    }
+	    function digitCondition(prop, len) {
+	        var result = {};
+	        result[prop] = len == 2 ? '2-digit' : 'numeric';
+	        return result;
+	    }
+	    function nameCondition(prop, len) {
+	        var result = {};
+	        result[prop] = len < 4 ? 'short' : 'long';
+	        return result;
+	    }
+	    function combine(options) {
+	        var result = {};
+	        options.forEach(function (option) { Object.assign(result, option); });
+	        return result;
+	    }
+	    function datePartGetterFactory(ret) {
+	        return function (date, locale) { return intlDateFormat(date, locale, ret); };
+	    }
+	    var datePartsFormatterCache = new Map();
+	    function dateFormatter(format, date, locale) {
+	        var text = '';
+	        var match;
+	        var fn;
+	        var parts = [];
+	        if (PATTERN_ALIASES[format]) {
+	            return PATTERN_ALIASES[format](date, locale);
+	        }
+	        if (datePartsFormatterCache.has(format)) {
+	            parts = datePartsFormatterCache.get(format);
+	        }
+	        else {
+	            var matches = DATE_FORMATS_SPLIT.exec(format);
+	            while (format) {
+	                match = DATE_FORMATS_SPLIT.exec(format);
+	                if (match) {
+	                    parts = concat(parts, match, 1);
+	                    format = parts.pop();
+	                }
+	                else {
+	                    parts.push(format);
+	                    format = null;
+	                }
+	            }
+	            datePartsFormatterCache.set(format, parts);
+	        }
+	        parts.forEach(function (part) {
+	            fn = DATE_FORMATS[part];
+	            text += fn ? fn(date, locale) :
+	                part === '\'\'' ? '\'' : part.replace(/(^'|'$)/g, '').replace(/''/g, '\'');
+	        });
+	        return text;
+	    }
+	    var slice = [].slice;
+	    function concat(array1 /** TODO #9100 */, array2 /** TODO #9100 */, index /** TODO #9100 */) {
+	        return array1.concat(slice.call(array2, index));
+	    }
+	    var DateFormatter = (function () {
+	        function DateFormatter() {
+	        }
+	        DateFormatter.format = function (date, locale, pattern) {
+	            return dateFormatter(pattern, date, locale);
+	        };
+	        return DateFormatter;
+	    }());
+
+	    /**
+	     * @ngModule CommonModule
+	     * @whatItDoes Formats a date according to locale rules.
+	     * @howToUse `date_expression | date[:format]`
+	     * @description
 	     *
-	     * ### Example ([live demo](http://plnkr.co/edit/yakGwpCdUkg0qfzX5m8g?p=preview))
+	     * Where:
+	     * - `expression` is a date object or a number (milliseconds since UTC epoch) or an ISO string
+	     * (https://www.w3.org/TR/NOTE-datetime).
+	     * - `format` indicates which date/time components to include. The format can be predifined as
+	     *   shown below or custom as shown in the table.
+	     *   - `'medium'`: equivalent to `'yMMMdjms'` (e.g. `Sep 3, 2010, 12:05:08 PM` for `en-US`)
+	     *   - `'short'`: equivalent to `'yMdjm'` (e.g. `9/3/2010, 12:05 PM` for `en-US`)
+	     *   - `'fullDate'`: equivalent to `'yMMMMEEEEd'` (e.g. `Friday, September 3, 2010` for `en-US`)
+	     *   - `'longDate'`: equivalent to `'yMMMMd'` (e.g. `September 3, 2010` for `en-US`)
+	     *   - `'mediumDate'`: equivalent to `'yMMMd'` (e.g. `Sep 3, 2010` for `en-US`)
+	     *   - `'shortDate'`: equivalent to `'yMd'` (e.g. `9/3/2010` for `en-US`)
+	     *   - `'mediumTime'`: equivalent to `'jms'` (e.g. `12:05:08 PM` for `en-US`)
+	     *   - `'shortTime'`: equivalent to `'jm'` (e.g. `12:05 PM` for `en-US`)
 	     *
-	     * Instead of writing:
 	     *
-	     * ```typescript
-	     * import {NgClass, NgIf, NgFor, NgSwitch, NgSwitchCase, NgSwitchDefault} from '@angular/common';
-	     * import {OtherDirective} from './myDirectives';
+	     *  | Component | Symbol | Short Form   | Long Form         | Numeric   | 2-digit   |
+	     *  |-----------|:------:|--------------|-------------------|-----------|-----------|
+	     *  | era       |   G    | G (AD)       | GGGG (Anno Domini)| -         | -         |
+	     *  | year      |   y    | -            | -                 | y (2015)  | yy (15)   |
+	     *  | month     |   M    | MMM (Sep)    | MMMM (September)  | M (9)     | MM (09)   |
+	     *  | day       |   d    | -            | -                 | d (3)     | dd (03)   |
+	     *  | weekday   |   E    | EEE (Sun)    | EEEE (Sunday)     | -         | -         |
+	     *  | hour      |   j    | -            | -                 | j (13)    | jj (13)   |
+	     *  | hour12    |   h    | -            | -                 | h (1 PM)  | hh (01 PM)|
+	     *  | hour24    |   H    | -            | -                 | H (13)    | HH (13)   |
+	     *  | minute    |   m    | -            | -                 | m (5)     | mm (05)   |
+	     *  | second    |   s    | -            | -                 | s (9)     | ss (09)   |
+	     *  | timezone  |   z    | -            | z (Pacific Standard Time)| -  | -         |
+	     *  | timezone  |   Z    | Z (GMT-8:00) | -                 | -         | -         |
+	     *  | timezone  |   a    | a (PM)       | -                 | -         | -         |
 	     *
-	     * @Component({
-	     *   selector: 'my-component',
-	     *   templateUrl: 'myComponent.html',
-	     *   directives: [NgClass, NgIf, NgFor, NgSwitch, NgSwitchCase, NgSwitchDefault, OtherDirective]
-	     * })
-	     * export class MyComponent {
-	     *   ...
-	     * }
+	     * In javascript, only the components specified will be respected (not the ordering,
+	     * punctuations, ...) and details of the formatting will be dependent on the locale.
+	     *
+	     * Timezone of the formatted text will be the local system timezone of the end-user's machine.
+	     *
+	     * WARNINGS:
+	     * - this pipe is marked as pure hence it will not be re-evaluated when the input is mutated.
+	     *   Instead users should treat the date as an immutable object and change the reference when the
+	     *   pipe needs to re-run (this is to avoid reformatting the date on every change detection run
+	     *   which would be an expensive operation).
+	     * - this pipe uses the Internationalization API. Therefore it is only reliable in Chrome and Opera
+	     *   browsers.
+	     *
+	     * ### Examples
+	     *
+	     * Assuming `dateObj` is (year: 2015, month: 6, day: 15, hour: 21, minute: 43, second: 11)
+	     * in the _local_ time and locale is 'en-US':
+	     *
 	     * ```
-	     * one could import all the core directives at once:
-	     *
-	     * ```typescript
-	     * import {CORE_DIRECTIVES} from '@angular/common';
-	     * import {OtherDirective} from './myDirectives';
-	     *
-	     * @Component({
-	     *   selector: 'my-component',
-	     *   templateUrl: 'myComponent.html',
-	     *   directives: [CORE_DIRECTIVES, OtherDirective]
-	     * })
-	     * export class MyComponent {
-	     *   ...
-	     * }
+	     *     {{ dateObj | date }}               // output is 'Jun 15, 2015'
+	     *     {{ dateObj | date:'medium' }}      // output is 'Jun 15, 2015, 9:43:11 PM'
+	     *     {{ dateObj | date:'shortTime' }}   // output is '9:43 PM'
+	     *     {{ dateObj | date:'mmss' }}        // output is '43:11'
 	     * ```
+	     *
+	     * {@example common/pipes/ts/date_pipe.ts region='DatePipe'}
 	     *
 	     * @stable
 	     */
-	    var CORE_DIRECTIVES = [
-	        NgClass,
-	        NgFor,
-	        NgIf,
-	        NgTemplateOutlet,
-	        NgStyle,
-	        NgSwitch,
-	        NgSwitchCase,
-	        NgSwitchDefault,
-	        NgPlural,
-	        NgPluralCase,
-	    ];
+	    var DatePipe = (function () {
+	        function DatePipe(_locale) {
+	            this._locale = _locale;
+	        }
+	        DatePipe.prototype.transform = function (value, pattern) {
+	            if (pattern === void 0) { pattern = 'mediumDate'; }
+	            if (isBlank(value))
+	                return null;
+	            if (!this.supports(value)) {
+	                throw new InvalidPipeArgumentError(DatePipe, value);
+	            }
+	            if (NumberWrapper.isNumeric(value)) {
+	                value = parseFloat(value);
+	            }
+	            return DateFormatter.format(new Date(value), this._locale, DatePipe._ALIASES[pattern] || pattern);
+	        };
+	        DatePipe.prototype.supports = function (obj) {
+	            return isDate(obj) || NumberWrapper.isNumeric(obj) ||
+	                (typeof obj === 'string' && isDate(new Date(obj)));
+	        };
+	        /** @internal */
+	        DatePipe._ALIASES = {
+	            'medium': 'yMMMdjms',
+	            'short': 'yMdjm',
+	            'fullDate': 'yMMMMEEEEd',
+	            'longDate': 'yMMMMd',
+	            'mediumDate': 'yMMMd',
+	            'shortDate': 'yMd',
+	            'mediumTime': 'jms',
+	            'shortTime': 'jm'
+	        };
+	        DatePipe.decorators = [
+	            { type: _angular_core.Pipe, args: [{ name: 'date', pure: true },] },
+	        ];
+	        /** @nocollapse */
+	        DatePipe.ctorParameters = [
+	            { type: undefined, decorators: [{ type: _angular_core.Inject, args: [_angular_core.LOCALE_ID,] },] },
+	        ];
+	        return DatePipe;
+	    }());
+
+	    var _INTERPOLATION_REGEXP = /#/g;
+	    /**
+	     * @ngModule CommonModule
+	     * @whatItDoes Maps a value to a string that pluralizes the value according to locale rules.
+	     * @howToUse `expression | i18nPlural:mapping`
+	     * @description
+	     *
+	     *  Where:
+	     *  - `expression` is a number.
+	     *  - `mapping` is an object that mimics the ICU format, see
+	     *    http://userguide.icu-project.org/formatparse/messages
+	     *
+	     *  ## Example
+	     *
+	     * {@example common/pipes/ts/i18n_pipe.ts region='I18nPluralPipeComponent'}
+	     *
+	     * @experimental
+	     */
+	    var I18nPluralPipe = (function () {
+	        function I18nPluralPipe(_localization) {
+	            this._localization = _localization;
+	        }
+	        I18nPluralPipe.prototype.transform = function (value, pluralMap) {
+	            if (isBlank(value))
+	                return '';
+	            if (!isStringMap(pluralMap)) {
+	                throw new InvalidPipeArgumentError(I18nPluralPipe, pluralMap);
+	            }
+	            var key = getPluralCategory(value, Object.keys(pluralMap), this._localization);
+	            return pluralMap[key].replace(_INTERPOLATION_REGEXP, value.toString());
+	        };
+	        I18nPluralPipe.decorators = [
+	            { type: _angular_core.Pipe, args: [{ name: 'i18nPlural', pure: true },] },
+	        ];
+	        /** @nocollapse */
+	        I18nPluralPipe.ctorParameters = [
+	            { type: NgLocalization, },
+	        ];
+	        return I18nPluralPipe;
+	    }());
 
 	    /**
-	     * A collection of Angular core directives that are likely to be used in each and every Angular
-	     * application. This includes core directives (e.g., NgIf and NgFor), and forms directives (e.g.,
-	     * NgModel).
+	     * @ngModule CommonModule
+	     * @whatItDoes Generic selector that displays the string that matches the current value.
+	     * @howToUse `expression | i18nSelect:mapping`
+	     * @description
 	     *
-	     * This collection can be used to quickly enumerate all the built-in directives in the `directives`
-	     * property of the `@Component` decorator.
+	     *  Where:
+	     *  - `mapping`: is an object that indicates the text that should be displayed
+	     *  for different values of the provided `expression`.
+	     *
+	     *  ## Example
+	     *
+	     * {@example common/pipes/ts/i18n_pipe.ts region='I18nSelectPipeComponent'}
+	     *
+	     *  @experimental
+	     */
+	    var I18nSelectPipe = (function () {
+	        function I18nSelectPipe() {
+	        }
+	        I18nSelectPipe.prototype.transform = function (value, mapping) {
+	            if (isBlank(value))
+	                return '';
+	            if (!isStringMap(mapping)) {
+	                throw new InvalidPipeArgumentError(I18nSelectPipe, mapping);
+	            }
+	            return mapping.hasOwnProperty(value) ? mapping[value] : '';
+	        };
+	        I18nSelectPipe.decorators = [
+	            { type: _angular_core.Pipe, args: [{ name: 'i18nSelect', pure: true },] },
+	        ];
+	        /** @nocollapse */
+	        I18nSelectPipe.ctorParameters = [];
+	        return I18nSelectPipe;
+	    }());
+
+	    /**
+	     * @ngModule CommonModule
+	     * @whatItDoes Converts value into JSON string.
+	     * @howToUse `expression | json`
+	     * @description
+	     *
+	     * Converts value into string using `JSON.stringify`. Useful for debugging.
+	     *
+	     * ### Example
+	     * {@example common/pipes/ts/json_pipe.ts region='JsonPipe'}
+	     *
+	     * @stable
+	     */
+	    var JsonPipe = (function () {
+	        function JsonPipe() {
+	        }
+	        JsonPipe.prototype.transform = function (value) { return Json.stringify(value); };
+	        JsonPipe.decorators = [
+	            { type: _angular_core.Pipe, args: [{ name: 'json', pure: false },] },
+	        ];
+	        /** @nocollapse */
+	        JsonPipe.ctorParameters = [];
+	        return JsonPipe;
+	    }());
+
+	    /**
+	     * @ngModule CommonModule
+	     * @whatItDoes Transforms string to lowercase.
+	     * @howToUse `expression | lowercase`
+	     * @description
+	     *
+	     * Converts value into lowercase string using `String.prototype.toLowerCase()`.
 	     *
 	     * ### Example
 	     *
-	     * Instead of writing:
+	     * {@example common/pipes/ts/lowerupper_pipe.ts region='LowerUpperPipe'}
 	     *
-	     * ```typescript
-	     * import {NgClass, NgIf, NgFor, NgSwitch, NgSwitchCase, NgSwitchDefault, NgModel, NgForm} from
-	     * '@angular/common';
-	     * import {OtherDirective} from './myDirectives';
-	     *
-	     * @Component({
-	     *   selector: 'my-component',
-	     *   templateUrl: 'myComponent.html',
-	     *   directives: [NgClass, NgIf, NgFor, NgSwitch, NgSwitchCase, NgSwitchDefault, NgModel, NgForm,
-	     * OtherDirective]
-	     * })
-	     * export class MyComponent {
-	     *   ...
-	     * }
-	     * ```
-	     * one could import all the common directives at once:
-	     *
-	     * ```typescript
-	     * import {COMMON_DIRECTIVES} from '@angular/common';
-	     * import {OtherDirective} from './myDirectives';
-	     *
-	     * @Component({
-	     *   selector: 'my-component',
-	     *   templateUrl: 'myComponent.html',
-	     *   directives: [COMMON_DIRECTIVES, OtherDirective]
-	     * })
-	     * export class MyComponent {
-	     *   ...
-	     * }
-	     * ```
-	     *
-	     * @experimental Contains forms which are experimental.
+	     * @stable
 	     */
-	    var COMMON_DIRECTIVES = CORE_DIRECTIVES;
+	    var LowerCasePipe = (function () {
+	        function LowerCasePipe() {
+	        }
+	        LowerCasePipe.prototype.transform = function (value) {
+	            if (isBlank(value))
+	                return value;
+	            if (typeof value !== 'string') {
+	                throw new InvalidPipeArgumentError(LowerCasePipe, value);
+	            }
+	            return value.toLowerCase();
+	        };
+	        LowerCasePipe.decorators = [
+	            { type: _angular_core.Pipe, args: [{ name: 'lowercase' },] },
+	        ];
+	        /** @nocollapse */
+	        LowerCasePipe.ctorParameters = [];
+	        return LowerCasePipe;
+	    }());
+
+	    var _NUMBER_FORMAT_REGEXP = /^(\d+)?\.((\d+)(-(\d+))?)?$/;
+	    function formatNumber(pipe, locale, value, style, digits, currency, currencyAsSymbol) {
+	        if (currency === void 0) { currency = null; }
+	        if (currencyAsSymbol === void 0) { currencyAsSymbol = false; }
+	        if (isBlank(value))
+	            return null;
+	        // Convert strings to numbers
+	        value = typeof value === 'string' && NumberWrapper.isNumeric(value) ? +value : value;
+	        if (typeof value !== 'number') {
+	            throw new InvalidPipeArgumentError(pipe, value);
+	        }
+	        var minInt;
+	        var minFraction;
+	        var maxFraction;
+	        if (style !== NumberFormatStyle.Currency) {
+	            // rely on Intl default for currency
+	            minInt = 1;
+	            minFraction = 0;
+	            maxFraction = 3;
+	        }
+	        if (digits) {
+	            var parts = digits.match(_NUMBER_FORMAT_REGEXP);
+	            if (parts === null) {
+	                throw new Error(digits + " is not a valid digit info for number pipes");
+	            }
+	            if (isPresent(parts[1])) {
+	                minInt = NumberWrapper.parseIntAutoRadix(parts[1]);
+	            }
+	            if (isPresent(parts[3])) {
+	                minFraction = NumberWrapper.parseIntAutoRadix(parts[3]);
+	            }
+	            if (isPresent(parts[5])) {
+	                maxFraction = NumberWrapper.parseIntAutoRadix(parts[5]);
+	            }
+	        }
+	        return NumberFormatter.format(value, locale, style, {
+	            minimumIntegerDigits: minInt,
+	            minimumFractionDigits: minFraction,
+	            maximumFractionDigits: maxFraction,
+	            currency: currency,
+	            currencyAsSymbol: currencyAsSymbol,
+	        });
+	    }
+	    /**
+	     * @ngModule CommonModule
+	     * @whatItDoes Formats a number according to locale rules.
+	     * @howToUse `number_expression | number[:digitInfo]`
+	     *
+	     * Formats a number as text. Group sizing and separator and other locale-specific
+	     * configurations are based on the active locale.
+	     *
+	     * where `expression` is a number:
+	     *  - `digitInfo` is a `string` which has a following format: <br>
+	     *     <code>{minIntegerDigits}.{minFractionDigits}-{maxFractionDigits}</code>
+	     *   - `minIntegerDigits` is the minimum number of integer digits to use. Defaults to `1`.
+	     *   - `minFractionDigits` is the minimum number of digits after fraction. Defaults to `0`.
+	     *   - `maxFractionDigits` is the maximum number of digits after fraction. Defaults to `3`.
+	     *
+	     * For more information on the acceptable range for each of these numbers and other
+	     * details see your native internationalization library.
+	     *
+	     * WARNING: this pipe uses the Internationalization API which is not yet available in all browsers
+	     * and may require a polyfill. See {@linkDocs guide/browser-support} for details.
+	     *
+	     * ### Example
+	     *
+	     * {@example common/pipes/ts/number_pipe.ts region='NumberPipe'}
+	     *
+	     * @stable
+	     */
+	    var DecimalPipe = (function () {
+	        function DecimalPipe(_locale) {
+	            this._locale = _locale;
+	        }
+	        DecimalPipe.prototype.transform = function (value, digits) {
+	            if (digits === void 0) { digits = null; }
+	            return formatNumber(DecimalPipe, this._locale, value, NumberFormatStyle.Decimal, digits);
+	        };
+	        DecimalPipe.decorators = [
+	            { type: _angular_core.Pipe, args: [{ name: 'number' },] },
+	        ];
+	        /** @nocollapse */
+	        DecimalPipe.ctorParameters = [
+	            { type: undefined, decorators: [{ type: _angular_core.Inject, args: [_angular_core.LOCALE_ID,] },] },
+	        ];
+	        return DecimalPipe;
+	    }());
+	    /**
+	     * @ngModule CommonModule
+	     * @whatItDoes Formats a number as a percentage according to locale rules.
+	     * @howToUse `number_expression | percent[:digitInfo]`
+	     *
+	     * @description
+	     *
+	     * Formats a number as percentage.
+	     *
+	     * - `digitInfo` See {@link DecimalPipe} for detailed description.
+	     *
+	     * WARNING: this pipe uses the Internationalization API which is not yet available in all browsers
+	     * and may require a polyfill. See {@linkDocs guide/browser-support} for details.
+	     *
+	     * ### Example
+	     *
+	     * {@example common/pipes/ts/number_pipe.ts region='PercentPipe'}
+	     *
+	     * @stable
+	     */
+	    var PercentPipe = (function () {
+	        function PercentPipe(_locale) {
+	            this._locale = _locale;
+	        }
+	        PercentPipe.prototype.transform = function (value, digits) {
+	            if (digits === void 0) { digits = null; }
+	            return formatNumber(PercentPipe, this._locale, value, NumberFormatStyle.Percent, digits);
+	        };
+	        PercentPipe.decorators = [
+	            { type: _angular_core.Pipe, args: [{ name: 'percent' },] },
+	        ];
+	        /** @nocollapse */
+	        PercentPipe.ctorParameters = [
+	            { type: undefined, decorators: [{ type: _angular_core.Inject, args: [_angular_core.LOCALE_ID,] },] },
+	        ];
+	        return PercentPipe;
+	    }());
+	    /**
+	     * @ngModule CommonModule
+	     * @whatItDoes Formats a number as currency using locale rules.
+	     * @howToUse `number_expression | currency[:currencyCode[:symbolDisplay[:digitInfo]]]`
+	     * @description
+	     *
+	     * Use `currency` to format a number as currency.
+	     *
+	     * - `currencyCode` is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, such
+	     *    as `USD` for the US dollar and `EUR` for the euro.
+	     * - `symbolDisplay` is a boolean indicating whether to use the currency symbol or code.
+	     *   - `true`: use symbol (e.g. `$`).
+	     *   - `false`(default): use code (e.g. `USD`).
+	     * - `digitInfo` See {@link DecimalPipe} for detailed description.
+	     *
+	     * WARNING: this pipe uses the Internationalization API which is not yet available in all browsers
+	     * and may require a polyfill. See {@linkDocs guide/browser-support} for details.
+	     *
+	     * ### Example
+	     *
+	     * {@example common/pipes/ts/number_pipe.ts region='CurrencyPipe'}
+	     *
+	     * @stable
+	     */
+	    var CurrencyPipe = (function () {
+	        function CurrencyPipe(_locale) {
+	            this._locale = _locale;
+	        }
+	        CurrencyPipe.prototype.transform = function (value, currencyCode, symbolDisplay, digits) {
+	            if (currencyCode === void 0) { currencyCode = 'USD'; }
+	            if (symbolDisplay === void 0) { symbolDisplay = false; }
+	            if (digits === void 0) { digits = null; }
+	            return formatNumber(CurrencyPipe, this._locale, value, NumberFormatStyle.Currency, digits, currencyCode, symbolDisplay);
+	        };
+	        CurrencyPipe.decorators = [
+	            { type: _angular_core.Pipe, args: [{ name: 'currency' },] },
+	        ];
+	        /** @nocollapse */
+	        CurrencyPipe.ctorParameters = [
+	            { type: undefined, decorators: [{ type: _angular_core.Inject, args: [_angular_core.LOCALE_ID,] },] },
+	        ];
+	        return CurrencyPipe;
+	    }());
 
 	    /**
-	     * A collection of Angular core pipes that are likely to be used in each and every
-	     * application.
+	     * @ngModule CommonModule
+	     * @whatItDoes Creates a new List or String containing a subset (slice) of the elements.
+	     * @howToUse `array_or_string_expression | slice:start[:end]`
+	     * @description
 	     *
-	     * This collection can be used to quickly enumerate all the built-in pipes in the `pipes`
-	     * property of the `@Component` decorator.
+	     * Where the input expression is a `List` or `String`, and:
+	     * - `start`: The starting index of the subset to return.
+	     *   - **a positive integer**: return the item at `start` index and all items after
+	     *     in the list or string expression.
+	     *   - **a negative integer**: return the item at `start` index from the end and all items after
+	     *     in the list or string expression.
+	     *   - **if positive and greater than the size of the expression**: return an empty list or string.
+	     *   - **if negative and greater than the size of the expression**: return entire list or string.
+	     * - `end`: The ending index of the subset to return.
+	     *   - **omitted**: return all items until the end.
+	     *   - **if positive**: return all items before `end` index of the list or string.
+	     *   - **if negative**: return all items before `end` index from the end of the list or string.
 	     *
-	     * @experimental Contains i18n pipes which are experimental
+	     * All behavior is based on the expected behavior of the JavaScript API `Array.prototype.slice()`
+	     * and `String.prototype.slice()`.
+	     *
+	     * When operating on a [List], the returned list is always a copy even when all
+	     * the elements are being returned.
+	     *
+	     * When operating on a blank value, the pipe returns the blank value.
+	     *
+	     * ## List Example
+	     *
+	     * This `ngFor` example:
+	     *
+	     * {@example common/pipes/ts/slice_pipe.ts region='SlicePipe_list'}
+	     *
+	     * produces the following:
+	     *
+	     *     <li>b</li>
+	     *     <li>c</li>
+	     *
+	     * ## String Examples
+	     *
+	     * {@example common/pipes/ts/slice_pipe.ts region='SlicePipe_string'}
+	     *
+	     * @stable
+	     */
+	    var SlicePipe = (function () {
+	        function SlicePipe() {
+	        }
+	        SlicePipe.prototype.transform = function (value, start, end) {
+	            if (isBlank(value))
+	                return value;
+	            if (!this.supports(value)) {
+	                throw new InvalidPipeArgumentError(SlicePipe, value);
+	            }
+	            return value.slice(start, end);
+	        };
+	        SlicePipe.prototype.supports = function (obj) { return typeof obj === 'string' || Array.isArray(obj); };
+	        SlicePipe.decorators = [
+	            { type: _angular_core.Pipe, args: [{ name: 'slice', pure: false },] },
+	        ];
+	        /** @nocollapse */
+	        SlicePipe.ctorParameters = [];
+	        return SlicePipe;
+	    }());
+
+	    /**
+	     * @ngModule CommonModule
+	     * @whatItDoes Transforms string to uppercase.
+	     * @howToUse `expression | uppercase`
+	     * @description
+	     *
+	     * Converts value into lowercase string using `String.prototype.toUpperCase()`.
+	     *
+	     * ### Example
+	     *
+	     * {@example common/pipes/ts/lowerupper_pipe.ts region='LowerUpperPipe'}
+	     *
+	     * @stable
+	     */
+	    var UpperCasePipe = (function () {
+	        function UpperCasePipe() {
+	        }
+	        UpperCasePipe.prototype.transform = function (value) {
+	            if (isBlank(value))
+	                return value;
+	            if (typeof value !== 'string') {
+	                throw new InvalidPipeArgumentError(UpperCasePipe, value);
+	            }
+	            return value.toUpperCase();
+	        };
+	        UpperCasePipe.decorators = [
+	            { type: _angular_core.Pipe, args: [{ name: 'uppercase' },] },
+	        ];
+	        /** @nocollapse */
+	        UpperCasePipe.ctorParameters = [];
+	        return UpperCasePipe;
+	    }());
+
+	    /**
+	     * A collection of Angular pipes that are likely to be used in each and every application.
 	     */
 	    var COMMON_PIPES = [
 	        AsyncPipe,
@@ -21763,7 +18668,7 @@ webpackJsonp([1],{
 	    // Note: This does not contain the location providers,
 	    // as they need some platform specific implementations to work.
 	    /**
-	     * The module that includes all the basic Angular directives like {@link NgIf}, ${link NgFor}, ...
+	     * The module that includes all the basic Angular directives like {@link NgIf}, {@link NgFor}, ...
 	     *
 	     * @stable
 	     */
@@ -21786,6 +18691,16 @@ webpackJsonp([1],{
 
 	    exports.NgLocalization = NgLocalization;
 	    exports.CommonModule = CommonModule;
+	    exports.NgClass = NgClass;
+	    exports.NgFor = NgFor;
+	    exports.NgIf = NgIf;
+	    exports.NgPlural = NgPlural;
+	    exports.NgPluralCase = NgPluralCase;
+	    exports.NgStyle = NgStyle;
+	    exports.NgSwitch = NgSwitch;
+	    exports.NgSwitchCase = NgSwitchCase;
+	    exports.NgSwitchDefault = NgSwitchDefault;
+	    exports.NgTemplateOutlet = NgTemplateOutlet;
 	    exports.AsyncPipe = AsyncPipe;
 	    exports.DatePipe = DatePipe;
 	    exports.I18nPluralPipe = I18nPluralPipe;
@@ -21797,16 +18712,6 @@ webpackJsonp([1],{
 	    exports.PercentPipe = PercentPipe;
 	    exports.SlicePipe = SlicePipe;
 	    exports.UpperCasePipe = UpperCasePipe;
-	    exports.NgClass = NgClass;
-	    exports.NgFor = NgFor;
-	    exports.NgIf = NgIf;
-	    exports.NgPlural = NgPlural;
-	    exports.NgPluralCase = NgPluralCase;
-	    exports.NgStyle = NgStyle;
-	    exports.NgSwitch = NgSwitch;
-	    exports.NgSwitchCase = NgSwitchCase;
-	    exports.NgSwitchDefault = NgSwitchDefault;
-	    exports.NgTemplateOutlet = NgTemplateOutlet;
 	    exports.PlatformLocation = PlatformLocation;
 	    exports.LocationStrategy = LocationStrategy;
 	    exports.APP_BASE_HREF = APP_BASE_HREF;
@@ -21990,7 +18895,7 @@ webpackJsonp([1],{
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * @license Angular v2.0.0-rc.6
+	 * @license Angular v3.0.1
 	 * (c) 2010-2016 Google, Inc. https://angular.io/
 	 * License: MIT
 	 */
@@ -22013,8 +18918,7 @@ webpackJsonp([1],{
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	    };
 	    /**
-	     * Name of the primary outlet.
-	     * @type {string}
+	     * @whatItDoes Name of the primary outlet.
 	     *
 	     * @stable
 	     */
@@ -22225,7 +19129,31 @@ webpackJsonp([1],{
 	        }
 	    }
 	    /**
-	     * A URL in the tree form.
+	     * @whatItDoes Represents the parsed URL.
+	     *
+	     * @howToUse
+	     *
+	     * ```
+	     * @Component({templateUrl:'template.html'})
+	     * class MyComponent {
+	     *   constructor(router: Router) {
+	     *     const tree: UrlTree =
+	     * router.parseUrl('/team/33/(user/victor//support:help)?debug=true#fragment');
+	     *     const f = tree.fragment; // return 'fragment'
+	     *     const q = tree.queryParams; // returns {debug: 'true'}
+	     *     const g: UrlSegmentGroup = tree.root.children[PRIMARY_OUTLET];
+	     *     const s: UrlSegment[] = g.segments; // returns 2 segments 'team' and '33'
+	     *     g.children[PRIMARY_OUTLET].segments; // returns 2 segments 'user' and 'victor'
+	     *     g.children['support'].segments; // return 1 segment 'help'
+	     *   }
+	     * }
+	     * ```
+	     *
+	     * @description
+	     *
+	     * Since a router state is a tree, and the URL is nothing but a serialized state, the URL is a
+	     * serialized tree.
+	     * UrlTree is a data structure that provides a lot of affordances in dealing with URLs
 	     *
 	     * @stable
 	     */
@@ -22233,22 +19161,52 @@ webpackJsonp([1],{
 	        /**
 	         * @internal
 	         */
-	        function UrlTree(root, queryParams, fragment) {
+	        function UrlTree(
+	            /**
+	            * The root segment group of the URL tree.
+	             */
+	            root,
+	            /**
+	             * The query params of the URL.
+	             */
+	            queryParams,
+	            /**
+	             * The fragment of the URL.
+	             */
+	            fragment) {
 	            this.root = root;
 	            this.queryParams = queryParams;
 	            this.fragment = fragment;
 	        }
+	        /**
+	         * @docsNotRequired
+	         */
 	        UrlTree.prototype.toString = function () { return new DefaultUrlSerializer().serialize(this); };
 	        return UrlTree;
 	    }());
 	    /**
+	     * @whatItDoes Represents the parsed URL segment.
+	     *
+	     * See {@link UrlTree} for more information.
+	     *
 	     * @stable
 	     */
 	    var UrlSegmentGroup = (function () {
-	        function UrlSegmentGroup(segments, children) {
+	        function UrlSegmentGroup(
+	            /**
+	             * The URL segments of this group. See {@link UrlSegment} for more information.
+	             */
+	            segments,
+	            /**
+	             * The list of children of this group.
+	             */
+	            children) {
 	            var _this = this;
 	            this.segments = segments;
 	            this.children = children;
+	            /**
+	             * The parent node in the url tree.
+	             */
 	            this.parent = null;
 	            forEach(children, function (v, k) { return v.parent = _this; });
 	        }
@@ -22264,17 +19222,53 @@ webpackJsonp([1],{
 	            enumerable: true,
 	            configurable: true
 	        });
+	        /**
+	         * @docsNotRequired
+	         */
 	        UrlSegmentGroup.prototype.toString = function () { return serializePaths(this); };
 	        return UrlSegmentGroup;
 	    }());
 	    /**
+	     * @whatItDoes Represents a single URL segment.
+	     *
+	     * @howToUse
+	     *
+	     * ```
+	     * @Component({templateUrl:'template.html'})
+	     * class MyComponent {
+	     *   constructor(router: Router) {
+	     *     const tree: UrlTree = router.parseUrl('/team;id=33');
+	     *     const g: UrlSegmentGroup = tree.root.children[PRIMARY_OUTLET];
+	     *     const s: UrlSegment[] = g.segments;
+	     *     s[0].path; // returns 'team'
+	     *     s[0].parameters; // returns {id: 33}
+	     *   }
+	     * }
+	     * ```
+	     *
+	     * @description
+	     *
+	     * A UrlSegment is a part of a URL between the two slashes. It contains a path and
+	     * the matrix parameters associated with the segment.
+	     *
 	     * @stable
 	     */
 	    var UrlSegment = (function () {
-	        function UrlSegment(path, parameters) {
+	        function UrlSegment(
+	            /**
+	             * The part part of a URL segment.
+	             */
+	            path,
+	            /**
+	             * The matrix parameters associated with a segment.
+	             */
+	            parameters) {
 	            this.path = path;
 	            this.parameters = parameters;
 	        }
+	        /**
+	         * @docsNotRequired
+	         */
 	        UrlSegment.prototype.toString = function () { return serializePath(this); };
 	        return UrlSegment;
 	    }());
@@ -22302,7 +19296,12 @@ webpackJsonp([1],{
 	        return res;
 	    }
 	    /**
-	     * Defines a way to serialize/deserialize a url tree.
+	     * @whatItDoes Serializes and deserializes a URL string into a URL tree.
+	     *
+	     * @description The url serialization strategy is customizable. You can
+	     * make all URLs case insensitive by providing a custom UrlSerializer.
+	     *
+	     * See {@link DefaultUrlSerializer} for an example of a URL serializer.
 	     *
 	     * @stable
 	     */
@@ -22312,17 +19311,36 @@ webpackJsonp([1],{
 	        return UrlSerializer;
 	    }());
 	    /**
-	     * A default implementation of the serialization.
+	     * @whatItDoes A default implementation of the {@link UrlSerializer}.
+	     *
+	     * @description
+	     *
+	     * Example URLs:
+	     *
+	     * ```
+	     * /inbox/33(popup:compose)
+	     * /inbox/33;open=true/messages/44
+	     * ```
+	     *
+	     * DefaultUrlSerializer uses parentheses to serialize secondary segments (e.g., popup:compose), the
+	     * colon syntax to specify the outlet, and the ';parameter=value' syntax (e.g., open=true) to
+	     * specify route specific parameters.
 	     *
 	     * @stable
 	     */
 	    var DefaultUrlSerializer = (function () {
 	        function DefaultUrlSerializer() {
 	        }
+	        /**
+	         * Parse a url into a {@link UrlTree}.
+	         */
 	        DefaultUrlSerializer.prototype.parse = function (url) {
 	            var p = new UrlParser(url);
 	            return new UrlTree(p.parseRootSegment(), p.parseQueryParams(), p.parseFragment());
 	        };
+	        /**
+	         * Converts a {@link UrlTree} into a url.
+	         */
 	        DefaultUrlSerializer.prototype.serialize = function (tree) {
 	            var segment = "/" + serializeSegment(tree.root, true);
 	            var query = serializeQueryParams(tree.queryParams);
@@ -23076,20 +20094,29 @@ webpackJsonp([1],{
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	    };
 	    /**
-	     * The state of the router.
+	     * @whatItDoes Represents the state of the router.
 	     *
-	     * ### Usage
+	     * @howToUse
 	     *
 	     * ```
-	     * @Component({template:''})
+	     * @Component({templateUrl:'template.html'})
 	     * class MyComponent {
 	     *   constructor(router: Router) {
-	     *     const state = router.routerState;
-	     *     const id: Observable<string> = state.root.firstChild.params.map(p => p.id);
-	     *     const isDebug: Observable<string> = state.root.queryParams.map(q => q.debug);
+	     *     const state: RouterState = router.routerState;
+	     *     const root: ActivatedRoute = state.root;
+	     *     const child = root.firstChild;
+	     *     const id: Observable<string> = child.params.map(p => p.id);
+	     *     //...
 	     *   }
 	     * }
 	     * ```
+	     *
+	     * @description
+	     * RouterState is a tree of activated routes. Every node in this tree knows about the "consumed" URL
+	     * segments,
+	     * the extracted parameters, and the resolved data.
+	     *
+	     * See {@link ActivatedRoute} for more information.
 	     *
 	     * @stable
 	     */
@@ -23098,7 +20125,11 @@ webpackJsonp([1],{
 	        /**
 	         * @internal
 	         */
-	        function RouterState(root, snapshot) {
+	        function RouterState(root,
+	            /**
+	             * The current snapshot of the router state.
+	             */
+	            snapshot) {
 	            _super.call(this, root);
 	            this.snapshot = snapshot;
 	            setRouterStateSnapshot(this, root);
@@ -23126,17 +20157,19 @@ webpackJsonp([1],{
 	        return new RouterStateSnapshot('', new TreeNode(activated, []));
 	    }
 	    /**
-	     * Contains the information about a component loaded in an outlet. The information is provided
-	     * through the params, urlSegments, and data observables.
+	     * @whatItDoes Contains the information about a route associated with a component loaded in an
+	     * outlet.
+	     * ActivatedRoute can also be used to traverse the router state tree.
 	     *
-	     * ### Usage
+	     * @howToUse
 	     *
 	     * ```
-	     * @Component({template:''})
+	     * @Component({templateUrl:'./my-component.html'})
 	     * class MyComponent {
 	     *   constructor(route: ActivatedRoute) {
 	     *     const id: Observable<string> = route.params.map(p => p.id);
-	     *     const data = route.data.map(d => d.user); //includes `data` and `resolve`
+	     *     const url: Observable<string> = route.url.map(s => s.join(''));
+	     *     const user = route.data.map(d => d.user); //includes `data` and `resolve`
 	     *   }
 	     * }
 	     * ```
@@ -23147,7 +20180,41 @@ webpackJsonp([1],{
 	        /**
 	         * @internal
 	         */
-	        function ActivatedRoute(url, params, queryParams, fragment, data, outlet, component, futureSnapshot) {
+	        function ActivatedRoute(
+	            /**
+	             *  The URL segments matched by this route. The observable will emit a new value when
+	             *  the array of segments changes.
+	             */
+	            url,
+	            /**
+	             * The matrix parameters scoped to this route. The observable will emit a new value when
+	             * the set of the parameters changes.
+	             */
+	            params,
+	            /**
+	             * The query parameters shared by all the routes. The observable will emit a new value when
+	             * the set of the parameters changes.
+	             */
+	            queryParams,
+	            /**
+	             * The URL fragment shared by all the routes. The observable will emit a new value when
+	             * the URL fragment changes.
+	             */
+	            fragment,
+	            /**
+	             * The static and resolved data of this route. The observable will emit a new value when
+	             * any of the resolvers returns a new object.
+	             */
+	            data,
+	            /**
+	             * The outlet name of the route. It's a constant.
+	             */
+	            outlet,
+	            /**
+	             * The component of the route. It's a constant.
+	             */
+	            component, // TODO: vsavkin: remove |string
+	            futureSnapshot) {
 	            this.url = url;
 	            this.params = params;
 	            this.queryParams = queryParams;
@@ -23158,35 +20225,56 @@ webpackJsonp([1],{
 	            this._futureSnapshot = futureSnapshot;
 	        }
 	        Object.defineProperty(ActivatedRoute.prototype, "routeConfig", {
+	            /**
+	             * The configuration used to match this route.
+	             */
 	            get: function () { return this._futureSnapshot.routeConfig; },
 	            enumerable: true,
 	            configurable: true
 	        });
 	        Object.defineProperty(ActivatedRoute.prototype, "root", {
+	            /**
+	             * The root of the router state.
+	             */
 	            get: function () { return this._routerState.root; },
 	            enumerable: true,
 	            configurable: true
 	        });
 	        Object.defineProperty(ActivatedRoute.prototype, "parent", {
+	            /**
+	             * The parent of this route in the router state tree.
+	             */
 	            get: function () { return this._routerState.parent(this); },
 	            enumerable: true,
 	            configurable: true
 	        });
 	        Object.defineProperty(ActivatedRoute.prototype, "firstChild", {
+	            /**
+	             * The first child of this route in the router state tree.
+	             */
 	            get: function () { return this._routerState.firstChild(this); },
 	            enumerable: true,
 	            configurable: true
 	        });
 	        Object.defineProperty(ActivatedRoute.prototype, "children", {
+	            /**
+	             * The children of this route in the router state tree.
+	             */
 	            get: function () { return this._routerState.children(this); },
 	            enumerable: true,
 	            configurable: true
 	        });
 	        Object.defineProperty(ActivatedRoute.prototype, "pathFromRoot", {
+	            /**
+	             * The path from the root of the router state tree to this route.
+	             */
 	            get: function () { return this._routerState.pathFromRoot(this); },
 	            enumerable: true,
 	            configurable: true
 	        });
+	        /**
+	         * @docsNotRequired
+	         */
 	        ActivatedRoute.prototype.toString = function () {
 	            return this.snapshot ? this.snapshot.toString() : "Future(" + this._futureSnapshot + ")";
 	        };
@@ -23223,16 +20311,20 @@ webpackJsonp([1],{
 	        return InheritedResolve;
 	    }());
 	    /**
-	     * Contains the information about a component loaded in an outlet at a particular moment in time.
+	     * @whatItDoes Contains the information about a route associated with a component loaded in an
+	     * outlet
+	     * at a particular moment in time. ActivatedRouteSnapshot can also be used to traverse the router
+	     * state tree.
 	     *
-	     * ### Usage
+	     * @howToUse
 	     *
 	     * ```
-	     * @Component({template:''})
+	     * @Component({templateUrl:'./my-component.html'})
 	     * class MyComponent {
 	     *   constructor(route: ActivatedRoute) {
 	     *     const id: string = route.snapshot.params.id;
-	     *     const data = route.snapshot.data;
+	     *     const url: string = route.snapshot.url.join('');
+	     *     const user = route.snapshot.data.user;
 	     *   }
 	     * }
 	     * ```
@@ -23243,7 +20335,35 @@ webpackJsonp([1],{
 	        /**
 	         * @internal
 	         */
-	        function ActivatedRouteSnapshot(url, params, queryParams, fragment, data, outlet, component, routeConfig, urlSegment, lastPathIndex, resolve) {
+	        function ActivatedRouteSnapshot(
+	            /**
+	             *  The URL segments matched by this route.
+	             */
+	            url,
+	            /**
+	             * The matrix parameters scoped to this route.
+	             */
+	            params,
+	            /**
+	             * The query parameters shared by all the routes.
+	             */
+	            queryParams,
+	            /**
+	             * The URL fragment shared by all the routes.
+	             */
+	            fragment,
+	            /**
+	             * The static and resolved data of this route.
+	             */
+	            data,
+	            /**
+	             * The outlet name of the route.
+	             */
+	            outlet,
+	            /**
+	             * The component of the route.
+	             */
+	            component, routeConfig, urlSegment, lastPathIndex, resolve) {
 	            this.url = url;
 	            this.params = params;
 	            this.queryParams = queryParams;
@@ -23257,35 +20377,56 @@ webpackJsonp([1],{
 	            this._resolve = resolve;
 	        }
 	        Object.defineProperty(ActivatedRouteSnapshot.prototype, "routeConfig", {
+	            /**
+	             * The configuration used to match this route.
+	             */
 	            get: function () { return this._routeConfig; },
 	            enumerable: true,
 	            configurable: true
 	        });
 	        Object.defineProperty(ActivatedRouteSnapshot.prototype, "root", {
+	            /**
+	             * The root of the router state.
+	             */
 	            get: function () { return this._routerState.root; },
 	            enumerable: true,
 	            configurable: true
 	        });
 	        Object.defineProperty(ActivatedRouteSnapshot.prototype, "parent", {
+	            /**
+	             * The parent of this route in the router state tree.
+	             */
 	            get: function () { return this._routerState.parent(this); },
 	            enumerable: true,
 	            configurable: true
 	        });
 	        Object.defineProperty(ActivatedRouteSnapshot.prototype, "firstChild", {
+	            /**
+	             * The first child of this route in the router state tree.
+	             */
 	            get: function () { return this._routerState.firstChild(this); },
 	            enumerable: true,
 	            configurable: true
 	        });
 	        Object.defineProperty(ActivatedRouteSnapshot.prototype, "children", {
+	            /**
+	             * The children of this route in the router state tree.
+	             */
 	            get: function () { return this._routerState.children(this); },
 	            enumerable: true,
 	            configurable: true
 	        });
 	        Object.defineProperty(ActivatedRouteSnapshot.prototype, "pathFromRoot", {
+	            /**
+	             * The path from the root of the router state tree to this route.
+	             */
 	            get: function () { return this._routerState.pathFromRoot(this); },
 	            enumerable: true,
 	            configurable: true
 	        });
+	        /**
+	         * @docsNotRequired
+	         */
 	        ActivatedRouteSnapshot.prototype.toString = function () {
 	            var url = this.url.map(function (s) { return s.toString(); }).join('/');
 	            var matched = this._routeConfig ? this._routeConfig.path : '';
@@ -23294,18 +20435,27 @@ webpackJsonp([1],{
 	        return ActivatedRouteSnapshot;
 	    }());
 	    /**
-	     * The state of the router at a particular moment in time.
+	     * @whatItDoes Represents the state of the router at a moment in time.
 	     *
-	     * ### Usage
+	     * @howToUse
 	     *
 	     * ```
-	     * @Component({template:''})
+	     * @Component({templateUrl:'template.html'})
 	     * class MyComponent {
 	     *   constructor(router: Router) {
-	     *     const snapshot = router.routerState.snapshot;
+	     *     const state: RouterState = router.routerState;
+	     *     const snapshot: RouterStateSnapshot = state.snapshot;
+	     *     const root: ActivatedRouteSnapshot = snapshot.root;
+	     *     const child = root.firstChild;
+	     *     const id: Observable<string> = child.params.map(p => p.id);
+	     *     //...
 	     *   }
 	     * }
 	     * ```
+	     *
+	     * @description
+	     * RouterStateSnapshot is a tree of activated route snapshots. Every node in this tree knows about
+	     * the "consumed" URL segments, the extracted parameters, and the resolved data.
 	     *
 	     * @stable
 	     */
@@ -23314,7 +20464,9 @@ webpackJsonp([1],{
 	        /**
 	         * @internal
 	         */
-	        function RouterStateSnapshot(url, root) {
+	        function RouterStateSnapshot(
+	            /** The url from which this snapshot was created */
+	            url, root) {
 	            _super.call(this, root);
 	            this.url = url;
 	            setRouterStateSnapshot(this, root);
@@ -23948,6 +21100,8 @@ webpackJsonp([1],{
 	     * found in the LICENSE file at https://angular.io/license
 	     */
 	    /**
+	     * @whatItDoes Contains all the router outlets created in a component.
+	     *
 	     * @stable
 	     */
 	    var RouterOutletMap = (function () {
@@ -23955,82 +21109,128 @@ webpackJsonp([1],{
 	            /** @internal */
 	            this._outlets = {};
 	        }
+	        /**
+	         * Adds an outlet to this map.
+	         */
 	        RouterOutletMap.prototype.registerOutlet = function (name, outlet) { this._outlets[name] = outlet; };
+	        /**
+	         * Removes an outlet from this map.
+	         */
 	        RouterOutletMap.prototype.removeOutlet = function (name) { this._outlets[name] = undefined; };
 	        return RouterOutletMap;
 	    }());
 
 	    /**
-	     * An event triggered when a navigation starts
+	     * @whatItDoes Represents an event triggered when a navigation starts.
 	     *
 	     * @stable
 	     */
 	    var NavigationStart = (function () {
-	        function NavigationStart(id, url) {
+	        // TODO: vsavkin: make internal
+	        function NavigationStart(
+	            /** @docsNotRequired */
+	            id,
+	            /** @docsNotRequired */
+	            url) {
 	            this.id = id;
 	            this.url = url;
 	        }
+	        /** @docsNotRequired */
 	        NavigationStart.prototype.toString = function () { return "NavigationStart(id: " + this.id + ", url: '" + this.url + "')"; };
 	        return NavigationStart;
 	    }());
 	    /**
-	     * An event triggered when a navigation ends successfully
+	     * @whatItDoes Represents an event triggered when a navigation ends successfully.
 	     *
 	     * @stable
 	     */
 	    var NavigationEnd = (function () {
-	        function NavigationEnd(id, url, urlAfterRedirects) {
+	        // TODO: vsavkin: make internal
+	        function NavigationEnd(
+	            /** @docsNotRequired */
+	            id,
+	            /** @docsNotRequired */
+	            url,
+	            /** @docsNotRequired */
+	            urlAfterRedirects) {
 	            this.id = id;
 	            this.url = url;
 	            this.urlAfterRedirects = urlAfterRedirects;
 	        }
+	        /** @docsNotRequired */
 	        NavigationEnd.prototype.toString = function () {
 	            return "NavigationEnd(id: " + this.id + ", url: '" + this.url + "', urlAfterRedirects: '" + this.urlAfterRedirects + "')";
 	        };
 	        return NavigationEnd;
 	    }());
 	    /**
-	     * An event triggered when a navigation is canceled
+	     * @whatItDoes Represents an event triggered when a navigation is canceled.
 	     *
 	     * @stable
 	     */
 	    var NavigationCancel = (function () {
-	        function NavigationCancel(id, url, reason) {
+	        // TODO: vsavkin: make internal
+	        function NavigationCancel(
+	            /** @docsNotRequired */
+	            id,
+	            /** @docsNotRequired */
+	            url,
+	            /** @docsNotRequired */
+	            reason) {
 	            this.id = id;
 	            this.url = url;
 	            this.reason = reason;
 	        }
+	        /** @docsNotRequired */
 	        NavigationCancel.prototype.toString = function () { return "NavigationCancel(id: " + this.id + ", url: '" + this.url + "')"; };
 	        return NavigationCancel;
 	    }());
 	    /**
-	     * An event triggered when a navigation fails due to unexpected error
+	     * @whatItDoes Represents an event triggered when a navigation fails due to an unexpected error.
 	     *
 	     * @stable
 	     */
 	    var NavigationError = (function () {
-	        function NavigationError(id, url, error) {
+	        // TODO: vsavkin: make internal
+	        function NavigationError(
+	            /** @docsNotRequired */
+	            id,
+	            /** @docsNotRequired */
+	            url,
+	            /** @docsNotRequired */
+	            error) {
 	            this.id = id;
 	            this.url = url;
 	            this.error = error;
 	        }
+	        /** @docsNotRequired */
 	        NavigationError.prototype.toString = function () {
 	            return "NavigationError(id: " + this.id + ", url: '" + this.url + "', error: " + this.error + ")";
 	        };
 	        return NavigationError;
 	    }());
 	    /**
-	     * An event triggered when routes are recognized
+	     * @whatItDoes Represents an event triggered when routes are recognized.
 	     *
 	     * @stable
 	     */
 	    var RoutesRecognized = (function () {
-	        function RoutesRecognized(id, url, urlAfterRedirects, state) {
+	        // TODO: vsavkin: make internal
+	        function RoutesRecognized(
+	            /** @docsNotRequired */
+	            id,
+	            /** @docsNotRequired */
+	            url,
+	            /** @docsNotRequired */
+	            urlAfterRedirects,
+	            /** @docsNotRequired */
+	            state) {
 	            this.id = id;
 	            this.url = url;
 	            this.urlAfterRedirects = urlAfterRedirects;
 	            this.state = state;
 	        }
+	        /** @docsNotRequired */
 	        RoutesRecognized.prototype.toString = function () {
 	            return "RoutesRecognized(id: " + this.id + ", url: '" + this.url + "', urlAfterRedirects: '" + this.urlAfterRedirects + "', state: " + this.state + ")";
 	        };
@@ -24040,9 +21240,11 @@ webpackJsonp([1],{
 	        throw error;
 	    }
 	    /**
-	     * The `Router` is responsible for mapping URLs to components.
+	     * @whatItDoes Provides the navigation and url manipulation capabilities.
 	     *
 	     * See {@link Routes} for more details and examples.
+	     *
+	     * @ngModule RouterModule
 	     *
 	     * @stable
 	     */
@@ -24050,6 +21252,7 @@ webpackJsonp([1],{
 	        /**
 	         * Creates the router service.
 	         */
+	        // TODO: vsavkin make internal after the final is out.
 	        function Router(rootComponentType, urlSerializer, outletMap, location, injector, loader, compiler, config) {
 	            this.rootComponentType = rootComponentType;
 	            this.urlSerializer = urlSerializer;
@@ -24058,11 +21261,14 @@ webpackJsonp([1],{
 	            this.injector = injector;
 	            this.config = config;
 	            this.navigationId = 0;
+	            /**
+	             * Error handler that is invoked when a navigation errors.
+	             *
+	             * See {@link ErrorHandler} for more information.
+	             */
 	            this.errorHandler = defaultErrorHandler;
 	            /**
 	             * Indicates if at least one navigation happened.
-	             *
-	             * @stable
 	             */
 	            this.navigated = false;
 	            this.resetConfig(config);
@@ -24072,14 +21278,14 @@ webpackJsonp([1],{
 	            this.currentRouterState = createEmptyState(this.currentUrlTree, this.rootComponentType);
 	        }
 	        /**
-	         * Sets up the location change listener and performs the inital navigation
+	         * Sets up the location change listener and performs the initial navigation.
 	         */
 	        Router.prototype.initialNavigation = function () {
 	            this.setUpLocationChangeListener();
 	            this.navigateByUrl(this.location.path(true), { replaceUrl: true });
 	        };
 	        /**
-	         * Sets up the location change listener
+	         * Sets up the location change listener.
 	         */
 	        Router.prototype.setUpLocationChangeListener = function () {
 	            var _this = this;
@@ -24136,14 +21342,16 @@ webpackJsonp([1],{
 	            validateConfig(config);
 	            this.config = config;
 	        };
+	        /**
+	         * @docsNotRequired
+	         */
 	        Router.prototype.ngOnDestroy = function () { this.dispose(); };
 	        /**
 	         * Disposes of the router.
 	         */
 	        Router.prototype.dispose = function () { this.locationSubscription.unsubscribe(); };
 	        /**
-	         * Applies an array of commands to the current url tree and creates
-	         * a new url tree.
+	         * Applies an array of commands to the current url tree and creates a new url tree.
 	         *
 	         * When given an activate route, applies the given commands starting from the route.
 	         * When not given a route, applies the given command starting from the root.
@@ -24232,10 +21440,10 @@ webpackJsonp([1],{
 	         * ### Usage
 	         *
 	         * ```
-	         * router.navigate(['team', 33, 'team', '11], {relativeTo: route});
+	         * router.navigate(['team', 33, 'user', 11], {relativeTo: route});
 	         *
 	         * // Navigate without updating the URL
-	         * router.navigate(['team', 33, 'team', '11], {relativeTo: route, skipLocationChange: true });
+	         * router.navigate(['team', 33, 'user', 11], {relativeTo: route, skipLocationChange: true });
 	         * ```
 	         *
 	         * In opposite to `navigateByUrl`, `navigate` always takes a delta
@@ -24250,7 +21458,7 @@ webpackJsonp([1],{
 	         */
 	        Router.prototype.serializeUrl = function (url) { return this.urlSerializer.serialize(url); };
 	        /**
-	         * Parse a string into a {@link UrlTree}.
+	         * Parses a string into a {@link UrlTree}.
 	         */
 	        Router.prototype.parseUrl = function (url) { return this.urlSerializer.parse(url); };
 	        /**
@@ -24713,7 +21921,9 @@ webpackJsonp([1],{
 	    }
 
 	    /**
-	     * The RouterLink directive lets you link to specific parts of your app.
+	     * @whatItDoes Lets you link to specific parts of your app.
+	     *
+	     * @howToUse
 	     *
 	     * Consider the following route configuration:
 
@@ -24721,10 +21931,20 @@ webpackJsonp([1],{
 	     * [{ path: 'user/:name', component: UserCmp }]
 	     * ```
 	     *
-	     * When linking to this `User` route, you can write:
+	     * When linking to this `user/:name` route, you can write:
 	     *
 	     * ```
-	     * <a [routerLink]="/user/bob">link to user component</a>
+	     * <a routerLink='/user/bob'>link to user component</a>
+	     * ```
+	     *
+	     * @description
+	     *
+	     * The RouterLink directives let you link to specific parts of your app.
+	     *
+	     * Whe the link is static, you can use the directive as follows:
+	     *
+	     * ```
+	     * <a routerLink="/user/bob">link to user component</a>
 	     * ```
 	     *
 	     * If you use dynamic values to generate the link, you can pass an array of path
@@ -24732,6 +21952,7 @@ webpackJsonp([1],{
 	     *
 	     * For instance `['/team', teamId, 'user', userName, {details: true}]`
 	     * means that we want to generate a link to `/team/11/user/bob;details=true`.
+	     *
 	     * Multiple static segments can be merged into one (e.g., `['/team/11/user', userName, {details:
 	     true}]`).
 	     *
@@ -24762,7 +21983,12 @@ webpackJsonp([1],{
 	     * For instance, if the current url is `/user/(box//aux:team)`.
 	     *
 	     * Then the following link `<a [routerLink]="['/user/jim']">Jim</a>` will generate the link
-	     * `/user/(jim//aux:team)`. See {@link Router.createUrlTree} for more information.
+	     * `/user/(jim//aux:team)`.
+	     *
+	     * @selector ':not(a)[routerLink]'
+	     * @ngModule RouterModule
+	     *
+	     * See {@link Router.createUrlTree} for more information.
 	     *
 	     * @stable
 	     */
@@ -24825,7 +22051,13 @@ webpackJsonp([1],{
 	        return RouterLink;
 	    }());
 	    /**
+	     * @whatItDoes Lets you link to specific parts of your app.
+	     *
 	     * See {@link RouterLink} for more information.
+	     *
+	     * @selector 'a[routerLink]'
+	     * @ngModule RouterModule
+	     *
 	     * @stable
 	     */
 	    var RouterLinkWithHref = (function () {
@@ -24910,6 +22142,16 @@ webpackJsonp([1],{
 	    }
 
 	    /**
+	     * @whatItDoes Lets you add a CSS class to an element when the link's route becomes active.
+	     *
+	     * @howToUse
+	     *
+	     * ```
+	     * <a [routerLink]='/user/bob' routerLinkActive='active-link'>Bob</a>
+	     * ```
+	     *
+	     * @description
+	     *
 	     * The RouterLinkActive directive lets you add a CSS class to an element when the link's route
 	     * becomes active.
 	     *
@@ -24926,7 +22168,7 @@ webpackJsonp([1],{
 	     *
 	     * ```
 	     * <a [routerLink]="/user/bob" routerLinkActive="class1 class2">Bob</a>
-	     * <a [routerLink]="/user/bob" routerLinkActive="['class1', 'class2']">Bob</a>
+	     * <a [routerLink]="/user/bob" [routerLinkActive]="['class1', 'class2']">Bob</a>
 	     * ```
 	     *
 	     * You can configure RouterLinkActive by passing `exact: true`. This will add the classes
@@ -24948,6 +22190,9 @@ webpackJsonp([1],{
 	     *
 	     * This will set the active-link class on the div tag if the url is either '/user/jim' or
 	     * '/user/bob'.
+	     *
+	     * @selector ':not(a)[routerLink]'
+	     * @ngModule RouterModule
 	     *
 	     * @stable
 	     */
@@ -25018,25 +22263,27 @@ webpackJsonp([1],{
 	    }());
 
 	    /**
-	     * A router outlet is a placeholder that Angular dynamically fills based on the application's route.
+	     * @whatItDoes Acts as a placeholder that Angular dynamically fills based on the current router
+	     * state.
 	     *
-	     * ## Example
+	     * @howToUse
 	     *
 	     * ```
 	     * <router-outlet></router-outlet>
-	     * <router-outlet name="left"></router-outlet>
-	     * <router-outlet name="right"></router-outlet>
+	     * <router-outlet name='left'></router-outlet>
+	     * <router-outlet name='right'></router-outlet>
 	     * ```
 	     *
 	     * A router outlet will emit an activate event any time a new component is being instantiated,
 	     * and a deactivate event when it is being destroyed.
 	     *
-	     * ## Example
-	     *
 	     * ```
-	     * <router-outlet (activate)="onActivate($event)"
-	     * (deactivate)="onDeactivate($event)"></router-outlet>
+	     * <router-outlet
+	     *   (activate)='onActivate($event)'
+	     *   (deactivate)='onDeactivate($event)'></router-outlet>
 	     * ```
+	     * @selector 'a[routerLink]'
+	     * @ngModule RouterModule
 	     *
 	     * @stable
 	     */
@@ -25118,13 +22365,18 @@ webpackJsonp([1],{
 	    }());
 
 	    /**
+	     * @whatItDoes Contains a list of directives
 	     * @stable
 	     */
 	    var ROUTER_DIRECTIVES = [RouterOutlet, RouterLink, RouterLinkWithHref, RouterLinkActive];
 	    /**
+	     * @whatItDoes Is used in DI to configure the router.
 	     * @stable
 	     */
 	    var ROUTER_CONFIGURATION = new _angular_core.OpaqueToken('ROUTER_CONFIGURATION');
+	    /**
+	     * @docsNotRequired
+	     */
 	    var ROUTER_FORROOT_GUARD = new _angular_core.OpaqueToken('ROUTER_FORROOT_GUARD');
 	    var ROUTER_PROVIDERS = [
 	        _angular_common.Location, { provide: UrlSerializer, useClass: DefaultUrlSerializer }, {
@@ -25140,32 +22392,71 @@ webpackJsonp([1],{
 	        { provide: ROUTER_CONFIGURATION, useValue: { enableTracing: false } }
 	    ];
 	    /**
-	     * Router module.
+	     * @whatItDoes Adds router directives and providers.
 	     *
-	     * When registered at the root, it should be used as follows:
+	     * @howToUse
 	     *
-	     * ### Example
+	     * RouterModule can be imported multiple times: once per lazily-loaded bundle.
+	     * Since the router deals with a global shared resource--location, we cannot have
+	     * more than one router service active.
 	     *
-	     * ```
-	     * bootstrap(AppCmp, {imports: [RouterModule.forRoot(ROUTES)]});
-	     * ```
+	     * That is why there are two ways to create the module: `RouterModule.forRoot` and
+	     * `RouterModule.forChild`.
 	     *
-	     * For submodules and lazy loaded submodules it should be used as follows:
+	     * * `forRoot` creates a module that contains all the directives, the given routes, and the router
+	     * service itself.
+	     * * `forChild` creates a module that contains all the directives and the given routes, but does not
+	     * include
+	     * the router service.
 	     *
-	     * ### Example
+	     * When registered at the root, the module should be used as follows
 	     *
 	     * ```
 	     * @NgModule({
-	     *   imports: [RouterModule.forChild(CHILD_ROUTES)]
+	     *   imports: [RouterModule.forRoot(ROUTES)]
 	     * })
-	     * class Lazy {}
+	     * class MyNgModule {}
 	     * ```
+	     *
+	     * For submodules and lazy loaded submodules the module should be used as follows:
+	     *
+	     * ```
+	     * @NgModule({
+	     *   imports: [RouterModule.forChild(ROUTES)]
+	     * })
+	     * class MyNgModule {}
+	     * ```
+	     *
+	     * @description
+	     *
+	     * Managing state transitions is one of the hardest parts of building applications. This is
+	     * especially true on the web, where you also need to ensure that the state is reflected in the URL.
+	     * In addition, we often want to split applications into multiple bundles and load them on demand.
+	     * Doing this transparently is not trivial.
+	     *
+	     * The Angular 2 router solves these problems. Using the router, you can declaratively specify
+	     * application states, manage state transitions while taking care of the URL, and load bundles on
+	     * demand.
+	     *
+	     * [Read this developer guide](https://angular.io/docs/ts/latest/guide/router.html) to get an
+	     * overview of how the router should be used.
 	     *
 	     * @stable
 	     */
 	    var RouterModule = (function () {
 	        function RouterModule(guard) {
 	        }
+	        /**
+	         * Creates a module with all the router providers and directives. It also optionally sets up an
+	         * application listener to perform an initial navigation.
+	         *
+	         * Options:
+	         * * `enableTracing` makes the router log all its internal events to the console.
+	         * * `useHash` enables the location strategy that uses the URL fragment instead of the history
+	         * API.
+	         * * `initialNavigation` disables the initial navigation.
+	         * * `errorHandler` provides a custom error handler.
+	         */
 	        RouterModule.forRoot = function (routes, config) {
 	            return {
 	                ngModule: RouterModule,
@@ -25186,6 +22477,9 @@ webpackJsonp([1],{
 	                ]
 	            };
 	        };
+	        /**
+	         * Creates a module with all the router directives and a provider registering routes.
+	         */
 	        RouterModule.forChild = function (routes) {
 	            return { ngModule: RouterModule, providers: [provideRoutes(routes)] };
 	        };
@@ -25210,6 +22504,18 @@ webpackJsonp([1],{
 	        return 'guarded';
 	    }
 	    /**
+	     * @whatItDoes Registers routes.
+	     *
+	     * @howToUse
+	     *
+	     * ```
+	     * @NgModule({
+	     *   imports: [RouterModule.forChild(ROUTES)],
+	     *   providers: [provideRoutes(EXTRA_ROUTES)]
+	     * })
+	     * class MyNgModule {}
+	     * ```
+	     *
 	     * @stable
 	     */
 	    function provideRoutes(routes) {
@@ -25695,7 +23001,7 @@ webpackJsonp([1],{
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
-	 * @license Angular v2.0.0-rc.6
+	 * @license Angular v2.0.1
 	 * (c) 2010-2016 Google, Inc. https://angular.io/
 	 * License: MIT
 	 */
@@ -25770,8 +23076,6 @@ webpackJsonp([1],{
 	            }
 	            throw new Error('Invalid integer literal when parsing ' + text + ' in base ' + radix);
 	        };
-	        // TODO: NaN is a valid literal but is returned by parseFloat to indicate an error.
-	        NumberWrapper.parseFloat = function (text) { return parseFloat(text); };
 	        Object.defineProperty(NumberWrapper, "NaN", {
 	            get: function () { return NaN; },
 	            enumerable: true,
@@ -26377,6 +23681,7 @@ webpackJsonp([1],{
 	    };
 	    return MapOperator;
 	}());
+	exports.MapOperator = MapOperator;
 	/**
 	 * We need this JSDoc comment for affecting ESDoc.
 	 * @ignore
@@ -26597,7 +23902,7 @@ webpackJsonp([1],{
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
-	 * @license Angular v2.0.0-rc.6
+	 * @license Angular v2.0.1
 	 * (c) 2010-2016 Google, Inc. https://angular.io/
 	 * License: MIT
 	 */
@@ -26780,8 +24085,6 @@ webpackJsonp([1],{
 	          }
 	          throw new Error('Invalid integer literal when parsing ' + text + ' in base ' + radix);
 	      };
-	      // TODO: NaN is a valid literal but is returned by parseFloat to indicate an error.
-	      NumberWrapper.parseFloat = function (text) { return parseFloat(text); };
 	      Object.defineProperty(NumberWrapper, "NaN", {
 	          get: function () { return NaN; },
 	          enumerable: true,
@@ -27084,20 +24387,18 @@ webpackJsonp([1],{
 	      return result;
 	  }
 
-	  var Map$1 = global$1.Map;
-	  var Set$1 = global$1.Set;
 	  // Safari and Internet Explorer do not support the iterable parameter to the
 	  // Map constructor.  We work around that by manually adding the items.
 	  var createMapFromPairs = (function () {
 	      try {
-	          if (new Map$1([[1, 2]]).size === 1) {
-	              return function createMapFromPairs(pairs) { return new Map$1(pairs); };
+	          if (new Map([[1, 2]]).size === 1) {
+	              return function createMapFromPairs(pairs) { return new Map(pairs); };
 	          }
 	      }
 	      catch (e) {
 	      }
 	      return function createMapAndPopulateFromPairs(pairs) {
-	          var map = new Map$1();
+	          var map = new Map();
 	          for (var i = 0; i < pairs.length; i++) {
 	              var pair = pairs[i];
 	              map.set(pair[0], pair[1]);
@@ -27105,22 +24406,8 @@ webpackJsonp([1],{
 	          return map;
 	      };
 	  })();
-	  var createMapFromMap = (function () {
-	      try {
-	          if (new Map$1(new Map$1())) {
-	              return function createMapFromMap(m) { return new Map$1(m); };
-	          }
-	      }
-	      catch (e) {
-	      }
-	      return function createMapAndPopulateFromMap(m) {
-	          var map = new Map$1();
-	          m.forEach(function (v, k) { map.set(k, v); });
-	          return map;
-	      };
-	  })();
 	  var _clearValues = (function () {
-	      if ((new Map$1()).keys().next) {
+	      if ((new Map()).keys().next) {
 	          return function _clearValues(m) {
 	              var keyIterator = m.keys();
 	              var k;
@@ -27139,7 +24426,7 @@ webpackJsonp([1],{
 	  // TODO(mlaval): remove the work around once we have a working polyfill of Array.from
 	  var _arrayFromMap = (function () {
 	      try {
-	          if ((new Map$1()).values().next) {
+	          if ((new Map()).values().next) {
 	              return function createArrayFromMap(m, getValues) {
 	                  return getValues ? Array.from(m.values()) : Array.from(m.keys());
 	              };
@@ -27148,7 +24435,7 @@ webpackJsonp([1],{
 	      catch (e) {
 	      }
 	      return function createArrayFromMapWithForeach(m, getValues) {
-	          var res = ListWrapper.createFixedSize(m.size), i = 0;
+	          var res = new Array(m.size), i = 0;
 	          m.forEach(function (v, k) {
 	              res[i] = getValues ? v : k;
 	              i++;
@@ -27159,9 +24446,8 @@ webpackJsonp([1],{
 	  var MapWrapper = (function () {
 	      function MapWrapper() {
 	      }
-	      MapWrapper.clone = function (m) { return createMapFromMap(m); };
 	      MapWrapper.createFromStringMap = function (stringMap) {
-	          var result = new Map$1();
+	          var result = new Map();
 	          for (var prop in stringMap) {
 	              result.set(prop, stringMap[prop]);
 	          }
@@ -27173,7 +24459,6 @@ webpackJsonp([1],{
 	          return r;
 	      };
 	      MapWrapper.createFromPairs = function (pairs) { return createMapFromPairs(pairs); };
-	      MapWrapper.clearValues = function (m) { _clearValues(m); };
 	      MapWrapper.iterable = function (m) { return m; };
 	      MapWrapper.keys = function (m) { return _arrayFromMap(m, false); };
 	      MapWrapper.values = function (m) { return _arrayFromMap(m, true); };
@@ -27185,15 +24470,6 @@ webpackJsonp([1],{
 	  var StringMapWrapper = (function () {
 	      function StringMapWrapper() {
 	      }
-	      StringMapWrapper.create = function () {
-	          // Note: We are not using Object.create(null) here due to
-	          // performance!
-	          // http://jsperf.com/ng2-object-create-null
-	          return {};
-	      };
-	      StringMapWrapper.contains = function (map, key) {
-	          return map.hasOwnProperty(key);
-	      };
 	      StringMapWrapper.get = function (map, key) {
 	          return map.hasOwnProperty(key) ? map[key] : undefined;
 	      };
@@ -27208,7 +24484,6 @@ webpackJsonp([1],{
 	          }
 	          return true;
 	      };
-	      StringMapWrapper.delete = function (map, key) { delete map[key]; };
 	      StringMapWrapper.forEach = function (map, callback) {
 	          for (var _i = 0, _a = Object.keys(map); _i < _a.length; _i++) {
 	              var k = _a[_i];
@@ -27233,9 +24508,8 @@ webpackJsonp([1],{
 	          if (k1.length != k2.length) {
 	              return false;
 	          }
-	          var key;
 	          for (var i = 0; i < k1.length; i++) {
-	              key = k1[i];
+	              var key = k1[i];
 	              if (m1[key] !== m2[key]) {
 	                  return false;
 	              }
@@ -27377,13 +24651,13 @@ webpackJsonp([1],{
 	  // Safari and Internet Explorer do not support the iterable parameter to the
 	  // Set constructor.  We work around that by manually adding the items.
 	  var createSetFromList = (function () {
-	      var test = new Set$1([1, 2, 3]);
+	      var test = new Set([1, 2, 3]);
 	      if (test.size === 3) {
-	          return function createSetFromList(lst) { return new Set$1(lst); };
+	          return function createSetFromList(lst) { return new Set(lst); };
 	      }
 	      else {
 	          return function createSetAndPopulateFromList(lst) {
-	              var res = new Set$1(lst);
+	              var res = new Set(lst);
 	              if (res.size !== lst.length) {
 	                  for (var i = 0; i < lst.length; i++) {
 	                      res.add(lst[i]);
@@ -27401,6 +24675,389 @@ webpackJsonp([1],{
 	      SetWrapper.delete = function (m, k) { m.delete(k); };
 	      return SetWrapper;
 	  }());
+
+	  /**
+	   * @license
+	   * Copyright Google Inc. All Rights Reserved.
+	   *
+	   * Use of this source code is governed by an MIT-style license that can be
+	   * found in the LICENSE file at https://angular.io/license
+	   */
+	  var TagContentType;
+	  (function (TagContentType) {
+	      TagContentType[TagContentType["RAW_TEXT"] = 0] = "RAW_TEXT";
+	      TagContentType[TagContentType["ESCAPABLE_RAW_TEXT"] = 1] = "ESCAPABLE_RAW_TEXT";
+	      TagContentType[TagContentType["PARSABLE_DATA"] = 2] = "PARSABLE_DATA";
+	  })(TagContentType || (TagContentType = {}));
+	  function splitNsName(elementName) {
+	      if (elementName[0] != ':') {
+	          return [null, elementName];
+	      }
+	      var colonIndex = elementName.indexOf(':', 1);
+	      if (colonIndex == -1) {
+	          throw new Error("Unsupported format \"" + elementName + "\" expecting \":namespace:name\"");
+	      }
+	      return [elementName.slice(1, colonIndex), elementName.slice(colonIndex + 1)];
+	  }
+	  function getNsPrefix(fullName) {
+	      return fullName === null ? null : splitNsName(fullName)[0];
+	  }
+	  function mergeNsAndName(prefix, localName) {
+	      return prefix ? ":" + prefix + ":" + localName : localName;
+	  }
+	  // see http://www.w3.org/TR/html51/syntax.html#named-character-references
+	  // see https://html.spec.whatwg.org/multipage/entities.json
+	  // This list is not exhaustive to keep the compiler footprint low.
+	  // The `&#123;` / `&#x1ab;` syntax should be used when the named character reference does not exist.
+	  var NAMED_ENTITIES = {
+	      'Aacute': '\u00C1',
+	      'aacute': '\u00E1',
+	      'Acirc': '\u00C2',
+	      'acirc': '\u00E2',
+	      'acute': '\u00B4',
+	      'AElig': '\u00C6',
+	      'aelig': '\u00E6',
+	      'Agrave': '\u00C0',
+	      'agrave': '\u00E0',
+	      'alefsym': '\u2135',
+	      'Alpha': '\u0391',
+	      'alpha': '\u03B1',
+	      'amp': '&',
+	      'and': '\u2227',
+	      'ang': '\u2220',
+	      'apos': '\u0027',
+	      'Aring': '\u00C5',
+	      'aring': '\u00E5',
+	      'asymp': '\u2248',
+	      'Atilde': '\u00C3',
+	      'atilde': '\u00E3',
+	      'Auml': '\u00C4',
+	      'auml': '\u00E4',
+	      'bdquo': '\u201E',
+	      'Beta': '\u0392',
+	      'beta': '\u03B2',
+	      'brvbar': '\u00A6',
+	      'bull': '\u2022',
+	      'cap': '\u2229',
+	      'Ccedil': '\u00C7',
+	      'ccedil': '\u00E7',
+	      'cedil': '\u00B8',
+	      'cent': '\u00A2',
+	      'Chi': '\u03A7',
+	      'chi': '\u03C7',
+	      'circ': '\u02C6',
+	      'clubs': '\u2663',
+	      'cong': '\u2245',
+	      'copy': '\u00A9',
+	      'crarr': '\u21B5',
+	      'cup': '\u222A',
+	      'curren': '\u00A4',
+	      'dagger': '\u2020',
+	      'Dagger': '\u2021',
+	      'darr': '\u2193',
+	      'dArr': '\u21D3',
+	      'deg': '\u00B0',
+	      'Delta': '\u0394',
+	      'delta': '\u03B4',
+	      'diams': '\u2666',
+	      'divide': '\u00F7',
+	      'Eacute': '\u00C9',
+	      'eacute': '\u00E9',
+	      'Ecirc': '\u00CA',
+	      'ecirc': '\u00EA',
+	      'Egrave': '\u00C8',
+	      'egrave': '\u00E8',
+	      'empty': '\u2205',
+	      'emsp': '\u2003',
+	      'ensp': '\u2002',
+	      'Epsilon': '\u0395',
+	      'epsilon': '\u03B5',
+	      'equiv': '\u2261',
+	      'Eta': '\u0397',
+	      'eta': '\u03B7',
+	      'ETH': '\u00D0',
+	      'eth': '\u00F0',
+	      'Euml': '\u00CB',
+	      'euml': '\u00EB',
+	      'euro': '\u20AC',
+	      'exist': '\u2203',
+	      'fnof': '\u0192',
+	      'forall': '\u2200',
+	      'frac12': '\u00BD',
+	      'frac14': '\u00BC',
+	      'frac34': '\u00BE',
+	      'frasl': '\u2044',
+	      'Gamma': '\u0393',
+	      'gamma': '\u03B3',
+	      'ge': '\u2265',
+	      'gt': '>',
+	      'harr': '\u2194',
+	      'hArr': '\u21D4',
+	      'hearts': '\u2665',
+	      'hellip': '\u2026',
+	      'Iacute': '\u00CD',
+	      'iacute': '\u00ED',
+	      'Icirc': '\u00CE',
+	      'icirc': '\u00EE',
+	      'iexcl': '\u00A1',
+	      'Igrave': '\u00CC',
+	      'igrave': '\u00EC',
+	      'image': '\u2111',
+	      'infin': '\u221E',
+	      'int': '\u222B',
+	      'Iota': '\u0399',
+	      'iota': '\u03B9',
+	      'iquest': '\u00BF',
+	      'isin': '\u2208',
+	      'Iuml': '\u00CF',
+	      'iuml': '\u00EF',
+	      'Kappa': '\u039A',
+	      'kappa': '\u03BA',
+	      'Lambda': '\u039B',
+	      'lambda': '\u03BB',
+	      'lang': '\u27E8',
+	      'laquo': '\u00AB',
+	      'larr': '\u2190',
+	      'lArr': '\u21D0',
+	      'lceil': '\u2308',
+	      'ldquo': '\u201C',
+	      'le': '\u2264',
+	      'lfloor': '\u230A',
+	      'lowast': '\u2217',
+	      'loz': '\u25CA',
+	      'lrm': '\u200E',
+	      'lsaquo': '\u2039',
+	      'lsquo': '\u2018',
+	      'lt': '<',
+	      'macr': '\u00AF',
+	      'mdash': '\u2014',
+	      'micro': '\u00B5',
+	      'middot': '\u00B7',
+	      'minus': '\u2212',
+	      'Mu': '\u039C',
+	      'mu': '\u03BC',
+	      'nabla': '\u2207',
+	      'nbsp': '\u00A0',
+	      'ndash': '\u2013',
+	      'ne': '\u2260',
+	      'ni': '\u220B',
+	      'not': '\u00AC',
+	      'notin': '\u2209',
+	      'nsub': '\u2284',
+	      'Ntilde': '\u00D1',
+	      'ntilde': '\u00F1',
+	      'Nu': '\u039D',
+	      'nu': '\u03BD',
+	      'Oacute': '\u00D3',
+	      'oacute': '\u00F3',
+	      'Ocirc': '\u00D4',
+	      'ocirc': '\u00F4',
+	      'OElig': '\u0152',
+	      'oelig': '\u0153',
+	      'Ograve': '\u00D2',
+	      'ograve': '\u00F2',
+	      'oline': '\u203E',
+	      'Omega': '\u03A9',
+	      'omega': '\u03C9',
+	      'Omicron': '\u039F',
+	      'omicron': '\u03BF',
+	      'oplus': '\u2295',
+	      'or': '\u2228',
+	      'ordf': '\u00AA',
+	      'ordm': '\u00BA',
+	      'Oslash': '\u00D8',
+	      'oslash': '\u00F8',
+	      'Otilde': '\u00D5',
+	      'otilde': '\u00F5',
+	      'otimes': '\u2297',
+	      'Ouml': '\u00D6',
+	      'ouml': '\u00F6',
+	      'para': '\u00B6',
+	      'permil': '\u2030',
+	      'perp': '\u22A5',
+	      'Phi': '\u03A6',
+	      'phi': '\u03C6',
+	      'Pi': '\u03A0',
+	      'pi': '\u03C0',
+	      'piv': '\u03D6',
+	      'plusmn': '\u00B1',
+	      'pound': '\u00A3',
+	      'prime': '\u2032',
+	      'Prime': '\u2033',
+	      'prod': '\u220F',
+	      'prop': '\u221D',
+	      'Psi': '\u03A8',
+	      'psi': '\u03C8',
+	      'quot': '\u0022',
+	      'radic': '\u221A',
+	      'rang': '\u27E9',
+	      'raquo': '\u00BB',
+	      'rarr': '\u2192',
+	      'rArr': '\u21D2',
+	      'rceil': '\u2309',
+	      'rdquo': '\u201D',
+	      'real': '\u211C',
+	      'reg': '\u00AE',
+	      'rfloor': '\u230B',
+	      'Rho': '\u03A1',
+	      'rho': '\u03C1',
+	      'rlm': '\u200F',
+	      'rsaquo': '\u203A',
+	      'rsquo': '\u2019',
+	      'sbquo': '\u201A',
+	      'Scaron': '\u0160',
+	      'scaron': '\u0161',
+	      'sdot': '\u22C5',
+	      'sect': '\u00A7',
+	      'shy': '\u00AD',
+	      'Sigma': '\u03A3',
+	      'sigma': '\u03C3',
+	      'sigmaf': '\u03C2',
+	      'sim': '\u223C',
+	      'spades': '\u2660',
+	      'sub': '\u2282',
+	      'sube': '\u2286',
+	      'sum': '\u2211',
+	      'sup': '\u2283',
+	      'sup1': '\u00B9',
+	      'sup2': '\u00B2',
+	      'sup3': '\u00B3',
+	      'supe': '\u2287',
+	      'szlig': '\u00DF',
+	      'Tau': '\u03A4',
+	      'tau': '\u03C4',
+	      'there4': '\u2234',
+	      'Theta': '\u0398',
+	      'theta': '\u03B8',
+	      'thetasym': '\u03D1',
+	      'thinsp': '\u2009',
+	      'THORN': '\u00DE',
+	      'thorn': '\u00FE',
+	      'tilde': '\u02DC',
+	      'times': '\u00D7',
+	      'trade': '\u2122',
+	      'Uacute': '\u00DA',
+	      'uacute': '\u00FA',
+	      'uarr': '\u2191',
+	      'uArr': '\u21D1',
+	      'Ucirc': '\u00DB',
+	      'ucirc': '\u00FB',
+	      'Ugrave': '\u00D9',
+	      'ugrave': '\u00F9',
+	      'uml': '\u00A8',
+	      'upsih': '\u03D2',
+	      'Upsilon': '\u03A5',
+	      'upsilon': '\u03C5',
+	      'Uuml': '\u00DC',
+	      'uuml': '\u00FC',
+	      'weierp': '\u2118',
+	      'Xi': '\u039E',
+	      'xi': '\u03BE',
+	      'Yacute': '\u00DD',
+	      'yacute': '\u00FD',
+	      'yen': '\u00A5',
+	      'yuml': '\u00FF',
+	      'Yuml': '\u0178',
+	      'Zeta': '\u0396',
+	      'zeta': '\u03B6',
+	      'zwj': '\u200D',
+	      'zwnj': '\u200C',
+	  };
+
+	  var HtmlTagDefinition = (function () {
+	      function HtmlTagDefinition(_a) {
+	          var _this = this;
+	          var _b = _a === void 0 ? {} : _a, closedByChildren = _b.closedByChildren, requiredParents = _b.requiredParents, implicitNamespacePrefix = _b.implicitNamespacePrefix, _c = _b.contentType, contentType = _c === void 0 ? TagContentType.PARSABLE_DATA : _c, _d = _b.closedByParent, closedByParent = _d === void 0 ? false : _d, _e = _b.isVoid, isVoid = _e === void 0 ? false : _e, _f = _b.ignoreFirstLf, ignoreFirstLf = _f === void 0 ? false : _f;
+	          this.closedByChildren = {};
+	          this.closedByParent = false;
+	          this.canSelfClose = false;
+	          if (closedByChildren && closedByChildren.length > 0) {
+	              closedByChildren.forEach(function (tagName) { return _this.closedByChildren[tagName] = true; });
+	          }
+	          this.isVoid = isVoid;
+	          this.closedByParent = closedByParent || isVoid;
+	          if (requiredParents && requiredParents.length > 0) {
+	              this.requiredParents = {};
+	              // The first parent is the list is automatically when none of the listed parents are present
+	              this.parentToAdd = requiredParents[0];
+	              requiredParents.forEach(function (tagName) { return _this.requiredParents[tagName] = true; });
+	          }
+	          this.implicitNamespacePrefix = implicitNamespacePrefix;
+	          this.contentType = contentType;
+	          this.ignoreFirstLf = ignoreFirstLf;
+	      }
+	      HtmlTagDefinition.prototype.requireExtraParent = function (currentParent) {
+	          if (!this.requiredParents) {
+	              return false;
+	          }
+	          if (!currentParent) {
+	              return true;
+	          }
+	          var lcParent = currentParent.toLowerCase();
+	          return this.requiredParents[lcParent] != true && lcParent != 'template';
+	      };
+	      HtmlTagDefinition.prototype.isClosedByChild = function (name) {
+	          return this.isVoid || name.toLowerCase() in this.closedByChildren;
+	      };
+	      return HtmlTagDefinition;
+	  }());
+	  // see http://www.w3.org/TR/html51/syntax.html#optional-tags
+	  // This implementation does not fully conform to the HTML5 spec.
+	  var TAG_DEFINITIONS = {
+	      'base': new HtmlTagDefinition({ isVoid: true }),
+	      'meta': new HtmlTagDefinition({ isVoid: true }),
+	      'area': new HtmlTagDefinition({ isVoid: true }),
+	      'embed': new HtmlTagDefinition({ isVoid: true }),
+	      'link': new HtmlTagDefinition({ isVoid: true }),
+	      'img': new HtmlTagDefinition({ isVoid: true }),
+	      'input': new HtmlTagDefinition({ isVoid: true }),
+	      'param': new HtmlTagDefinition({ isVoid: true }),
+	      'hr': new HtmlTagDefinition({ isVoid: true }),
+	      'br': new HtmlTagDefinition({ isVoid: true }),
+	      'source': new HtmlTagDefinition({ isVoid: true }),
+	      'track': new HtmlTagDefinition({ isVoid: true }),
+	      'wbr': new HtmlTagDefinition({ isVoid: true }),
+	      'p': new HtmlTagDefinition({
+	          closedByChildren: [
+	              'address', 'article', 'aside', 'blockquote', 'div', 'dl', 'fieldset', 'footer', 'form',
+	              'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hgroup', 'hr',
+	              'main', 'nav', 'ol', 'p', 'pre', 'section', 'table', 'ul'
+	          ],
+	          closedByParent: true
+	      }),
+	      'thead': new HtmlTagDefinition({ closedByChildren: ['tbody', 'tfoot'] }),
+	      'tbody': new HtmlTagDefinition({ closedByChildren: ['tbody', 'tfoot'], closedByParent: true }),
+	      'tfoot': new HtmlTagDefinition({ closedByChildren: ['tbody'], closedByParent: true }),
+	      'tr': new HtmlTagDefinition({
+	          closedByChildren: ['tr'],
+	          requiredParents: ['tbody', 'tfoot', 'thead'],
+	          closedByParent: true
+	      }),
+	      'td': new HtmlTagDefinition({ closedByChildren: ['td', 'th'], closedByParent: true }),
+	      'th': new HtmlTagDefinition({ closedByChildren: ['td', 'th'], closedByParent: true }),
+	      'col': new HtmlTagDefinition({ requiredParents: ['colgroup'], isVoid: true }),
+	      'svg': new HtmlTagDefinition({ implicitNamespacePrefix: 'svg' }),
+	      'math': new HtmlTagDefinition({ implicitNamespacePrefix: 'math' }),
+	      'li': new HtmlTagDefinition({ closedByChildren: ['li'], closedByParent: true }),
+	      'dt': new HtmlTagDefinition({ closedByChildren: ['dt', 'dd'] }),
+	      'dd': new HtmlTagDefinition({ closedByChildren: ['dt', 'dd'], closedByParent: true }),
+	      'rb': new HtmlTagDefinition({ closedByChildren: ['rb', 'rt', 'rtc', 'rp'], closedByParent: true }),
+	      'rt': new HtmlTagDefinition({ closedByChildren: ['rb', 'rt', 'rtc', 'rp'], closedByParent: true }),
+	      'rtc': new HtmlTagDefinition({ closedByChildren: ['rb', 'rtc', 'rp'], closedByParent: true }),
+	      'rp': new HtmlTagDefinition({ closedByChildren: ['rb', 'rt', 'rtc', 'rp'], closedByParent: true }),
+	      'optgroup': new HtmlTagDefinition({ closedByChildren: ['optgroup'], closedByParent: true }),
+	      'option': new HtmlTagDefinition({ closedByChildren: ['option', 'optgroup'], closedByParent: true }),
+	      'pre': new HtmlTagDefinition({ ignoreFirstLf: true }),
+	      'listing': new HtmlTagDefinition({ ignoreFirstLf: true }),
+	      'style': new HtmlTagDefinition({ contentType: TagContentType.RAW_TEXT }),
+	      'script': new HtmlTagDefinition({ contentType: TagContentType.RAW_TEXT }),
+	      'title': new HtmlTagDefinition({ contentType: TagContentType.ESCAPABLE_RAW_TEXT }),
+	      'textarea': new HtmlTagDefinition({ contentType: TagContentType.ESCAPABLE_RAW_TEXT, ignoreFirstLf: true }),
+	  };
+	  var _DEFAULT_TAG_DEFINITION = new HtmlTagDefinition();
+	  function getHtmlTagDefinition(tagName) {
+	      return TAG_DEFINITIONS[tagName.toLowerCase()] || _DEFAULT_TAG_DEFINITION;
+	  }
 
 	  var _EMPTY_ATTR_VALUE = '';
 	  var _SELECTOR_REGEXP = new RegExp('(\\:not\\()|' +
@@ -27480,7 +25137,7 @@ webpackJsonp([1],{
 	      };
 	      /** Gets a template string for an element that matches the selector. */
 	      CssSelector.prototype.getMatchingElementTemplate = function () {
-	          var tagName = isPresent(this.element) ? this.element : 'div';
+	          var tagName = this.element || 'div';
 	          var classAttr = this.classNames.length > 0 ? " class=\"" + this.classNames.join(' ') + "\"" : '';
 	          var attrs = '';
 	          for (var i = 0; i < this.attrs.length; i += 2) {
@@ -27488,7 +25145,8 @@ webpackJsonp([1],{
 	              var attrValue = this.attrs[i + 1] !== '' ? "=\"" + this.attrs[i + 1] + "\"" : '';
 	              attrs += " " + attrName + attrValue;
 	          }
-	          return "<" + tagName + classAttr + attrs + "></" + tagName + ">";
+	          return getHtmlTagDefinition(tagName).isVoid ? "<" + tagName + classAttr + attrs + "/>" :
+	              "<" + tagName + classAttr + attrs + "></" + tagName + ">";
 	      };
 	      CssSelector.prototype.addAttribute = function (name, value) {
 	          if (value === void 0) { value = _EMPTY_ATTR_VALUE; }
@@ -29163,7 +26821,7 @@ webpackJsonp([1],{
 	   */
 	  var CompileNgModuleMetadata = (function () {
 	      function CompileNgModuleMetadata(_a) {
-	          var _b = _a === void 0 ? {} : _a, type = _b.type, providers = _b.providers, declaredDirectives = _b.declaredDirectives, exportedDirectives = _b.exportedDirectives, declaredPipes = _b.declaredPipes, exportedPipes = _b.exportedPipes, entryComponents = _b.entryComponents, bootstrapComponents = _b.bootstrapComponents, importedModules = _b.importedModules, exportedModules = _b.exportedModules, schemas = _b.schemas, transitiveModule = _b.transitiveModule;
+	          var _b = _a === void 0 ? {} : _a, type = _b.type, providers = _b.providers, declaredDirectives = _b.declaredDirectives, exportedDirectives = _b.exportedDirectives, declaredPipes = _b.declaredPipes, exportedPipes = _b.exportedPipes, entryComponents = _b.entryComponents, bootstrapComponents = _b.bootstrapComponents, importedModules = _b.importedModules, exportedModules = _b.exportedModules, schemas = _b.schemas, transitiveModule = _b.transitiveModule, id = _b.id;
 	          this.type = type;
 	          this.declaredDirectives = _normalizeArray(declaredDirectives);
 	          this.exportedDirectives = _normalizeArray(exportedDirectives);
@@ -29175,6 +26833,7 @@ webpackJsonp([1],{
 	          this.importedModules = _normalizeArray(importedModules);
 	          this.exportedModules = _normalizeArray(exportedModules);
 	          this.schemas = _normalizeArray(schemas);
+	          this.id = id;
 	          this.transitiveModule = transitiveModule;
 	      }
 	      Object.defineProperty(CompileNgModuleMetadata.prototype, "identifier", {
@@ -30018,7 +27677,7 @@ webpackJsonp([1],{
 	              this.advance();
 	          }
 	          var str = this.input.substring(start, this.index);
-	          var value = simple ? NumberWrapper.parseIntAutoRadix(str) : NumberWrapper.parseFloat(str);
+	          var value = simple ? NumberWrapper.parseIntAutoRadix(str) : parseFloat(str);
 	          return newNumberToken(start, value);
 	      };
 	      _Scanner.prototype.scanString = function () {
@@ -30960,7 +28619,7 @@ webpackJsonp([1],{
 	      ExpansionCase.prototype.visit = function (visitor, context) { return visitor.visitExpansionCase(this, context); };
 	      return ExpansionCase;
 	  }());
-	  var Attribute = (function () {
+	  var Attribute$1 = (function () {
 	      function Attribute(name, value, sourceSpan) {
 	          this.name = name;
 	          this.value = value;
@@ -31000,294 +28659,6 @@ webpackJsonp([1],{
 	      });
 	      return result;
 	  }
-
-	  /**
-	   * @license
-	   * Copyright Google Inc. All Rights Reserved.
-	   *
-	   * Use of this source code is governed by an MIT-style license that can be
-	   * found in the LICENSE file at https://angular.io/license
-	   */
-	  var TagContentType;
-	  (function (TagContentType) {
-	      TagContentType[TagContentType["RAW_TEXT"] = 0] = "RAW_TEXT";
-	      TagContentType[TagContentType["ESCAPABLE_RAW_TEXT"] = 1] = "ESCAPABLE_RAW_TEXT";
-	      TagContentType[TagContentType["PARSABLE_DATA"] = 2] = "PARSABLE_DATA";
-	  })(TagContentType || (TagContentType = {}));
-	  function splitNsName(elementName) {
-	      if (elementName[0] != ':') {
-	          return [null, elementName];
-	      }
-	      var colonIndex = elementName.indexOf(':', 1);
-	      if (colonIndex == -1) {
-	          throw new Error("Unsupported format \"" + elementName + "\" expecting \":namespace:name\"");
-	      }
-	      return [elementName.slice(1, colonIndex), elementName.slice(colonIndex + 1)];
-	  }
-	  function getNsPrefix(fullName) {
-	      return fullName === null ? null : splitNsName(fullName)[0];
-	  }
-	  function mergeNsAndName(prefix, localName) {
-	      return prefix ? ":" + prefix + ":" + localName : localName;
-	  }
-	  // see http://www.w3.org/TR/html51/syntax.html#named-character-references
-	  // see https://html.spec.whatwg.org/multipage/entities.json
-	  // This list is not exhaustive to keep the compiler footprint low.
-	  // The `&#123;` / `&#x1ab;` syntax should be used when the named character reference does not exist.
-	  var NAMED_ENTITIES = {
-	      'Aacute': '\u00C1',
-	      'aacute': '\u00E1',
-	      'Acirc': '\u00C2',
-	      'acirc': '\u00E2',
-	      'acute': '\u00B4',
-	      'AElig': '\u00C6',
-	      'aelig': '\u00E6',
-	      'Agrave': '\u00C0',
-	      'agrave': '\u00E0',
-	      'alefsym': '\u2135',
-	      'Alpha': '\u0391',
-	      'alpha': '\u03B1',
-	      'amp': '&',
-	      'and': '\u2227',
-	      'ang': '\u2220',
-	      'apos': '\u0027',
-	      'Aring': '\u00C5',
-	      'aring': '\u00E5',
-	      'asymp': '\u2248',
-	      'Atilde': '\u00C3',
-	      'atilde': '\u00E3',
-	      'Auml': '\u00C4',
-	      'auml': '\u00E4',
-	      'bdquo': '\u201E',
-	      'Beta': '\u0392',
-	      'beta': '\u03B2',
-	      'brvbar': '\u00A6',
-	      'bull': '\u2022',
-	      'cap': '\u2229',
-	      'Ccedil': '\u00C7',
-	      'ccedil': '\u00E7',
-	      'cedil': '\u00B8',
-	      'cent': '\u00A2',
-	      'Chi': '\u03A7',
-	      'chi': '\u03C7',
-	      'circ': '\u02C6',
-	      'clubs': '\u2663',
-	      'cong': '\u2245',
-	      'copy': '\u00A9',
-	      'crarr': '\u21B5',
-	      'cup': '\u222A',
-	      'curren': '\u00A4',
-	      'dagger': '\u2020',
-	      'Dagger': '\u2021',
-	      'darr': '\u2193',
-	      'dArr': '\u21D3',
-	      'deg': '\u00B0',
-	      'Delta': '\u0394',
-	      'delta': '\u03B4',
-	      'diams': '\u2666',
-	      'divide': '\u00F7',
-	      'Eacute': '\u00C9',
-	      'eacute': '\u00E9',
-	      'Ecirc': '\u00CA',
-	      'ecirc': '\u00EA',
-	      'Egrave': '\u00C8',
-	      'egrave': '\u00E8',
-	      'empty': '\u2205',
-	      'emsp': '\u2003',
-	      'ensp': '\u2002',
-	      'Epsilon': '\u0395',
-	      'epsilon': '\u03B5',
-	      'equiv': '\u2261',
-	      'Eta': '\u0397',
-	      'eta': '\u03B7',
-	      'ETH': '\u00D0',
-	      'eth': '\u00F0',
-	      'Euml': '\u00CB',
-	      'euml': '\u00EB',
-	      'euro': '\u20AC',
-	      'exist': '\u2203',
-	      'fnof': '\u0192',
-	      'forall': '\u2200',
-	      'frac12': '\u00BD',
-	      'frac14': '\u00BC',
-	      'frac34': '\u00BE',
-	      'frasl': '\u2044',
-	      'Gamma': '\u0393',
-	      'gamma': '\u03B3',
-	      'ge': '\u2265',
-	      'gt': '>',
-	      'harr': '\u2194',
-	      'hArr': '\u21D4',
-	      'hearts': '\u2665',
-	      'hellip': '\u2026',
-	      'Iacute': '\u00CD',
-	      'iacute': '\u00ED',
-	      'Icirc': '\u00CE',
-	      'icirc': '\u00EE',
-	      'iexcl': '\u00A1',
-	      'Igrave': '\u00CC',
-	      'igrave': '\u00EC',
-	      'image': '\u2111',
-	      'infin': '\u221E',
-	      'int': '\u222B',
-	      'Iota': '\u0399',
-	      'iota': '\u03B9',
-	      'iquest': '\u00BF',
-	      'isin': '\u2208',
-	      'Iuml': '\u00CF',
-	      'iuml': '\u00EF',
-	      'Kappa': '\u039A',
-	      'kappa': '\u03BA',
-	      'Lambda': '\u039B',
-	      'lambda': '\u03BB',
-	      'lang': '\u27E8',
-	      'laquo': '\u00AB',
-	      'larr': '\u2190',
-	      'lArr': '\u21D0',
-	      'lceil': '\u2308',
-	      'ldquo': '\u201C',
-	      'le': '\u2264',
-	      'lfloor': '\u230A',
-	      'lowast': '\u2217',
-	      'loz': '\u25CA',
-	      'lrm': '\u200E',
-	      'lsaquo': '\u2039',
-	      'lsquo': '\u2018',
-	      'lt': '<',
-	      'macr': '\u00AF',
-	      'mdash': '\u2014',
-	      'micro': '\u00B5',
-	      'middot': '\u00B7',
-	      'minus': '\u2212',
-	      'Mu': '\u039C',
-	      'mu': '\u03BC',
-	      'nabla': '\u2207',
-	      'nbsp': '\u00A0',
-	      'ndash': '\u2013',
-	      'ne': '\u2260',
-	      'ni': '\u220B',
-	      'not': '\u00AC',
-	      'notin': '\u2209',
-	      'nsub': '\u2284',
-	      'Ntilde': '\u00D1',
-	      'ntilde': '\u00F1',
-	      'Nu': '\u039D',
-	      'nu': '\u03BD',
-	      'Oacute': '\u00D3',
-	      'oacute': '\u00F3',
-	      'Ocirc': '\u00D4',
-	      'ocirc': '\u00F4',
-	      'OElig': '\u0152',
-	      'oelig': '\u0153',
-	      'Ograve': '\u00D2',
-	      'ograve': '\u00F2',
-	      'oline': '\u203E',
-	      'Omega': '\u03A9',
-	      'omega': '\u03C9',
-	      'Omicron': '\u039F',
-	      'omicron': '\u03BF',
-	      'oplus': '\u2295',
-	      'or': '\u2228',
-	      'ordf': '\u00AA',
-	      'ordm': '\u00BA',
-	      'Oslash': '\u00D8',
-	      'oslash': '\u00F8',
-	      'Otilde': '\u00D5',
-	      'otilde': '\u00F5',
-	      'otimes': '\u2297',
-	      'Ouml': '\u00D6',
-	      'ouml': '\u00F6',
-	      'para': '\u00B6',
-	      'permil': '\u2030',
-	      'perp': '\u22A5',
-	      'Phi': '\u03A6',
-	      'phi': '\u03C6',
-	      'Pi': '\u03A0',
-	      'pi': '\u03C0',
-	      'piv': '\u03D6',
-	      'plusmn': '\u00B1',
-	      'pound': '\u00A3',
-	      'prime': '\u2032',
-	      'Prime': '\u2033',
-	      'prod': '\u220F',
-	      'prop': '\u221D',
-	      'Psi': '\u03A8',
-	      'psi': '\u03C8',
-	      'quot': '\u0022',
-	      'radic': '\u221A',
-	      'rang': '\u27E9',
-	      'raquo': '\u00BB',
-	      'rarr': '\u2192',
-	      'rArr': '\u21D2',
-	      'rceil': '\u2309',
-	      'rdquo': '\u201D',
-	      'real': '\u211C',
-	      'reg': '\u00AE',
-	      'rfloor': '\u230B',
-	      'Rho': '\u03A1',
-	      'rho': '\u03C1',
-	      'rlm': '\u200F',
-	      'rsaquo': '\u203A',
-	      'rsquo': '\u2019',
-	      'sbquo': '\u201A',
-	      'Scaron': '\u0160',
-	      'scaron': '\u0161',
-	      'sdot': '\u22C5',
-	      'sect': '\u00A7',
-	      'shy': '\u00AD',
-	      'Sigma': '\u03A3',
-	      'sigma': '\u03C3',
-	      'sigmaf': '\u03C2',
-	      'sim': '\u223C',
-	      'spades': '\u2660',
-	      'sub': '\u2282',
-	      'sube': '\u2286',
-	      'sum': '\u2211',
-	      'sup': '\u2283',
-	      'sup1': '\u00B9',
-	      'sup2': '\u00B2',
-	      'sup3': '\u00B3',
-	      'supe': '\u2287',
-	      'szlig': '\u00DF',
-	      'Tau': '\u03A4',
-	      'tau': '\u03C4',
-	      'there4': '\u2234',
-	      'Theta': '\u0398',
-	      'theta': '\u03B8',
-	      'thetasym': '\u03D1',
-	      'thinsp': '\u2009',
-	      'THORN': '\u00DE',
-	      'thorn': '\u00FE',
-	      'tilde': '\u02DC',
-	      'times': '\u00D7',
-	      'trade': '\u2122',
-	      'Uacute': '\u00DA',
-	      'uacute': '\u00FA',
-	      'uarr': '\u2191',
-	      'uArr': '\u21D1',
-	      'Ucirc': '\u00DB',
-	      'ucirc': '\u00FB',
-	      'Ugrave': '\u00D9',
-	      'ugrave': '\u00F9',
-	      'uml': '\u00A8',
-	      'upsih': '\u03D2',
-	      'Upsilon': '\u03A5',
-	      'upsilon': '\u03C5',
-	      'Uuml': '\u00DC',
-	      'uuml': '\u00FC',
-	      'weierp': '\u2118',
-	      'Xi': '\u039E',
-	      'xi': '\u03BE',
-	      'Yacute': '\u00DD',
-	      'yacute': '\u00FD',
-	      'yen': '\u00A5',
-	      'yuml': '\u00FF',
-	      'Yuml': '\u0178',
-	      'Zeta': '\u0396',
-	      'zeta': '\u03B6',
-	      'zwj': '\u200D',
-	      'zwnj': '\u200C',
-	  };
 
 	  /**
 	   * @license
@@ -32236,7 +29607,7 @@ webpackJsonp([1],{
 	              value = valueToken.parts[0];
 	              end = valueToken.sourceSpan.end;
 	          }
-	          return new Attribute(fullName, value, new ParseSourceSpan(attrName.sourceSpan.start, end));
+	          return new Attribute$1(fullName, value, new ParseSourceSpan(attrName.sourceSpan.start, end));
 	      };
 	      _TreeBuilder.prototype._getParentElement = function () {
 	          return this._elementStack.length > 0 ? ListWrapper.last(this._elementStack) : null;
@@ -32549,101 +29920,6 @@ webpackJsonp([1],{
 	      IcuPlaceholder.prototype.visit = function (visitor, context) { return visitor.visitIcuPlaceholder(this, context); };
 	      return IcuPlaceholder;
 	  }());
-
-	  var HtmlTagDefinition = (function () {
-	      function HtmlTagDefinition(_a) {
-	          var _this = this;
-	          var _b = _a === void 0 ? {} : _a, closedByChildren = _b.closedByChildren, requiredParents = _b.requiredParents, implicitNamespacePrefix = _b.implicitNamespacePrefix, _c = _b.contentType, contentType = _c === void 0 ? TagContentType.PARSABLE_DATA : _c, _d = _b.closedByParent, closedByParent = _d === void 0 ? false : _d, _e = _b.isVoid, isVoid = _e === void 0 ? false : _e, _f = _b.ignoreFirstLf, ignoreFirstLf = _f === void 0 ? false : _f;
-	          this.closedByChildren = {};
-	          this.closedByParent = false;
-	          this.canSelfClose = false;
-	          if (closedByChildren && closedByChildren.length > 0) {
-	              closedByChildren.forEach(function (tagName) { return _this.closedByChildren[tagName] = true; });
-	          }
-	          this.isVoid = isVoid;
-	          this.closedByParent = closedByParent || isVoid;
-	          if (requiredParents && requiredParents.length > 0) {
-	              this.requiredParents = {};
-	              // The first parent is the list is automatically when none of the listed parents are present
-	              this.parentToAdd = requiredParents[0];
-	              requiredParents.forEach(function (tagName) { return _this.requiredParents[tagName] = true; });
-	          }
-	          this.implicitNamespacePrefix = implicitNamespacePrefix;
-	          this.contentType = contentType;
-	          this.ignoreFirstLf = ignoreFirstLf;
-	      }
-	      HtmlTagDefinition.prototype.requireExtraParent = function (currentParent) {
-	          if (!this.requiredParents) {
-	              return false;
-	          }
-	          if (!currentParent) {
-	              return true;
-	          }
-	          var lcParent = currentParent.toLowerCase();
-	          return this.requiredParents[lcParent] != true && lcParent != 'template';
-	      };
-	      HtmlTagDefinition.prototype.isClosedByChild = function (name) {
-	          return this.isVoid || name.toLowerCase() in this.closedByChildren;
-	      };
-	      return HtmlTagDefinition;
-	  }());
-	  // see http://www.w3.org/TR/html51/syntax.html#optional-tags
-	  // This implementation does not fully conform to the HTML5 spec.
-	  var TAG_DEFINITIONS = {
-	      'base': new HtmlTagDefinition({ isVoid: true }),
-	      'meta': new HtmlTagDefinition({ isVoid: true }),
-	      'area': new HtmlTagDefinition({ isVoid: true }),
-	      'embed': new HtmlTagDefinition({ isVoid: true }),
-	      'link': new HtmlTagDefinition({ isVoid: true }),
-	      'img': new HtmlTagDefinition({ isVoid: true }),
-	      'input': new HtmlTagDefinition({ isVoid: true }),
-	      'param': new HtmlTagDefinition({ isVoid: true }),
-	      'hr': new HtmlTagDefinition({ isVoid: true }),
-	      'br': new HtmlTagDefinition({ isVoid: true }),
-	      'source': new HtmlTagDefinition({ isVoid: true }),
-	      'track': new HtmlTagDefinition({ isVoid: true }),
-	      'wbr': new HtmlTagDefinition({ isVoid: true }),
-	      'p': new HtmlTagDefinition({
-	          closedByChildren: [
-	              'address', 'article', 'aside', 'blockquote', 'div', 'dl', 'fieldset', 'footer', 'form',
-	              'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hgroup', 'hr',
-	              'main', 'nav', 'ol', 'p', 'pre', 'section', 'table', 'ul'
-	          ],
-	          closedByParent: true
-	      }),
-	      'thead': new HtmlTagDefinition({ closedByChildren: ['tbody', 'tfoot'] }),
-	      'tbody': new HtmlTagDefinition({ closedByChildren: ['tbody', 'tfoot'], closedByParent: true }),
-	      'tfoot': new HtmlTagDefinition({ closedByChildren: ['tbody'], closedByParent: true }),
-	      'tr': new HtmlTagDefinition({
-	          closedByChildren: ['tr'],
-	          requiredParents: ['tbody', 'tfoot', 'thead'],
-	          closedByParent: true
-	      }),
-	      'td': new HtmlTagDefinition({ closedByChildren: ['td', 'th'], closedByParent: true }),
-	      'th': new HtmlTagDefinition({ closedByChildren: ['td', 'th'], closedByParent: true }),
-	      'col': new HtmlTagDefinition({ requiredParents: ['colgroup'], isVoid: true }),
-	      'svg': new HtmlTagDefinition({ implicitNamespacePrefix: 'svg' }),
-	      'math': new HtmlTagDefinition({ implicitNamespacePrefix: 'math' }),
-	      'li': new HtmlTagDefinition({ closedByChildren: ['li'], closedByParent: true }),
-	      'dt': new HtmlTagDefinition({ closedByChildren: ['dt', 'dd'] }),
-	      'dd': new HtmlTagDefinition({ closedByChildren: ['dt', 'dd'], closedByParent: true }),
-	      'rb': new HtmlTagDefinition({ closedByChildren: ['rb', 'rt', 'rtc', 'rp'], closedByParent: true }),
-	      'rt': new HtmlTagDefinition({ closedByChildren: ['rb', 'rt', 'rtc', 'rp'], closedByParent: true }),
-	      'rtc': new HtmlTagDefinition({ closedByChildren: ['rb', 'rtc', 'rp'], closedByParent: true }),
-	      'rp': new HtmlTagDefinition({ closedByChildren: ['rb', 'rt', 'rtc', 'rp'], closedByParent: true }),
-	      'optgroup': new HtmlTagDefinition({ closedByChildren: ['optgroup'], closedByParent: true }),
-	      'option': new HtmlTagDefinition({ closedByChildren: ['option', 'optgroup'], closedByParent: true }),
-	      'pre': new HtmlTagDefinition({ ignoreFirstLf: true }),
-	      'listing': new HtmlTagDefinition({ ignoreFirstLf: true }),
-	      'style': new HtmlTagDefinition({ contentType: TagContentType.RAW_TEXT }),
-	      'script': new HtmlTagDefinition({ contentType: TagContentType.RAW_TEXT }),
-	      'title': new HtmlTagDefinition({ contentType: TagContentType.ESCAPABLE_RAW_TEXT }),
-	      'textarea': new HtmlTagDefinition({ contentType: TagContentType.ESCAPABLE_RAW_TEXT, ignoreFirstLf: true }),
-	  };
-	  var _DEFAULT_TAG_DEFINITION = new HtmlTagDefinition();
-	  function getHtmlTagDefinition(tagName) {
-	      return TAG_DEFINITIONS[tagName.toLowerCase()] || _DEFAULT_TAG_DEFINITION;
-	  }
 
 	  /**
 	   * @license
@@ -33132,7 +30408,7 @@ webpackJsonp([1],{
 	      // add a translatable message
 	      _Visitor.prototype._addMessage = function (ast, meaningAndDesc) {
 	          if (ast.length == 0 ||
-	              ast.length == 1 && ast[0] instanceof Attribute && !ast[0].value) {
+	              ast.length == 1 && ast[0] instanceof Attribute$1 && !ast[0].value) {
 	              // Do not create empty messages
 	              return;
 	          }
@@ -33179,7 +30455,7 @@ webpackJsonp([1],{
 	                  if (nodes) {
 	                      if (nodes[0] instanceof Text) {
 	                          var value = nodes[0].value;
-	                          translatedAttributes.push(new Attribute(attr.name, value, attr.sourceSpan));
+	                          translatedAttributes.push(new Attribute$1(attr.name, value, attr.sourceSpan));
 	                      }
 	                      else {
 	                          _this._reportError(el, "Unexpected translation for attribute \"" + attr.name + "\" (id=\"" + id + "\")");
@@ -33991,6 +31267,7 @@ webpackJsonp([1],{
 	  var AppView = _angular_core.__core_private__.AppView;
 	  var DebugAppView = _angular_core.__core_private__.DebugAppView;
 	  var NgModuleInjector = _angular_core.__core_private__.NgModuleInjector;
+	  var registerModuleFactory = _angular_core.__core_private__.registerModuleFactory;
 	  var ViewType = _angular_core.__core_private__.ViewType;
 	  var MAX_INTERPOLATION_VALUES = _angular_core.__core_private__.MAX_INTERPOLATION_VALUES;
 	  var checkBinding = _angular_core.__core_private__.checkBinding;
@@ -34124,6 +31401,11 @@ webpackJsonp([1],{
 	          name: 'NgModuleInjector',
 	          runtime: NgModuleInjector,
 	          moduleUrl: assetUrl('core', 'linker/ng_module_factory')
+	      };
+	      Identifiers.RegisterModuleFactoryFn = {
+	          name: 'registerModuleFactory',
+	          runtime: registerModuleFactory,
+	          moduleUrl: assetUrl('core', 'linker/ng_module_factory_loader')
 	      };
 	      Identifiers.ValueUnwrapper = { name: 'ValueUnwrapper', moduleUrl: CD_MODULE_URL, runtime: ValueUnwrapper };
 	      Identifiers.Injector = {
@@ -34417,18 +31699,18 @@ webpackJsonp([1],{
 	          }
 	          var expansionResult = expandNodes(c.expression);
 	          errors.push.apply(errors, expansionResult.errors);
-	          return new Element("template", [new Attribute('ngPluralCase', "" + c.value, c.valueSourceSpan)], expansionResult.nodes, c.sourceSpan, c.sourceSpan, c.sourceSpan);
+	          return new Element("template", [new Attribute$1('ngPluralCase', "" + c.value, c.valueSourceSpan)], expansionResult.nodes, c.sourceSpan, c.sourceSpan, c.sourceSpan);
 	      });
-	      var switchAttr = new Attribute('[ngPlural]', ast.switchValue, ast.switchValueSourceSpan);
+	      var switchAttr = new Attribute$1('[ngPlural]', ast.switchValue, ast.switchValueSourceSpan);
 	      return new Element('ng-container', [switchAttr], children, ast.sourceSpan, ast.sourceSpan, ast.sourceSpan);
 	  }
 	  function _expandDefaultForm(ast, errors) {
 	      var children = ast.cases.map(function (c) {
 	          var expansionResult = expandNodes(c.expression);
 	          errors.push.apply(errors, expansionResult.errors);
-	          return new Element("template", [new Attribute('ngSwitchCase', "" + c.value, c.valueSourceSpan)], expansionResult.nodes, c.sourceSpan, c.sourceSpan, c.sourceSpan);
+	          return new Element("template", [new Attribute$1('ngSwitchCase', "" + c.value, c.valueSourceSpan)], expansionResult.nodes, c.sourceSpan, c.sourceSpan, c.sourceSpan);
 	      });
-	      var switchAttr = new Attribute('[ngSwitch]', ast.switchValue, ast.switchValueSourceSpan);
+	      var switchAttr = new Attribute$1('[ngSwitch]', ast.switchValue, ast.switchValueSourceSpan);
 	      return new Element('ng-container', [switchAttr], children, ast.sourceSpan, ast.sourceSpan, ast.sourceSpan);
 	  }
 
@@ -35702,13 +32984,13 @@ webpackJsonp([1],{
 	                  boundPropertyName = this._schemaRegistry.getMappedPropName(partValue);
 	                  securityContext = this._schemaRegistry.securityContext(elementName, boundPropertyName);
 	                  bindingType = exports.PropertyBindingType.Property;
-	                  this._assertNoEventBinding(boundPropertyName, sourceSpan);
+	                  this._assertNoEventBinding(boundPropertyName, sourceSpan, false);
 	                  if (!this._schemaRegistry.hasProperty(elementName, boundPropertyName, this._schemas)) {
 	                      var errorMsg = "Can't bind to '" + boundPropertyName + "' since it isn't a known property of '" + elementName + "'.";
 	                      if (elementName.indexOf('-') > -1) {
 	                          errorMsg +=
 	                              ("\n1. If '" + elementName + "' is an Angular component and it has '" + boundPropertyName + "' input, then verify that it is part of this module.") +
-	                                  ("\n2. If '" + elementName + "' is a Web Component then add \"CUSTOM_ELEMENTS_SCHEMA\" to the '@NgModule.schema' of this component to suppress this message.\n");
+	                                  ("\n2. If '" + elementName + "' is a Web Component then add \"CUSTOM_ELEMENTS_SCHEMA\" to the '@NgModule.schemas' of this component to suppress this message.\n");
 	                      }
 	                      this._reportError(errorMsg, sourceSpan);
 	                  }
@@ -35717,7 +32999,7 @@ webpackJsonp([1],{
 	          else {
 	              if (parts[0] == ATTRIBUTE_PREFIX) {
 	                  boundPropertyName = parts[1];
-	                  this._assertNoEventBinding(boundPropertyName, sourceSpan);
+	                  this._assertNoEventBinding(boundPropertyName, sourceSpan, true);
 	                  // NB: For security purposes, use the mapped property name, not the attribute name.
 	                  var mapPropName = this._schemaRegistry.getMappedPropName(boundPropertyName);
 	                  securityContext = this._schemaRegistry.securityContext(elementName, mapPropName);
@@ -35748,10 +33030,22 @@ webpackJsonp([1],{
 	          }
 	          return new BoundElementPropertyAst(boundPropertyName, bindingType, securityContext, ast, unit, sourceSpan);
 	      };
-	      TemplateParseVisitor.prototype._assertNoEventBinding = function (propName, sourceSpan) {
+	      /**
+	       * @param propName the name of the property / attribute
+	       * @param sourceSpan
+	       * @param isAttr true when binding to an attribute
+	       * @private
+	       */
+	      TemplateParseVisitor.prototype._assertNoEventBinding = function (propName, sourceSpan, isAttr) {
 	          if (propName.toLowerCase().startsWith('on')) {
-	              this._reportError(("Binding to event attribute '" + propName + "' is disallowed ") +
-	                  ("for security reasons, please use (" + propName.slice(2) + ")=..."), sourceSpan, ParseErrorLevel.FATAL);
+	              var msg = ("Binding to event attribute '" + propName + "' is disallowed for security reasons, ") +
+	                  ("please use (" + propName.slice(2) + ")=...");
+	              if (!isAttr) {
+	                  msg +=
+	                      ("\nIf '" + propName + "' is a directive input, make sure the directive is imported by the") +
+	                          " current module.";
+	              }
+	              this._reportError(msg, sourceSpan, ParseErrorLevel.FATAL);
 	          }
 	      };
 	      TemplateParseVisitor.prototype._findComponentDirectiveNames = function (directives) {
@@ -35784,7 +33078,7 @@ webpackJsonp([1],{
 	          if (!matchElement && !this._schemaRegistry.hasElement(elName, this._schemas)) {
 	              var errorMsg = ("'" + elName + "' is not a known element:\n") +
 	                  ("1. If '" + elName + "' is an Angular component, then verify that it is part of this module.\n") +
-	                  ("2. If '" + elName + "' is a Web Component then add \"CUSTOM_ELEMENTS_SCHEMA\" to the '@NgModule.schema' of this component to suppress this message.");
+	                  ("2. If '" + elName + "' is a Web Component then add \"CUSTOM_ELEMENTS_SCHEMA\" to the '@NgModule.schemas' of this component to suppress this message.");
 	              this._reportError(errorMsg, element.sourceSpan);
 	          }
 	      };
@@ -36311,10 +33605,10 @@ webpackJsonp([1],{
 	      if (errors.length == 0) {
 	          _fillAnimationAstStartingKeyframes(animationAst, styles, errors);
 	      }
-	      var sequenceAst = (animationAst instanceof AnimationSequenceAst) ?
+	      var stepsAst = (animationAst instanceof AnimationWithStepsAst) ?
 	          animationAst :
 	          new AnimationSequenceAst([animationAst]);
-	      return new AnimationStateTransitionAst(transitionExprs, sequenceAst);
+	      return new AnimationStateTransitionAst(transitionExprs, stepsAst);
 	  }
 	  function _parseAnimationTransitionExpr(eventStr, errors) {
 	      var expressions = [];
@@ -36351,7 +33645,9 @@ webpackJsonp([1],{
 	  }
 	  function _normalizeStyleSteps(entry, stateStyles, errors) {
 	      var steps = _normalizeStyleStepEntry(entry, stateStyles, errors);
-	      return new CompileAnimationSequenceMetadata(steps);
+	      return (entry instanceof CompileAnimationGroupMetadata) ?
+	          new CompileAnimationGroupMetadata(steps) :
+	          new CompileAnimationSequenceMetadata(steps);
 	  }
 	  function _mergeAnimationStyles(stylesList, newItem) {
 	      if (isStringMap(newItem) && stylesList.length > 0) {
@@ -36632,7 +33928,7 @@ webpackJsonp([1],{
 	              errors.push(new AnimationParseError("The provided timing value \"" + exp + "\" is invalid."));
 	              return new _AnimationTimings(0, 0, null);
 	          }
-	          var durationMatch = NumberWrapper.parseFloat(matches[1]);
+	          var durationMatch = parseFloat(matches[1]);
 	          var durationUnit = matches[2];
 	          if (durationUnit == 's') {
 	              durationMatch *= _ONE_SECOND;
@@ -36641,7 +33937,7 @@ webpackJsonp([1],{
 	          var delayMatch = matches[3];
 	          var delayUnit = matches[4];
 	          if (isPresent(delayMatch)) {
-	              var delayVal = NumberWrapper.parseFloat(delayMatch);
+	              var delayVal = parseFloat(delayMatch);
 	              if (isPresent(delayUnit) && delayUnit == 's') {
 	                  delayVal *= _ONE_SECOND;
 	              }
@@ -37539,7 +34835,7 @@ webpackJsonp([1],{
 	      CompileElement.prototype.setComponentView = function (compViewExpr) {
 	          this._compViewExpr = compViewExpr;
 	          this.contentNodesByNgContentIndex =
-	              ListWrapper.createFixedSize(this.component.template.ngContentSelectors.length);
+	              new Array(this.component.template.ngContentSelectors.length);
 	          for (var i = 0; i < this.contentNodesByNgContentIndex.length; i++) {
 	              this.contentNodesByNgContentIndex[i] = [];
 	          }
@@ -37920,6 +35216,7 @@ webpackJsonp([1],{
 	          this.literalMapCount = 0;
 	          this.pipeCount = 0;
 	          this.createMethod = new CompileMethod(this);
+	          this.animationBindingsMethod = new CompileMethod(this);
 	          this.injectorGetMethod = new CompileMethod(this);
 	          this.updateContentQueriesMethod = new CompileMethod(this);
 	          this.dirtyParentQueriesMethod = new CompileMethod(this);
@@ -38333,7 +35630,7 @@ webpackJsonp([1],{
 	          //
 	          // Notice that the first guard condition is the left hand of the left most safe access node
 	          // which comes in as leftMostSafe to this routine.
-	          var guardedExpression = this.visit(leftMostSafe.receiver, mode);
+	          var guardedExpression = this.visit(leftMostSafe.receiver, _Mode.Expression);
 	          var temporary;
 	          if (this.needsTemporary(leftMostSafe.receiver)) {
 	              // If the expression has method calls or pipes then we need to save the result into a
@@ -38354,7 +35651,7 @@ webpackJsonp([1],{
 	              this._nodeMap.set(leftMostSafe, new PropertyRead(leftMostSafe.span, leftMostSafe.receiver, leftMostSafe.name));
 	          }
 	          // Recursively convert the node now without the guarded member access.
-	          var access = this.visit(ast, mode);
+	          var access = this.visit(ast, _Mode.Expression);
 	          // Remove the mapping. This is not strictly required as the converter only traverses each node
 	          // once but is safer if the conversion is changed to traverse the nodes more than once.
 	          this._nodeMap.delete(leftMostSafe);
@@ -38363,7 +35660,7 @@ webpackJsonp([1],{
 	              this.releaseTemporary(temporary);
 	          }
 	          // Produce the conditional
-	          return condition.conditional(literal(null), access);
+	          return convertToStatementIfNeeded(mode, condition.conditional(literal(null), access));
 	      };
 	      // Given a expression of the form a?.b.c?.d.e the the left most safe node is
 	      // the (a?.b). The . and ?. are left associative thus can be rewritten as:
@@ -38670,7 +35967,6 @@ webpackJsonp([1],{
 	  function createCurrValueExpr(exprIndex) {
 	      return variable("currVal_" + exprIndex); // fix syntax highlighting: `
 	  }
-	  var _animationViewCheckedFlagMap = new Map();
 	  function bind(view, currValExpr, fieldExpr, parsedExpression, context, actions, method, bindingIndex) {
 	      var checkExpression = convertCdExpressionToIr(view, context, parsedExpression, DetectChangesVars.valUnwrapper, bindingIndex);
 	      if (isBlank(checkExpression.expression)) {
@@ -38723,6 +36019,7 @@ webpackJsonp([1],{
 	          var oldRenderValue = sanitizedValue(boundProp, fieldExpr);
 	          var renderValue = sanitizedValue(boundProp, currValExpr);
 	          var updateStmts = [];
+	          var compileMethod = view.detectChangesRenderPropertiesMethod;
 	          switch (boundProp.type) {
 	              case exports.PropertyBindingType.Property:
 	                  if (view.genConfig.logBindingUpdate) {
@@ -38760,6 +36057,7 @@ webpackJsonp([1],{
 	                  if (isHostProp) {
 	                      targetViewExpr = compileElement.appElement.prop('componentView');
 	                  }
+	                  compileMethod = view.animationBindingsMethod;
 	                  var animationFnExpr = targetViewExpr.prop('componentType').prop('animations').key(literal(animationName));
 	                  // it's important to normalize the void value as `void` explicitly
 	                  // so that the styles data can be obtained from the stringmap
@@ -38775,15 +36073,9 @@ webpackJsonp([1],{
 	                  updateStmts.push(animationFnExpr.callFn([THIS_EXPR, renderNode, oldRenderVar, newRenderVar]).toStmt());
 	                  view.detachMethod.addStmt(animationFnExpr.callFn([THIS_EXPR, renderNode, oldRenderValue, emptyStateValue])
 	                      .toStmt());
-	                  if (!_animationViewCheckedFlagMap.get(view)) {
-	                      _animationViewCheckedFlagMap.set(view, true);
-	                      var triggerStmt = THIS_EXPR.callMethod('triggerQueuedAnimations', []).toStmt();
-	                      view.afterViewLifecycleCallbacksMethod.addStmt(triggerStmt);
-	                      view.detachMethod.addStmt(triggerStmt);
-	                  }
 	                  break;
 	          }
-	          bind(view, currValExpr, fieldExpr, boundProp.value, context, updateStmts, view.detectChangesRenderPropertiesMethod, view.bindings.length);
+	          bind(view, currValExpr, fieldExpr, boundProp.value, context, updateStmts, compileMethod, view.bindings.length);
 	      });
 	  }
 	  function sanitizedValue(boundProp, renderValue) {
@@ -39410,12 +36702,14 @@ webpackJsonp([1],{
 	  }
 	  function generateDetectChangesMethod(view) {
 	      var stmts = [];
-	      if (view.detectChangesInInputsMethod.isEmpty() && view.updateContentQueriesMethod.isEmpty() &&
+	      if (view.animationBindingsMethod.isEmpty() && view.detectChangesInInputsMethod.isEmpty() &&
+	          view.updateContentQueriesMethod.isEmpty() &&
 	          view.afterContentLifecycleCallbacksMethod.isEmpty() &&
 	          view.detectChangesRenderPropertiesMethod.isEmpty() &&
 	          view.updateViewQueriesMethod.isEmpty() && view.afterViewLifecycleCallbacksMethod.isEmpty()) {
 	          return stmts;
 	      }
+	      ListWrapper.addAll(stmts, view.animationBindingsMethod.finish());
 	      ListWrapper.addAll(stmts, view.detectChangesInInputsMethod.finish());
 	      stmts.push(THIS_EXPR.callMethod('detectContentChildrenChanges', [DetectChangesVars.throwOnChange])
 	          .toStmt());
@@ -39574,8 +36868,7 @@ webpackJsonp([1],{
 	              return Promise
 	                  .all([compMeta].concat(ngModule.transitiveModule.directives).map(function (dirMeta) { return _this._directiveNormalizer.normalizeDirective(dirMeta).asyncResult; }))
 	                  .then(function (normalizedCompWithDirectives) {
-	                  var compMeta = normalizedCompWithDirectives[0];
-	                  var dirMetas = normalizedCompWithDirectives.slice(1);
+	                  var compMeta = normalizedCompWithDirectives[0], dirMetas = normalizedCompWithDirectives.slice(1);
 	                  _assertComponent(compMeta);
 	                  // compile styles
 	                  var stylesCompileResults = _this._styleCompiler.compileComponent(compMeta);
@@ -39583,8 +36876,7 @@ webpackJsonp([1],{
 	                      outputSourceModules.push(_this._codgenStyles(compiledStyleSheet, fileSuffix));
 	                  });
 	                  // compile components
-	                  exportedVars.push(_this._compileComponentFactory(compMeta, fileSuffix, statements));
-	                  exportedVars.push(_this._compileComponent(compMeta, dirMetas, ngModule.transitiveModule.pipes, ngModule.schemas, stylesCompileResults.componentStylesheet, fileSuffix, statements));
+	                  exportedVars.push(_this._compileComponentFactory(compMeta, fileSuffix, statements), _this._compileComponent(compMeta, dirMetas, ngModule.transitiveModule.pipes, ngModule.schemas, stylesCompileResults.componentStylesheet, fileSuffix, statements));
 	              });
 	          }))
 	              .then(function () {
@@ -39596,13 +36888,20 @@ webpackJsonp([1],{
 	      };
 	      OfflineCompiler.prototype._compileModule = function (ngModuleType, targetStatements) {
 	          var ngModule = this._metadataResolver.getNgModuleMetadata(ngModuleType);
-	          var appCompileResult = this._ngModuleCompiler.compile(ngModule, [
-	              new CompileProviderMetadata({ token: resolveIdentifierToken(Identifiers.LOCALE_ID), useValue: this._localeId }),
-	              new CompileProviderMetadata({
+	          var providers = [];
+	          if (this._localeId) {
+	              providers.push(new CompileProviderMetadata({
+	                  token: resolveIdentifierToken(Identifiers.LOCALE_ID),
+	                  useValue: this._localeId,
+	              }));
+	          }
+	          if (this._translationFormat) {
+	              providers.push(new CompileProviderMetadata({
 	                  token: resolveIdentifierToken(Identifiers.TRANSLATIONS_FORMAT),
 	                  useValue: this._translationFormat
-	              })
-	          ]);
+	              }));
+	          }
+	          var appCompileResult = this._ngModuleCompiler.compile(ngModule, providers);
 	          appCompileResult.dependencies.forEach(function (dep) {
 	              dep.placeholder.name = _componentFactoryName(dep.comp);
 	              dep.placeholder.moduleUrl = _ngfactoryModuleUrl(dep.comp.moduleUrl);
@@ -39617,8 +36916,9 @@ webpackJsonp([1],{
 	          targetStatements.push(variable(compFactoryVar)
 	              .set(importExpr(resolveIdentifier(Identifiers.ComponentFactory), [importType(compMeta.type)])
 	              .instantiate([
-	              literal(compMeta.selector), variable(hostViewFactoryVar),
-	              importExpr(compMeta.type)
+	              literal(compMeta.selector),
+	              variable(hostViewFactoryVar),
+	              importExpr(compMeta.type),
 	          ], importType(resolveIdentifier(Identifiers.ComponentFactory), [importType(compMeta.type)], [TypeModifier.Const])))
 	              .toDeclStmt(null, [StmtModifier.Final]));
 	          return compFactoryVar;
@@ -39628,9 +36928,9 @@ webpackJsonp([1],{
 	          var stylesExpr = componentStyles ? variable(componentStyles.stylesVar) : literalArr([]);
 	          var viewResult = this._viewCompiler.compileComponent(compMeta, parsedTemplate, stylesExpr, pipes);
 	          if (componentStyles) {
-	              ListWrapper.addAll(targetStatements, _resolveStyleStatements(componentStyles, fileSuffix));
+	              targetStatements.push.apply(targetStatements, _resolveStyleStatements(componentStyles, fileSuffix));
 	          }
-	          ListWrapper.addAll(targetStatements, _resolveViewStatements(viewResult));
+	          targetStatements.push.apply(targetStatements, _resolveViewStatements(viewResult));
 	          return viewResult.viewFactoryVar;
 	      };
 	      OfflineCompiler.prototype._codgenStyles = function (stylesCompileResult, fileSuffix) {
@@ -39678,16 +36978,14 @@ webpackJsonp([1],{
 	      }
 	  }
 	  function _splitTypescriptSuffix(path) {
-	      if (/\.d\.ts$/.test(path)) {
-	          return [path.substring(0, path.length - 5), '.ts'];
+	      if (path.endsWith('.d.ts')) {
+	          return [path.slice(0, -5), '.ts'];
 	      }
 	      var lastDot = path.lastIndexOf('.');
 	      if (lastDot !== -1) {
 	          return [path.substring(0, lastDot), path.substring(lastDot)];
 	      }
-	      else {
-	          return [path, ''];
-	      }
+	      return [path, ''];
 	  }
 
 	  /**
@@ -40106,26 +37404,24 @@ webpackJsonp([1],{
 	          var visitor = new TemplatePreparseVisitor();
 	          visitAll(visitor, rootNodesAndErrors.rootNodes);
 	          var templateStyles = this.normalizeStylesheet(new CompileStylesheetMetadata({ styles: visitor.styles, styleUrls: visitor.styleUrls, moduleUrl: templateAbsUrl }));
-	          var allStyles = templateMetadataStyles.styles.concat(templateStyles.styles);
-	          var allStyleUrls = templateMetadataStyles.styleUrls.concat(templateStyles.styleUrls);
 	          var encapsulation = templateMeta.encapsulation;
 	          if (isBlank(encapsulation)) {
 	              encapsulation = this._config.defaultEncapsulation;
 	          }
-	          if (encapsulation === _angular_core.ViewEncapsulation.Emulated && allStyles.length === 0 &&
-	              allStyleUrls.length === 0) {
+	          var styles = templateMetadataStyles.styles.concat(templateStyles.styles);
+	          var styleUrls = templateMetadataStyles.styleUrls.concat(templateStyles.styleUrls);
+	          if (encapsulation === _angular_core.ViewEncapsulation.Emulated && styles.length === 0 &&
+	              styleUrls.length === 0) {
 	              encapsulation = _angular_core.ViewEncapsulation.None;
 	          }
 	          return new CompileTemplateMetadata({
 	              encapsulation: encapsulation,
 	              template: template,
-	              templateUrl: templateAbsUrl,
-	              styles: allStyles,
-	              styleUrls: allStyleUrls,
+	              templateUrl: templateAbsUrl, styles: styles, styleUrls: styleUrls,
 	              externalStylesheets: templateMeta.externalStylesheets,
 	              ngContentSelectors: visitor.ngContentSelectors,
 	              animations: templateMeta.animations,
-	              interpolation: templateMeta.interpolation
+	              interpolation: templateMeta.interpolation,
 	          });
 	      };
 	      DirectiveNormalizer.prototype.normalizeExternalStylesheets = function (templateMeta) {
@@ -40239,16 +37535,15 @@ webpackJsonp([1],{
 	          viewProviders: directive.viewProviders,
 	          queries: directive.queries,
 	          viewQueries: directive.viewQueries,
-	          entryComponents: directive.entryComponents,
-	          template: template
+	          entryComponents: directive.entryComponents, template: template,
 	      });
 	  }
 
 	  function _isDirectiveMetadata(type) {
-	      return type instanceof _angular_core.DirectiveMetadata;
+	      return type instanceof _angular_core.Directive;
 	  }
 	  /*
-	   * Resolve a `Type` for {@link DirectiveMetadata}.
+	   * Resolve a `Type` for {@link Directive}.
 	   *
 	   * This interface can be overridden by the application developer to create custom behavior.
 	   *
@@ -40260,7 +37555,7 @@ webpackJsonp([1],{
 	          this._reflector = _reflector;
 	      }
 	      /**
-	       * Return {@link DirectiveMetadata} for a given `Type`.
+	       * Return {@link Directive} for a given `Type`.
 	       */
 	      DirectiveResolver.prototype.resolve = function (type, throwIfNotFound) {
 	          if (throwIfNotFound === void 0) { throwIfNotFound = true; }
@@ -40284,7 +37579,7 @@ webpackJsonp([1],{
 	          var queries = {};
 	          StringMapWrapper.forEach(propertyMetadata, function (metadata, propName) {
 	              metadata.forEach(function (a) {
-	                  if (a instanceof _angular_core.InputMetadata) {
+	                  if (a instanceof _angular_core.Input) {
 	                      if (isPresent(a.bindingPropertyName)) {
 	                          inputs.push(propName + ": " + a.bindingPropertyName);
 	                      }
@@ -40292,27 +37587,30 @@ webpackJsonp([1],{
 	                          inputs.push(propName);
 	                      }
 	                  }
-	                  else if (a instanceof _angular_core.OutputMetadata) {
-	                      if (isPresent(a.bindingPropertyName)) {
-	                          outputs.push(propName + ": " + a.bindingPropertyName);
+	                  else if (a instanceof _angular_core.Output) {
+	                      var output = a;
+	                      if (isPresent(output.bindingPropertyName)) {
+	                          outputs.push(propName + ": " + output.bindingPropertyName);
 	                      }
 	                      else {
 	                          outputs.push(propName);
 	                      }
 	                  }
-	                  else if (a instanceof _angular_core.HostBindingMetadata) {
-	                      if (isPresent(a.hostPropertyName)) {
-	                          host[("[" + a.hostPropertyName + "]")] = propName;
+	                  else if (a instanceof _angular_core.HostBinding) {
+	                      var hostBinding = a;
+	                      if (isPresent(hostBinding.hostPropertyName)) {
+	                          host[("[" + hostBinding.hostPropertyName + "]")] = propName;
 	                      }
 	                      else {
 	                          host[("[" + propName + "]")] = propName;
 	                      }
 	                  }
-	                  else if (a instanceof _angular_core.HostListenerMetadata) {
-	                      var args = isPresent(a.args) ? a.args.join(', ') : '';
-	                      host[("(" + a.eventName + ")")] = propName + "(" + args + ")";
+	                  else if (a instanceof _angular_core.HostListener) {
+	                      var hostListener = a;
+	                      var args = isPresent(hostListener.args) ? hostListener.args.join(', ') : '';
+	                      host[("(" + hostListener.eventName + ")")] = propName + "(" + args + ")";
 	                  }
-	                  else if (a instanceof _angular_core.QueryMetadata) {
+	                  else if (a instanceof _angular_core.Query) {
 	                      queries[propName] = a;
 	                  }
 	              });
@@ -40352,8 +37650,8 @@ webpackJsonp([1],{
 	          }
 	          var mergedHost = isPresent(dm.host) ? StringMapWrapper.merge(dm.host, host) : host;
 	          var mergedQueries = isPresent(dm.queries) ? StringMapWrapper.merge(dm.queries, queries) : queries;
-	          if (dm instanceof _angular_core.ComponentMetadata) {
-	              return new _angular_core.ComponentMetadata({
+	          if (dm instanceof _angular_core.Component) {
+	              return new _angular_core.Component({
 	                  selector: dm.selector,
 	                  inputs: mergedInputs,
 	                  outputs: mergedOutputs,
@@ -40375,7 +37673,7 @@ webpackJsonp([1],{
 	              });
 	          }
 	          else {
-	              return new _angular_core.DirectiveMetadata({
+	              return new _angular_core.Directive({
 	                  selector: dm.selector,
 	                  inputs: mergedInputs,
 	                  outputs: mergedOutputs,
@@ -40423,10 +37721,10 @@ webpackJsonp([1],{
 	  }
 
 	  function _isNgModuleMetadata(obj) {
-	      return obj instanceof _angular_core.NgModuleMetadata;
+	      return obj instanceof _angular_core.NgModule;
 	  }
 	  /**
-	   * Resolves types to {@link NgModuleMetadata}.
+	   * Resolves types to {@link NgModule}.
 	   */
 	  var NgModuleResolver = (function () {
 	      function NgModuleResolver(_reflector) {
@@ -40457,10 +37755,10 @@ webpackJsonp([1],{
 	  }());
 
 	  function _isPipeMetadata(type) {
-	      return type instanceof _angular_core.PipeMetadata;
+	      return type instanceof _angular_core.Pipe;
 	  }
 	  /**
-	   * Resolve a `Type` for {@link PipeMetadata}.
+	   * Resolve a `Type` for {@link Pipe}.
 	   *
 	   * This interface can be overridden by the application developer to create custom behavior.
 	   *
@@ -40472,7 +37770,7 @@ webpackJsonp([1],{
 	          this._reflector = _reflector;
 	      }
 	      /**
-	       * Return {@link PipeMetadata} for a given `Type`.
+	       * Return {@link Pipe} for a given `Type`.
 	       */
 	      PipeResolver.prototype.resolve = function (type, throwIfNotFound) {
 	          if (throwIfNotFound === void 0) { throwIfNotFound = true; }
@@ -40530,7 +37828,7 @@ webpackJsonp([1],{
 	          if (identifier.indexOf('(') >= 0) {
 	              // case: anonymous functions!
 	              var found = this._anonymousTypes.get(token);
-	              if (isBlank(found)) {
+	              if (!found) {
 	                  this._anonymousTypes.set(token, this._anonymousTypeIndex++);
 	                  found = this._anonymousTypes.get(token);
 	              }
@@ -40542,7 +37840,7 @@ webpackJsonp([1],{
 	          this._directiveCache.delete(type);
 	          this._pipeCache.delete(type);
 	          this._ngModuleOfTypes.delete(type);
-	          // Clear all of the NgModuleMetadata as they contain transitive information!
+	          // Clear all of the NgModule as they contain transitive information!
 	          this._ngModuleCache.clear();
 	      };
 	      CompileMetadataResolver.prototype.clearCache = function () {
@@ -40561,7 +37859,7 @@ webpackJsonp([1],{
 	              var styles = this.getAnimationStyleMetadata(value.styles);
 	              return new CompileAnimationStateDeclarationMetadata(value.stateNameExpr, styles);
 	          }
-	          else if (value instanceof _angular_core.AnimationStateTransitionMetadata) {
+	          if (value instanceof _angular_core.AnimationStateTransitionMetadata) {
 	              return new CompileAnimationStateTransitionMetadata(value.stateChangeExpr, this.getAnimationMetadata(value.steps));
 	          }
 	          return null;
@@ -40574,22 +37872,20 @@ webpackJsonp([1],{
 	          if (value instanceof _angular_core.AnimationStyleMetadata) {
 	              return this.getAnimationStyleMetadata(value);
 	          }
-	          else if (value instanceof _angular_core.AnimationKeyframesSequenceMetadata) {
+	          if (value instanceof _angular_core.AnimationKeyframesSequenceMetadata) {
 	              return new CompileAnimationKeyframesSequenceMetadata(value.steps.map(function (entry) { return _this.getAnimationStyleMetadata(entry); }));
 	          }
-	          else if (value instanceof _angular_core.AnimationAnimateMetadata) {
+	          if (value instanceof _angular_core.AnimationAnimateMetadata) {
 	              var animateData = this
 	                  .getAnimationMetadata(value.styles);
 	              return new CompileAnimationAnimateMetadata(value.timings, animateData);
 	          }
-	          else if (value instanceof _angular_core.AnimationWithStepsMetadata) {
+	          if (value instanceof _angular_core.AnimationWithStepsMetadata) {
 	              var steps = value.steps.map(function (step) { return _this.getAnimationMetadata(step); });
 	              if (value instanceof _angular_core.AnimationGroupMetadata) {
 	                  return new CompileAnimationGroupMetadata(steps);
 	              }
-	              else {
-	                  return new CompileAnimationSequenceMetadata(steps);
-	              }
+	              return new CompileAnimationSequenceMetadata(steps);
 	          }
 	          return null;
 	      };
@@ -40598,7 +37894,7 @@ webpackJsonp([1],{
 	          if (throwIfNotFound === void 0) { throwIfNotFound = true; }
 	          directiveType = _angular_core.resolveForwardRef(directiveType);
 	          var meta = this._directiveCache.get(directiveType);
-	          if (isBlank(meta)) {
+	          if (!meta) {
 	              var dirMeta = this._directiveResolver.resolve(directiveType, throwIfNotFound);
 	              if (!dirMeta) {
 	                  return null;
@@ -40609,32 +37905,31 @@ webpackJsonp([1],{
 	              var moduleUrl = staticTypeModuleUrl(directiveType);
 	              var entryComponentMetadata = [];
 	              var selector = dirMeta.selector;
-	              if (dirMeta instanceof _angular_core.ComponentMetadata) {
-	                  var cmpMeta = dirMeta;
-	                  assertArrayOfStrings('styles', cmpMeta.styles);
-	                  assertInterpolationSymbols('interpolation', cmpMeta.interpolation);
-	                  var animations = isPresent(cmpMeta.animations) ?
-	                      cmpMeta.animations.map(function (e) { return _this.getAnimationEntryMetadata(e); }) :
+	              if (dirMeta instanceof _angular_core.Component) {
+	                  // Component
+	                  assertArrayOfStrings('styles', dirMeta.styles);
+	                  assertArrayOfStrings('styleUrls', dirMeta.styleUrls);
+	                  assertInterpolationSymbols('interpolation', dirMeta.interpolation);
+	                  var animations = dirMeta.animations ?
+	                      dirMeta.animations.map(function (e) { return _this.getAnimationEntryMetadata(e); }) :
 	                      null;
-	                  assertArrayOfStrings('styles', cmpMeta.styles);
-	                  assertArrayOfStrings('styleUrls', cmpMeta.styleUrls);
 	                  templateMeta = new CompileTemplateMetadata({
-	                      encapsulation: cmpMeta.encapsulation,
-	                      template: cmpMeta.template,
-	                      templateUrl: cmpMeta.templateUrl,
-	                      styles: cmpMeta.styles,
-	                      styleUrls: cmpMeta.styleUrls,
+	                      encapsulation: dirMeta.encapsulation,
+	                      template: dirMeta.template,
+	                      templateUrl: dirMeta.templateUrl,
+	                      styles: dirMeta.styles,
+	                      styleUrls: dirMeta.styleUrls,
 	                      animations: animations,
-	                      interpolation: cmpMeta.interpolation
+	                      interpolation: dirMeta.interpolation
 	                  });
-	                  changeDetectionStrategy = cmpMeta.changeDetection;
-	                  if (isPresent(dirMeta.viewProviders)) {
+	                  changeDetectionStrategy = dirMeta.changeDetection;
+	                  if (dirMeta.viewProviders) {
 	                      viewProviders = this.getProvidersMetadata(dirMeta.viewProviders, entryComponentMetadata, "viewProviders for \"" + stringify(directiveType) + "\"");
 	                  }
-	                  moduleUrl = componentModuleUrl(this._reflector, directiveType, cmpMeta);
-	                  if (cmpMeta.entryComponents) {
+	                  moduleUrl = componentModuleUrl(this._reflector, directiveType, dirMeta);
+	                  if (dirMeta.entryComponents) {
 	                      entryComponentMetadata =
-	                          flattenArray(cmpMeta.entryComponents)
+	                          flattenArray(dirMeta.entryComponents)
 	                              .map(function (type) { return _this.getTypeMetadata(type, staticTypeModuleUrl(type)); })
 	                              .concat(entryComponentMetadata);
 	                  }
@@ -40643,6 +37938,7 @@ webpackJsonp([1],{
 	                  }
 	              }
 	              else {
+	                  // Directive
 	                  if (!selector) {
 	                      throw new Error("Directive " + stringify(directiveType) + " has no selector, please add it!");
 	                  }
@@ -40660,7 +37956,7 @@ webpackJsonp([1],{
 	              meta = CompileDirectiveMetadata.create({
 	                  selector: selector,
 	                  exportAs: dirMeta.exportAs,
-	                  isComponent: isPresent(templateMeta),
+	                  isComponent: !!templateMeta,
 	                  type: this.getTypeMetadata(directiveType, moduleUrl),
 	                  template: templateMeta,
 	                  changeDetection: changeDetectionStrategy,
@@ -40775,8 +38071,13 @@ webpackJsonp([1],{
 	                      .map(function (type) { return _this.getTypeMetadata(type, staticTypeModuleUrl(type)); }));
 	              }
 	              if (meta.bootstrap) {
-	                  bootstrapComponents.push.apply(bootstrapComponents, flattenArray(meta.bootstrap)
-	                      .map(function (type) { return _this.getTypeMetadata(type, staticTypeModuleUrl(type)); }));
+	                  var typeMetadata = flattenArray(meta.bootstrap).map(function (type) {
+	                      if (!isValidType(type)) {
+	                          throw new Error("Unexpected value '" + stringify(type) + "' used in the bootstrap property of module '" + stringify(moduleType) + "'");
+	                      }
+	                      return _this.getTypeMetadata(type, staticTypeModuleUrl(type));
+	                  });
+	                  bootstrapComponents.push.apply(bootstrapComponents, typeMetadata);
 	              }
 	              entryComponents_1.push.apply(entryComponents_1, bootstrapComponents);
 	              if (meta.schemas) {
@@ -40796,7 +38097,8 @@ webpackJsonp([1],{
 	                  exportedPipes: exportedPipes_1,
 	                  importedModules: importedModules_1,
 	                  exportedModules: exportedModules_1,
-	                  transitiveModule: transitiveModule_1
+	                  transitiveModule: transitiveModule_1,
+	                  id: meta.id,
 	              });
 	              transitiveModule_1.modules.push(compileMeta);
 	              this._verifyModule(compileMeta);
@@ -40821,23 +38123,23 @@ webpackJsonp([1],{
 	          if (this._directiveResolver.resolve(type, false) !== null) {
 	              return 'directive';
 	          }
-	          else if (this._pipeResolver.resolve(type, false) !== null) {
+	          if (this._pipeResolver.resolve(type, false) !== null) {
 	              return 'pipe';
 	          }
-	          else if (this._ngModuleResolver.resolve(type, false) !== null) {
+	          if (this._ngModuleResolver.resolve(type, false) !== null) {
 	              return 'module';
 	          }
-	          else if (type.provide) {
+	          if (type.provide) {
 	              return 'provider';
 	          }
-	          else {
-	              return 'value';
-	          }
+	          return 'value';
 	      };
 	      CompileMetadataResolver.prototype._addTypeToModule = function (type, moduleType) {
 	          var oldModule = this._ngModuleOfTypes.get(type);
 	          if (oldModule && oldModule !== moduleType) {
-	              throw new Error("Type " + stringify(type) + " is part of the declarations of 2 modules: " + stringify(oldModule) + " and " + stringify(moduleType) + "!");
+	              throw new Error(("Type " + stringify(type) + " is part of the declarations of 2 modules: " + stringify(oldModule) + " and " + stringify(moduleType) + "! ") +
+	                  ("Please consider moving " + stringify(type) + " to a higher module that imports " + stringify(oldModule) + " and " + stringify(moduleType) + ". ") +
+	                  ("You can also create a new NgModule that exports and includes " + stringify(type) + " then import that NgModule in " + stringify(oldModule) + " and " + stringify(moduleType) + "."));
 	          }
 	          this._ngModuleOfTypes.set(type, moduleType);
 	      };
@@ -40898,7 +38200,7 @@ webpackJsonp([1],{
 	          if (throwIfNotFound === void 0) { throwIfNotFound = true; }
 	          pipeType = _angular_core.resolveForwardRef(pipeType);
 	          var meta = this._pipeCache.get(pipeType);
-	          if (isBlank(meta)) {
+	          if (!meta) {
 	              var pipeMeta = this._pipeResolver.resolve(pipeType, throwIfNotFound);
 	              if (!pipeMeta) {
 	                  return null;
@@ -40915,10 +38217,7 @@ webpackJsonp([1],{
 	      CompileMetadataResolver.prototype.getDependenciesMetadata = function (typeOrFunc, dependencies) {
 	          var _this = this;
 	          var hasUnknownDeps = false;
-	          var params = isPresent(dependencies) ? dependencies : this._reflector.parameters(typeOrFunc);
-	          if (isBlank(params)) {
-	              params = [];
-	          }
+	          var params = dependencies || this._reflector.parameters(typeOrFunc) || [];
 	          var dependenciesMetadata = params.map(function (param) {
 	              var isAttribute = false;
 	              var isHost = false;
@@ -40928,25 +38227,25 @@ webpackJsonp([1],{
 	              var query = null;
 	              var viewQuery = null;
 	              var token = null;
-	              if (isArray(param)) {
+	              if (Array.isArray(param)) {
 	                  param.forEach(function (paramEntry) {
-	                      if (paramEntry instanceof _angular_core.HostMetadata) {
+	                      if (paramEntry instanceof _angular_core.Host) {
 	                          isHost = true;
 	                      }
-	                      else if (paramEntry instanceof _angular_core.SelfMetadata) {
+	                      else if (paramEntry instanceof _angular_core.Self) {
 	                          isSelf = true;
 	                      }
-	                      else if (paramEntry instanceof _angular_core.SkipSelfMetadata) {
+	                      else if (paramEntry instanceof _angular_core.SkipSelf) {
 	                          isSkipSelf = true;
 	                      }
-	                      else if (paramEntry instanceof _angular_core.OptionalMetadata) {
+	                      else if (paramEntry instanceof _angular_core.Optional) {
 	                          isOptional = true;
 	                      }
-	                      else if (paramEntry instanceof _angular_core.AttributeMetadata) {
+	                      else if (paramEntry instanceof _angular_core.Attribute) {
 	                          isAttribute = true;
 	                          token = paramEntry.attributeName;
 	                      }
-	                      else if (paramEntry instanceof _angular_core.QueryMetadata) {
+	                      else if (paramEntry instanceof _angular_core.Query) {
 	                          if (paramEntry.isViewQuery) {
 	                              viewQuery = paramEntry;
 	                          }
@@ -40954,7 +38253,7 @@ webpackJsonp([1],{
 	                              query = paramEntry;
 	                          }
 	                      }
-	                      else if (paramEntry instanceof _angular_core.InjectMetadata) {
+	                      else if (paramEntry instanceof _angular_core.Inject) {
 	                          token = paramEntry.token;
 	                      }
 	                      else if (isValidType(paramEntry) && isBlank(token)) {
@@ -40975,14 +38274,13 @@ webpackJsonp([1],{
 	                  isSelf: isSelf,
 	                  isSkipSelf: isSkipSelf,
 	                  isOptional: isOptional,
-	                  query: isPresent(query) ? _this.getQueryMetadata(query, null, typeOrFunc) : null,
-	                  viewQuery: isPresent(viewQuery) ? _this.getQueryMetadata(viewQuery, null, typeOrFunc) : null,
+	                  query: query ? _this.getQueryMetadata(query, null, typeOrFunc) : null,
+	                  viewQuery: viewQuery ? _this.getQueryMetadata(viewQuery, null, typeOrFunc) : null,
 	                  token: _this.getTokenMetadata(token)
 	              });
 	          });
 	          if (hasUnknownDeps) {
-	              var depsTokens = dependenciesMetadata.map(function (dep) { return dep ? stringify(dep.token) : '?'; })
-	                  .join(', ');
+	              var depsTokens = dependenciesMetadata.map(function (dep) { return dep ? stringify(dep.token) : '?'; }).join(', ');
 	              throw new Error("Can't resolve all parameters for " + stringify(typeOrFunc) + ": (" + depsTokens + ").");
 	          }
 	          return dependenciesMetadata;
@@ -41013,7 +38311,7 @@ webpackJsonp([1],{
 	                  provider = new ProviderMeta(provider.provide, provider);
 	              }
 	              var compileProvider;
-	              if (isArray(provider)) {
+	              if (Array.isArray(provider)) {
 	                  compileProvider = _this.getProvidersMetadata(provider, targetEntryComponents, debugInfo);
 	              }
 	              else if (provider instanceof ProviderMeta) {
@@ -41074,11 +38372,11 @@ webpackJsonp([1],{
 	          var compileDeps;
 	          var compileTypeMetadata = null;
 	          var compileFactoryMetadata = null;
-	          if (isPresent(provider.useClass)) {
+	          if (provider.useClass) {
 	              compileTypeMetadata = this.getTypeMetadata(provider.useClass, staticTypeModuleUrl(provider.useClass), provider.dependencies);
 	              compileDeps = compileTypeMetadata.diDeps;
 	          }
-	          else if (isPresent(provider.useFactory)) {
+	          else if (provider.useFactory) {
 	              compileFactoryMetadata = this.getFactoryMetadata(provider.useFactory, staticTypeModuleUrl(provider.useFactory), provider.dependencies);
 	              compileDeps = compileFactoryMetadata.diDeps;
 	          }
@@ -41087,8 +38385,7 @@ webpackJsonp([1],{
 	              useClass: compileTypeMetadata,
 	              useValue: convertToCompileValue(provider.useValue, []),
 	              useFactory: compileFactoryMetadata,
-	              useExisting: isPresent(provider.useExisting) ? this.getTokenMetadata(provider.useExisting) :
-	                  null,
+	              useExisting: provider.useExisting ? this.getTokenMetadata(provider.useExisting) : null,
 	              deps: compileDeps,
 	              multi: provider.multi
 	          });
@@ -41096,21 +38393,23 @@ webpackJsonp([1],{
 	      CompileMetadataResolver.prototype.getQueriesMetadata = function (queries, isViewQuery, directiveType) {
 	          var _this = this;
 	          var res = [];
-	          StringMapWrapper.forEach(queries, function (query, propertyName) {
+	          Object.keys(queries).forEach(function (propertyName) {
+	              var query = queries[propertyName];
 	              if (query.isViewQuery === isViewQuery) {
 	                  res.push(_this.getQueryMetadata(query, propertyName, directiveType));
 	              }
 	          });
 	          return res;
 	      };
+	      CompileMetadataResolver.prototype._queryVarBindings = function (selector) { return selector.split(/\s*,\s*/); };
 	      CompileMetadataResolver.prototype.getQueryMetadata = function (q, propertyName, typeOrFunc) {
 	          var _this = this;
 	          var selectors;
-	          if (q.isVarBindingQuery) {
-	              selectors = q.varBindings.map(function (varName) { return _this.getTokenMetadata(varName); });
+	          if (typeof q.selector === 'string') {
+	              selectors = this._queryVarBindings(q.selector).map(function (varName) { return _this.getTokenMetadata(varName); });
 	          }
 	          else {
-	              if (!isPresent(q.selector)) {
+	              if (!q.selector) {
 	                  throw new Error("Can't construct a query for the property \"" + propertyName + "\" of \"" + stringify(typeOrFunc) + "\" since the query selector wasn't defined.");
 	              }
 	              selectors = [this.getTokenMetadata(q.selector)];
@@ -41118,9 +38417,8 @@ webpackJsonp([1],{
 	          return new CompileQueryMetadata({
 	              selectors: selectors,
 	              first: q.first,
-	              descendants: q.descendants,
-	              propertyName: propertyName,
-	              read: isPresent(q.read) ? this.getTokenMetadata(q.read) : null
+	              descendants: q.descendants, propertyName: propertyName,
+	              read: q.read ? this.getTokenMetadata(q.read) : null
 	          });
 	      };
 	      CompileMetadataResolver.decorators = [
@@ -41158,7 +38456,7 @@ webpackJsonp([1],{
 	      if (tree) {
 	          for (var i = 0; i < tree.length; i++) {
 	              var item = _angular_core.resolveForwardRef(tree[i]);
-	              if (isArray(item)) {
+	              if (Array.isArray(item)) {
 	                  flattenArray(item, out);
 	              }
 	              else {
@@ -41178,11 +38476,14 @@ webpackJsonp([1],{
 	      if (isStaticSymbol(type)) {
 	          return staticTypeModuleUrl(type);
 	      }
-	      if (isPresent(cmpMetadata.moduleId)) {
-	          var moduleId = cmpMetadata.moduleId;
+	      var moduleId = cmpMetadata.moduleId;
+	      if (typeof moduleId === 'string') {
 	          var scheme = getUrlScheme(moduleId);
-	          return isPresent(scheme) && scheme.length > 0 ? moduleId :
-	              "package:" + moduleId + MODULE_SUFFIX;
+	          return scheme ? moduleId : "package:" + moduleId + MODULE_SUFFIX;
+	      }
+	      else if (moduleId !== null && moduleId !== void 0) {
+	          throw new Error(("moduleId should be a string in \"" + stringify(type) + "\". See https://goo.gl/wIDDiL for more information.\n") +
+	              "If you're using Webpack you should inline the template and the styles, see https://goo.gl/X2J8zc.");
 	      }
 	      return reflector.importUri(type);
 	  }
@@ -41251,7 +38552,14 @@ webpackJsonp([1],{
 	              .set(importExpr(resolveIdentifier(Identifiers.NgModuleFactory))
 	              .instantiate([variable(injectorClass.name), importExpr(ngModuleMeta.type)], importType(resolveIdentifier(Identifiers.NgModuleFactory), [importType(ngModuleMeta.type)], [TypeModifier.Const])))
 	              .toDeclStmt(null, [StmtModifier.Final]);
-	          return new NgModuleCompileResult([injectorClass, ngModuleFactoryStmt], ngModuleFactoryVar, deps);
+	          var stmts = [injectorClass, ngModuleFactoryStmt];
+	          if (ngModuleMeta.id) {
+	              var registerFactoryStmt = importExpr(resolveIdentifier(Identifiers.RegisterModuleFactoryFn))
+	                  .callFn([literal(ngModuleMeta.id), variable(ngModuleFactoryVar)])
+	                  .toStmt();
+	              stmts.push(registerFactoryStmt);
+	          }
+	          return new NgModuleCompileResult(stmts, ngModuleFactoryVar, deps);
 	      };
 	      NgModuleCompiler.decorators = [
 	          { type: _angular_core.Injectable },
@@ -43059,7 +40367,7 @@ webpackJsonp([1],{
 	              }
 	              return scopedP;
 	          };
-	          var sep = /( |>|\+|~)\s*/g;
+	          var sep = /( |>|\+|~(?!=))\s*/g;
 	          var scopeAfter = selector.indexOf(_polyfillHostNoCombinator);
 	          var scoped = '';
 	          var startIndex = 0;
@@ -43109,11 +40417,11 @@ webpackJsonp([1],{
 	  function stripComments(input) {
 	      return StringWrapper.replaceAllMapped(input, _commentRe, function (_ /** TODO #9100 */) { return ''; });
 	  }
-	  // all comments except inline source mapping ("/* #sourceMappingURL= ... */")
-	  var _sourceMappingUrlRe = /[\s\S]*(\/\*\s*#\s*sourceMappingURL=[\s\S]+?\*\/)\s*$/;
+	  // all comments except inline source mapping
+	  var _sourceMappingUrlRe = /\/\*\s*#\s*sourceMappingURL=[\s\S]+?\*\//;
 	  function extractSourceMappingUrl(input) {
 	      var matcher = input.match(_sourceMappingUrlRe);
-	      return matcher ? matcher[1] : '';
+	      return matcher ? matcher[0] : '';
 	  }
 	  var _ruleRe = /(\s*)([^;\{\}]+?)(\s*)((?:{%BLOCK%}?\s*;?)|(?:\s*;))/g;
 	  var _curlyRe = /([{}])/g;
@@ -43719,7 +41027,8 @@ webpackJsonp([1],{
 	   * An `element` may inherit additional properties from `parentElement` If no `^parentElement` is
 	   * specified then `""` (blank) element is assumed.
 	   *
-	   * NOTE: The blank element inherits from root `*` element, the super element of all elements.
+	   * NOTE: The blank element inherits from root `[Element]` element, the super element of all
+	   * elements.
 	   *
 	   * NOTE an element prefix such as `:svg:` has no special meaning to the schema.
 	   *
@@ -43755,11 +41064,12 @@ webpackJsonp([1],{
 	  // dom_security_schema.ts. Reach out to mprobst & rjamet for details.
 	  //
 	  // =================================================================================================
-	  var SCHEMA = ([
-	      '*|textContent,%classList,className,id,innerHTML,*beforecopy,*beforecut,*beforepaste,*copy,*cut,*paste,*search,*selectstart,*webkitfullscreenchange,*webkitfullscreenerror,*wheel,outerHTML,#scrollLeft,#scrollTop',
-	      'abbr,address,article,aside,b,bdi,bdo,cite,code,dd,dfn,dt,em,figcaption,figure,footer,header,i,kbd,main,mark,nav,noscript,rb,rp,rt,rtc,ruby,s,samp,section,small,strong,sub,sup,u,var,wbr^*|accessKey,contentEditable,dir,!draggable,!hidden,innerText,lang,*abort,*beforecopy,*beforecut,*beforepaste,*blur,*cancel,*canplay,*canplaythrough,*change,*click,*close,*contextmenu,*copy,*cuechange,*cut,*dblclick,*drag,*dragend,*dragenter,*dragleave,*dragover,*dragstart,*drop,*durationchange,*emptied,*ended,*error,*focus,*input,*invalid,*keydown,*keypress,*keyup,*load,*loadeddata,*loadedmetadata,*loadstart,*message,*mousedown,*mouseenter,*mouseleave,*mousemove,*mouseout,*mouseover,*mouseup,*mousewheel,*mozfullscreenchange,*mozfullscreenerror,*mozpointerlockchange,*mozpointerlockerror,*paste,*pause,*play,*playing,*progress,*ratechange,*reset,*resize,*scroll,*search,*seeked,*seeking,*select,*selectstart,*show,*stalled,*submit,*suspend,*timeupdate,*toggle,*volumechange,*waiting,*webglcontextcreationerror,*webglcontextlost,*webglcontextrestored,*webkitfullscreenchange,*webkitfullscreenerror,*wheel,outerText,!spellcheck,%style,#tabIndex,title,!translate',
-	      'media^abbr|!autoplay,!controls,%crossOrigin,#currentTime,!defaultMuted,#defaultPlaybackRate,!disableRemotePlayback,!loop,!muted,*encrypted,#playbackRate,preload,src,%srcObject,#volume',
-	      ':svg:^abbr|*abort,*blur,*cancel,*canplay,*canplaythrough,*change,*click,*close,*contextmenu,*cuechange,*dblclick,*drag,*dragend,*dragenter,*dragleave,*dragover,*dragstart,*drop,*durationchange,*emptied,*ended,*error,*focus,*input,*invalid,*keydown,*keypress,*keyup,*load,*loadeddata,*loadedmetadata,*loadstart,*mousedown,*mouseenter,*mouseleave,*mousemove,*mouseout,*mouseover,*mouseup,*mousewheel,*pause,*play,*playing,*progress,*ratechange,*reset,*resize,*scroll,*seeked,*seeking,*select,*show,*stalled,*submit,*suspend,*timeupdate,*toggle,*volumechange,*waiting,%style,#tabIndex',
+	  var SCHEMA = [
+	      '[Element]|textContent,%classList,className,id,innerHTML,*beforecopy,*beforecut,*beforepaste,*copy,*cut,*paste,*search,*selectstart,*webkitfullscreenchange,*webkitfullscreenerror,*wheel,outerHTML,#scrollLeft,#scrollTop',
+	      '[HTMLElement]^[Element]|accessKey,contentEditable,dir,!draggable,!hidden,innerText,lang,*abort,*beforecopy,*beforecut,*beforepaste,*blur,*cancel,*canplay,*canplaythrough,*change,*click,*close,*contextmenu,*copy,*cuechange,*cut,*dblclick,*drag,*dragend,*dragenter,*dragleave,*dragover,*dragstart,*drop,*durationchange,*emptied,*ended,*error,*focus,*input,*invalid,*keydown,*keypress,*keyup,*load,*loadeddata,*loadedmetadata,*loadstart,*message,*mousedown,*mouseenter,*mouseleave,*mousemove,*mouseout,*mouseover,*mouseup,*mousewheel,*mozfullscreenchange,*mozfullscreenerror,*mozpointerlockchange,*mozpointerlockerror,*paste,*pause,*play,*playing,*progress,*ratechange,*reset,*resize,*scroll,*search,*seeked,*seeking,*select,*selectstart,*show,*stalled,*submit,*suspend,*timeupdate,*toggle,*volumechange,*waiting,*webglcontextcreationerror,*webglcontextlost,*webglcontextrestored,*webkitfullscreenchange,*webkitfullscreenerror,*wheel,outerText,!spellcheck,%style,#tabIndex,title,!translate',
+	      'abbr,address,article,aside,b,bdi,bdo,cite,code,dd,dfn,dt,em,figcaption,figure,footer,header,i,kbd,main,mark,nav,noscript,rb,rp,rt,rtc,ruby,s,samp,section,small,strong,sub,sup,u,var,wbr^[HTMLElement]|accessKey,contentEditable,dir,!draggable,!hidden,innerText,lang,*abort,*beforecopy,*beforecut,*beforepaste,*blur,*cancel,*canplay,*canplaythrough,*change,*click,*close,*contextmenu,*copy,*cuechange,*cut,*dblclick,*drag,*dragend,*dragenter,*dragleave,*dragover,*dragstart,*drop,*durationchange,*emptied,*ended,*error,*focus,*input,*invalid,*keydown,*keypress,*keyup,*load,*loadeddata,*loadedmetadata,*loadstart,*message,*mousedown,*mouseenter,*mouseleave,*mousemove,*mouseout,*mouseover,*mouseup,*mousewheel,*mozfullscreenchange,*mozfullscreenerror,*mozpointerlockchange,*mozpointerlockerror,*paste,*pause,*play,*playing,*progress,*ratechange,*reset,*resize,*scroll,*search,*seeked,*seeking,*select,*selectstart,*show,*stalled,*submit,*suspend,*timeupdate,*toggle,*volumechange,*waiting,*webglcontextcreationerror,*webglcontextlost,*webglcontextrestored,*webkitfullscreenchange,*webkitfullscreenerror,*wheel,outerText,!spellcheck,%style,#tabIndex,title,!translate',
+	      'media^[HTMLElement]|!autoplay,!controls,%crossOrigin,#currentTime,!defaultMuted,#defaultPlaybackRate,!disableRemotePlayback,!loop,!muted,*encrypted,#playbackRate,preload,src,%srcObject,#volume',
+	      ':svg:^[HTMLElement]|*abort,*blur,*cancel,*canplay,*canplaythrough,*change,*click,*close,*contextmenu,*cuechange,*dblclick,*drag,*dragend,*dragenter,*dragleave,*dragover,*dragstart,*drop,*durationchange,*emptied,*ended,*error,*focus,*input,*invalid,*keydown,*keypress,*keyup,*load,*loadeddata,*loadedmetadata,*loadstart,*mousedown,*mouseenter,*mouseleave,*mousemove,*mouseout,*mouseover,*mouseup,*mousewheel,*pause,*play,*playing,*progress,*ratechange,*reset,*resize,*scroll,*seeked,*seeking,*select,*show,*stalled,*submit,*suspend,*timeupdate,*toggle,*volumechange,*waiting,%style,#tabIndex',
 	      ':svg:graphics^:svg:|',
 	      ':svg:animation^:svg:|*begin,*end,*repeat',
 	      ':svg:geometry^:svg:|',
@@ -43767,75 +41077,74 @@ webpackJsonp([1],{
 	      ':svg:gradient^:svg:|',
 	      ':svg:textContent^:svg:graphics|',
 	      ':svg:textPositioning^:svg:textContent|',
-	      'abbr^*|accessKey,contentEditable,dir,!draggable,!hidden,innerText,lang,*abort,*beforecopy,*beforecut,*beforepaste,*blur,*cancel,*canplay,*canplaythrough,*change,*click,*close,*contextmenu,*copy,*cuechange,*cut,*dblclick,*drag,*dragend,*dragenter,*dragleave,*dragover,*dragstart,*drop,*durationchange,*emptied,*ended,*error,*focus,*input,*invalid,*keydown,*keypress,*keyup,*load,*loadeddata,*loadedmetadata,*loadstart,*message,*mousedown,*mouseenter,*mouseleave,*mousemove,*mouseout,*mouseover,*mouseup,*mousewheel,*mozfullscreenchange,*mozfullscreenerror,*mozpointerlockchange,*mozpointerlockerror,*paste,*pause,*play,*playing,*progress,*ratechange,*reset,*resize,*scroll,*search,*seeked,*seeking,*select,*selectstart,*show,*stalled,*submit,*suspend,*timeupdate,*toggle,*volumechange,*waiting,*webglcontextcreationerror,*webglcontextlost,*webglcontextrestored,*webkitfullscreenchange,*webkitfullscreenerror,*wheel,outerText,!spellcheck,%style,#tabIndex,title,!translate',
-	      'a^abbr|charset,coords,download,hash,host,hostname,href,hreflang,name,password,pathname,ping,port,protocol,referrerPolicy,rel,rev,search,shape,target,text,type,username',
-	      'area^abbr|alt,coords,hash,host,hostname,href,!noHref,password,pathname,ping,port,protocol,referrerPolicy,search,shape,target,username',
+	      'a^[HTMLElement]|charset,coords,download,hash,host,hostname,href,hreflang,name,password,pathname,ping,port,protocol,referrerPolicy,rel,rev,search,shape,target,text,type,username',
+	      'area^[HTMLElement]|alt,coords,hash,host,hostname,href,!noHref,password,pathname,ping,port,protocol,referrerPolicy,search,shape,target,username',
 	      'audio^media|',
-	      'br^abbr|clear',
-	      'base^abbr|href,target',
-	      'body^abbr|aLink,background,bgColor,link,*beforeunload,*blur,*error,*focus,*hashchange,*languagechange,*load,*message,*offline,*online,*pagehide,*pageshow,*popstate,*rejectionhandled,*resize,*scroll,*storage,*unhandledrejection,*unload,text,vLink',
-	      'button^abbr|!autofocus,!disabled,formAction,formEnctype,formMethod,!formNoValidate,formTarget,name,type,value',
-	      'canvas^abbr|#height,#width',
-	      'content^abbr|select',
-	      'dl^abbr|!compact',
-	      'datalist^abbr|',
-	      'details^abbr|!open',
-	      'dialog^abbr|!open,returnValue',
-	      'dir^abbr|!compact',
-	      'div^abbr|align',
-	      'embed^abbr|align,height,name,src,type,width',
-	      'fieldset^abbr|!disabled,name',
-	      'font^abbr|color,face,size',
-	      'form^abbr|acceptCharset,action,autocomplete,encoding,enctype,method,name,!noValidate,target',
-	      'frame^abbr|frameBorder,longDesc,marginHeight,marginWidth,name,!noResize,scrolling,src',
-	      'frameset^abbr|cols,*beforeunload,*blur,*error,*focus,*hashchange,*languagechange,*load,*message,*offline,*online,*pagehide,*pageshow,*popstate,*rejectionhandled,*resize,*scroll,*storage,*unhandledrejection,*unload,rows',
-	      'hr^abbr|align,color,!noShade,size,width',
-	      'head^abbr|',
-	      'h1,h2,h3,h4,h5,h6^abbr|align',
-	      'html^abbr|version',
-	      'iframe^abbr|align,!allowFullscreen,frameBorder,height,longDesc,marginHeight,marginWidth,name,referrerPolicy,%sandbox,scrolling,src,srcdoc,width',
-	      'img^abbr|align,alt,border,%crossOrigin,#height,#hspace,!isMap,longDesc,lowsrc,name,referrerPolicy,sizes,src,srcset,useMap,#vspace,#width',
-	      'input^abbr|accept,align,alt,autocapitalize,autocomplete,!autofocus,!checked,!defaultChecked,defaultValue,dirName,!disabled,%files,formAction,formEnctype,formMethod,!formNoValidate,formTarget,#height,!incremental,!indeterminate,max,#maxLength,min,#minLength,!multiple,name,pattern,placeholder,!readOnly,!required,selectionDirection,#selectionEnd,#selectionStart,#size,src,step,type,useMap,value,%valueAsDate,#valueAsNumber,#width',
-	      'keygen^abbr|!autofocus,challenge,!disabled,keytype,name',
-	      'li^abbr|type,#value',
-	      'label^abbr|htmlFor',
-	      'legend^abbr|align',
-	      'link^abbr|as,charset,%crossOrigin,!disabled,href,hreflang,integrity,media,rel,%relList,rev,%sizes,target,type',
-	      'map^abbr|name',
-	      'marquee^abbr|behavior,bgColor,direction,height,#hspace,#loop,#scrollAmount,#scrollDelay,!trueSpeed,#vspace,width',
-	      'menu^abbr|!compact',
-	      'meta^abbr|content,httpEquiv,name,scheme',
-	      'meter^abbr|#high,#low,#max,#min,#optimum,#value',
-	      'ins,del^abbr|cite,dateTime',
-	      'ol^abbr|!compact,!reversed,#start,type',
-	      'object^abbr|align,archive,border,code,codeBase,codeType,data,!declare,height,#hspace,name,standby,type,useMap,#vspace,width',
-	      'optgroup^abbr|!disabled,label',
-	      'option^abbr|!defaultSelected,!disabled,label,!selected,text,value',
-	      'output^abbr|defaultValue,%htmlFor,name,value',
-	      'p^abbr|align',
-	      'param^abbr|name,type,value,valueType',
-	      'picture^abbr|',
-	      'pre^abbr|#width',
-	      'progress^abbr|#max,#value',
-	      'q,blockquote,cite^abbr|',
-	      'script^abbr|!async,charset,%crossOrigin,!defer,event,htmlFor,integrity,src,text,type',
-	      'select^abbr|!autofocus,!disabled,#length,!multiple,name,!required,#selectedIndex,#size,value',
-	      'shadow^abbr|',
-	      'source^abbr|media,sizes,src,srcset,type',
-	      'span^abbr|',
-	      'style^abbr|!disabled,media,type',
-	      'caption^abbr|align',
-	      'th,td^abbr|abbr,align,axis,bgColor,ch,chOff,#colSpan,headers,height,!noWrap,#rowSpan,scope,vAlign,width',
-	      'col,colgroup^abbr|align,ch,chOff,#span,vAlign,width',
-	      'table^abbr|align,bgColor,border,%caption,cellPadding,cellSpacing,frame,rules,summary,%tFoot,%tHead,width',
-	      'tr^abbr|align,bgColor,ch,chOff,vAlign',
-	      'tfoot,thead,tbody^abbr|align,ch,chOff,vAlign',
-	      'template^abbr|',
-	      'textarea^abbr|autocapitalize,!autofocus,#cols,defaultValue,dirName,!disabled,#maxLength,#minLength,name,placeholder,!readOnly,!required,#rows,selectionDirection,#selectionEnd,#selectionStart,value,wrap',
-	      'title^abbr|text',
-	      'track^abbr|!default,kind,label,src,srclang',
-	      'ul^abbr|!compact,type',
-	      'unknown^abbr|',
+	      'br^[HTMLElement]|clear',
+	      'base^[HTMLElement]|href,target',
+	      'body^[HTMLElement]|aLink,background,bgColor,link,*beforeunload,*blur,*error,*focus,*hashchange,*languagechange,*load,*message,*offline,*online,*pagehide,*pageshow,*popstate,*rejectionhandled,*resize,*scroll,*storage,*unhandledrejection,*unload,text,vLink',
+	      'button^[HTMLElement]|!autofocus,!disabled,formAction,formEnctype,formMethod,!formNoValidate,formTarget,name,type,value',
+	      'canvas^[HTMLElement]|#height,#width',
+	      'content^[HTMLElement]|select',
+	      'dl^[HTMLElement]|!compact',
+	      'datalist^[HTMLElement]|',
+	      'details^[HTMLElement]|!open',
+	      'dialog^[HTMLElement]|!open,returnValue',
+	      'dir^[HTMLElement]|!compact',
+	      'div^[HTMLElement]|align',
+	      'embed^[HTMLElement]|align,height,name,src,type,width',
+	      'fieldset^[HTMLElement]|!disabled,name',
+	      'font^[HTMLElement]|color,face,size',
+	      'form^[HTMLElement]|acceptCharset,action,autocomplete,encoding,enctype,method,name,!noValidate,target',
+	      'frame^[HTMLElement]|frameBorder,longDesc,marginHeight,marginWidth,name,!noResize,scrolling,src',
+	      'frameset^[HTMLElement]|cols,*beforeunload,*blur,*error,*focus,*hashchange,*languagechange,*load,*message,*offline,*online,*pagehide,*pageshow,*popstate,*rejectionhandled,*resize,*scroll,*storage,*unhandledrejection,*unload,rows',
+	      'hr^[HTMLElement]|align,color,!noShade,size,width',
+	      'head^[HTMLElement]|',
+	      'h1,h2,h3,h4,h5,h6^[HTMLElement]|align',
+	      'html^[HTMLElement]|version',
+	      'iframe^[HTMLElement]|align,!allowFullscreen,frameBorder,height,longDesc,marginHeight,marginWidth,name,referrerPolicy,%sandbox,scrolling,src,srcdoc,width',
+	      'img^[HTMLElement]|align,alt,border,%crossOrigin,#height,#hspace,!isMap,longDesc,lowsrc,name,referrerPolicy,sizes,src,srcset,useMap,#vspace,#width',
+	      'input^[HTMLElement]|accept,align,alt,autocapitalize,autocomplete,!autofocus,!checked,!defaultChecked,defaultValue,dirName,!disabled,%files,formAction,formEnctype,formMethod,!formNoValidate,formTarget,#height,!incremental,!indeterminate,max,#maxLength,min,#minLength,!multiple,name,pattern,placeholder,!readOnly,!required,selectionDirection,#selectionEnd,#selectionStart,#size,src,step,type,useMap,value,%valueAsDate,#valueAsNumber,#width',
+	      'keygen^[HTMLElement]|!autofocus,challenge,!disabled,keytype,name',
+	      'li^[HTMLElement]|type,#value',
+	      'label^[HTMLElement]|htmlFor',
+	      'legend^[HTMLElement]|align',
+	      'link^[HTMLElement]|as,charset,%crossOrigin,!disabled,href,hreflang,integrity,media,rel,%relList,rev,%sizes,target,type',
+	      'map^[HTMLElement]|name',
+	      'marquee^[HTMLElement]|behavior,bgColor,direction,height,#hspace,#loop,#scrollAmount,#scrollDelay,!trueSpeed,#vspace,width',
+	      'menu^[HTMLElement]|!compact',
+	      'meta^[HTMLElement]|content,httpEquiv,name,scheme',
+	      'meter^[HTMLElement]|#high,#low,#max,#min,#optimum,#value',
+	      'ins,del^[HTMLElement]|cite,dateTime',
+	      'ol^[HTMLElement]|!compact,!reversed,#start,type',
+	      'object^[HTMLElement]|align,archive,border,code,codeBase,codeType,data,!declare,height,#hspace,name,standby,type,useMap,#vspace,width',
+	      'optgroup^[HTMLElement]|!disabled,label',
+	      'option^[HTMLElement]|!defaultSelected,!disabled,label,!selected,text,value',
+	      'output^[HTMLElement]|defaultValue,%htmlFor,name,value',
+	      'p^[HTMLElement]|align',
+	      'param^[HTMLElement]|name,type,value,valueType',
+	      'picture^[HTMLElement]|',
+	      'pre^[HTMLElement]|#width',
+	      'progress^[HTMLElement]|#max,#value',
+	      'q,blockquote,cite^[HTMLElement]|',
+	      'script^[HTMLElement]|!async,charset,%crossOrigin,!defer,event,htmlFor,integrity,src,text,type',
+	      'select^[HTMLElement]|!autofocus,!disabled,#length,!multiple,name,!required,#selectedIndex,#size,value',
+	      'shadow^[HTMLElement]|',
+	      'source^[HTMLElement]|media,sizes,src,srcset,type',
+	      'span^[HTMLElement]|',
+	      'style^[HTMLElement]|!disabled,media,type',
+	      'caption^[HTMLElement]|align',
+	      'th,td^[HTMLElement]|abbr,align,axis,bgColor,ch,chOff,#colSpan,headers,height,!noWrap,#rowSpan,scope,vAlign,width',
+	      'col,colgroup^[HTMLElement]|align,ch,chOff,#span,vAlign,width',
+	      'table^[HTMLElement]|align,bgColor,border,%caption,cellPadding,cellSpacing,frame,rules,summary,%tFoot,%tHead,width',
+	      'tr^[HTMLElement]|align,bgColor,ch,chOff,vAlign',
+	      'tfoot,thead,tbody^[HTMLElement]|align,ch,chOff,vAlign',
+	      'template^[HTMLElement]|',
+	      'textarea^[HTMLElement]|autocapitalize,!autofocus,#cols,defaultValue,dirName,!disabled,#maxLength,#minLength,name,placeholder,!readOnly,!required,#rows,selectionDirection,#selectionEnd,#selectionStart,value,wrap',
+	      'title^[HTMLElement]|text',
+	      'track^[HTMLElement]|!default,kind,label,src,srclang',
+	      'ul^[HTMLElement]|!compact,type',
+	      'unknown^[HTMLElement]|',
 	      'video^media|#height,poster,#width',
 	      ':svg:a^:svg:graphics|',
 	      ':svg:animate^:svg:animation|',
@@ -43902,13 +41211,17 @@ webpackJsonp([1],{
 	      ':svg:title^:svg:|',
 	      ':svg:use^:svg:graphics|',
 	      ':svg:view^:svg:|#zoomAndPan',
-	  ]);
+	      'data^[HTMLElement]|value',
+	      'menuitem^[HTMLElement]|type,label,icon,!disabled,!checked,radiogroup,!default',
+	      'summary^[HTMLElement]|',
+	      'time^[HTMLElement]|dateTime',
+	  ];
 	  var _ATTR_TO_PROP = {
 	      'class': 'className',
 	      'formaction': 'formAction',
 	      'innerHtml': 'innerHTML',
 	      'readonly': 'readOnly',
-	      'tabindex': 'tabIndex'
+	      'tabindex': 'tabIndex',
 	  };
 	  var DomElementSchemaRegistry = (function (_super) {
 	      __extends$18(DomElementSchemaRegistry, _super);
@@ -43917,12 +41230,12 @@ webpackJsonp([1],{
 	          _super.call(this);
 	          this._schema = {};
 	          SCHEMA.forEach(function (encodedType) {
+	              var type = {};
 	              var _a = encodedType.split('|'), strType = _a[0], strProperties = _a[1];
 	              var properties = strProperties.split(',');
 	              var _b = strType.split('^'), typeNames = _b[0], superName = _b[1];
-	              var type = {};
 	              typeNames.split(',').forEach(function (tag) { return _this._schema[tag.toLowerCase()] = type; });
-	              var superType = _this._schema[superName];
+	              var superType = superName && _this._schema[superName.toLowerCase()];
 	              if (superType) {
 	                  Object.keys(superType).forEach(function (prop) { type[prop] = superType[prop]; });
 	              }
@@ -44040,8 +41353,8 @@ webpackJsonp([1],{
 	          },
 	          deps: [
 	              HtmlParser,
-	              [new _angular_core.OptionalMetadata(), new _angular_core.Inject(_angular_core.TRANSLATIONS)],
-	              [new _angular_core.OptionalMetadata(), new _angular_core.Inject(_angular_core.TRANSLATIONS_FORMAT)],
+	              [new _angular_core.Optional(), new _angular_core.Inject(_angular_core.TRANSLATIONS)],
+	              [new _angular_core.Optional(), new _angular_core.Inject(_angular_core.TRANSLATIONS_FORMAT)],
 	          ]
 	      },
 	      TemplateParser,
@@ -45874,23 +43187,6 @@ webpackJsonp([1],{
 	exports.tryCatch = tryCatch;
 	;
 	//# sourceMappingURL=tryCatch.js.map
-
-/***/ },
-
-/***/ 373:
-/***/ function(module, exports) {
-
-	module.exports = function(module) {
-		if(!module.webpackPolyfill) {
-			module.deprecate = function() {};
-			module.paths = [];
-			// module.parent = undefined by default
-			module.children = [];
-			module.webpackPolyfill = 1;
-		}
-		return module;
-	}
-
 
 /***/ }
 
