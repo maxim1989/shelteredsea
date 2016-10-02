@@ -22,18 +22,13 @@ class Deals(models.Model):
 class TempDeals(models.Model):
     chat = models.OneToOneField(Chat, null=True, on_delete=models.CASCADE)
     steam_game_uid = models.CharField(max_length=255)
-    count_of_games = models.PositiveIntegerField()
-    left_rate = models.CharField(max_length=255)
-    right_rate = models.CharField(max_length=2)
     is_active = models.BooleanField()
-    left_count_of_money = models.CharField(max_length=255)
-    right_count_of_money = models.CharField(max_length=2)
 
 
 class OrderForDeal(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     deal = models.ForeignKey(Deals, on_delete=models.CASCADE, null=True)
-    temp_deal = models.ForeignKey(TempDeals, on_delete=models.CASCADE, null=True)
+    temp_deal = models.ForeignKey(TempDeals, on_delete=models.CASCADE, null=True, related_name='orders')
     game = models.ForeignKey(Games, on_delete=models.CASCADE)
     is_winner = models.BooleanField(default=False)
     left_rate = models.CharField(max_length=255)

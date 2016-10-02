@@ -1,6 +1,9 @@
+from datetime import datetime
+
 from rest_framework import serializers
 
-from disputes.models import Games, OrderForDeal
+from chat.models import Chat, ManyChatsToManyUsersConnector
+from disputes.models import Games, OrderForDeal, TempDeals
 
 
 class GamesSerializer(serializers.ModelSerializer):
@@ -12,7 +15,7 @@ class GamesSerializer(serializers.ModelSerializer):
 class OrderForDealSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderForDeal
-        fields = ('user', 'deal', 'temp_deal', 'game', 'is_winner', 'left_rate', 'right_rate', 'rate_trent',
+        fields = ('id', 'user', 'deal', 'temp_deal', 'game', 'is_winner', 'left_rate', 'right_rate', 'rate_trent',
                   'games_count', 'team_size', 'in_negotiations', 'modificate_moment', 'is_active')
 
     def create(self, validated_data):
@@ -27,3 +30,23 @@ class OrderForDealSerializer(serializers.ModelSerializer):
                                 rate_trent=rate_trent, games_count=games_count, team_size=team_size)
         instance.save()
         return instance
+
+
+class TempDealsSerializer(serializers.ModelSerializer):
+    orders = OrderForDealSerializer(many=True)
+
+    class Meta:
+        model = TempDeals
+        fields = ('id', 'chat', 'steam_game_uid', 'is_active', 'orders')
+
+    def create(self, validated_data):
+        name = datetime.now().strftime("%H:%M|%d-%m-%Y")
+        chat = Chat.objects.create(name=name)
+        temp_deal = TempDeals.objects.create(chat=chat, **validated_data)
+        for uid in self.context.get('uids', []):
+            order = OrderForDeal.objects.get(pk=uid)
+            order.in_negotiations = self.context.get('in_negotiations', True)
+            order.temp_deal = temp_deal
+            order.save()
+            ManyChatsToManyUsersConnector.objects.create(user=order.user, chat=chat)
+        return temp_deal
