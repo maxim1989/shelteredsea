@@ -12,7 +12,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 44:
+/***/ 42:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -37,8 +37,8 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(3);
-	var http_1 = __webpack_require__(28);
-	__webpack_require__(44);
+	var http_1 = __webpack_require__(24);
+	__webpack_require__(42);
 	var UserService = (function () {
 	    function UserService(http) {
 	        this.http = http;
@@ -1941,9 +1941,9 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(3);
-	var http_1 = __webpack_require__(28);
+	var http_1 = __webpack_require__(24);
 	var ng2_cookies_1 = __webpack_require__(139);
-	__webpack_require__(44);
+	__webpack_require__(42);
 	var FriendshipService = (function () {
 	    function FriendshipService(http) {
 	        this.http = http;
@@ -2067,7 +2067,7 @@ webpackJsonp([2],{
 	    AccountComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account',
-	            template: __webpack_require__(340)
+	            template: __webpack_require__(341)
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object, (typeof (_b = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _b) || Object])
 	    ], AccountComponent);
@@ -2117,7 +2117,7 @@ webpackJsonp([2],{
 	    ChatHistoryComponent = __decorate([
 	        core_1.Component({
 	            selector: 'chat-history',
-	            template: __webpack_require__(345)
+	            template: __webpack_require__(346)
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object, (typeof (_b = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _b) || Object])
 	    ], ChatHistoryComponent);
@@ -2143,17 +2143,34 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(3);
+	var service_1 = __webpack_require__(173);
 	var GameDispute = (function () {
-	    function GameDispute() {
+	    function GameDispute(GameService) {
+	        this.GameService = GameService;
 	    }
+	    GameDispute.prototype.ngOnInit = function () {
+	        this.loadGames();
+	    };
+	    GameDispute.prototype.loadGames = function () {
+	        var _this = this;
+	        this.GameService.getGames()
+	            .then(function (games) {
+	            _this.gameList = games;
+	        });
+	    };
+	    GameDispute.prototype.changeGame = function (game_namespace) {
+	        console.log(game_namespace);
+	    };
 	    GameDispute = __decorate([
 	        core_1.Component({
 	            selector: 'pfg',
-	            template: __webpack_require__(347)
+	            template: __webpack_require__(348),
+	            providers: [service_1.GameService]
 	        }), 
-	        __metadata('design:paramtypes', [])
+	        __metadata('design:paramtypes', [(typeof (_a = typeof service_1.GameService !== 'undefined' && service_1.GameService) === 'function' && _a) || Object])
 	    ], GameDispute);
 	    return GameDispute;
+	    var _a;
 	}());
 	exports.GameDispute = GameDispute;
 
@@ -2180,7 +2197,7 @@ webpackJsonp([2],{
 	    StartPageComponent = __decorate([
 	        core_1.Component({
 	            selector: 'start_page',
-	            template: __webpack_require__(348),
+	            template: __webpack_require__(349),
 	        }), 
 	        __metadata('design:paramtypes', [])
 	    ], StartPageComponent);
@@ -2229,7 +2246,7 @@ webpackJsonp([2],{
 /***/ function(module, exports, __webpack_require__) {
 
 	// Export all services
-	var cookie_1 = __webpack_require__(335);
+	var cookie_1 = __webpack_require__(336);
 	exports.Cookie = cookie_1.Cookie;
 	//# sourceMappingURL=services.js.map
 
@@ -7637,7 +7654,7 @@ webpackJsonp([2],{
 /***/ function(module, exports, __webpack_require__) {
 
 	(function (global, factory) {
-	     true ? factory(exports, __webpack_require__(3), __webpack_require__(53), __webpack_require__(97), __webpack_require__(11), __webpack_require__(354)) :
+	     true ? factory(exports, __webpack_require__(3), __webpack_require__(53), __webpack_require__(97), __webpack_require__(11), __webpack_require__(355)) :
 	    typeof define === 'function' && define.amd ? define(['exports', '@angular/core', '@angular/common', '@angular2-material/core', 'rxjs/Observable', 'rxjs/add/operator/map'], factory) :
 	    (factory((global.md = global.md || {}, global.md.tabs = global.md.tabs || {}),global.ng.core,global.ng.common,global.md.core,global.Rx,global.Rx.Observable.prototype));
 	}(this, (function (exports,_angular_core,_angular_common,_angular2Material_core,rxjs_Observable,rxjs_add_operator_map) { 'use strict';
@@ -8093,7 +8110,7 @@ webpackJsonp([2],{
 	    AccountCardComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-card',
-	            template: __webpack_require__(337),
+	            template: __webpack_require__(338),
 	            providers: [],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object])
@@ -8142,7 +8159,7 @@ webpackJsonp([2],{
 	    AccountChatComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-chat',
-	            template: __webpack_require__(338),
+	            template: __webpack_require__(339),
 	            providers: [service_1.AccountChatService],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof service_1.AccountChatService !== 'undefined' && service_1.AccountChatService) === 'function' && _a) || Object])
@@ -8169,8 +8186,8 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(3);
-	var http_1 = __webpack_require__(28);
-	__webpack_require__(44);
+	var http_1 = __webpack_require__(24);
+	__webpack_require__(42);
 	var AccountChatService = (function () {
 	    function AccountChatService(http) {
 	        this.http = http;
@@ -8263,7 +8280,7 @@ webpackJsonp([2],{
 	    AccountFriendshipComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-friendship',
-	            template: __webpack_require__(339),
+	            template: __webpack_require__(340),
 	            providers: [service_1.FriendshipService],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof service_1.FriendshipService !== 'undefined' && service_1.FriendshipService) === 'function' && _a) || Object])
@@ -8319,7 +8336,7 @@ webpackJsonp([2],{
 	    AccountSearchComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-search',
-	            template: __webpack_require__(341),
+	            template: __webpack_require__(342),
 	            providers: [service_1.SearchUserService],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof service_1.SearchUserService !== 'undefined' && service_1.SearchUserService) === 'function' && _a) || Object])
@@ -8375,7 +8392,7 @@ webpackJsonp([2],{
 	    AccountSearchResultListComponent = __decorate([
 	        core_1.Component({
 	            selector: 'search-result-list',
-	            template: __webpack_require__(342),
+	            template: __webpack_require__(343),
 	            providers: [service_1.FriendshipService]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_b = typeof service_1.FriendshipService !== 'undefined' && service_1.FriendshipService) === 'function' && _b) || Object])
@@ -8402,8 +8419,8 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(3);
-	var http_1 = __webpack_require__(28);
-	__webpack_require__(44);
+	var http_1 = __webpack_require__(24);
+	__webpack_require__(42);
 	var SearchUserService = (function () {
 	    function SearchUserService(http) {
 	        this.http = http;
@@ -8470,7 +8487,7 @@ webpackJsonp([2],{
 	    AccountStatisticComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-statistic',
-	            template: __webpack_require__(343),
+	            template: __webpack_require__(344),
 	            providers: [service_1.StatisticService],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_b = typeof service_1.StatisticService !== 'undefined' && service_1.StatisticService) === 'function' && _b) || Object])
@@ -8497,8 +8514,8 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(3);
-	var http_1 = __webpack_require__(28);
-	__webpack_require__(44);
+	var http_1 = __webpack_require__(24);
+	__webpack_require__(42);
 	var StatisticService = (function () {
 	    function StatisticService(http) {
 	        this.http = http;
@@ -8546,13 +8563,13 @@ webpackJsonp([2],{
 	var core_1 = __webpack_require__(3);
 	var platform_browser_1 = __webpack_require__(45);
 	var forms_1 = __webpack_require__(154);
-	var http_1 = __webpack_require__(28);
+	var http_1 = __webpack_require__(24);
 	var tabs_1 = __webpack_require__(158);
 	var card_1 = __webpack_require__(155);
 	var progress_bar_1 = __webpack_require__(156);
 	var progress_circle_1 = __webpack_require__(157);
 	var app_1 = __webpack_require__(169);
-	var routes_1 = __webpack_require__(173);
+	var routes_1 = __webpack_require__(174);
 	var main_1 = __webpack_require__(170);
 	var main_2 = __webpack_require__(100);
 	var main_3 = __webpack_require__(102);
@@ -8654,7 +8671,7 @@ webpackJsonp([2],{
 	        core_1.Component({
 	            selector: 'app',
 	            providers: [auth_service_1.UserService],
-	            template: __webpack_require__(344),
+	            template: __webpack_require__(345),
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object])
 	    ], AppComponent);
@@ -8753,7 +8770,7 @@ webpackJsonp([2],{
 	    ChatComponent = __decorate([
 	        core_1.Component({
 	            selector: 'chat',
-	            template: __webpack_require__(346),
+	            template: __webpack_require__(347),
 	            providers: [service_1.ChatService]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_c = typeof service_1.ChatService !== 'undefined' && service_1.ChatService) === 'function' && _c) || Object])
@@ -8794,9 +8811,9 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(3);
-	var http_1 = __webpack_require__(28);
+	var http_1 = __webpack_require__(24);
 	var ng2_cookies_1 = __webpack_require__(139);
-	__webpack_require__(44);
+	__webpack_require__(42);
 	var ChatService = (function () {
 	    function ChatService(http) {
 	        this.http = http;
@@ -8862,6 +8879,53 @@ webpackJsonp([2],{
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(3);
+	var http_1 = __webpack_require__(24);
+	__webpack_require__(42);
+	var GameService = (function () {
+	    function GameService(http) {
+	        this.http = http;
+	        this.GAME_URL = 'pfg';
+	    }
+	    GameService.prototype.getGames = function () {
+	        //noinspection TypeScriptUnresolvedFunction
+	        return this.http.get(this.GAME_URL)
+	            .toPromise()
+	            .then(function (response) {
+	            var result = response.json();
+	            return result;
+	        })
+	            .catch(this.handlerError);
+	    };
+	    GameService.prototype.handlerError = function (error) {
+	        console.error('An error occurred', error);
+	        return Promise.reject(error.message || error);
+	    };
+	    GameService = __decorate([
+	        core_1.Injectable(), 
+	        __metadata('design:paramtypes', [(typeof (_a = typeof http_1.Http !== 'undefined' && http_1.Http) === 'function' && _a) || Object])
+	    ], GameService);
+	    return GameService;
+	    var _a;
+	}());
+	exports.GameService = GameService;
+
+
+/***/ },
+
+/***/ 174:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
 	var router_1 = __webpack_require__(66);
 	var main_1 = __webpack_require__(102);
 	var main_2 = __webpack_require__(101);
@@ -8885,7 +8949,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 335:
+/***/ 336:
 /***/ function(module, exports) {
 
 	/**
@@ -8978,91 +9042,91 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 337:
+/***/ 338:
 /***/ function(module, exports) {
 
 	module.exports = "<md-card>\n    <md-card-subtitle>Личные данные</md-card-subtitle>\n    <md-card-content>\n        <div *ngIf=\"user\">\n            <p>Имя в статистике: <strong>{{user.statistic_name.name}}</strong></p>\n            <p>id: <strong>{{user.uid_for_client.name}}</strong></p>\n            <div class=\"payment text-center\">\n                <h4>Баланс</h4>\n                <p>\n                    <strong><em>{{balance}}</em> бубликов</strong>\n                </p>\n                <p>\n                    <button type=\"button\"\n                            class=\"btn btn-primary\"\n                            disabled=\"disabled\">\n                        Пополнить баланс\n                    </button>\n                </p>\n            </div>\n        </div>\n    </md-card-content>\n</md-card>"
 
 /***/ },
 
-/***/ 338:
+/***/ 339:
 /***/ function(module, exports) {
 
 	module.exports = "<div *ngIf=\"!chatList\">\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n</div>\n<div *ngIf=\"chatList && !chatList.length\">\n    <em>Нет активных разговоров</em>\n</div>\n<div *ngIf=\"chatList && chatList.length\"\n        class=\"row\">\n    <div class=\"col-md-4\">\n        <div class=\"list-group\">\n            <a *ngFor=\"let chat of chatList\"\n               class=\"list-group-item\"\n               [class.active]=\"selectedChat == chat\"\n               (click)=\"chooseChat(chat)\">\n                <span *ngIf=\"chat.count_not_read_messages != 0\"\n                      class=\"badge\">\n                    <span class=\"glyphicon glyphicon-envelope\"></span> {{chat.count_not_read_messages}}\n                </span>\n                {{chat.user.username}}\n            </a>\n        </div>\n    </div>\n    <div class=\"col-md-8\">\n        <chat [chat]=\"selectedChat\"></chat>\n    </div>\n</div>\n"
 
 /***/ },
 
-/***/ 339:
+/***/ 340:
 /***/ function(module, exports) {
 
 	module.exports = "<div *ngIf=\"!friendList || !applicationsToFriends\">\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n</div>\n<div *ngIf=\"friendList && applicationsToFriends && !friendList.length && !applicationsToFriends.length\">\n    <em>У вас нет друзей</em>\n</div>\n<div *ngIf=\"friendList && friendList.length\">\n    <h4>Друзья</h4>\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">№ п/п</th>\n            <th>Имя</th>\n            <th width=\"160\">Действия</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let friendship of friendList; let i = index\">\n                <td>{{i + 1}}</td>\n                <td>{{friendship.friend.username}}</td>\n                <td>\n                    <div *ngIf=\"!friendship.friend.is_busy\">\n                        <button class=\"btn btn-primary btn-sm\"\n                                (click)=\"removeFriendship(friendship.friend)\">\n                            Удалить из друзей\n                        </button>\n                    </div>\n                    <div *ngIf=\"friendship.friend.is_busy\">\n                        <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n                    </div>\n                </td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n\n<div *ngIf=\"applicationsToFriends && applicationsToFriends.length\">\n    <h4>Заявки в друзья</h4>\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">№ п/п</th>\n            <th>Имя</th>\n            <th width=\"220\">Действия</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let friendship of applicationsToFriends; let i = index\">\n                <td>{{i + 1}}</td>\n                <td>{{friendship.friend.username}}</td>\n                <td>\n                    <div *ngIf=\"!friendship.friend.is_busy\">\n                        <button *ngIf=\"!friendship.friend.is_busy\"\n                                class=\"btn btn-primary btn-sm\"\n                                (click)=\"acceptFriendship(friendship.friend)\">\n                            Принять дружбу\n                        </button>\n                        <button class=\"btn btn-default btn-sm\"\n                                (click)=\"declineFriendship(friendship.friend)\">\n                            Отклонить\n                        </button>\n                    </div>\n                    <div *ngIf=\"friendship.friend.is_busy\">\n                        <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n                    </div>\n                </td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n"
 
 /***/ },
 
-/***/ 340:
+/***/ 341:
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"raw\">\n    <md-tab-group class=\"col-md-8\">\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-envelope\" aria-hidden=\"true\"></span> Сообщения\n            </template>\n            <template md-tab-content>\n                <account-chat></account-chat>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-star\" aria-hidden=\"true\"></span> Друзья\n            </template>\n            <template md-tab-content>\n                <account-friendship></account-friendship>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-signal\" aria-hidden=\"true\"></span> Статистика\n            </template>\n            <template md-tab-content>\n                <account-statistic [user]=\"user\"></account-statistic>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Поиск\n            </template>\n            <template md-tab-content>\n                <account-search></account-search>\n            </template>\n        </md-tab>\n    </md-tab-group>\n    <account-card class=\"col-md-4\"></account-card>\n</div>\n"
 
 /***/ },
 
-/***/ 341:
+/***/ 342:
 /***/ function(module, exports) {
 
 	module.exports = "<form>\n    <fieldset [disabled]=\"inSearchState\">\n        <div class=\"form-group\">\n            <label for=\"search-query-field\">Введите ID пользователя для поиска:</label>\n            <div class=\"input-group\">\n                <input\n                        id=\"search-query-field\"\n                        type=\"text\"\n                        name=\"search_uid\"\n                        class=\"form-control\"\n                        placeholder=\"ID пользователя\"\n                        [(ngModel)]=\"IDForSearch\" />\n                <span class=\"input-group-btn\">\n                    <button\n                            class=\"btn btn-primary\"\n                            type=\"button\"\n                            (click)=\"searchUserByID()\">\n                        Поиск\n                    </button>\n                </span>\n            </div>\n        </div>\n    </fieldset>\n    <div class=\"form-group\"\n         [hidden]=\"!inSearchState\">\n        <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n    </div>\n</form>\n<search-result-list [user]=\"foundUser\" [showResult]=\"showResultState\"></search-result-list>\n"
 
 /***/ },
 
-/***/ 342:
+/***/ 343:
 /***/ function(module, exports) {
 
 	module.exports = "<div *ngIf=\"user\">\n    <h4>Найден пользователь:</h4>\n    <div class=\"row\">\n        <div class=\"col-md-8\">{{user.username}}</div>\n        <div class=\"col-md-4 text-right\">\n            <div *ngIf=\"!user.is_friend && !user.is_busy\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        (click)=\"addFriend()\">\n                    Добавить в друзья\n                </button>\n            </div>\n            <div *ngIf=\"user.is_friend && !user.is_busy\">\n                <button\n                        class=\"btn btn-default btn-sm\"\n                        disabled>\n                    Уже в друзьях\n                </button>\n            </div>\n            <div *ngIf=\"user.is_busy\">\n                <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n            </div>\n        </div>\n    </div>\n</div>\n<div *ngIf=\"showResult && !user\">\n    <em>Пользователи не найдены</em>\n</div>"
 
 /***/ },
 
-/***/ 343:
+/***/ 344:
 /***/ function(module, exports) {
 
 	module.exports = "<div *ngIf=\"!statisticUserList\">\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n</div>\n<div *ngIf=\"statisticUserList && !statisticUserList.length\">\n    <em>Статистика отсутствует</em>\n</div>\n<div *ngIf=\"statisticUserList && statisticUserList.length\">\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">Место</th>\n            <th>Имя</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let statisticUser of statisticUserList; let i = index\"\n                    [class.success]=\"statisticUser.id==user.id\">\n                <td>{{i + 1}}</td>\n                <td>{{statisticUser.statistic_name.name}}</td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n"
 
 /***/ },
 
-/***/ 344:
+/***/ 345:
 /***/ function(module, exports) {
 
 	module.exports = "<nav class=\"navbar navbar-default\">\n    <div class=\"container-fluid\">\n        <div class=\"navbar-header\">\n            <a class=\"navbar-brand\"\n               routerLink=\"/\">\n                Syfa.pnt\n            </a>\n        </div>\n        <ul class=\"nav navbar-nav navbar-right\">\n            <li *ngIf=\"!userLoaded\">\n                <em>Загрузка данных...</em>\n            </li>\n            <li *ngIf=\"userLoaded && is_authenticated\">\n                <a class=\"log-in text-left\"\n                   routerLink=\"account\">\n                    <span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span> {{userTitle}}\n                </a>\n            </li>\n            <li *ngIf=\"userLoaded && is_authenticated\">\n                <p class=\"navbar-text\"><em>id: {{uid}}</em></p>\n            </li>\n            <li *ngIf=\"userLoaded && is_authenticated\">\n                <a class=\"log-in\"\n                   (click)=\"routeLogOut()\">\n                    <span class=\"glyphicon glyphicon-log-out\" aria-hidden=\"true\"></span> Выйти\n                </a>\n            </li>\n            <li *ngIf=\"userLoaded && !is_authenticated\">\n                <a class=\"log-in\"\n                   (click)=\"routeLogIn()\">\n                    <span class=\"glyphicon glyphicon-log-in\" aria-hidden=\"true\"></span> Войти\n                </a>\n            </li>\n        </ul>\n    </div>\n</nav>\n\n<main>\n    <router-outlet></router-outlet>\n</main>\n\n"
 
 /***/ },
 
-/***/ 345:
+/***/ 346:
 /***/ function(module, exports) {
 
 	module.exports = "<div *ngFor=\"let message of messages\"\n     class=\"chat__message_stripe\"\n     [class.myself]=\"message.isMyself\"\n     [class.other]=\"!message.isMyself\">\n    <div class=\"chat__message_block\">\n        <div class=\"chat__message-date\">{{message.creation_datetime | date:'yyyy.MM.dd HH:mm'}}</div>\n        <div class=\"chat__message-body\"\n             [innerHTML]=\"message.message\">\n        </div>\n    </div>\n</div>\n"
 
 /***/ },
 
-/***/ 346:
+/***/ 347:
 /***/ function(module, exports) {
 
 	module.exports = "<div *ngIf=\"chat && messages && messages.length\" class=\"chat__block\">\n    <chat-history #history class=\"chat__history\"></chat-history>\n    <form class=\"chat__editor\">\n        <div class=\"form-group\">\n            <textarea class=\"form-control\"\n                      [(ngModel)]=\"messageForSend\" [ngModelOptions]=\"{standalone: true}\">\n            </textarea>\n        </div>\n        <div class=\"form-group text-right\">\n            <button type=\"button\"\n                    class=\"btn btn-primary\"\n                    (click)=\"sendMessage()\"\n                    [disabled]=\"messageForSend==''\">\n                Отправить\n            </button>\n        </div>\n    </form>\n</div>\n<div *ngIf=\"!chat && !isBusy\">\n    <em>Не выбран собеседник</em>\n</div>\n<div *ngIf=\"isBusy\">\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n</div>\n"
 
 /***/ },
 
-/***/ 347:
+/***/ 348:
 /***/ function(module, exports) {
 
-	module.exports = "<h3>Спор через игру</h3>\n<p>Добро пожаловать на площадку</p>\n"
+	module.exports = "<h1>PfG: спор через игру</h1>\n<p>Выберите игру для спора:</p>\n<div *ngIf=\"!gameList\">\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n</div>\n<ul *ngIf=\"gameList && gameList.length\">\n    <li *ngFor=\"let game of gameList\"\n        (click)=\"changeGame(game.namespace)\">\n        {{game.name}}\n    </li>\n</ul>\n"
 
 /***/ },
 
-/***/ 348:
+/***/ 349:
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"start-page row\">\n    <div class=\"col-md-4\">\n        <a class=\"thumbnail text-center\"\n           routerLink=\"/pfg\">\n            <div class=\"caption\">\n                <p>PfG</p>\n            </div>\n            <div class=\"pfg-logo\"></div>\n        </a>\n    </div>\n    <div class=\"col-md-offset-1 col-md-7\">\n        <h1>Syfa.pnt</h1>\n        <p>Добро пожаловать на сайт.</p>\n        <p>\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n        </p>\n        <p>\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n        </p>\n    </div>\n</div>\n"
 
 /***/ },
 
-/***/ 354:
+/***/ 355:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";

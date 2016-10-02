@@ -1,7 +1,7 @@
 import { Routes, RouterModule } from '@angular/router';
 
 import {StartPageComponent} from './start_module/main';
-import {GameDispute} from './game_dispute_module/main';
+import {GameDispute} from './game_dispute/main';
 import {AccountComponent} from './account/main';
 
 const appRoutes: Routes = [
