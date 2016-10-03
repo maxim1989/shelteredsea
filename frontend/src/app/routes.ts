@@ -1,8 +1,9 @@
-import { Routes, RouterModule } from '@angular/router';
+import {Routes, RouterModule} from '@angular/router';
 
-import {StartPageComponent} from './start_module/main';
-import {GameDispute} from './game_dispute/main';
-import {AccountComponent} from './account/main';
+import { StartPageComponent } from './start_module/main';
+import { GameDispute } from './game_dispute/main';
+import { DealOrder } from './deal/order/main';
+import { AccountComponent } from './account/main';
 
 const appRoutes: Routes = [
     {
@@ -12,6 +13,10 @@ const appRoutes: Routes = [
     {
         path: 'pfg',
         component: GameDispute
+    },
+    {
+        path: 'pfg/:game_namespace/dispute',
+        component: DealOrder
     },
     {
         path: 'account',

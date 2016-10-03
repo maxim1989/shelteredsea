@@ -16,6 +16,7 @@ import {ChatHistoryComponent} from './chat/history/main';
 
 import {StartPageComponent} from './start_module/main';
 import {GameDispute} from './game_dispute/main';
+import {DealOrder} from './deal/order/main';
 import {AccountComponent} from './account/main';
 import {AccountChatComponent} from './account/chat/main';
 import {AccountCardComponent} from './account/card/main';
@@ -41,6 +42,7 @@ import {AccountStatisticComponent} from './account/statistic/main';
         AppComponent,
         StartPageComponent,
         GameDispute,
+        DealOrder,
 
         ChatComponent, ChatHistoryComponent,
 

@@ -7,6 +7,7 @@ import 'rxjs/add/operator/toPromise';
 export class UserService {
     private AUTH_USER_URL = 'auth/authenticated_user';
     private user : User;
+    // private isInit: Promise = new Promise( this.initAuthUser );
 
     constructor(private http: Http) { }
 

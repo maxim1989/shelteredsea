@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 import { Game } from 'app/game_dispute/game/model';
 import { GameService } from 'app/game_dispute/game/service';
 
@@ -11,7 +12,8 @@ export class GameDispute implements OnInit{
     gameList: Game[];
 
     constructor(
-        private GameService: GameService
+        private GameService: GameService,
+        private router: Router
     ) {}
 
     ngOnInit() {
@@ -25,9 +27,19 @@ export class GameDispute implements OnInit{
                     this.gameList = games;
                 }
             )
+            .catch(
+                () => {
+                    this.redirectToMainPage();
+                }
+            )
     }
 
     changeGame(game_namespace: string){
-        console.log(game_namespace);
+        let link = ['/pfg', game_namespace, 'dispute'];
+        this.router.navigate(link);
+    }
+
+    redirectToMainPage() {
+        this.router.navigate(['/']);
     }
 }
