@@ -3,7 +3,7 @@ from datetime import datetime
 from rest_framework import serializers
 
 from chat.models import Chat, ManyChatsToManyUsersConnector
-from disputes.models import Games, OrderForDeal, TempDeals
+from disputes.models import CanceledNegotiations, Games, OrderForDeal, TempDeals
 
 
 class GamesSerializer(serializers.ModelSerializer):
@@ -37,7 +37,7 @@ class TempDealsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TempDeals
-        fields = ('id', 'chat', 'steam_game_uid', 'is_active', 'orders')
+        fields = ('id', 'chat', 'is_active', 'orders')
 
     def create(self, validated_data):
         name = datetime.now().strftime("%H:%M|%d-%m-%Y")
@@ -50,3 +50,15 @@ class TempDealsSerializer(serializers.ModelSerializer):
             order.save()
             ManyChatsToManyUsersConnector.objects.create(user=order.user, chat=chat)
         return temp_deal
+
+    def update(self, instance, validated_data):
+        instance.is_active = validated_data.get('is_active', instance.is_active)
+        instance.save()
+        orders = OrderForDeal.objects.filter(temp_deal=instance)
+        for order in orders:
+            order.in_negotiations = False if instance.is_active == False else True
+            order.save()
+            for order_2 in orders:
+                if order != order_2:
+                    CanceledNegotiations.objects.create(myself=order, competitor=order_2)
+        return instance

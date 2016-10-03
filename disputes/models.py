@@ -21,7 +21,6 @@ class Deals(models.Model):
 
 class TempDeals(models.Model):
     chat = models.OneToOneField(Chat, null=True, on_delete=models.CASCADE)
-    steam_game_uid = models.CharField(max_length=255)
     is_active = models.BooleanField()
 
 

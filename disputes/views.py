@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.contrib.auth.models import User
+from django.http import Http404
 from django.db.models import Q
 from django.utils import timezone
 from rest_framework.response import Response
@@ -58,8 +59,7 @@ class Order(APIView):
         competitor_id = find_competitor(request, game, me)
         if competitor_id:
             serializer_temp_deal = TempDealsSerializer(
-                data={'steam_game_uid': 'TEST_UID',
-                      'is_active': True},
+                data={'is_active': True},
                 partial=True,
                 context={'uids': [order_id, competitor_id], 'in_negotiations': True})
             if serializer_temp_deal.is_valid():
@@ -88,4 +88,18 @@ class Order(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response({'success': True, 'data': serializer.data})
+        return Response({'success': False, 'error': serializer.errors})
+
+
+class Next(APIView):
+    def post(self, request, temp_deal_id):
+        print('Next')
+        try:
+            temp_deal = TempDeals.objects.get(pk=temp_deal_id)
+        except TempDeals.DoesNotExist:
+            raise Http404
+        serializer = TempDealsSerializer(temp_deal, data={'is_active': False}, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'success': True, 'temp_deal': serializer.data})
         return Response({'success': False, 'error': serializer.errors})
