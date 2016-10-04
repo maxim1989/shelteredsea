@@ -11,34 +11,32 @@ export class AppComponent implements OnInit{
     protected URL_LOGIN: string = "/login/steam/";
     protected URL_LOGOUT: string = "/auth/logout/";
 
-    user : User;
     userTitle : string;
     uid : string;
     userLoaded: boolean = false;
     is_authenticated: boolean = false;
 
-    constructor(private UserService: UserService) {}
+    constructor(
+        private UserService: UserService
+    ) {}
 
     ngOnInit() {
-        this.UserService.initAuthUser()
-            .then(
-                isInit => {
-                    this.userLoaded = isInit;
-                    this.initAuthUser();
-                }
-            );
+        this.UserService.getAuthUser()
+            .then( (user: User) => {
+                    this.userLoaded = true;
+                    this.initAuthUser( user );
+            })
+            .catch( () => {
+                this.userLoaded = false;
+            });
     }
 
-    initAuthUser() {
-        this.is_authenticated = this.UserService.isAutorized();
-        this.userTitle = this.UserService.getName();
-        this.uid = this.UserService.getUid();
+    initAuthUser(user: User) {
+        this.is_authenticated = user.is_autorized;
+        this.userTitle = user.username;
+        this.uid = user.uid_for_client.name;
     }
-
-    goToAccount() {
-        console.log('redirect in account');
-    }
-
+    
     routeLogIn() {
         location.href = this.URL_LOGIN;
     }
@@ -46,6 +44,5 @@ export class AppComponent implements OnInit{
     routeLogOut() {
         location.href = this.URL_LOGOUT;
     }
-
 
 }

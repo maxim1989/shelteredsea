@@ -1,32 +1,47 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http } from '@angular/http';
+import { Headers, Http, Response } from '@angular/http';
 import { User } from './model';
+import { Observable } from 'rxjs';
 import 'rxjs/add/operator/toPromise';
+// Statics
+import 'rxjs/add/observable/throw';
+
+// Operators
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/map';
 
 @Injectable()
 export class UserService {
     private AUTH_USER_URL = 'auth/authenticated_user';
     private user : User;
-    // private isInit: Promise = new Promise( this.initAuthUser );
 
-    constructor(private http: Http) { }
+    constructor(
+        private http: Http
+    ) {}
 
-    initAuthUser() {
+    getAuthUser():Promise<any> {
+        if ( this.user ) {
+            return Promise.resolve( this.user );
+        } else {
+            return new Promise( (resolve, reject) => this.initAuthUserPromise(resolve, reject) );
+        }
+    }
+
+    initAuthUserPromise(resolve, reject) {
         //noinspection TypeScriptUnresolvedFunction
-        return this.http.get(this.AUTH_USER_URL)
+        this.http.get(this.AUTH_USER_URL)
             .toPromise()
             .then(
                 response => {
                     let result = response.json();
                     this.user = result as User;
-                    return true;
+                    resolve( this.user );
                 },
                 error => {
                     console.log(error);
-                    return false;
+                    reject();
                 }
             )
-            .catch(this.handlerError);
     }
 
     getUser() {
@@ -39,6 +54,17 @@ export class UserService {
 
     isAutorized() {
         return (this.user) ? this.user.is_autorized : false;
+    }
+
+    isAutorizedPromise():Promise<any> {
+        if ( this.user ) {
+            return (this.user.is_autorized) ? Promise.resolve() : Promise.reject(false);
+        } else {
+            return this.getAuthUser()
+                .then(
+                    (user: User) => (user.is_autorized) ? Promise.resolve() : Promise.reject(false)
+                );
+        }
     }
 
     getUid() {

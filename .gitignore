@@ -98,3 +98,4 @@ ENV/
 # Front-end
 node_modules/
 /core/static/**/*.map
+frontend/.typingsrc

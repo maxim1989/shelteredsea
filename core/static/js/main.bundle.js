@@ -4,8 +4,8 @@ webpackJsonp([2],{
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var platform_browser_dynamic_1 = __webpack_require__(96);
-	var app_module_1 = __webpack_require__(169);
+	var platform_browser_dynamic_1 = __webpack_require__(97);
+	var app_module_1 = __webpack_require__(172);
 	//noinspection TypeScriptValidateTypes
 	platform_browser_dynamic_1.platformBrowserDynamic().bootstrapModule(app_module_1.AppModule);
 
@@ -16,8 +16,8 @@ webpackJsonp([2],{
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Observable_1 = __webpack_require__(11);
-	var toPromise_1 = __webpack_require__(149);
+	var Observable_1 = __webpack_require__(9);
+	var toPromise_1 = __webpack_require__(152);
 	Observable_1.Observable.prototype.toPromise = toPromise_1.toPromise;
 	//# sourceMappingURL=toPromise.js.map
 
@@ -39,26 +39,38 @@ webpackJsonp([2],{
 	var core_1 = __webpack_require__(2);
 	var http_1 = __webpack_require__(24);
 	__webpack_require__(42);
+	// Statics
+	__webpack_require__(359);
+	// Operators
+	__webpack_require__(360);
+	__webpack_require__(143);
 	var UserService = (function () {
-	    // private isInit: Promise = new Promise( this.initAuthUser );
 	    function UserService(http) {
 	        this.http = http;
 	        this.AUTH_USER_URL = 'auth/authenticated_user';
 	    }
-	    UserService.prototype.initAuthUser = function () {
+	    UserService.prototype.getAuthUser = function () {
+	        var _this = this;
+	        if (this.user) {
+	            return Promise.resolve(this.user);
+	        }
+	        else {
+	            return new Promise(function (resolve, reject) { return _this.initAuthUserPromise(resolve, reject); });
+	        }
+	    };
+	    UserService.prototype.initAuthUserPromise = function (resolve, reject) {
 	        var _this = this;
 	        //noinspection TypeScriptUnresolvedFunction
-	        return this.http.get(this.AUTH_USER_URL)
+	        this.http.get(this.AUTH_USER_URL)
 	            .toPromise()
 	            .then(function (response) {
 	            var result = response.json();
 	            _this.user = result;
-	            return true;
+	            resolve(_this.user);
 	        }, function (error) {
 	            console.log(error);
-	            return false;
-	        })
-	            .catch(this.handlerError);
+	            reject();
+	        });
 	    };
 	    UserService.prototype.getUser = function () {
 	        return this.user;
@@ -68,6 +80,15 @@ webpackJsonp([2],{
 	    };
 	    UserService.prototype.isAutorized = function () {
 	        return (this.user) ? this.user.is_autorized : false;
+	    };
+	    UserService.prototype.isAutorizedPromise = function () {
+	        if (this.user) {
+	            return (this.user.is_autorized) ? Promise.resolve() : Promise.reject(false);
+	        }
+	        else {
+	            return this.getAuthUser()
+	                .then(function (user) { return (user.is_autorized) ? Promise.resolve() : Promise.reject(false); });
+	        }
 	    };
 	    UserService.prototype.getUid = function () {
 	        return (this.user) ? this.user.uid_for_client.name : "";
@@ -94,11 +115,11 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 97:
+/***/ 96:
 /***/ function(module, exports, __webpack_require__) {
 
 	(function (global, factory) {
-	     true ? factory(exports, __webpack_require__(2), __webpack_require__(97), __webpack_require__(45)) :
+	     true ? factory(exports, __webpack_require__(2), __webpack_require__(96), __webpack_require__(45)) :
 	    typeof define === 'function' && define.amd ? define(['exports', '@angular/core', '@angular2-material/core', '@angular/platform-browser'], factory) :
 	    (factory((global.md = global.md || {}, global.md.core = global.md.core || {}),global.ng.core,global.md.core,global.ng.platformBrowser));
 	}(this, (function (exports,_angular_core,_angular2Material_core,_angular_platformBrowser) { 'use strict';
@@ -1943,7 +1964,7 @@ webpackJsonp([2],{
 	};
 	var core_1 = __webpack_require__(2);
 	var http_1 = __webpack_require__(24);
-	var ng2_cookies_1 = __webpack_require__(140);
+	var ng2_cookies_1 = __webpack_require__(141);
 	__webpack_require__(42);
 	var FriendshipService = (function () {
 	    function FriendshipService(http) {
@@ -2052,6 +2073,16 @@ webpackJsonp([2],{
 	        this.router = router;
 	    }
 	    AccountComponent.prototype.ngOnInit = function () {
+	        var _this = this;
+	        this.UserService.getAuthUser()
+	            .then(function () {
+	            _this.checkOnAuthorize();
+	        })
+	            .catch(function () {
+	            _this.redirectToMainPage();
+	        });
+	    };
+	    AccountComponent.prototype.checkOnAuthorize = function () {
 	        if (this.UserService.isAutorized()) {
 	            this.initAuthUser();
 	        }
@@ -2068,7 +2099,7 @@ webpackJsonp([2],{
 	    AccountComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account',
-	            template: __webpack_require__(342)
+	            template: __webpack_require__(344)
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object, (typeof (_b = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _b) || Object])
 	    ], AccountComponent);
@@ -2118,7 +2149,7 @@ webpackJsonp([2],{
 	    ChatHistoryComponent = __decorate([
 	        core_1.Component({
 	            selector: 'chat-history',
-	            template: __webpack_require__(347)
+	            template: __webpack_require__(349)
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object, (typeof (_b = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _b) || Object])
 	    ], ChatHistoryComponent);
@@ -2146,22 +2177,26 @@ webpackJsonp([2],{
 	var core_1 = __webpack_require__(2);
 	var router_1 = __webpack_require__(46);
 	var auth_service_1 = __webpack_require__(47);
+	var service_1 = __webpack_require__(102);
 	var DealOrder = (function () {
-	    function DealOrder(UserService, router, route) {
+	    function DealOrder(UserService, GameService, router, route) {
 	        this.UserService = UserService;
+	        this.GameService = GameService;
 	        this.router = router;
 	        this.route = route;
 	    }
 	    DealOrder.prototype.ngOnInit = function () {
-	        if (this.UserService.isAutorized()) {
-	            this.route.params.forEach(function (params) {
-	                // let id = +params['id'];
-	                console.log(params);
-	            });
-	        }
-	        else {
-	            this.redirectToMainPage();
-	        }
+	        var _this = this;
+	        this.UserService.isAutorizedPromise()
+	            .then(function () { _this.loadTemplate(); })
+	            .catch(function () { _this.redirectToMainPage(); });
+	    };
+	    DealOrder.prototype.loadTemplate = function () {
+	        console.log("loadTemplate");
+	        this.route.params.forEach(function (params) {
+	            var game_namespace = params['game_namespace'];
+	            console.log(game_namespace);
+	        });
 	    };
 	    DealOrder.prototype.redirectToMainPage = function () {
 	        this.router.navigate(['/']);
@@ -2169,13 +2204,13 @@ webpackJsonp([2],{
 	    DealOrder = __decorate([
 	        core_1.Component({
 	            selector: 'deal-order',
-	            template: __webpack_require__(349),
-	            providers: []
+	            template: __webpack_require__(351),
+	            providers: [service_1.GameService]
 	        }), 
-	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object, (typeof (_b = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _b) || Object, (typeof (_c = typeof router_1.ActivatedRoute !== 'undefined' && router_1.ActivatedRoute) === 'function' && _c) || Object])
+	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object, (typeof (_b = typeof service_1.GameService !== 'undefined' && service_1.GameService) === 'function' && _b) || Object, (typeof (_c = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _c) || Object, (typeof (_d = typeof router_1.ActivatedRoute !== 'undefined' && router_1.ActivatedRoute) === 'function' && _d) || Object])
 	    ], DealOrder);
 	    return DealOrder;
-	    var _a, _b, _c;
+	    var _a, _b, _c, _d;
 	}());
 	exports.DealOrder = DealOrder;
 
@@ -2196,8 +2231,54 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(2);
+	var http_1 = __webpack_require__(24);
+	__webpack_require__(42);
+	var GameService = (function () {
+	    function GameService(http) {
+	        this.http = http;
+	        this.GAME_URL = 'pfg';
+	    }
+	    GameService.prototype.getGames = function () {
+	        //noinspection TypeScriptUnresolvedFunction
+	        return this.http.get(this.GAME_URL)
+	            .toPromise()
+	            .then(function (response) {
+	            var result = response.json();
+	            return result;
+	        })
+	            .catch(this.handlerError);
+	    };
+	    GameService.prototype.handlerError = function (error) {
+	        return Promise.reject(error.message || error);
+	    };
+	    GameService = __decorate([
+	        core_1.Injectable(), 
+	        __metadata('design:paramtypes', [(typeof (_a = typeof http_1.Http !== 'undefined' && http_1.Http) === 'function' && _a) || Object])
+	    ], GameService);
+	    return GameService;
+	    var _a;
+	}());
+	exports.GameService = GameService;
+
+
+/***/ },
+
+/***/ 103:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(2);
 	var router_1 = __webpack_require__(46);
-	var service_1 = __webpack_require__(174);
+	var service_1 = __webpack_require__(102);
 	var GameDispute = (function () {
 	    function GameDispute(GameService, router) {
 	        this.GameService = GameService;
@@ -2226,7 +2307,7 @@ webpackJsonp([2],{
 	    GameDispute = __decorate([
 	        core_1.Component({
 	            selector: 'pfg',
-	            template: __webpack_require__(350),
+	            template: __webpack_require__(352),
 	            providers: [service_1.GameService]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof service_1.GameService !== 'undefined' && service_1.GameService) === 'function' && _a) || Object, (typeof (_b = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _b) || Object])
@@ -2239,7 +2320,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 103:
+/***/ 104:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2259,7 +2340,7 @@ webpackJsonp([2],{
 	    StartPageComponent = __decorate([
 	        core_1.Component({
 	            selector: 'start_page',
-	            template: __webpack_require__(351),
+	            template: __webpack_require__(353),
 	        }), 
 	        __metadata('design:paramtypes', [])
 	    ], StartPageComponent);
@@ -2270,7 +2351,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 104:
+/***/ 105:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2281,6 +2362,11 @@ webpackJsonp([2],{
 	        this.is_ignore = false;
 	        this.is_busy = false;
 	    }
+	    //TODO
+	    User.prototype.Uid = function () {
+	        console.log('user uid');
+	        return this.uid_for_client.name;
+	    };
 	    return User;
 	}());
 	exports.User = User;
@@ -2288,14 +2374,14 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 140:
+/***/ 141:
 /***/ function(module, exports, __webpack_require__) {
 
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
-	__export(__webpack_require__(141));
-	var services = __webpack_require__(141);
+	__export(__webpack_require__(142));
+	var services = __webpack_require__(142);
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = {
 	    services: services
@@ -2304,17 +2390,28 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 141:
+/***/ 142:
 /***/ function(module, exports, __webpack_require__) {
 
 	// Export all services
-	var cookie_1 = __webpack_require__(337);
+	var cookie_1 = __webpack_require__(339);
 	exports.Cookie = cookie_1.Cookie;
 	//# sourceMappingURL=services.js.map
 
 /***/ },
 
-/***/ 149:
+/***/ 143:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var Observable_1 = __webpack_require__(9);
+	var map_1 = __webpack_require__(150);
+	Observable_1.Observable.prototype.map = map_1.map;
+	//# sourceMappingURL=map.js.map
+
+/***/ },
+
+/***/ 152:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2348,7 +2445,1105 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 155:
+/***/ 157:
+/***/ function(module, exports, __webpack_require__) {
+
+	(function (global, factory) {
+	     true ? factory(exports, __webpack_require__(2)) :
+	    typeof define === 'function' && define.amd ? define(['exports', '@angular/core'], factory) :
+	    (factory((global.md = global.md || {}, global.md.card = global.md.card || {}),global.ng.core));
+	}(this, (function (exports,_angular_core) { 'use strict';
+
+	var __decorate = (window && window.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (window && window.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	/**
+	 * Content of a card, needed as it's used as a selector in the API.
+	 */
+	var MdCardContent = (function () {
+	    function MdCardContent() {
+	    }
+	    MdCardContent = __decorate([
+	        _angular_core.Directive({
+	            selector: 'md-card-content'
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], MdCardContent);
+	    return MdCardContent;
+	}());
+	/**
+	 * Title of a card, needed as it's used as a selector in the API.
+	 */
+	var MdCardTitle = (function () {
+	    function MdCardTitle() {
+	    }
+	    MdCardTitle = __decorate([
+	        _angular_core.Directive({
+	            selector: 'md-card-title'
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], MdCardTitle);
+	    return MdCardTitle;
+	}());
+	/**
+	 * Sub-title of a card, needed as it's used as a selector in the API.
+	 */
+	var MdCardSubtitle = (function () {
+	    function MdCardSubtitle() {
+	    }
+	    MdCardSubtitle = __decorate([
+	        _angular_core.Directive({
+	            selector: 'md-card-subtitle'
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], MdCardSubtitle);
+	    return MdCardSubtitle;
+	}());
+	/**
+	 * Action section of a card, needed as it's used as a selector in the API.
+	 */
+	var MdCardActions = (function () {
+	    function MdCardActions() {
+	    }
+	    MdCardActions = __decorate([
+	        _angular_core.Directive({
+	            selector: 'md-card-actions'
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], MdCardActions);
+	    return MdCardActions;
+	}());
+	/*
+
+	<md-card> is a basic content container component that adds the styles of a material design card.
+
+	While you can use this component alone,
+	it also provides a number of preset styles for common card sections, including:
+	 - md-card-title
+	 - md-card-subtitle
+	 - md-card-content
+	 - md-card-actions
+	 - md-card-footer
+
+	 You can see some examples of cards here:
+	 http://embed.plnkr.co/s5O4YcyvbLhIApSrIhtj/
+
+	 TODO(kara): update link to demo site when it exists
+
+	*/
+	var MdCard = (function () {
+	    function MdCard() {
+	    }
+	    MdCard = __decorate([
+	        _angular_core.Component({selector: 'md-card',
+	            template: "<ng-content></ng-content> ",
+	            styles: ["/** * A collection of mixins and CSS classes that can be used to apply elevation to a material * element. * See: https://www.google.com/design/spec/what-is-material/elevation-shadows.html * Examples: * * * .md-foo { *   @include $md-elevation(2); * *   &:active { *     @include $md-elevation(8); *   } * } * * <div id=\"external-card\" class=\"md-elevation-z2\"><p>Some content</p></div> * * For an explanation of the design behind how elevation is implemented, see the design doc at * https://goo.gl/Kq0k9Z. */ /** * The css property used for elevation. In most cases this should not be changed. It is exposed * as a variable for abstraction / easy use when needing to reference the property directly, for * example in a will-change rule. */ /** The default duration value for elevation transitions. */ /** The default easing value for elevation transitions. */ /** * Applies the correct css rules to an element to give it the elevation specified by $zValue. * The $zValue must be between 0 and 24. */ /** * Returns a string that can be used as the value for a transition property for elevation. * Calling this function directly is useful in situations where a component needs to transition * more than one property. * * .foo { *   transition: md-elevation-transition-property-value(), opacity 100ms ease; *   will-change: $md-elevation-property, opacity; * } */ /** * Applies the correct css rules needed to have an element transition between elevations. * This mixin should be applied to elements whose elevation values will change depending on their * context (e.g. when active or disabled). */ md-card { box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12); transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1); will-change: box-shadow; display: block; position: relative; padding: 24px; border-radius: 2px; font-family: Roboto, \"Helvetica Neue\", sans-serif; background: white; color: black; } md-card:hover { box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12); } .md-card-flat { box-shadow: none; } md-card-title, md-card-subtitle, md-card-content, md-card-actions { display: block; margin-bottom: 16px; } md-card-title { font-size: 24px; font-weight: 400; } md-card-subtitle { font-size: 14px; color: rgba(0, 0, 0, 0.54); } md-card-content { font-size: 14px; } md-card-actions { margin-left: -16px; margin-right: -16px; padding: 8px 0; } md-card-actions[align='end'] { display: flex; justify-content: flex-end; } [md-card-image] { width: calc(100% + 48px); margin: 0 -24px 16px -24px; } [md-card-xl-image] { width: 240px; height: 240px; margin: -8px; } md-card-footer { position: absolute; bottom: 0; } md-card-actions [md-button], md-card-actions [md-raised-button] { margin: 0 4px; } /* HEADER STYLES */ md-card-header { display: flex; flex-direction: row; height: 40px; margin: -8px 0 16px 0; } .md-card-header-text { height: 40px; margin: 0 8px; } [md-card-avatar] { height: 40px; width: 40px; border-radius: 50%; } md-card-header md-card-title { font-size: 14px; } /* TITLE-GROUP STYLES */ [md-card-sm-image], [md-card-md-image], [md-card-lg-image] { margin: -8px 0; } md-card-title-group { display: flex; justify-content: space-between; margin: 0 -8px; } [md-card-sm-image] { width: 80px; height: 80px; } [md-card-md-image] { width: 112px; height: 112px; } [md-card-lg-image] { width: 152px; height: 152px; } /* MEDIA QUERIES */ @media (max-width: 600px) { md-card { padding: 24px 16px; } [md-card-image] { width: calc(100% + 32px); margin: 16px -16px; } md-card-title-group { margin: 0; } [md-card-xl-image] { margin-left: 0; margin-right: 0; } md-card-header { margin: -8px 0 0 0; } } /* FIRST/LAST CHILD ADJUSTMENTS */ md-card > :first-child, md-card-content > :first-child { margin-top: 0; } md-card > :last-child, md-card-content > :last-child { margin-bottom: 0; } [md-card-image]:first-child { margin-top: -24px; } md-card > md-card-actions:last-child { margin-bottom: -16px; padding-bottom: 0; } md-card-actions [md-button]:first-child, md-card-actions [md-raised-button]:first-child { margin-left: 0; margin-right: 0; } md-card-title:not(:first-child), md-card-subtitle:not(:first-child) { margin-top: -4px; } md-card-header md-card-subtitle:not(:first-child) { margin-top: -8px; } md-card > [md-card-xl-image]:first-child { margin-top: -8px; } md-card > [md-card-xl-image]:last-child { margin-bottom: -8px; } /*# sourceMappingURL=card.css.map */ "],
+	            encapsulation: _angular_core.ViewEncapsulation.None,
+	            changeDetection: _angular_core.ChangeDetectionStrategy.OnPush,
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], MdCard);
+	    return MdCard;
+	}());
+	/*  The following components don't have any behavior.
+	 They simply use content projection to wrap user content
+	 for flex layout purposes in <md-card> (and thus allow a cleaner, boilerplate-free API).
+
+
+	<md-card-header> is a component intended to be used within the <md-card> component.
+	It adds styles for a preset header section (i.e. a title, subtitle, and avatar layout).
+
+	You can see an example of a card with a header here:
+	http://embed.plnkr.co/tvJl19z3gZTQd6WmwkIa/
+
+	TODO(kara): update link to demo site when it exists
+	*/
+	var MdCardHeader = (function () {
+	    function MdCardHeader() {
+	    }
+	    MdCardHeader = __decorate([
+	        _angular_core.Component({selector: 'md-card-header',
+	            template: "<ng-content select=\"[md-card-avatar]\"></ng-content> <div class=\"md-card-header-text\"> <ng-content select=\"md-card-title, md-card-subtitle\"></ng-content> </div> <ng-content></ng-content> ",
+	            encapsulation: _angular_core.ViewEncapsulation.None,
+	            changeDetection: _angular_core.ChangeDetectionStrategy.OnPush,
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], MdCardHeader);
+	    return MdCardHeader;
+	}());
+	/*
+
+	<md-card-title-group> is a component intended to be used within the <md-card> component.
+	It adds styles for a preset layout that groups an image with a title section.
+
+	You can see an example of a card with a title-group section here:
+	http://embed.plnkr.co/EDfgCF9eKcXjini1WODm/
+
+	TODO(kara): update link to demo site when it exists
+	*/
+	var MdCardTitleGroup = (function () {
+	    function MdCardTitleGroup() {
+	    }
+	    MdCardTitleGroup = __decorate([
+	        _angular_core.Component({selector: 'md-card-title-group',
+	            template: "<div> <ng-content select=\"md-card-title, md-card-subtitle\"></ng-content> </div> <ng-content select=\"img\"></ng-content> <ng-content></ng-content> ",
+	            encapsulation: _angular_core.ViewEncapsulation.None,
+	            changeDetection: _angular_core.ChangeDetectionStrategy.OnPush,
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], MdCardTitleGroup);
+	    return MdCardTitleGroup;
+	}());
+	var MdCardModule = (function () {
+	    function MdCardModule() {
+	    }
+	    MdCardModule.forRoot = function () {
+	        return {
+	            ngModule: MdCardModule,
+	            providers: []
+	        };
+	    };
+	    MdCardModule = __decorate([
+	        _angular_core.NgModule({
+	            exports: [
+	                MdCard, MdCardHeader, MdCardTitleGroup, MdCardContent, MdCardTitle, MdCardSubtitle,
+	                MdCardActions
+	            ],
+	            declarations: [
+	                MdCard, MdCardHeader, MdCardTitleGroup, MdCardContent, MdCardTitle, MdCardSubtitle,
+	                MdCardActions
+	            ],
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], MdCardModule);
+	    return MdCardModule;
+	}());
+
+	exports.MdCardContent = MdCardContent;
+	exports.MdCardTitle = MdCardTitle;
+	exports.MdCardSubtitle = MdCardSubtitle;
+	exports.MdCardActions = MdCardActions;
+	exports.MdCard = MdCard;
+	exports.MdCardHeader = MdCardHeader;
+	exports.MdCardTitleGroup = MdCardTitleGroup;
+	exports.MdCardModule = MdCardModule;
+
+	Object.defineProperty(exports, '__esModule', { value: true });
+
+	})));
+
+/***/ },
+
+/***/ 158:
+/***/ function(module, exports, __webpack_require__) {
+
+	(function (global, factory) {
+	     true ? factory(exports, __webpack_require__(2), __webpack_require__(55)) :
+	    typeof define === 'function' && define.amd ? define(['exports', '@angular/core', '@angular/common'], factory) :
+	    (factory((global.md = global.md || {}, global.md.progressBar = global.md.progressBar || {}),global.ng.core,global.ng.common));
+	}(this, (function (exports,_angular_core,_angular_common) { 'use strict';
+
+	var __decorate = (window && window.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (window && window.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	// TODO(josephperrott): Benchpress tests.
+	// TODO(josephperrott): Add ARIA attributes for progressbar "for".
+	/**
+	 * <md-progress-bar> component.
+	 */
+	var MdProgressBar = (function () {
+	    function MdProgressBar() {
+	        /** Value of the progressbar. Defaults to zero. Mirrored to aria-valuenow. */
+	        this._value = 0;
+	        /** Buffer value of the progress bar. Defaults to zero. */
+	        this._bufferValue = 0;
+	        /**
+	         * Mode of the progress bar.
+	         *
+	         * Input must be one of these values: determinate, indeterminate, buffer, query, defaults to
+	         * 'determinate'.
+	         * Mirrored to mode attribute.
+	         */
+	        this.mode = 'determinate';
+	    }
+	    Object.defineProperty(MdProgressBar.prototype, "value", {
+	        get: function () {
+	            return this._value;
+	        },
+	        set: function (v) {
+	            this._value = clamp(v || 0);
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(MdProgressBar.prototype, "bufferValue", {
+	        get: function () {
+	            return this._bufferValue;
+	        },
+	        set: function (v) {
+	            this._bufferValue = clamp(v || 0);
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    /** Gets the current transform value for the progress bar's primary indicator. */
+	    MdProgressBar.prototype._primaryTransform = function () {
+	        var scale = this.value / 100;
+	        return { transform: "scaleX(" + scale + ")" };
+	    };
+	    /**
+	     * Gets the current transform value for the progress bar's buffer indicator.  Only used if the
+	     * progress mode is set to buffer, otherwise returns an undefined, causing no transformation.
+	     */
+	    MdProgressBar.prototype._bufferTransform = function () {
+	        if (this.mode == 'buffer') {
+	            var scale = this.bufferValue / 100;
+	            return { transform: "scaleX(" + scale + ")" };
+	        }
+	    };
+	    __decorate([
+	        _angular_core.Input(),
+	        _angular_core.HostBinding('attr.aria-valuenow'), 
+	        __metadata('design:type', Object)
+	    ], MdProgressBar.prototype, "value", null);
+	    __decorate([
+	        _angular_core.Input(), 
+	        __metadata('design:type', Object)
+	    ], MdProgressBar.prototype, "bufferValue", null);
+	    __decorate([
+	        _angular_core.Input(),
+	        _angular_core.HostBinding('attr.mode'), 
+	        __metadata('design:type', Object)
+	    ], MdProgressBar.prototype, "mode", void 0);
+	    MdProgressBar = __decorate([
+	        _angular_core.Component({selector: 'md-progress-bar',
+	            host: {
+	                'role': 'progressbar',
+	                'aria-valuemin': '0',
+	                'aria-valuemax': '100',
+	            },
+	            template: "<!-- The background div is named as such because it appears below the other divs and is not sized based on values. --> <div class=\"md-progress-bar-background\"></div> <div class=\"md-progress-bar-buffer\" [ngStyle]=\"_bufferTransform()\"></div> <div class=\"md-progress-bar-primary md-progress-bar-fill\" [ngStyle]=\"_primaryTransform()\"></div> <div class=\"md-progress-bar-secondary md-progress-bar-fill\"></div> ",
+	            styles: ["/** In buffer mode a repeated SVG object is used as a background.  Each of the following defines the SVG object for each of the class defined colors. Each string is a URL encoded version of: <svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\" x=\"0px\" y=\"0px\" enable-background=\"new 0 0 5 2\" xml:space=\"preserve\" viewBox=\"0 0 5 2\" preserveAspectRatio=\"none slice\"> <circle cx=\"1\" cy=\"1\" r=\"1\" fill=\"{INJECTED_COLOR}\"/> </svg> */ :host { display: block; height: 5px; overflow: hidden; position: relative; transform: translateZ(0); transition: opacity 250ms linear; width: 100%; /** * The progress bar buffer is the bar indicator showing the buffer value and is only visible beyond the current value * of the primary progress bar. */ /** * The secondary progress bar is only used in the indeterminate animation, because of this it is hidden in other uses. */ /** * The progress bar fill fills the progress bar with the indicator color. */ /** * A pseudo element is created for each progress bar bar that fills with the indicator color. */ } :host .md-progress-bar-background { background: url(\"data:image/svg+xml;charset=UTF-8,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20x%3D%270px%27%20y%3D%270px%27%20enable-background%3D%27new%200%200%205%202%27%20xml%3Aspace%3D%27preserve%27%20viewBox%3D%270%200%205%202%27%20preserveAspectRatio%3D%27none%20slice%27%3E%3Ccircle%20cx%3D%271%27%20cy%3D%271%27%20r%3D%271%27%20fill%3D%27#b2dfdb%27%2F%3E%3C%2Fsvg%3E\"); background-repeat: repeat-x; background-size: 10px 4px; height: 100%; position: absolute; visibility: hidden; width: 100%; } :host .md-progress-bar-buffer { background-color: #b2dfdb; height: 100%; position: absolute; transform-origin: top left; transition: transform 250ms ease; width: 100%; } :host .md-progress-bar-secondary { visibility: hidden; } :host .md-progress-bar-fill { animation: none; height: 100%; position: absolute; transform-origin: top left; transition: transform 250ms ease; width: 100%; } :host .md-progress-bar-fill::after { animation: none; background-color: #00897b; content: ''; display: inline-block; height: 100%; position: absolute; width: 100%; } :host[color='accent'] .md-progress-bar-background { background: url(\"data:image/svg+xml;charset=UTF-8,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20x%3D%270px%27%20y%3D%270px%27%20enable-background%3D%27new%200%200%205%202%27%20xml%3Aspace%3D%27preserve%27%20viewBox%3D%270%200%205%202%27%20preserveAspectRatio%3D%27none%20slice%27%3E%3Ccircle%20cx%3D%271%27%20cy%3D%271%27%20r%3D%271%27%20fill%3D%27#e1bee7%27%2F%3E%3C%2Fsvg%3E\"); background-repeat: repeat-x; background-size: 10px 4px; } :host[color='accent'] .md-progress-bar-buffer { background-color: #e1bee7; } :host[color='accent'] .md-progress-bar-fill::after { background-color: #8e24aa; } :host[color='warn'] .md-progress-bar-background { background: url(\"data:image/svg+xml;charset=UTF-8,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20x%3D%270px%27%20y%3D%270px%27%20enable-background%3D%27new%200%200%205%202%27%20xml%3Aspace%3D%27preserve%27%20viewBox%3D%270%200%205%202%27%20preserveAspectRatio%3D%27none%20slice%27%3E%3Ccircle%20cx%3D%271%27%20cy%3D%271%27%20r%3D%271%27%20fill%3D%27#ffcdd2%27%2F%3E%3C%2Fsvg%3E\"); background-repeat: repeat-x; background-size: 10px 4px; } :host[color='warn'] .md-progress-bar-buffer { background-color: #ffcdd2; } :host[color='warn'] .md-progress-bar-fill::after { background-color: #e53935; } :host[mode='query'] { transform: rotateZ(180deg); } :host[mode='indeterminate'] .md-progress-bar-fill, :host[mode='query'] .md-progress-bar-fill { transition: none; } :host[mode='indeterminate'] .md-progress-bar-primary, :host[mode='query'] .md-progress-bar-primary { animation: md-progress-bar-primary-indeterminate-translate 2000ms infinite linear; left: -145.166611%; } :host[mode='indeterminate'] .md-progress-bar-primary.md-progress-bar-fill::after, :host[mode='query'] .md-progress-bar-primary.md-progress-bar-fill::after { animation: md-progress-bar-primary-indeterminate-scale 2000ms infinite linear; } :host[mode='indeterminate'] .md-progress-bar-secondary, :host[mode='query'] .md-progress-bar-secondary { animation: md-progress-bar-secondary-indeterminate-translate 2000ms infinite linear; left: -54.888891%; visibility: visible; } :host[mode='indeterminate'] .md-progress-bar-secondary.md-progress-bar-fill::after, :host[mode='query'] .md-progress-bar-secondary.md-progress-bar-fill::after { animation: md-progress-bar-secondary-indeterminate-scale 2000ms infinite linear; } :host[mode='buffer'] .md-progress-bar-background { animation: md-progress-bar-background-scroll 250ms infinite linear; visibility: visible; } :host-context([dir='rtl']) { transform: rotateY(180deg); } /** The values used for animations in md-progress-bar, both timing and transformation, can be considered magic values. They are sourced from the Material Design example spec and duplicate the values of the original designers definitions. The indeterminate state is essentially made up of two progress bars, one primary (the one that is shown in both the determinate and indeterminate states) and one secondary, which essentially mirrors the primary progress bar in appearance but is only shown to assist with the indeterminate animations. KEYFRAME BLOCK	                    DESCRIPTION primary-indeterminate-translate     Translation of the primary progressbar across the screen primary-indeterminate-scale         Scaling of the primary progressbar as it's being translated across the screen secondary-indeterminate-translate   Translation of the secondary progressbar across the screen secondary-indeterminate-scale       Scaling of the secondary progressbar as it's being translated across the screen Because two different transform animations need to be applied at once, the translation is applied to the outer element and the scaling is applied to the inner element, which provides the illusion necessary to make the animation work. */ /** Animations for indeterminate and query mode. */ @keyframes md-progress-bar-primary-indeterminate-translate { 0% { transform: translateX(0); } 20% { animation-timing-function: cubic-bezier(0.5, 0, 0.70173, 0.49582); transform: translateX(0); } 59.15% { animation-timing-function: cubic-bezier(0.30244, 0.38135, 0.55, 0.95635); transform: translateX(83.67142%); } 100% { transform: translateX(200.61106%); } } @keyframes md-progress-bar-primary-indeterminate-scale { 0% { transform: scaleX(0.08); } 36.65% { animation-timing-function: cubic-bezier(0.33473, 0.12482, 0.78584, 1); transform: scaleX(0.08); } 69.15% { animation-timing-function: cubic-bezier(0.06, 0.11, 0.6, 1); transform: scaleX(0.66148); } 100% { transform: scaleX(0.08); } } @keyframes md-progress-bar-secondary-indeterminate-translate { 0% { animation-timing-function: cubic-bezier(0.15, 0, 0.51506, 0.40969); transform: translateX(0); } 25% { animation-timing-function: cubic-bezier(0.31033, 0.28406, 0.8, 0.73371); transform: translateX(37.65191%); } 48.35% { animation-timing-function: cubic-bezier(0.4, 0.62704, 0.6, 0.90203); transform: translateX(84.38617%); } 100% { transform: translateX(160.27778%); } } @keyframes md-progress-bar-secondary-indeterminate-scale { 0% { animation-timing-function: cubic-bezier(0.15, 0, 0.51506, 0.40969); transform: scaleX(0.08); } 19.15% { animation-timing-function: cubic-bezier(0.31033, 0.28406, 0.8, 0.73371); transform: scaleX(0.4571); } 44.15% { animation-timing-function: cubic-bezier(0.4, 0.62704, 0.6, 0.90203); transform: scaleX(0.72796); } 100% { transform: scaleX(0.08); } } /** Animation for buffer mode. */ @keyframes md-progress-bar-background-scroll { to { transform: translateX(-10px); } } /*# sourceMappingURL=progress-bar.css.map */ "],
+	            changeDetection: _angular_core.ChangeDetectionStrategy.OnPush,
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], MdProgressBar);
+	    return MdProgressBar;
+	}());
+	/** Clamps a value to be between two numbers, by default 0 and 100. */
+	function clamp(v, min, max) {
+	    if (min === void 0) { min = 0; }
+	    if (max === void 0) { max = 100; }
+	    return Math.max(min, Math.min(max, v));
+	}
+	var MdProgressBarModule = (function () {
+	    function MdProgressBarModule() {
+	    }
+	    MdProgressBarModule.forRoot = function () {
+	        return {
+	            ngModule: MdProgressBarModule,
+	            providers: []
+	        };
+	    };
+	    MdProgressBarModule = __decorate([
+	        _angular_core.NgModule({
+	            imports: [_angular_common.CommonModule],
+	            exports: [MdProgressBar],
+	            declarations: [MdProgressBar],
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], MdProgressBarModule);
+	    return MdProgressBarModule;
+	}());
+
+	exports.MdProgressBar = MdProgressBar;
+	exports.MdProgressBarModule = MdProgressBarModule;
+
+	Object.defineProperty(exports, '__esModule', { value: true });
+
+	})));
+
+/***/ },
+
+/***/ 159:
+/***/ function(module, exports, __webpack_require__) {
+
+	(function (global, factory) {
+	     true ? factory(exports, __webpack_require__(2)) :
+	    typeof define === 'function' && define.amd ? define(['exports', '@angular/core'], factory) :
+	    (factory((global.md = global.md || {}, global.md.progressCircle = global.md.progressCircle || {}),global.ng.core));
+	}(this, (function (exports,_angular_core) { 'use strict';
+
+	var __extends = (window && window.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var __decorate = (window && window.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (window && window.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	// TODO(josephperrott): Benchpress tests.
+	/** A single degree in radians. */
+	var DEGREE_IN_RADIANS = Math.PI / 180;
+	/** Duration of the indeterminate animation. */
+	var DURATION_INDETERMINATE = 667;
+	/** Duration of the indeterminate animation. */
+	var DURATION_DETERMINATE = 225;
+	/** Start animation value of the indeterminate animation */
+	var startIndeterminate = 3;
+	/** End animation value of the indeterminate animation */
+	var endIndeterminate = 80;
+	/**
+	 * <md-progress-circle> component.
+	 */
+	var MdProgressCircle = (function () {
+	    function MdProgressCircle(_changeDetectorRef) {
+	        this._changeDetectorRef = _changeDetectorRef;
+	        /** The id of the last requested animation. */
+	        this._lastAnimationId = 0;
+	        this._mode = 'determinate';
+	    }
+	    Object.defineProperty(MdProgressCircle.prototype, "_ariaValueMin", {
+	        /**
+	         * Values for aria max and min are only defined as numbers when in a determinate mode.  We do this
+	         * because voiceover does not report the progress indicator as indeterminate if the aria min
+	         * and/or max value are number values.
+	         */
+	        get: function () {
+	            return this.mode == 'determinate' ? 0 : null;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(MdProgressCircle.prototype, "_ariaValueMax", {
+	        get: function () {
+	            return this.mode == 'determinate' ? 100 : null;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(MdProgressCircle.prototype, "interdeterminateInterval", {
+	        /** TODO: internal */
+	        get: function () {
+	            return this._interdeterminateInterval;
+	        },
+	        /** TODO: internal */
+	        set: function (interval) {
+	            clearInterval(this._interdeterminateInterval);
+	            this._interdeterminateInterval = interval;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(MdProgressCircle.prototype, "currentPath", {
+	        /** TODO: internal */
+	        get: function () {
+	            return this._currentPath;
+	        },
+	        set: function (path) {
+	            this._currentPath = path;
+	            // Mark for check as our ChangeDetectionStrategy is OnPush, when changes come from within the
+	            // component, change detection must be called for.
+	            this._changeDetectorRef.markForCheck();
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    /** Clean up any animations that were running. */
+	    MdProgressCircle.prototype.ngOnDestroy = function () {
+	        this._cleanupIndeterminateAnimation();
+	    };
+	    Object.defineProperty(MdProgressCircle.prototype, "value", {
+	        get: function () {
+	            if (this.mode == 'determinate') {
+	                return this._value;
+	            }
+	        },
+	        set: function (v) {
+	            if (v && this.mode == 'determinate') {
+	                var newValue = clamp(v);
+	                this._animateCircle((this.value || 0), newValue, linearEase, DURATION_DETERMINATE, 0);
+	                this._value = newValue;
+	            }
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(MdProgressCircle.prototype, "mode", {
+	        /**
+	         * Mode of the progress circle
+	         *
+	         * Input must be one of the values from ProgressMode, defaults to 'determinate'.
+	         * mode is bound to the host as the attribute host.
+	         */
+	        get: function () {
+	            return this._mode;
+	        },
+	        set: function (m) {
+	            if (m == 'indeterminate') {
+	                this._startIndeterminateAnimation();
+	            }
+	            else {
+	                this._cleanupIndeterminateAnimation();
+	            }
+	            this._mode = m;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    /**
+	     * Animates the circle from one percentage value to another.
+	     *
+	     * @param animateFrom The percentage of the circle filled starting the animation.
+	     * @param animateTo The percentage of the circle filled ending the animation.
+	     * @param ease The easing function to manage the pace of change in the animation.
+	     * @param duration The length of time to show the animation, in milliseconds.
+	     * @param rotation The starting angle of the circle fill, with 0° represented at the top center
+	     *    of the circle.
+	     */
+	    MdProgressCircle.prototype._animateCircle = function (animateFrom, animateTo, ease, duration, rotation) {
+	        var _this = this;
+	        var id = ++this._lastAnimationId;
+	        var startTime = Date.now();
+	        var changeInValue = animateTo - animateFrom;
+	        // No need to animate it if the values are the same
+	        if (animateTo === animateFrom) {
+	            this.currentPath = getSvgArc(animateTo, rotation);
+	        }
+	        else {
+	            var animation_1 = function () {
+	                var elapsedTime = Math.max(0, Math.min(Date.now() - startTime, duration));
+	                _this.currentPath = getSvgArc(ease(elapsedTime, animateFrom, changeInValue, duration), rotation);
+	                // Prevent overlapping animations by checking if a new animation has been called for and
+	                // if the animation has lasted long than the animation duration.
+	                if (id === _this._lastAnimationId && elapsedTime < duration) {
+	                    requestAnimationFrame(animation_1);
+	                }
+	            };
+	            requestAnimationFrame(animation_1);
+	        }
+	    };
+	    /**
+	     * Starts the indeterminate animation interval, if it is not already running.
+	     */
+	    MdProgressCircle.prototype._startIndeterminateAnimation = function () {
+	        var _this = this;
+	        var rotationStartPoint = 0;
+	        var start = startIndeterminate;
+	        var end = endIndeterminate;
+	        var duration = DURATION_INDETERMINATE;
+	        var animate = function () {
+	            _this._animateCircle(start, end, materialEase, duration, rotationStartPoint);
+	            // Prevent rotation from reaching Number.MAX_SAFE_INTEGER.
+	            rotationStartPoint = (rotationStartPoint + end) % 100;
+	            var temp = start;
+	            start = -end;
+	            end = -temp;
+	        };
+	        if (!this.interdeterminateInterval) {
+	            this.interdeterminateInterval = setInterval(animate, duration + 50, 0, false);
+	            animate();
+	        }
+	    };
+	    /**
+	     * Removes interval, ending the animation.
+	     */
+	    MdProgressCircle.prototype._cleanupIndeterminateAnimation = function () {
+	        this.interdeterminateInterval = null;
+	    };
+	    __decorate([
+	        _angular_core.Input(),
+	        _angular_core.HostBinding('attr.aria-valuenow'), 
+	        __metadata('design:type', Object)
+	    ], MdProgressCircle.prototype, "value", null);
+	    __decorate([
+	        _angular_core.HostBinding('attr.mode'),
+	        _angular_core.Input(), 
+	        __metadata('design:type', Object)
+	    ], MdProgressCircle.prototype, "mode", null);
+	    MdProgressCircle = __decorate([
+	        _angular_core.Component({selector: 'md-progress-circle',
+	            host: {
+	                'role': 'progressbar',
+	                '[attr.aria-valuemin]': '_ariaValueMin',
+	                '[attr.aria-valuemax]': '_ariaValueMax',
+	            },
+	            template: "<!-- preserveAspectRatio of xMidYMid meet as the center of the viewport is the circle's center.  The center of the circle with remain at the center of the md-progress-circle element containing the SVG. --> <svg viewBox=\"0 0 100 100\" preserveAspectRatio=\"xMidYMid meet\"> <path [attr.d]=\"currentPath\"></path> </svg> ",
+	            styles: ["/* Animation Durations */ /** Component sizing */ :host { display: block; /** Height and width are provided for md-progress-circle to act as a default. The height and width are expected to be overwritten by application css. */ height: 100px; width: 100px; /** SVG's viewBox is defined as 0 0 100 100, this means that all SVG children will placed based on a 100px by 100px box.  Additionally all SVG sizes and locations are in reference to this viewBox. */ } :host svg { height: 100%; width: 100%; transform-origin: center; } :host path { fill: transparent; stroke: #00897b; /** Stroke width of 10px defines stroke as 10% of the viewBox */ stroke-width: 10px; } :host[color='accent'] path { stroke: #8e24aa; } :host[color='warn'] path { stroke: #e53935; } :host[mode='indeterminate'] { animation-duration: 5250ms, 2887.5ms; animation-name: md-progress-circle-sporadic-rotate, md-progress-circle-linear-rotate; animation-timing-function: cubic-bezier(0.35, 0, 0.25, 1), linear; animation-iteration-count: infinite; transition: none; } /** Animations for indeterminate mode */ @keyframes md-progress-circle-linear-rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } @keyframes md-progress-circle-sporadic-rotate { 12.5% { transform: rotate(135deg); } 25% { transform: rotate(270deg); } 37.5% { transform: rotate(405deg); } 50% { transform: rotate(540deg); } 62.5% { transform: rotate(675deg); } 75% { transform: rotate(810deg); } 87.5% { transform: rotate(945deg); } 100% { transform: rotate(1080deg); } } /*# sourceMappingURL=progress-circle.css.map */ "],
+	            changeDetection: _angular_core.ChangeDetectionStrategy.OnPush,
+	        }), 
+	        __metadata('design:paramtypes', [_angular_core.ChangeDetectorRef])
+	    ], MdProgressCircle);
+	    return MdProgressCircle;
+	}());
+	/**
+	 * <md-spinner> component.
+	 *
+	 * This is a component definition to be used as a convenience reference to create an
+	 * indeterminate <md-progress-circle> instance.
+	 */
+	var MdSpinner = (function (_super) {
+	    __extends(MdSpinner, _super);
+	    function MdSpinner(changeDetectorRef) {
+	        _super.call(this, changeDetectorRef);
+	        this.mode = 'indeterminate';
+	    }
+	    MdSpinner = __decorate([
+	        _angular_core.Component({selector: 'md-spinner',
+	            host: {
+	                'role': 'progressbar',
+	                'mode': 'indeterminate',
+	            },
+	            template: "<!-- preserveAspectRatio of xMidYMid meet as the center of the viewport is the circle's center.  The center of the circle with remain at the center of the md-progress-circle element containing the SVG. --> <svg viewBox=\"0 0 100 100\" preserveAspectRatio=\"xMidYMid meet\"> <path [attr.d]=\"currentPath\"></path> </svg> ",
+	            styles: ["/* Animation Durations */ /** Component sizing */ :host { display: block; /** Height and width are provided for md-progress-circle to act as a default. The height and width are expected to be overwritten by application css. */ height: 100px; width: 100px; /** SVG's viewBox is defined as 0 0 100 100, this means that all SVG children will placed based on a 100px by 100px box.  Additionally all SVG sizes and locations are in reference to this viewBox. */ } :host svg { height: 100%; width: 100%; transform-origin: center; } :host path { fill: transparent; stroke: #00897b; /** Stroke width of 10px defines stroke as 10% of the viewBox */ stroke-width: 10px; } :host[color='accent'] path { stroke: #8e24aa; } :host[color='warn'] path { stroke: #e53935; } :host[mode='indeterminate'] { animation-duration: 5250ms, 2887.5ms; animation-name: md-progress-circle-sporadic-rotate, md-progress-circle-linear-rotate; animation-timing-function: cubic-bezier(0.35, 0, 0.25, 1), linear; animation-iteration-count: infinite; transition: none; } /** Animations for indeterminate mode */ @keyframes md-progress-circle-linear-rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } @keyframes md-progress-circle-sporadic-rotate { 12.5% { transform: rotate(135deg); } 25% { transform: rotate(270deg); } 37.5% { transform: rotate(405deg); } 50% { transform: rotate(540deg); } 62.5% { transform: rotate(675deg); } 75% { transform: rotate(810deg); } 87.5% { transform: rotate(945deg); } 100% { transform: rotate(1080deg); } } /*# sourceMappingURL=progress-circle.css.map */ "],
+	        }), 
+	        __metadata('design:paramtypes', [_angular_core.ChangeDetectorRef])
+	    ], MdSpinner);
+	    return MdSpinner;
+	}(MdProgressCircle));
+	/**
+	 * Module functions.
+	 */
+	/** Clamps a value to be between 0 and 100. */
+	function clamp(v) {
+	    return Math.max(0, Math.min(100, v));
+	}
+	/**
+	 * Converts Polar coordinates to Cartesian.
+	 */
+	function polarToCartesian(radius, pathRadius, angleInDegrees) {
+	    var angleInRadians = (angleInDegrees - 90) * DEGREE_IN_RADIANS;
+	    return (radius + (pathRadius * Math.cos(angleInRadians))) +
+	        ',' + (radius + (pathRadius * Math.sin(angleInRadians)));
+	}
+	/**
+	 * Easing function for linear animation.
+	 */
+	function linearEase(currentTime, startValue, changeInValue, duration) {
+	    return changeInValue * currentTime / duration + startValue;
+	}
+	/**
+	 * Easing function to match material design indeterminate animation.
+	 */
+	function materialEase(currentTime, startValue, changeInValue, duration) {
+	    var time = currentTime / duration;
+	    var timeCubed = Math.pow(time, 3);
+	    var timeQuad = Math.pow(time, 4);
+	    var timeQuint = Math.pow(time, 5);
+	    return startValue + changeInValue * ((6 * timeQuint) + (-15 * timeQuad) + (10 * timeCubed));
+	}
+	/**
+	 * Determines the path value to define the arc.  Converting percentage values to to polar
+	 * coordinates on the circle, and then to cartesian coordinates in the viewport.
+	 *
+	 * @param currentValue The current percentage value of the progress circle, the percentage of the
+	 *    circle to fill.
+	 * @param rotation The starting point of the circle with 0 being the 0 degree point.
+	 * @return A string for an SVG path representing a circle filled from the starting point to the
+	 *    percentage value provided.
+	 */
+	function getSvgArc(currentValue, rotation) {
+	    // The angle can't be exactly 360, because the arc becomes hidden.
+	    var maximumAngle = 359.99 / 100;
+	    var startPoint = rotation || 0;
+	    var radius = 50;
+	    var pathRadius = 40;
+	    var startAngle = startPoint * maximumAngle;
+	    var endAngle = currentValue * maximumAngle;
+	    var start = polarToCartesian(radius, pathRadius, startAngle);
+	    var end = polarToCartesian(radius, pathRadius, endAngle + startAngle);
+	    var arcSweep = endAngle < 0 ? 0 : 1;
+	    var largeArcFlag;
+	    if (endAngle < 0) {
+	        largeArcFlag = endAngle >= -180 ? 0 : 1;
+	    }
+	    else {
+	        largeArcFlag = endAngle <= 180 ? 0 : 1;
+	    }
+	    return "M" + start + "A" + pathRadius + "," + pathRadius + " 0 " + largeArcFlag + "," + arcSweep + " " + end;
+	}
+	var MdProgressCircleModule = (function () {
+	    function MdProgressCircleModule() {
+	    }
+	    MdProgressCircleModule.forRoot = function () {
+	        return {
+	            ngModule: MdProgressCircleModule,
+	            providers: []
+	        };
+	    };
+	    MdProgressCircleModule = __decorate([
+	        _angular_core.NgModule({
+	            exports: [MdProgressCircle, MdSpinner],
+	            declarations: [MdProgressCircle, MdSpinner],
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], MdProgressCircleModule);
+	    return MdProgressCircleModule;
+	}());
+
+	exports.MdProgressCircle = MdProgressCircle;
+	exports.MdSpinner = MdSpinner;
+	exports.MdProgressCircleModule = MdProgressCircleModule;
+
+	Object.defineProperty(exports, '__esModule', { value: true });
+
+	})));
+
+/***/ },
+
+/***/ 160:
+/***/ function(module, exports, __webpack_require__) {
+
+	(function (global, factory) {
+	     true ? factory(exports, __webpack_require__(2), __webpack_require__(55), __webpack_require__(96), __webpack_require__(9), __webpack_require__(143)) :
+	    typeof define === 'function' && define.amd ? define(['exports', '@angular/core', '@angular/common', '@angular2-material/core', 'rxjs/Observable', 'rxjs/add/operator/map'], factory) :
+	    (factory((global.md = global.md || {}, global.md.tabs = global.md.tabs || {}),global.ng.core,global.ng.common,global.md.core,global.Rx,global.Rx.Observable.prototype));
+	}(this, (function (exports,_angular_core,_angular_common,_angular2Material_core,rxjs_Observable,rxjs_add_operator_map) { 'use strict';
+
+	var __extends = (window && window.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var __decorate$1 = (window && window.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata$1 = (window && window.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	/** Used to flag tab labels for use with the portal directive */
+	var MdTabLabel = (function (_super) {
+	    __extends(MdTabLabel, _super);
+	    function MdTabLabel(templateRef, viewContainerRef) {
+	        _super.call(this, templateRef, viewContainerRef);
+	    }
+	    MdTabLabel = __decorate$1([
+	        _angular_core.Directive({
+	            selector: '[md-tab-label]',
+	        }), 
+	        __metadata$1('design:paramtypes', [_angular_core.TemplateRef, _angular_core.ViewContainerRef])
+	    ], MdTabLabel);
+	    return MdTabLabel;
+	}(_angular2Material_core.TemplatePortalDirective));
+
+	var __extends$1 = (window && window.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var __decorate$2 = (window && window.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata$2 = (window && window.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	/** Used to flag tab contents for use with the portal directive */
+	var MdTabContent = (function (_super) {
+	    __extends$1(MdTabContent, _super);
+	    function MdTabContent(templateRef, viewContainerRef) {
+	        _super.call(this, templateRef, viewContainerRef);
+	    }
+	    MdTabContent = __decorate$2([
+	        _angular_core.Directive({
+	            selector: '[md-tab-content]'
+	        }), 
+	        __metadata$2('design:paramtypes', [_angular_core.TemplateRef, _angular_core.ViewContainerRef])
+	    ], MdTabContent);
+	    return MdTabContent;
+	}(_angular2Material_core.TemplatePortalDirective));
+
+	var __decorate$3 = (window && window.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata$3 = (window && window.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	/** Used in the `md-tab-group` view to display tab labels */
+	var MdTabLabelWrapper = (function () {
+	    function MdTabLabelWrapper(elementRef) {
+	        this.elementRef = elementRef;
+	    }
+	    /**
+	     * Sets focus on the wrapper element
+	     */
+	    MdTabLabelWrapper.prototype.focus = function () {
+	        this.elementRef.nativeElement.focus();
+	    };
+	    MdTabLabelWrapper = __decorate$3([
+	        _angular_core.Directive({
+	            selector: '[md-tab-label-wrapper]'
+	        }), 
+	        __metadata$3('design:paramtypes', [_angular_core.ElementRef])
+	    ], MdTabLabelWrapper);
+	    return MdTabLabelWrapper;
+	}());
+
+	var __decorate$4 = (window && window.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata$4 = (window && window.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	/** The ink-bar is used to display and animate the line underneath the current active tab label. */
+	var MdInkBar = (function () {
+	    function MdInkBar(_renderer, _elementRef) {
+	        this._renderer = _renderer;
+	        this._elementRef = _elementRef;
+	    }
+	    /**
+	     * Calculates the styles from the provided element in order to align the ink-bar to that element.
+	     * @param element
+	     */
+	    MdInkBar.prototype.alignToElement = function (element) {
+	        this._renderer.setElementStyle(this._elementRef.nativeElement, 'left', this._getLeftPosition(element));
+	        this._renderer.setElementStyle(this._elementRef.nativeElement, 'width', this._getElementWidth(element));
+	    };
+	    /**
+	     * Generates the pixel distance from the left based on the provided element in string format.
+	     * @param element
+	     * @returns {string}
+	     */
+	    MdInkBar.prototype._getLeftPosition = function (element) {
+	        return element ? element.offsetLeft + 'px' : '0';
+	    };
+	    /**
+	     * Generates the pixel width from the provided element in string format.
+	     * @param element
+	     * @returns {string}
+	     */
+	    MdInkBar.prototype._getElementWidth = function (element) {
+	        return element ? element.offsetWidth + 'px' : '0';
+	    };
+	    MdInkBar = __decorate$4([
+	        _angular_core.Directive({
+	            selector: 'md-ink-bar',
+	        }), 
+	        __metadata$4('design:paramtypes', [_angular_core.Renderer, _angular_core.ElementRef])
+	    ], MdInkBar);
+	    return MdInkBar;
+	}());
+
+	var __decorate = (window && window.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (window && window.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	/** Used to generate unique ID's for each tab component */
+	var nextId = 0;
+	/** A simple change event emitted on focus or selection changes. */
+	var MdTabChangeEvent = (function () {
+	    function MdTabChangeEvent() {
+	    }
+	    return MdTabChangeEvent;
+	}());
+	var MdTab = (function () {
+	    function MdTab() {
+	        // TODO: Replace this when BooleanFieldValue is removed.
+	        this._disabled = false;
+	    }
+	    Object.defineProperty(MdTab.prototype, "disabled", {
+	        get: function () {
+	            return this._disabled;
+	        },
+	        set: function (value) {
+	            this._disabled = (value != null && "" + value !== 'false');
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    __decorate([
+	        _angular_core.ContentChild(MdTabLabel), 
+	        __metadata('design:type', MdTabLabel)
+	    ], MdTab.prototype, "label", void 0);
+	    __decorate([
+	        _angular_core.ContentChild(MdTabContent), 
+	        __metadata('design:type', MdTabContent)
+	    ], MdTab.prototype, "content", void 0);
+	    __decorate([
+	        _angular_core.Input('disabled'), 
+	        __metadata('design:type', Boolean), 
+	        __metadata('design:paramtypes', [Boolean])
+	    ], MdTab.prototype, "disabled", null);
+	    MdTab = __decorate([
+	        _angular_core.Directive({
+	            selector: 'md-tab'
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], MdTab);
+	    return MdTab;
+	}());
+	/**
+	 * Material design tab-group component.  Supports basic tab pairs (label + content) and includes
+	 * animated ink-bar, keyboard navigation, and screen reader.
+	 * See: https://www.google.com/design/spec/components/tabs.html
+	 */
+	var MdTabGroup = (function () {
+	    function MdTabGroup(_zone) {
+	        this._zone = _zone;
+	        this._isInitialized = false;
+	        this._selectedIndex = 0;
+	        this._onFocusChange = new _angular_core.EventEmitter();
+	        this._onSelectChange = new _angular_core.EventEmitter();
+	        this._focusIndex = 0;
+	        this._groupId = nextId++;
+	    }
+	    Object.defineProperty(MdTabGroup.prototype, "selectedIndex", {
+	        get: function () {
+	            return this._selectedIndex;
+	        },
+	        set: function (value) {
+	            if (value != this._selectedIndex && this.isValidIndex(value)) {
+	                this._selectedIndex = value;
+	                if (this._isInitialized) {
+	                    this._onSelectChange.emit(this._createChangeEvent(value));
+	                }
+	            }
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    /**
+	     * Determines if an index is valid.  If the tabs are not ready yet, we assume that the user is
+	     * providing a valid index and return true.
+	     */
+	    MdTabGroup.prototype.isValidIndex = function (index) {
+	        if (this._tabs) {
+	            var tab = this._tabs.toArray()[index];
+	            return tab && !tab.disabled;
+	        }
+	        else {
+	            return true;
+	        }
+	    };
+	    Object.defineProperty(MdTabGroup.prototype, "_selectedIndexChange", {
+	        /** Output to enable support for two-way binding on `selectedIndex`. */
+	        get: function () {
+	            return this.selectChange.map(function (event) { return event.index; });
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(MdTabGroup.prototype, "focusChange", {
+	        get: function () {
+	            return this._onFocusChange.asObservable();
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(MdTabGroup.prototype, "selectChange", {
+	        get: function () {
+	            return this._onSelectChange.asObservable();
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    /**
+	     * Waits one frame for the view to update, then upates the ink bar
+	     * Note: This must be run outside of the zone or it will create an infinite change detection loop
+	     * TODO: internal
+	     */
+	    MdTabGroup.prototype.ngAfterViewChecked = function () {
+	        var _this = this;
+	        this._zone.runOutsideAngular(function () {
+	            window.requestAnimationFrame(function () {
+	                _this._updateInkBar();
+	            });
+	        });
+	        this._isInitialized = true;
+	    };
+	    /** Tells the ink-bar to align itself to the current label wrapper */
+	    MdTabGroup.prototype._updateInkBar = function () {
+	        this._inkBar.toArray()[0].alignToElement(this._currentLabelWrapper);
+	    };
+	    Object.defineProperty(MdTabGroup.prototype, "_currentLabelWrapper", {
+	        /**
+	         * Reference to the current label wrapper; defaults to null for initial render before the
+	         * ViewChildren references are ready.
+	         */
+	        get: function () {
+	            return this._labelWrappers && this._labelWrappers.length
+	                ? this._labelWrappers.toArray()[this.selectedIndex].elementRef.nativeElement
+	                : null;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(MdTabGroup.prototype, "focusIndex", {
+	        /** Tracks which element has focus; used for keyboard navigation */
+	        get: function () {
+	            return this._focusIndex;
+	        },
+	        /** When the focus index is set, we must manually send focus to the correct label */
+	        set: function (value) {
+	            if (this.isValidIndex(value)) {
+	                this._focusIndex = value;
+	                if (this._isInitialized) {
+	                    this._onFocusChange.emit(this._createChangeEvent(value));
+	                }
+	                if (this._labelWrappers && this._labelWrappers.length) {
+	                    this._labelWrappers.toArray()[value].focus();
+	                }
+	            }
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    MdTabGroup.prototype._createChangeEvent = function (index) {
+	        var event = new MdTabChangeEvent;
+	        event.index = index;
+	        if (this._tabs && this._tabs.length) {
+	            event.tab = this._tabs.toArray()[index];
+	        }
+	        return event;
+	    };
+	    /** Returns a unique id for each tab label element */
+	    MdTabGroup.prototype._getTabLabelId = function (i) {
+	        return "md-tab-label-" + this._groupId + "-" + i;
+	    };
+	    /** Returns a unique id for each tab content element */
+	    MdTabGroup.prototype._getTabContentId = function (i) {
+	        return "md-tab-content-" + this._groupId + "-" + i;
+	    };
+	    MdTabGroup.prototype.handleKeydown = function (event) {
+	        switch (event.keyCode) {
+	            case _angular2Material_core.RIGHT_ARROW:
+	                this.focusNextTab();
+	                break;
+	            case _angular2Material_core.LEFT_ARROW:
+	                this.focusPreviousTab();
+	                break;
+	            case _angular2Material_core.ENTER:
+	                this.selectedIndex = this.focusIndex;
+	                break;
+	        }
+	    };
+	    /**
+	     * Moves the focus left or right depending on the offset provided.  Valid offsets are 1 and -1.
+	     */
+	    MdTabGroup.prototype.moveFocus = function (offset) {
+	        if (this._labelWrappers) {
+	            var tabs = this._tabs.toArray();
+	            for (var i = this.focusIndex + offset; i < tabs.length && i >= 0; i += offset) {
+	                if (this.isValidIndex(i)) {
+	                    this.focusIndex = i;
+	                    return;
+	                }
+	            }
+	        }
+	    };
+	    /** Increment the focus index by 1 until a valid tab is found. */
+	    MdTabGroup.prototype.focusNextTab = function () {
+	        this.moveFocus(1);
+	    };
+	    /** Decrement the focus index by 1 until a valid tab is found. */
+	    MdTabGroup.prototype.focusPreviousTab = function () {
+	        this.moveFocus(-1);
+	    };
+	    __decorate([
+	        _angular_core.ContentChildren(MdTab), 
+	        __metadata('design:type', _angular_core.QueryList)
+	    ], MdTabGroup.prototype, "_tabs", void 0);
+	    __decorate([
+	        _angular_core.ViewChildren(MdTabLabelWrapper), 
+	        __metadata('design:type', _angular_core.QueryList)
+	    ], MdTabGroup.prototype, "_labelWrappers", void 0);
+	    __decorate([
+	        _angular_core.ViewChildren(MdInkBar), 
+	        __metadata('design:type', _angular_core.QueryList)
+	    ], MdTabGroup.prototype, "_inkBar", void 0);
+	    __decorate([
+	        _angular_core.Input(), 
+	        __metadata('design:type', Number), 
+	        __metadata('design:paramtypes', [Number])
+	    ], MdTabGroup.prototype, "selectedIndex", null);
+	    __decorate([
+	        _angular_core.Output('selectedIndexChange'), 
+	        __metadata('design:type', rxjs_Observable.Observable)
+	    ], MdTabGroup.prototype, "_selectedIndexChange", null);
+	    __decorate([
+	        _angular_core.Output('focusChange'), 
+	        __metadata('design:type', rxjs_Observable.Observable)
+	    ], MdTabGroup.prototype, "focusChange", null);
+	    __decorate([
+	        _angular_core.Output('selectChange'), 
+	        __metadata('design:type', rxjs_Observable.Observable)
+	    ], MdTabGroup.prototype, "selectChange", null);
+	    MdTabGroup = __decorate([
+	        _angular_core.Component({selector: 'md-tab-group',
+	            template: "<div class=\"md-tab-header\" role=\"tablist\" (keydown)=\"handleKeydown($event)\"> <div class=\"md-tab-label\" role=\"tab\" md-tab-label-wrapper *ngFor=\"let tab of _tabs; let i = index\" [id]=\"_getTabLabelId(i)\" [tabIndex]=\"selectedIndex == i ? 0 : -1\" [attr.aria-controls]=\"_getTabContentId(i)\" [attr.aria-selected]=\"selectedIndex == i\" [class.md-tab-active]=\"selectedIndex == i\" [class.md-tab-disabled]=\"tab.disabled\" (click)=\"focusIndex = selectedIndex = i\"> <template [portalHost]=\"tab.label\"></template> </div> <md-ink-bar></md-ink-bar> </div> <div class=\"md-tab-body-wrapper\"> <div class=\"md-tab-body\" role=\"tabpanel\" *ngFor=\"let tab of _tabs; let i = index\" [id]=\"_getTabContentId(i)\" [class.md-tab-active]=\"selectedIndex == i\" [attr.aria-labelledby]=\"_getTabLabelId(i)\"> <template [ngIf]=\"selectedIndex == i\"> <template [portalHost]=\"tab.content\"></template> </template> </div> </div> ",
+	            styles: [":host { display: flex; flex-direction: column; font-family: Roboto, \"Helvetica Neue\", sans-serif; } /** The top section of the view; contains the tab labels */ .md-tab-header { overflow: hidden; position: relative; display: flex; flex-direction: row; border-bottom: 1px solid #e0e0e0; flex-shrink: 0; } /** Wraps each tab label */ .md-tab-label { line-height: 48px; height: 48px; padding: 0 12px; font-size: 14px; font-family: Roboto, \"Helvetica Neue\", sans-serif; font-weight: 500; cursor: pointer; box-sizing: border-box; color: currentColor; opacity: 0.6; min-width: 160px; text-align: center; } .md-tab-label:focus { outline: none; opacity: 1; background-color: rgba(178, 223, 219, 0.3); } .md-tab-disabled { cursor: default; pointer-events: none; } /** The bottom section of the view; contains the tab bodies */ .md-tab-body-wrapper { position: relative; overflow: hidden; flex-grow: 1; display: flex; } /** Wraps each tab body */ .md-tab-body { display: none; overflow: auto; box-sizing: border-box; flex-grow: 1; flex-shrink: 1; } .md-tab-body.md-tab-active { display: block; } /** The colored bar that underlines the active tab */ md-ink-bar { position: absolute; bottom: 0; height: 2px; background-color: #009688; transition: 350ms ease-out; } /*# sourceMappingURL=tab-group.css.map */ "],
+	        }), 
+	        __metadata('design:paramtypes', [_angular_core.NgZone])
+	    ], MdTabGroup);
+	    return MdTabGroup;
+	}());
+	var MdTabsModule = (function () {
+	    function MdTabsModule() {
+	    }
+	    MdTabsModule.forRoot = function () {
+	        return {
+	            ngModule: MdTabsModule,
+	            providers: []
+	        };
+	    };
+	    MdTabsModule = __decorate([
+	        _angular_core.NgModule({
+	            imports: [_angular_common.CommonModule, _angular2Material_core.PortalModule],
+	            // Don't export MdInkBar or MdTabLabelWrapper, as they are internal implementatino details.
+	            exports: [MdTabGroup, MdTabLabel, MdTabContent, MdTab],
+	            declarations: [MdTabGroup, MdTabLabel, MdTabContent, MdTab, MdInkBar, MdTabLabelWrapper],
+	        }), 
+	        __metadata('design:paramtypes', [])
+	    ], MdTabsModule);
+	    return MdTabsModule;
+	}());
+
+	exports.MdTabChangeEvent = MdTabChangeEvent;
+	exports.MdTab = MdTab;
+	exports.MdTabGroup = MdTabGroup;
+	exports.MdTabsModule = MdTabsModule;
+
+	Object.defineProperty(exports, '__esModule', { value: true });
+
+	})));
+
+/***/ },
+
+/***/ 162:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2357,7 +3552,7 @@ webpackJsonp([2],{
 	 * License: MIT
 	 */
 	(function (global, factory) {
-	     true ? factory(exports, __webpack_require__(2), __webpack_require__(149), __webpack_require__(66), __webpack_require__(11), __webpack_require__(146)) :
+	     true ? factory(exports, __webpack_require__(2), __webpack_require__(152), __webpack_require__(66), __webpack_require__(9), __webpack_require__(148)) :
 	    typeof define === 'function' && define.amd ? define(['exports', '@angular/core', 'rxjs/operator/toPromise', 'rxjs/Subject', 'rxjs/Observable', 'rxjs/observable/fromPromise'], factory) :
 	    (factory((global.ng = global.ng || {}, global.ng.forms = global.ng.forms || {}),global.ng.core,global.Rx.Observable.prototype,global.Rx,global.Rx,global.Rx.Observable));
 	}(this, function (exports,_angular_core,rxjs_operator_toPromise,rxjs_Subject,rxjs_Observable,rxjs_observable_fromPromise) { 'use strict';
@@ -7048,1105 +8243,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 156:
-/***/ function(module, exports, __webpack_require__) {
-
-	(function (global, factory) {
-	     true ? factory(exports, __webpack_require__(2)) :
-	    typeof define === 'function' && define.amd ? define(['exports', '@angular/core'], factory) :
-	    (factory((global.md = global.md || {}, global.md.card = global.md.card || {}),global.ng.core));
-	}(this, (function (exports,_angular_core) { 'use strict';
-
-	var __decorate = (window && window.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (window && window.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	/**
-	 * Content of a card, needed as it's used as a selector in the API.
-	 */
-	var MdCardContent = (function () {
-	    function MdCardContent() {
-	    }
-	    MdCardContent = __decorate([
-	        _angular_core.Directive({
-	            selector: 'md-card-content'
-	        }), 
-	        __metadata('design:paramtypes', [])
-	    ], MdCardContent);
-	    return MdCardContent;
-	}());
-	/**
-	 * Title of a card, needed as it's used as a selector in the API.
-	 */
-	var MdCardTitle = (function () {
-	    function MdCardTitle() {
-	    }
-	    MdCardTitle = __decorate([
-	        _angular_core.Directive({
-	            selector: 'md-card-title'
-	        }), 
-	        __metadata('design:paramtypes', [])
-	    ], MdCardTitle);
-	    return MdCardTitle;
-	}());
-	/**
-	 * Sub-title of a card, needed as it's used as a selector in the API.
-	 */
-	var MdCardSubtitle = (function () {
-	    function MdCardSubtitle() {
-	    }
-	    MdCardSubtitle = __decorate([
-	        _angular_core.Directive({
-	            selector: 'md-card-subtitle'
-	        }), 
-	        __metadata('design:paramtypes', [])
-	    ], MdCardSubtitle);
-	    return MdCardSubtitle;
-	}());
-	/**
-	 * Action section of a card, needed as it's used as a selector in the API.
-	 */
-	var MdCardActions = (function () {
-	    function MdCardActions() {
-	    }
-	    MdCardActions = __decorate([
-	        _angular_core.Directive({
-	            selector: 'md-card-actions'
-	        }), 
-	        __metadata('design:paramtypes', [])
-	    ], MdCardActions);
-	    return MdCardActions;
-	}());
-	/*
-
-	<md-card> is a basic content container component that adds the styles of a material design card.
-
-	While you can use this component alone,
-	it also provides a number of preset styles for common card sections, including:
-	 - md-card-title
-	 - md-card-subtitle
-	 - md-card-content
-	 - md-card-actions
-	 - md-card-footer
-
-	 You can see some examples of cards here:
-	 http://embed.plnkr.co/s5O4YcyvbLhIApSrIhtj/
-
-	 TODO(kara): update link to demo site when it exists
-
-	*/
-	var MdCard = (function () {
-	    function MdCard() {
-	    }
-	    MdCard = __decorate([
-	        _angular_core.Component({selector: 'md-card',
-	            template: "<ng-content></ng-content> ",
-	            styles: ["/** * A collection of mixins and CSS classes that can be used to apply elevation to a material * element. * See: https://www.google.com/design/spec/what-is-material/elevation-shadows.html * Examples: * * * .md-foo { *   @include $md-elevation(2); * *   &:active { *     @include $md-elevation(8); *   } * } * * <div id=\"external-card\" class=\"md-elevation-z2\"><p>Some content</p></div> * * For an explanation of the design behind how elevation is implemented, see the design doc at * https://goo.gl/Kq0k9Z. */ /** * The css property used for elevation. In most cases this should not be changed. It is exposed * as a variable for abstraction / easy use when needing to reference the property directly, for * example in a will-change rule. */ /** The default duration value for elevation transitions. */ /** The default easing value for elevation transitions. */ /** * Applies the correct css rules to an element to give it the elevation specified by $zValue. * The $zValue must be between 0 and 24. */ /** * Returns a string that can be used as the value for a transition property for elevation. * Calling this function directly is useful in situations where a component needs to transition * more than one property. * * .foo { *   transition: md-elevation-transition-property-value(), opacity 100ms ease; *   will-change: $md-elevation-property, opacity; * } */ /** * Applies the correct css rules needed to have an element transition between elevations. * This mixin should be applied to elements whose elevation values will change depending on their * context (e.g. when active or disabled). */ md-card { box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12); transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1); will-change: box-shadow; display: block; position: relative; padding: 24px; border-radius: 2px; font-family: Roboto, \"Helvetica Neue\", sans-serif; background: white; color: black; } md-card:hover { box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12); } .md-card-flat { box-shadow: none; } md-card-title, md-card-subtitle, md-card-content, md-card-actions { display: block; margin-bottom: 16px; } md-card-title { font-size: 24px; font-weight: 400; } md-card-subtitle { font-size: 14px; color: rgba(0, 0, 0, 0.54); } md-card-content { font-size: 14px; } md-card-actions { margin-left: -16px; margin-right: -16px; padding: 8px 0; } md-card-actions[align='end'] { display: flex; justify-content: flex-end; } [md-card-image] { width: calc(100% + 48px); margin: 0 -24px 16px -24px; } [md-card-xl-image] { width: 240px; height: 240px; margin: -8px; } md-card-footer { position: absolute; bottom: 0; } md-card-actions [md-button], md-card-actions [md-raised-button] { margin: 0 4px; } /* HEADER STYLES */ md-card-header { display: flex; flex-direction: row; height: 40px; margin: -8px 0 16px 0; } .md-card-header-text { height: 40px; margin: 0 8px; } [md-card-avatar] { height: 40px; width: 40px; border-radius: 50%; } md-card-header md-card-title { font-size: 14px; } /* TITLE-GROUP STYLES */ [md-card-sm-image], [md-card-md-image], [md-card-lg-image] { margin: -8px 0; } md-card-title-group { display: flex; justify-content: space-between; margin: 0 -8px; } [md-card-sm-image] { width: 80px; height: 80px; } [md-card-md-image] { width: 112px; height: 112px; } [md-card-lg-image] { width: 152px; height: 152px; } /* MEDIA QUERIES */ @media (max-width: 600px) { md-card { padding: 24px 16px; } [md-card-image] { width: calc(100% + 32px); margin: 16px -16px; } md-card-title-group { margin: 0; } [md-card-xl-image] { margin-left: 0; margin-right: 0; } md-card-header { margin: -8px 0 0 0; } } /* FIRST/LAST CHILD ADJUSTMENTS */ md-card > :first-child, md-card-content > :first-child { margin-top: 0; } md-card > :last-child, md-card-content > :last-child { margin-bottom: 0; } [md-card-image]:first-child { margin-top: -24px; } md-card > md-card-actions:last-child { margin-bottom: -16px; padding-bottom: 0; } md-card-actions [md-button]:first-child, md-card-actions [md-raised-button]:first-child { margin-left: 0; margin-right: 0; } md-card-title:not(:first-child), md-card-subtitle:not(:first-child) { margin-top: -4px; } md-card-header md-card-subtitle:not(:first-child) { margin-top: -8px; } md-card > [md-card-xl-image]:first-child { margin-top: -8px; } md-card > [md-card-xl-image]:last-child { margin-bottom: -8px; } /*# sourceMappingURL=card.css.map */ "],
-	            encapsulation: _angular_core.ViewEncapsulation.None,
-	            changeDetection: _angular_core.ChangeDetectionStrategy.OnPush,
-	        }), 
-	        __metadata('design:paramtypes', [])
-	    ], MdCard);
-	    return MdCard;
-	}());
-	/*  The following components don't have any behavior.
-	 They simply use content projection to wrap user content
-	 for flex layout purposes in <md-card> (and thus allow a cleaner, boilerplate-free API).
-
-
-	<md-card-header> is a component intended to be used within the <md-card> component.
-	It adds styles for a preset header section (i.e. a title, subtitle, and avatar layout).
-
-	You can see an example of a card with a header here:
-	http://embed.plnkr.co/tvJl19z3gZTQd6WmwkIa/
-
-	TODO(kara): update link to demo site when it exists
-	*/
-	var MdCardHeader = (function () {
-	    function MdCardHeader() {
-	    }
-	    MdCardHeader = __decorate([
-	        _angular_core.Component({selector: 'md-card-header',
-	            template: "<ng-content select=\"[md-card-avatar]\"></ng-content> <div class=\"md-card-header-text\"> <ng-content select=\"md-card-title, md-card-subtitle\"></ng-content> </div> <ng-content></ng-content> ",
-	            encapsulation: _angular_core.ViewEncapsulation.None,
-	            changeDetection: _angular_core.ChangeDetectionStrategy.OnPush,
-	        }), 
-	        __metadata('design:paramtypes', [])
-	    ], MdCardHeader);
-	    return MdCardHeader;
-	}());
-	/*
-
-	<md-card-title-group> is a component intended to be used within the <md-card> component.
-	It adds styles for a preset layout that groups an image with a title section.
-
-	You can see an example of a card with a title-group section here:
-	http://embed.plnkr.co/EDfgCF9eKcXjini1WODm/
-
-	TODO(kara): update link to demo site when it exists
-	*/
-	var MdCardTitleGroup = (function () {
-	    function MdCardTitleGroup() {
-	    }
-	    MdCardTitleGroup = __decorate([
-	        _angular_core.Component({selector: 'md-card-title-group',
-	            template: "<div> <ng-content select=\"md-card-title, md-card-subtitle\"></ng-content> </div> <ng-content select=\"img\"></ng-content> <ng-content></ng-content> ",
-	            encapsulation: _angular_core.ViewEncapsulation.None,
-	            changeDetection: _angular_core.ChangeDetectionStrategy.OnPush,
-	        }), 
-	        __metadata('design:paramtypes', [])
-	    ], MdCardTitleGroup);
-	    return MdCardTitleGroup;
-	}());
-	var MdCardModule = (function () {
-	    function MdCardModule() {
-	    }
-	    MdCardModule.forRoot = function () {
-	        return {
-	            ngModule: MdCardModule,
-	            providers: []
-	        };
-	    };
-	    MdCardModule = __decorate([
-	        _angular_core.NgModule({
-	            exports: [
-	                MdCard, MdCardHeader, MdCardTitleGroup, MdCardContent, MdCardTitle, MdCardSubtitle,
-	                MdCardActions
-	            ],
-	            declarations: [
-	                MdCard, MdCardHeader, MdCardTitleGroup, MdCardContent, MdCardTitle, MdCardSubtitle,
-	                MdCardActions
-	            ],
-	        }), 
-	        __metadata('design:paramtypes', [])
-	    ], MdCardModule);
-	    return MdCardModule;
-	}());
-
-	exports.MdCardContent = MdCardContent;
-	exports.MdCardTitle = MdCardTitle;
-	exports.MdCardSubtitle = MdCardSubtitle;
-	exports.MdCardActions = MdCardActions;
-	exports.MdCard = MdCard;
-	exports.MdCardHeader = MdCardHeader;
-	exports.MdCardTitleGroup = MdCardTitleGroup;
-	exports.MdCardModule = MdCardModule;
-
-	Object.defineProperty(exports, '__esModule', { value: true });
-
-	})));
-
-/***/ },
-
-/***/ 157:
-/***/ function(module, exports, __webpack_require__) {
-
-	(function (global, factory) {
-	     true ? factory(exports, __webpack_require__(2), __webpack_require__(55)) :
-	    typeof define === 'function' && define.amd ? define(['exports', '@angular/core', '@angular/common'], factory) :
-	    (factory((global.md = global.md || {}, global.md.progressBar = global.md.progressBar || {}),global.ng.core,global.ng.common));
-	}(this, (function (exports,_angular_core,_angular_common) { 'use strict';
-
-	var __decorate = (window && window.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (window && window.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	// TODO(josephperrott): Benchpress tests.
-	// TODO(josephperrott): Add ARIA attributes for progressbar "for".
-	/**
-	 * <md-progress-bar> component.
-	 */
-	var MdProgressBar = (function () {
-	    function MdProgressBar() {
-	        /** Value of the progressbar. Defaults to zero. Mirrored to aria-valuenow. */
-	        this._value = 0;
-	        /** Buffer value of the progress bar. Defaults to zero. */
-	        this._bufferValue = 0;
-	        /**
-	         * Mode of the progress bar.
-	         *
-	         * Input must be one of these values: determinate, indeterminate, buffer, query, defaults to
-	         * 'determinate'.
-	         * Mirrored to mode attribute.
-	         */
-	        this.mode = 'determinate';
-	    }
-	    Object.defineProperty(MdProgressBar.prototype, "value", {
-	        get: function () {
-	            return this._value;
-	        },
-	        set: function (v) {
-	            this._value = clamp(v || 0);
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(MdProgressBar.prototype, "bufferValue", {
-	        get: function () {
-	            return this._bufferValue;
-	        },
-	        set: function (v) {
-	            this._bufferValue = clamp(v || 0);
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    /** Gets the current transform value for the progress bar's primary indicator. */
-	    MdProgressBar.prototype._primaryTransform = function () {
-	        var scale = this.value / 100;
-	        return { transform: "scaleX(" + scale + ")" };
-	    };
-	    /**
-	     * Gets the current transform value for the progress bar's buffer indicator.  Only used if the
-	     * progress mode is set to buffer, otherwise returns an undefined, causing no transformation.
-	     */
-	    MdProgressBar.prototype._bufferTransform = function () {
-	        if (this.mode == 'buffer') {
-	            var scale = this.bufferValue / 100;
-	            return { transform: "scaleX(" + scale + ")" };
-	        }
-	    };
-	    __decorate([
-	        _angular_core.Input(),
-	        _angular_core.HostBinding('attr.aria-valuenow'), 
-	        __metadata('design:type', Object)
-	    ], MdProgressBar.prototype, "value", null);
-	    __decorate([
-	        _angular_core.Input(), 
-	        __metadata('design:type', Object)
-	    ], MdProgressBar.prototype, "bufferValue", null);
-	    __decorate([
-	        _angular_core.Input(),
-	        _angular_core.HostBinding('attr.mode'), 
-	        __metadata('design:type', Object)
-	    ], MdProgressBar.prototype, "mode", void 0);
-	    MdProgressBar = __decorate([
-	        _angular_core.Component({selector: 'md-progress-bar',
-	            host: {
-	                'role': 'progressbar',
-	                'aria-valuemin': '0',
-	                'aria-valuemax': '100',
-	            },
-	            template: "<!-- The background div is named as such because it appears below the other divs and is not sized based on values. --> <div class=\"md-progress-bar-background\"></div> <div class=\"md-progress-bar-buffer\" [ngStyle]=\"_bufferTransform()\"></div> <div class=\"md-progress-bar-primary md-progress-bar-fill\" [ngStyle]=\"_primaryTransform()\"></div> <div class=\"md-progress-bar-secondary md-progress-bar-fill\"></div> ",
-	            styles: ["/** In buffer mode a repeated SVG object is used as a background.  Each of the following defines the SVG object for each of the class defined colors. Each string is a URL encoded version of: <svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\" x=\"0px\" y=\"0px\" enable-background=\"new 0 0 5 2\" xml:space=\"preserve\" viewBox=\"0 0 5 2\" preserveAspectRatio=\"none slice\"> <circle cx=\"1\" cy=\"1\" r=\"1\" fill=\"{INJECTED_COLOR}\"/> </svg> */ :host { display: block; height: 5px; overflow: hidden; position: relative; transform: translateZ(0); transition: opacity 250ms linear; width: 100%; /** * The progress bar buffer is the bar indicator showing the buffer value and is only visible beyond the current value * of the primary progress bar. */ /** * The secondary progress bar is only used in the indeterminate animation, because of this it is hidden in other uses. */ /** * The progress bar fill fills the progress bar with the indicator color. */ /** * A pseudo element is created for each progress bar bar that fills with the indicator color. */ } :host .md-progress-bar-background { background: url(\"data:image/svg+xml;charset=UTF-8,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20x%3D%270px%27%20y%3D%270px%27%20enable-background%3D%27new%200%200%205%202%27%20xml%3Aspace%3D%27preserve%27%20viewBox%3D%270%200%205%202%27%20preserveAspectRatio%3D%27none%20slice%27%3E%3Ccircle%20cx%3D%271%27%20cy%3D%271%27%20r%3D%271%27%20fill%3D%27#b2dfdb%27%2F%3E%3C%2Fsvg%3E\"); background-repeat: repeat-x; background-size: 10px 4px; height: 100%; position: absolute; visibility: hidden; width: 100%; } :host .md-progress-bar-buffer { background-color: #b2dfdb; height: 100%; position: absolute; transform-origin: top left; transition: transform 250ms ease; width: 100%; } :host .md-progress-bar-secondary { visibility: hidden; } :host .md-progress-bar-fill { animation: none; height: 100%; position: absolute; transform-origin: top left; transition: transform 250ms ease; width: 100%; } :host .md-progress-bar-fill::after { animation: none; background-color: #00897b; content: ''; display: inline-block; height: 100%; position: absolute; width: 100%; } :host[color='accent'] .md-progress-bar-background { background: url(\"data:image/svg+xml;charset=UTF-8,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20x%3D%270px%27%20y%3D%270px%27%20enable-background%3D%27new%200%200%205%202%27%20xml%3Aspace%3D%27preserve%27%20viewBox%3D%270%200%205%202%27%20preserveAspectRatio%3D%27none%20slice%27%3E%3Ccircle%20cx%3D%271%27%20cy%3D%271%27%20r%3D%271%27%20fill%3D%27#e1bee7%27%2F%3E%3C%2Fsvg%3E\"); background-repeat: repeat-x; background-size: 10px 4px; } :host[color='accent'] .md-progress-bar-buffer { background-color: #e1bee7; } :host[color='accent'] .md-progress-bar-fill::after { background-color: #8e24aa; } :host[color='warn'] .md-progress-bar-background { background: url(\"data:image/svg+xml;charset=UTF-8,%3Csvg%20version%3D%271.1%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20xmlns%3Axlink%3D%27http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%27%20x%3D%270px%27%20y%3D%270px%27%20enable-background%3D%27new%200%200%205%202%27%20xml%3Aspace%3D%27preserve%27%20viewBox%3D%270%200%205%202%27%20preserveAspectRatio%3D%27none%20slice%27%3E%3Ccircle%20cx%3D%271%27%20cy%3D%271%27%20r%3D%271%27%20fill%3D%27#ffcdd2%27%2F%3E%3C%2Fsvg%3E\"); background-repeat: repeat-x; background-size: 10px 4px; } :host[color='warn'] .md-progress-bar-buffer { background-color: #ffcdd2; } :host[color='warn'] .md-progress-bar-fill::after { background-color: #e53935; } :host[mode='query'] { transform: rotateZ(180deg); } :host[mode='indeterminate'] .md-progress-bar-fill, :host[mode='query'] .md-progress-bar-fill { transition: none; } :host[mode='indeterminate'] .md-progress-bar-primary, :host[mode='query'] .md-progress-bar-primary { animation: md-progress-bar-primary-indeterminate-translate 2000ms infinite linear; left: -145.166611%; } :host[mode='indeterminate'] .md-progress-bar-primary.md-progress-bar-fill::after, :host[mode='query'] .md-progress-bar-primary.md-progress-bar-fill::after { animation: md-progress-bar-primary-indeterminate-scale 2000ms infinite linear; } :host[mode='indeterminate'] .md-progress-bar-secondary, :host[mode='query'] .md-progress-bar-secondary { animation: md-progress-bar-secondary-indeterminate-translate 2000ms infinite linear; left: -54.888891%; visibility: visible; } :host[mode='indeterminate'] .md-progress-bar-secondary.md-progress-bar-fill::after, :host[mode='query'] .md-progress-bar-secondary.md-progress-bar-fill::after { animation: md-progress-bar-secondary-indeterminate-scale 2000ms infinite linear; } :host[mode='buffer'] .md-progress-bar-background { animation: md-progress-bar-background-scroll 250ms infinite linear; visibility: visible; } :host-context([dir='rtl']) { transform: rotateY(180deg); } /** The values used for animations in md-progress-bar, both timing and transformation, can be considered magic values. They are sourced from the Material Design example spec and duplicate the values of the original designers definitions. The indeterminate state is essentially made up of two progress bars, one primary (the one that is shown in both the determinate and indeterminate states) and one secondary, which essentially mirrors the primary progress bar in appearance but is only shown to assist with the indeterminate animations. KEYFRAME BLOCK	                    DESCRIPTION primary-indeterminate-translate     Translation of the primary progressbar across the screen primary-indeterminate-scale         Scaling of the primary progressbar as it's being translated across the screen secondary-indeterminate-translate   Translation of the secondary progressbar across the screen secondary-indeterminate-scale       Scaling of the secondary progressbar as it's being translated across the screen Because two different transform animations need to be applied at once, the translation is applied to the outer element and the scaling is applied to the inner element, which provides the illusion necessary to make the animation work. */ /** Animations for indeterminate and query mode. */ @keyframes md-progress-bar-primary-indeterminate-translate { 0% { transform: translateX(0); } 20% { animation-timing-function: cubic-bezier(0.5, 0, 0.70173, 0.49582); transform: translateX(0); } 59.15% { animation-timing-function: cubic-bezier(0.30244, 0.38135, 0.55, 0.95635); transform: translateX(83.67142%); } 100% { transform: translateX(200.61106%); } } @keyframes md-progress-bar-primary-indeterminate-scale { 0% { transform: scaleX(0.08); } 36.65% { animation-timing-function: cubic-bezier(0.33473, 0.12482, 0.78584, 1); transform: scaleX(0.08); } 69.15% { animation-timing-function: cubic-bezier(0.06, 0.11, 0.6, 1); transform: scaleX(0.66148); } 100% { transform: scaleX(0.08); } } @keyframes md-progress-bar-secondary-indeterminate-translate { 0% { animation-timing-function: cubic-bezier(0.15, 0, 0.51506, 0.40969); transform: translateX(0); } 25% { animation-timing-function: cubic-bezier(0.31033, 0.28406, 0.8, 0.73371); transform: translateX(37.65191%); } 48.35% { animation-timing-function: cubic-bezier(0.4, 0.62704, 0.6, 0.90203); transform: translateX(84.38617%); } 100% { transform: translateX(160.27778%); } } @keyframes md-progress-bar-secondary-indeterminate-scale { 0% { animation-timing-function: cubic-bezier(0.15, 0, 0.51506, 0.40969); transform: scaleX(0.08); } 19.15% { animation-timing-function: cubic-bezier(0.31033, 0.28406, 0.8, 0.73371); transform: scaleX(0.4571); } 44.15% { animation-timing-function: cubic-bezier(0.4, 0.62704, 0.6, 0.90203); transform: scaleX(0.72796); } 100% { transform: scaleX(0.08); } } /** Animation for buffer mode. */ @keyframes md-progress-bar-background-scroll { to { transform: translateX(-10px); } } /*# sourceMappingURL=progress-bar.css.map */ "],
-	            changeDetection: _angular_core.ChangeDetectionStrategy.OnPush,
-	        }), 
-	        __metadata('design:paramtypes', [])
-	    ], MdProgressBar);
-	    return MdProgressBar;
-	}());
-	/** Clamps a value to be between two numbers, by default 0 and 100. */
-	function clamp(v, min, max) {
-	    if (min === void 0) { min = 0; }
-	    if (max === void 0) { max = 100; }
-	    return Math.max(min, Math.min(max, v));
-	}
-	var MdProgressBarModule = (function () {
-	    function MdProgressBarModule() {
-	    }
-	    MdProgressBarModule.forRoot = function () {
-	        return {
-	            ngModule: MdProgressBarModule,
-	            providers: []
-	        };
-	    };
-	    MdProgressBarModule = __decorate([
-	        _angular_core.NgModule({
-	            imports: [_angular_common.CommonModule],
-	            exports: [MdProgressBar],
-	            declarations: [MdProgressBar],
-	        }), 
-	        __metadata('design:paramtypes', [])
-	    ], MdProgressBarModule);
-	    return MdProgressBarModule;
-	}());
-
-	exports.MdProgressBar = MdProgressBar;
-	exports.MdProgressBarModule = MdProgressBarModule;
-
-	Object.defineProperty(exports, '__esModule', { value: true });
-
-	})));
-
-/***/ },
-
-/***/ 158:
-/***/ function(module, exports, __webpack_require__) {
-
-	(function (global, factory) {
-	     true ? factory(exports, __webpack_require__(2)) :
-	    typeof define === 'function' && define.amd ? define(['exports', '@angular/core'], factory) :
-	    (factory((global.md = global.md || {}, global.md.progressCircle = global.md.progressCircle || {}),global.ng.core));
-	}(this, (function (exports,_angular_core) { 'use strict';
-
-	var __extends = (window && window.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var __decorate = (window && window.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (window && window.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	// TODO(josephperrott): Benchpress tests.
-	/** A single degree in radians. */
-	var DEGREE_IN_RADIANS = Math.PI / 180;
-	/** Duration of the indeterminate animation. */
-	var DURATION_INDETERMINATE = 667;
-	/** Duration of the indeterminate animation. */
-	var DURATION_DETERMINATE = 225;
-	/** Start animation value of the indeterminate animation */
-	var startIndeterminate = 3;
-	/** End animation value of the indeterminate animation */
-	var endIndeterminate = 80;
-	/**
-	 * <md-progress-circle> component.
-	 */
-	var MdProgressCircle = (function () {
-	    function MdProgressCircle(_changeDetectorRef) {
-	        this._changeDetectorRef = _changeDetectorRef;
-	        /** The id of the last requested animation. */
-	        this._lastAnimationId = 0;
-	        this._mode = 'determinate';
-	    }
-	    Object.defineProperty(MdProgressCircle.prototype, "_ariaValueMin", {
-	        /**
-	         * Values for aria max and min are only defined as numbers when in a determinate mode.  We do this
-	         * because voiceover does not report the progress indicator as indeterminate if the aria min
-	         * and/or max value are number values.
-	         */
-	        get: function () {
-	            return this.mode == 'determinate' ? 0 : null;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(MdProgressCircle.prototype, "_ariaValueMax", {
-	        get: function () {
-	            return this.mode == 'determinate' ? 100 : null;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(MdProgressCircle.prototype, "interdeterminateInterval", {
-	        /** TODO: internal */
-	        get: function () {
-	            return this._interdeterminateInterval;
-	        },
-	        /** TODO: internal */
-	        set: function (interval) {
-	            clearInterval(this._interdeterminateInterval);
-	            this._interdeterminateInterval = interval;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(MdProgressCircle.prototype, "currentPath", {
-	        /** TODO: internal */
-	        get: function () {
-	            return this._currentPath;
-	        },
-	        set: function (path) {
-	            this._currentPath = path;
-	            // Mark for check as our ChangeDetectionStrategy is OnPush, when changes come from within the
-	            // component, change detection must be called for.
-	            this._changeDetectorRef.markForCheck();
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    /** Clean up any animations that were running. */
-	    MdProgressCircle.prototype.ngOnDestroy = function () {
-	        this._cleanupIndeterminateAnimation();
-	    };
-	    Object.defineProperty(MdProgressCircle.prototype, "value", {
-	        get: function () {
-	            if (this.mode == 'determinate') {
-	                return this._value;
-	            }
-	        },
-	        set: function (v) {
-	            if (v && this.mode == 'determinate') {
-	                var newValue = clamp(v);
-	                this._animateCircle((this.value || 0), newValue, linearEase, DURATION_DETERMINATE, 0);
-	                this._value = newValue;
-	            }
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(MdProgressCircle.prototype, "mode", {
-	        /**
-	         * Mode of the progress circle
-	         *
-	         * Input must be one of the values from ProgressMode, defaults to 'determinate'.
-	         * mode is bound to the host as the attribute host.
-	         */
-	        get: function () {
-	            return this._mode;
-	        },
-	        set: function (m) {
-	            if (m == 'indeterminate') {
-	                this._startIndeterminateAnimation();
-	            }
-	            else {
-	                this._cleanupIndeterminateAnimation();
-	            }
-	            this._mode = m;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    /**
-	     * Animates the circle from one percentage value to another.
-	     *
-	     * @param animateFrom The percentage of the circle filled starting the animation.
-	     * @param animateTo The percentage of the circle filled ending the animation.
-	     * @param ease The easing function to manage the pace of change in the animation.
-	     * @param duration The length of time to show the animation, in milliseconds.
-	     * @param rotation The starting angle of the circle fill, with 0° represented at the top center
-	     *    of the circle.
-	     */
-	    MdProgressCircle.prototype._animateCircle = function (animateFrom, animateTo, ease, duration, rotation) {
-	        var _this = this;
-	        var id = ++this._lastAnimationId;
-	        var startTime = Date.now();
-	        var changeInValue = animateTo - animateFrom;
-	        // No need to animate it if the values are the same
-	        if (animateTo === animateFrom) {
-	            this.currentPath = getSvgArc(animateTo, rotation);
-	        }
-	        else {
-	            var animation_1 = function () {
-	                var elapsedTime = Math.max(0, Math.min(Date.now() - startTime, duration));
-	                _this.currentPath = getSvgArc(ease(elapsedTime, animateFrom, changeInValue, duration), rotation);
-	                // Prevent overlapping animations by checking if a new animation has been called for and
-	                // if the animation has lasted long than the animation duration.
-	                if (id === _this._lastAnimationId && elapsedTime < duration) {
-	                    requestAnimationFrame(animation_1);
-	                }
-	            };
-	            requestAnimationFrame(animation_1);
-	        }
-	    };
-	    /**
-	     * Starts the indeterminate animation interval, if it is not already running.
-	     */
-	    MdProgressCircle.prototype._startIndeterminateAnimation = function () {
-	        var _this = this;
-	        var rotationStartPoint = 0;
-	        var start = startIndeterminate;
-	        var end = endIndeterminate;
-	        var duration = DURATION_INDETERMINATE;
-	        var animate = function () {
-	            _this._animateCircle(start, end, materialEase, duration, rotationStartPoint);
-	            // Prevent rotation from reaching Number.MAX_SAFE_INTEGER.
-	            rotationStartPoint = (rotationStartPoint + end) % 100;
-	            var temp = start;
-	            start = -end;
-	            end = -temp;
-	        };
-	        if (!this.interdeterminateInterval) {
-	            this.interdeterminateInterval = setInterval(animate, duration + 50, 0, false);
-	            animate();
-	        }
-	    };
-	    /**
-	     * Removes interval, ending the animation.
-	     */
-	    MdProgressCircle.prototype._cleanupIndeterminateAnimation = function () {
-	        this.interdeterminateInterval = null;
-	    };
-	    __decorate([
-	        _angular_core.Input(),
-	        _angular_core.HostBinding('attr.aria-valuenow'), 
-	        __metadata('design:type', Object)
-	    ], MdProgressCircle.prototype, "value", null);
-	    __decorate([
-	        _angular_core.HostBinding('attr.mode'),
-	        _angular_core.Input(), 
-	        __metadata('design:type', Object)
-	    ], MdProgressCircle.prototype, "mode", null);
-	    MdProgressCircle = __decorate([
-	        _angular_core.Component({selector: 'md-progress-circle',
-	            host: {
-	                'role': 'progressbar',
-	                '[attr.aria-valuemin]': '_ariaValueMin',
-	                '[attr.aria-valuemax]': '_ariaValueMax',
-	            },
-	            template: "<!-- preserveAspectRatio of xMidYMid meet as the center of the viewport is the circle's center.  The center of the circle with remain at the center of the md-progress-circle element containing the SVG. --> <svg viewBox=\"0 0 100 100\" preserveAspectRatio=\"xMidYMid meet\"> <path [attr.d]=\"currentPath\"></path> </svg> ",
-	            styles: ["/* Animation Durations */ /** Component sizing */ :host { display: block; /** Height and width are provided for md-progress-circle to act as a default. The height and width are expected to be overwritten by application css. */ height: 100px; width: 100px; /** SVG's viewBox is defined as 0 0 100 100, this means that all SVG children will placed based on a 100px by 100px box.  Additionally all SVG sizes and locations are in reference to this viewBox. */ } :host svg { height: 100%; width: 100%; transform-origin: center; } :host path { fill: transparent; stroke: #00897b; /** Stroke width of 10px defines stroke as 10% of the viewBox */ stroke-width: 10px; } :host[color='accent'] path { stroke: #8e24aa; } :host[color='warn'] path { stroke: #e53935; } :host[mode='indeterminate'] { animation-duration: 5250ms, 2887.5ms; animation-name: md-progress-circle-sporadic-rotate, md-progress-circle-linear-rotate; animation-timing-function: cubic-bezier(0.35, 0, 0.25, 1), linear; animation-iteration-count: infinite; transition: none; } /** Animations for indeterminate mode */ @keyframes md-progress-circle-linear-rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } @keyframes md-progress-circle-sporadic-rotate { 12.5% { transform: rotate(135deg); } 25% { transform: rotate(270deg); } 37.5% { transform: rotate(405deg); } 50% { transform: rotate(540deg); } 62.5% { transform: rotate(675deg); } 75% { transform: rotate(810deg); } 87.5% { transform: rotate(945deg); } 100% { transform: rotate(1080deg); } } /*# sourceMappingURL=progress-circle.css.map */ "],
-	            changeDetection: _angular_core.ChangeDetectionStrategy.OnPush,
-	        }), 
-	        __metadata('design:paramtypes', [_angular_core.ChangeDetectorRef])
-	    ], MdProgressCircle);
-	    return MdProgressCircle;
-	}());
-	/**
-	 * <md-spinner> component.
-	 *
-	 * This is a component definition to be used as a convenience reference to create an
-	 * indeterminate <md-progress-circle> instance.
-	 */
-	var MdSpinner = (function (_super) {
-	    __extends(MdSpinner, _super);
-	    function MdSpinner(changeDetectorRef) {
-	        _super.call(this, changeDetectorRef);
-	        this.mode = 'indeterminate';
-	    }
-	    MdSpinner = __decorate([
-	        _angular_core.Component({selector: 'md-spinner',
-	            host: {
-	                'role': 'progressbar',
-	                'mode': 'indeterminate',
-	            },
-	            template: "<!-- preserveAspectRatio of xMidYMid meet as the center of the viewport is the circle's center.  The center of the circle with remain at the center of the md-progress-circle element containing the SVG. --> <svg viewBox=\"0 0 100 100\" preserveAspectRatio=\"xMidYMid meet\"> <path [attr.d]=\"currentPath\"></path> </svg> ",
-	            styles: ["/* Animation Durations */ /** Component sizing */ :host { display: block; /** Height and width are provided for md-progress-circle to act as a default. The height and width are expected to be overwritten by application css. */ height: 100px; width: 100px; /** SVG's viewBox is defined as 0 0 100 100, this means that all SVG children will placed based on a 100px by 100px box.  Additionally all SVG sizes and locations are in reference to this viewBox. */ } :host svg { height: 100%; width: 100%; transform-origin: center; } :host path { fill: transparent; stroke: #00897b; /** Stroke width of 10px defines stroke as 10% of the viewBox */ stroke-width: 10px; } :host[color='accent'] path { stroke: #8e24aa; } :host[color='warn'] path { stroke: #e53935; } :host[mode='indeterminate'] { animation-duration: 5250ms, 2887.5ms; animation-name: md-progress-circle-sporadic-rotate, md-progress-circle-linear-rotate; animation-timing-function: cubic-bezier(0.35, 0, 0.25, 1), linear; animation-iteration-count: infinite; transition: none; } /** Animations for indeterminate mode */ @keyframes md-progress-circle-linear-rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } @keyframes md-progress-circle-sporadic-rotate { 12.5% { transform: rotate(135deg); } 25% { transform: rotate(270deg); } 37.5% { transform: rotate(405deg); } 50% { transform: rotate(540deg); } 62.5% { transform: rotate(675deg); } 75% { transform: rotate(810deg); } 87.5% { transform: rotate(945deg); } 100% { transform: rotate(1080deg); } } /*# sourceMappingURL=progress-circle.css.map */ "],
-	        }), 
-	        __metadata('design:paramtypes', [_angular_core.ChangeDetectorRef])
-	    ], MdSpinner);
-	    return MdSpinner;
-	}(MdProgressCircle));
-	/**
-	 * Module functions.
-	 */
-	/** Clamps a value to be between 0 and 100. */
-	function clamp(v) {
-	    return Math.max(0, Math.min(100, v));
-	}
-	/**
-	 * Converts Polar coordinates to Cartesian.
-	 */
-	function polarToCartesian(radius, pathRadius, angleInDegrees) {
-	    var angleInRadians = (angleInDegrees - 90) * DEGREE_IN_RADIANS;
-	    return (radius + (pathRadius * Math.cos(angleInRadians))) +
-	        ',' + (radius + (pathRadius * Math.sin(angleInRadians)));
-	}
-	/**
-	 * Easing function for linear animation.
-	 */
-	function linearEase(currentTime, startValue, changeInValue, duration) {
-	    return changeInValue * currentTime / duration + startValue;
-	}
-	/**
-	 * Easing function to match material design indeterminate animation.
-	 */
-	function materialEase(currentTime, startValue, changeInValue, duration) {
-	    var time = currentTime / duration;
-	    var timeCubed = Math.pow(time, 3);
-	    var timeQuad = Math.pow(time, 4);
-	    var timeQuint = Math.pow(time, 5);
-	    return startValue + changeInValue * ((6 * timeQuint) + (-15 * timeQuad) + (10 * timeCubed));
-	}
-	/**
-	 * Determines the path value to define the arc.  Converting percentage values to to polar
-	 * coordinates on the circle, and then to cartesian coordinates in the viewport.
-	 *
-	 * @param currentValue The current percentage value of the progress circle, the percentage of the
-	 *    circle to fill.
-	 * @param rotation The starting point of the circle with 0 being the 0 degree point.
-	 * @return A string for an SVG path representing a circle filled from the starting point to the
-	 *    percentage value provided.
-	 */
-	function getSvgArc(currentValue, rotation) {
-	    // The angle can't be exactly 360, because the arc becomes hidden.
-	    var maximumAngle = 359.99 / 100;
-	    var startPoint = rotation || 0;
-	    var radius = 50;
-	    var pathRadius = 40;
-	    var startAngle = startPoint * maximumAngle;
-	    var endAngle = currentValue * maximumAngle;
-	    var start = polarToCartesian(radius, pathRadius, startAngle);
-	    var end = polarToCartesian(radius, pathRadius, endAngle + startAngle);
-	    var arcSweep = endAngle < 0 ? 0 : 1;
-	    var largeArcFlag;
-	    if (endAngle < 0) {
-	        largeArcFlag = endAngle >= -180 ? 0 : 1;
-	    }
-	    else {
-	        largeArcFlag = endAngle <= 180 ? 0 : 1;
-	    }
-	    return "M" + start + "A" + pathRadius + "," + pathRadius + " 0 " + largeArcFlag + "," + arcSweep + " " + end;
-	}
-	var MdProgressCircleModule = (function () {
-	    function MdProgressCircleModule() {
-	    }
-	    MdProgressCircleModule.forRoot = function () {
-	        return {
-	            ngModule: MdProgressCircleModule,
-	            providers: []
-	        };
-	    };
-	    MdProgressCircleModule = __decorate([
-	        _angular_core.NgModule({
-	            exports: [MdProgressCircle, MdSpinner],
-	            declarations: [MdProgressCircle, MdSpinner],
-	        }), 
-	        __metadata('design:paramtypes', [])
-	    ], MdProgressCircleModule);
-	    return MdProgressCircleModule;
-	}());
-
-	exports.MdProgressCircle = MdProgressCircle;
-	exports.MdSpinner = MdSpinner;
-	exports.MdProgressCircleModule = MdProgressCircleModule;
-
-	Object.defineProperty(exports, '__esModule', { value: true });
-
-	})));
-
-/***/ },
-
-/***/ 159:
-/***/ function(module, exports, __webpack_require__) {
-
-	(function (global, factory) {
-	     true ? factory(exports, __webpack_require__(2), __webpack_require__(55), __webpack_require__(97), __webpack_require__(11), __webpack_require__(357)) :
-	    typeof define === 'function' && define.amd ? define(['exports', '@angular/core', '@angular/common', '@angular2-material/core', 'rxjs/Observable', 'rxjs/add/operator/map'], factory) :
-	    (factory((global.md = global.md || {}, global.md.tabs = global.md.tabs || {}),global.ng.core,global.ng.common,global.md.core,global.Rx,global.Rx.Observable.prototype));
-	}(this, (function (exports,_angular_core,_angular_common,_angular2Material_core,rxjs_Observable,rxjs_add_operator_map) { 'use strict';
-
-	var __extends = (window && window.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var __decorate$1 = (window && window.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata$1 = (window && window.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	/** Used to flag tab labels for use with the portal directive */
-	var MdTabLabel = (function (_super) {
-	    __extends(MdTabLabel, _super);
-	    function MdTabLabel(templateRef, viewContainerRef) {
-	        _super.call(this, templateRef, viewContainerRef);
-	    }
-	    MdTabLabel = __decorate$1([
-	        _angular_core.Directive({
-	            selector: '[md-tab-label]',
-	        }), 
-	        __metadata$1('design:paramtypes', [_angular_core.TemplateRef, _angular_core.ViewContainerRef])
-	    ], MdTabLabel);
-	    return MdTabLabel;
-	}(_angular2Material_core.TemplatePortalDirective));
-
-	var __extends$1 = (window && window.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var __decorate$2 = (window && window.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata$2 = (window && window.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	/** Used to flag tab contents for use with the portal directive */
-	var MdTabContent = (function (_super) {
-	    __extends$1(MdTabContent, _super);
-	    function MdTabContent(templateRef, viewContainerRef) {
-	        _super.call(this, templateRef, viewContainerRef);
-	    }
-	    MdTabContent = __decorate$2([
-	        _angular_core.Directive({
-	            selector: '[md-tab-content]'
-	        }), 
-	        __metadata$2('design:paramtypes', [_angular_core.TemplateRef, _angular_core.ViewContainerRef])
-	    ], MdTabContent);
-	    return MdTabContent;
-	}(_angular2Material_core.TemplatePortalDirective));
-
-	var __decorate$3 = (window && window.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata$3 = (window && window.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	/** Used in the `md-tab-group` view to display tab labels */
-	var MdTabLabelWrapper = (function () {
-	    function MdTabLabelWrapper(elementRef) {
-	        this.elementRef = elementRef;
-	    }
-	    /**
-	     * Sets focus on the wrapper element
-	     */
-	    MdTabLabelWrapper.prototype.focus = function () {
-	        this.elementRef.nativeElement.focus();
-	    };
-	    MdTabLabelWrapper = __decorate$3([
-	        _angular_core.Directive({
-	            selector: '[md-tab-label-wrapper]'
-	        }), 
-	        __metadata$3('design:paramtypes', [_angular_core.ElementRef])
-	    ], MdTabLabelWrapper);
-	    return MdTabLabelWrapper;
-	}());
-
-	var __decorate$4 = (window && window.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata$4 = (window && window.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	/** The ink-bar is used to display and animate the line underneath the current active tab label. */
-	var MdInkBar = (function () {
-	    function MdInkBar(_renderer, _elementRef) {
-	        this._renderer = _renderer;
-	        this._elementRef = _elementRef;
-	    }
-	    /**
-	     * Calculates the styles from the provided element in order to align the ink-bar to that element.
-	     * @param element
-	     */
-	    MdInkBar.prototype.alignToElement = function (element) {
-	        this._renderer.setElementStyle(this._elementRef.nativeElement, 'left', this._getLeftPosition(element));
-	        this._renderer.setElementStyle(this._elementRef.nativeElement, 'width', this._getElementWidth(element));
-	    };
-	    /**
-	     * Generates the pixel distance from the left based on the provided element in string format.
-	     * @param element
-	     * @returns {string}
-	     */
-	    MdInkBar.prototype._getLeftPosition = function (element) {
-	        return element ? element.offsetLeft + 'px' : '0';
-	    };
-	    /**
-	     * Generates the pixel width from the provided element in string format.
-	     * @param element
-	     * @returns {string}
-	     */
-	    MdInkBar.prototype._getElementWidth = function (element) {
-	        return element ? element.offsetWidth + 'px' : '0';
-	    };
-	    MdInkBar = __decorate$4([
-	        _angular_core.Directive({
-	            selector: 'md-ink-bar',
-	        }), 
-	        __metadata$4('design:paramtypes', [_angular_core.Renderer, _angular_core.ElementRef])
-	    ], MdInkBar);
-	    return MdInkBar;
-	}());
-
-	var __decorate = (window && window.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (window && window.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	/** Used to generate unique ID's for each tab component */
-	var nextId = 0;
-	/** A simple change event emitted on focus or selection changes. */
-	var MdTabChangeEvent = (function () {
-	    function MdTabChangeEvent() {
-	    }
-	    return MdTabChangeEvent;
-	}());
-	var MdTab = (function () {
-	    function MdTab() {
-	        // TODO: Replace this when BooleanFieldValue is removed.
-	        this._disabled = false;
-	    }
-	    Object.defineProperty(MdTab.prototype, "disabled", {
-	        get: function () {
-	            return this._disabled;
-	        },
-	        set: function (value) {
-	            this._disabled = (value != null && "" + value !== 'false');
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    __decorate([
-	        _angular_core.ContentChild(MdTabLabel), 
-	        __metadata('design:type', MdTabLabel)
-	    ], MdTab.prototype, "label", void 0);
-	    __decorate([
-	        _angular_core.ContentChild(MdTabContent), 
-	        __metadata('design:type', MdTabContent)
-	    ], MdTab.prototype, "content", void 0);
-	    __decorate([
-	        _angular_core.Input('disabled'), 
-	        __metadata('design:type', Boolean), 
-	        __metadata('design:paramtypes', [Boolean])
-	    ], MdTab.prototype, "disabled", null);
-	    MdTab = __decorate([
-	        _angular_core.Directive({
-	            selector: 'md-tab'
-	        }), 
-	        __metadata('design:paramtypes', [])
-	    ], MdTab);
-	    return MdTab;
-	}());
-	/**
-	 * Material design tab-group component.  Supports basic tab pairs (label + content) and includes
-	 * animated ink-bar, keyboard navigation, and screen reader.
-	 * See: https://www.google.com/design/spec/components/tabs.html
-	 */
-	var MdTabGroup = (function () {
-	    function MdTabGroup(_zone) {
-	        this._zone = _zone;
-	        this._isInitialized = false;
-	        this._selectedIndex = 0;
-	        this._onFocusChange = new _angular_core.EventEmitter();
-	        this._onSelectChange = new _angular_core.EventEmitter();
-	        this._focusIndex = 0;
-	        this._groupId = nextId++;
-	    }
-	    Object.defineProperty(MdTabGroup.prototype, "selectedIndex", {
-	        get: function () {
-	            return this._selectedIndex;
-	        },
-	        set: function (value) {
-	            if (value != this._selectedIndex && this.isValidIndex(value)) {
-	                this._selectedIndex = value;
-	                if (this._isInitialized) {
-	                    this._onSelectChange.emit(this._createChangeEvent(value));
-	                }
-	            }
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    /**
-	     * Determines if an index is valid.  If the tabs are not ready yet, we assume that the user is
-	     * providing a valid index and return true.
-	     */
-	    MdTabGroup.prototype.isValidIndex = function (index) {
-	        if (this._tabs) {
-	            var tab = this._tabs.toArray()[index];
-	            return tab && !tab.disabled;
-	        }
-	        else {
-	            return true;
-	        }
-	    };
-	    Object.defineProperty(MdTabGroup.prototype, "_selectedIndexChange", {
-	        /** Output to enable support for two-way binding on `selectedIndex`. */
-	        get: function () {
-	            return this.selectChange.map(function (event) { return event.index; });
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(MdTabGroup.prototype, "focusChange", {
-	        get: function () {
-	            return this._onFocusChange.asObservable();
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(MdTabGroup.prototype, "selectChange", {
-	        get: function () {
-	            return this._onSelectChange.asObservable();
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    /**
-	     * Waits one frame for the view to update, then upates the ink bar
-	     * Note: This must be run outside of the zone or it will create an infinite change detection loop
-	     * TODO: internal
-	     */
-	    MdTabGroup.prototype.ngAfterViewChecked = function () {
-	        var _this = this;
-	        this._zone.runOutsideAngular(function () {
-	            window.requestAnimationFrame(function () {
-	                _this._updateInkBar();
-	            });
-	        });
-	        this._isInitialized = true;
-	    };
-	    /** Tells the ink-bar to align itself to the current label wrapper */
-	    MdTabGroup.prototype._updateInkBar = function () {
-	        this._inkBar.toArray()[0].alignToElement(this._currentLabelWrapper);
-	    };
-	    Object.defineProperty(MdTabGroup.prototype, "_currentLabelWrapper", {
-	        /**
-	         * Reference to the current label wrapper; defaults to null for initial render before the
-	         * ViewChildren references are ready.
-	         */
-	        get: function () {
-	            return this._labelWrappers && this._labelWrappers.length
-	                ? this._labelWrappers.toArray()[this.selectedIndex].elementRef.nativeElement
-	                : null;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(MdTabGroup.prototype, "focusIndex", {
-	        /** Tracks which element has focus; used for keyboard navigation */
-	        get: function () {
-	            return this._focusIndex;
-	        },
-	        /** When the focus index is set, we must manually send focus to the correct label */
-	        set: function (value) {
-	            if (this.isValidIndex(value)) {
-	                this._focusIndex = value;
-	                if (this._isInitialized) {
-	                    this._onFocusChange.emit(this._createChangeEvent(value));
-	                }
-	                if (this._labelWrappers && this._labelWrappers.length) {
-	                    this._labelWrappers.toArray()[value].focus();
-	                }
-	            }
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    MdTabGroup.prototype._createChangeEvent = function (index) {
-	        var event = new MdTabChangeEvent;
-	        event.index = index;
-	        if (this._tabs && this._tabs.length) {
-	            event.tab = this._tabs.toArray()[index];
-	        }
-	        return event;
-	    };
-	    /** Returns a unique id for each tab label element */
-	    MdTabGroup.prototype._getTabLabelId = function (i) {
-	        return "md-tab-label-" + this._groupId + "-" + i;
-	    };
-	    /** Returns a unique id for each tab content element */
-	    MdTabGroup.prototype._getTabContentId = function (i) {
-	        return "md-tab-content-" + this._groupId + "-" + i;
-	    };
-	    MdTabGroup.prototype.handleKeydown = function (event) {
-	        switch (event.keyCode) {
-	            case _angular2Material_core.RIGHT_ARROW:
-	                this.focusNextTab();
-	                break;
-	            case _angular2Material_core.LEFT_ARROW:
-	                this.focusPreviousTab();
-	                break;
-	            case _angular2Material_core.ENTER:
-	                this.selectedIndex = this.focusIndex;
-	                break;
-	        }
-	    };
-	    /**
-	     * Moves the focus left or right depending on the offset provided.  Valid offsets are 1 and -1.
-	     */
-	    MdTabGroup.prototype.moveFocus = function (offset) {
-	        if (this._labelWrappers) {
-	            var tabs = this._tabs.toArray();
-	            for (var i = this.focusIndex + offset; i < tabs.length && i >= 0; i += offset) {
-	                if (this.isValidIndex(i)) {
-	                    this.focusIndex = i;
-	                    return;
-	                }
-	            }
-	        }
-	    };
-	    /** Increment the focus index by 1 until a valid tab is found. */
-	    MdTabGroup.prototype.focusNextTab = function () {
-	        this.moveFocus(1);
-	    };
-	    /** Decrement the focus index by 1 until a valid tab is found. */
-	    MdTabGroup.prototype.focusPreviousTab = function () {
-	        this.moveFocus(-1);
-	    };
-	    __decorate([
-	        _angular_core.ContentChildren(MdTab), 
-	        __metadata('design:type', _angular_core.QueryList)
-	    ], MdTabGroup.prototype, "_tabs", void 0);
-	    __decorate([
-	        _angular_core.ViewChildren(MdTabLabelWrapper), 
-	        __metadata('design:type', _angular_core.QueryList)
-	    ], MdTabGroup.prototype, "_labelWrappers", void 0);
-	    __decorate([
-	        _angular_core.ViewChildren(MdInkBar), 
-	        __metadata('design:type', _angular_core.QueryList)
-	    ], MdTabGroup.prototype, "_inkBar", void 0);
-	    __decorate([
-	        _angular_core.Input(), 
-	        __metadata('design:type', Number), 
-	        __metadata('design:paramtypes', [Number])
-	    ], MdTabGroup.prototype, "selectedIndex", null);
-	    __decorate([
-	        _angular_core.Output('selectedIndexChange'), 
-	        __metadata('design:type', rxjs_Observable.Observable)
-	    ], MdTabGroup.prototype, "_selectedIndexChange", null);
-	    __decorate([
-	        _angular_core.Output('focusChange'), 
-	        __metadata('design:type', rxjs_Observable.Observable)
-	    ], MdTabGroup.prototype, "focusChange", null);
-	    __decorate([
-	        _angular_core.Output('selectChange'), 
-	        __metadata('design:type', rxjs_Observable.Observable)
-	    ], MdTabGroup.prototype, "selectChange", null);
-	    MdTabGroup = __decorate([
-	        _angular_core.Component({selector: 'md-tab-group',
-	            template: "<div class=\"md-tab-header\" role=\"tablist\" (keydown)=\"handleKeydown($event)\"> <div class=\"md-tab-label\" role=\"tab\" md-tab-label-wrapper *ngFor=\"let tab of _tabs; let i = index\" [id]=\"_getTabLabelId(i)\" [tabIndex]=\"selectedIndex == i ? 0 : -1\" [attr.aria-controls]=\"_getTabContentId(i)\" [attr.aria-selected]=\"selectedIndex == i\" [class.md-tab-active]=\"selectedIndex == i\" [class.md-tab-disabled]=\"tab.disabled\" (click)=\"focusIndex = selectedIndex = i\"> <template [portalHost]=\"tab.label\"></template> </div> <md-ink-bar></md-ink-bar> </div> <div class=\"md-tab-body-wrapper\"> <div class=\"md-tab-body\" role=\"tabpanel\" *ngFor=\"let tab of _tabs; let i = index\" [id]=\"_getTabContentId(i)\" [class.md-tab-active]=\"selectedIndex == i\" [attr.aria-labelledby]=\"_getTabLabelId(i)\"> <template [ngIf]=\"selectedIndex == i\"> <template [portalHost]=\"tab.content\"></template> </template> </div> </div> ",
-	            styles: [":host { display: flex; flex-direction: column; font-family: Roboto, \"Helvetica Neue\", sans-serif; } /** The top section of the view; contains the tab labels */ .md-tab-header { overflow: hidden; position: relative; display: flex; flex-direction: row; border-bottom: 1px solid #e0e0e0; flex-shrink: 0; } /** Wraps each tab label */ .md-tab-label { line-height: 48px; height: 48px; padding: 0 12px; font-size: 14px; font-family: Roboto, \"Helvetica Neue\", sans-serif; font-weight: 500; cursor: pointer; box-sizing: border-box; color: currentColor; opacity: 0.6; min-width: 160px; text-align: center; } .md-tab-label:focus { outline: none; opacity: 1; background-color: rgba(178, 223, 219, 0.3); } .md-tab-disabled { cursor: default; pointer-events: none; } /** The bottom section of the view; contains the tab bodies */ .md-tab-body-wrapper { position: relative; overflow: hidden; flex-grow: 1; display: flex; } /** Wraps each tab body */ .md-tab-body { display: none; overflow: auto; box-sizing: border-box; flex-grow: 1; flex-shrink: 1; } .md-tab-body.md-tab-active { display: block; } /** The colored bar that underlines the active tab */ md-ink-bar { position: absolute; bottom: 0; height: 2px; background-color: #009688; transition: 350ms ease-out; } /*# sourceMappingURL=tab-group.css.map */ "],
-	        }), 
-	        __metadata('design:paramtypes', [_angular_core.NgZone])
-	    ], MdTabGroup);
-	    return MdTabGroup;
-	}());
-	var MdTabsModule = (function () {
-	    function MdTabsModule() {
-	    }
-	    MdTabsModule.forRoot = function () {
-	        return {
-	            ngModule: MdTabsModule,
-	            providers: []
-	        };
-	    };
-	    MdTabsModule = __decorate([
-	        _angular_core.NgModule({
-	            imports: [_angular_common.CommonModule, _angular2Material_core.PortalModule],
-	            // Don't export MdInkBar or MdTabLabelWrapper, as they are internal implementatino details.
-	            exports: [MdTabGroup, MdTabLabel, MdTabContent, MdTab],
-	            declarations: [MdTabGroup, MdTabLabel, MdTabContent, MdTab, MdInkBar, MdTabLabelWrapper],
-	        }), 
-	        __metadata('design:paramtypes', [])
-	    ], MdTabsModule);
-	    return MdTabsModule;
-	}());
-
-	exports.MdTabChangeEvent = MdTabChangeEvent;
-	exports.MdTab = MdTab;
-	exports.MdTabGroup = MdTabGroup;
-	exports.MdTabsModule = MdTabsModule;
-
-	Object.defineProperty(exports, '__esModule', { value: true });
-
-	})));
-
-/***/ },
-
-/***/ 160:
+/***/ 163:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8172,7 +8269,7 @@ webpackJsonp([2],{
 	    AccountCardComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-card',
-	            template: __webpack_require__(339),
+	            template: __webpack_require__(341),
 	            providers: [],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object])
@@ -8185,7 +8282,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 161:
+/***/ 164:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8199,7 +8296,7 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(2);
-	var service_1 = __webpack_require__(162);
+	var service_1 = __webpack_require__(165);
 	var AccountChatComponent = (function () {
 	    function AccountChatComponent(ChatService) {
 	        this.ChatService = ChatService;
@@ -8221,7 +8318,7 @@ webpackJsonp([2],{
 	    AccountChatComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-chat',
-	            template: __webpack_require__(340),
+	            template: __webpack_require__(342),
 	            providers: [service_1.AccountChatService],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof service_1.AccountChatService !== 'undefined' && service_1.AccountChatService) === 'function' && _a) || Object])
@@ -8234,7 +8331,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 162:
+/***/ 165:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8281,7 +8378,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 163:
+/***/ 166:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8342,7 +8439,7 @@ webpackJsonp([2],{
 	    AccountFriendshipComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-friendship',
-	            template: __webpack_require__(341),
+	            template: __webpack_require__(343),
 	            providers: [service_1.FriendshipService],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof service_1.FriendshipService !== 'undefined' && service_1.FriendshipService) === 'function' && _a) || Object])
@@ -8355,7 +8452,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 164:
+/***/ 167:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8369,7 +8466,7 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(2);
-	var service_1 = __webpack_require__(166);
+	var service_1 = __webpack_require__(169);
 	var AccountSearchComponent = (function () {
 	    function AccountSearchComponent(SearchUserService) {
 	        this.SearchUserService = SearchUserService;
@@ -8398,7 +8495,7 @@ webpackJsonp([2],{
 	    AccountSearchComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-search',
-	            template: __webpack_require__(343),
+	            template: __webpack_require__(345),
 	            providers: [service_1.SearchUserService],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof service_1.SearchUserService !== 'undefined' && service_1.SearchUserService) === 'function' && _a) || Object])
@@ -8411,7 +8508,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 165:
+/***/ 168:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8426,7 +8523,7 @@ webpackJsonp([2],{
 	};
 	var core_1 = __webpack_require__(2);
 	var service_1 = __webpack_require__(98);
-	var model_1 = __webpack_require__(104);
+	var model_1 = __webpack_require__(105);
 	var AccountSearchResultListComponent = (function () {
 	    function AccountSearchResultListComponent(FriendshipService) {
 	        this.FriendshipService = FriendshipService;
@@ -8454,7 +8551,7 @@ webpackJsonp([2],{
 	    AccountSearchResultListComponent = __decorate([
 	        core_1.Component({
 	            selector: 'search-result-list',
-	            template: __webpack_require__(344),
+	            template: __webpack_require__(346),
 	            providers: [service_1.FriendshipService]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_b = typeof service_1.FriendshipService !== 'undefined' && service_1.FriendshipService) === 'function' && _b) || Object])
@@ -8467,7 +8564,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 166:
+/***/ 169:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8515,7 +8612,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 167:
+/***/ 170:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8529,8 +8626,8 @@ webpackJsonp([2],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(2);
-	var model_1 = __webpack_require__(104);
-	var service_1 = __webpack_require__(168);
+	var model_1 = __webpack_require__(105);
+	var service_1 = __webpack_require__(171);
 	var AccountStatisticComponent = (function () {
 	    function AccountStatisticComponent(StatisticService) {
 	        this.StatisticService = StatisticService;
@@ -8549,7 +8646,7 @@ webpackJsonp([2],{
 	    AccountStatisticComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-statistic',
-	            template: __webpack_require__(345),
+	            template: __webpack_require__(347),
 	            providers: [service_1.StatisticService],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_b = typeof service_1.StatisticService !== 'undefined' && service_1.StatisticService) === 'function' && _b) || Object])
@@ -8562,7 +8659,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 168:
+/***/ 171:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8609,7 +8706,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 169:
+/***/ 172:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8624,26 +8721,26 @@ webpackJsonp([2],{
 	};
 	var core_1 = __webpack_require__(2);
 	var platform_browser_1 = __webpack_require__(45);
-	var forms_1 = __webpack_require__(155);
+	var forms_1 = __webpack_require__(162);
 	var http_1 = __webpack_require__(24);
-	var tabs_1 = __webpack_require__(159);
-	var card_1 = __webpack_require__(156);
-	var progress_bar_1 = __webpack_require__(157);
-	var progress_circle_1 = __webpack_require__(158);
-	var app_1 = __webpack_require__(170);
-	var routes_1 = __webpack_require__(175);
-	var main_1 = __webpack_require__(171);
+	var tabs_1 = __webpack_require__(160);
+	var card_1 = __webpack_require__(157);
+	var progress_bar_1 = __webpack_require__(158);
+	var progress_circle_1 = __webpack_require__(159);
+	var app_1 = __webpack_require__(173);
+	var routes_1 = __webpack_require__(177);
+	var main_1 = __webpack_require__(174);
 	var main_2 = __webpack_require__(100);
-	var main_3 = __webpack_require__(103);
-	var main_4 = __webpack_require__(102);
+	var main_3 = __webpack_require__(104);
+	var main_4 = __webpack_require__(103);
 	var main_5 = __webpack_require__(101);
 	var main_6 = __webpack_require__(99);
-	var main_7 = __webpack_require__(161);
-	var main_8 = __webpack_require__(160);
-	var main_9 = __webpack_require__(164);
-	var result_list_1 = __webpack_require__(165);
-	var main_10 = __webpack_require__(163);
-	var main_11 = __webpack_require__(167);
+	var main_7 = __webpack_require__(164);
+	var main_8 = __webpack_require__(163);
+	var main_9 = __webpack_require__(167);
+	var result_list_1 = __webpack_require__(168);
+	var main_10 = __webpack_require__(166);
+	var main_11 = __webpack_require__(170);
 	var AppModule = (function () {
 	    function AppModule() {
 	    }
@@ -8686,7 +8783,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 170:
+/***/ 173:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8711,19 +8808,19 @@ webpackJsonp([2],{
 	    }
 	    AppComponent.prototype.ngOnInit = function () {
 	        var _this = this;
-	        this.UserService.initAuthUser()
-	            .then(function (isInit) {
-	            _this.userLoaded = isInit;
-	            _this.initAuthUser();
+	        this.UserService.getAuthUser()
+	            .then(function (user) {
+	            _this.userLoaded = true;
+	            _this.initAuthUser(user);
+	        })
+	            .catch(function () {
+	            _this.userLoaded = false;
 	        });
 	    };
-	    AppComponent.prototype.initAuthUser = function () {
-	        this.is_authenticated = this.UserService.isAutorized();
-	        this.userTitle = this.UserService.getName();
-	        this.uid = this.UserService.getUid();
-	    };
-	    AppComponent.prototype.goToAccount = function () {
-	        console.log('redirect in account');
+	    AppComponent.prototype.initAuthUser = function (user) {
+	        this.is_authenticated = user.is_autorized;
+	        this.userTitle = user.username;
+	        this.uid = user.uid_for_client.name;
 	    };
 	    AppComponent.prototype.routeLogIn = function () {
 	        location.href = this.URL_LOGIN;
@@ -8735,7 +8832,7 @@ webpackJsonp([2],{
 	        core_1.Component({
 	            selector: 'app',
 	            providers: [auth_service_1.UserService],
-	            template: __webpack_require__(346),
+	            template: __webpack_require__(348),
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object])
 	    ], AppComponent);
@@ -8747,7 +8844,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 171:
+/***/ 174:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8762,8 +8859,8 @@ webpackJsonp([2],{
 	};
 	var core_1 = __webpack_require__(2);
 	var main_1 = __webpack_require__(100);
-	var service_1 = __webpack_require__(173);
-	var model_1 = __webpack_require__(172);
+	var service_1 = __webpack_require__(176);
+	var model_1 = __webpack_require__(175);
 	var ChatComponent = (function () {
 	    function ChatComponent(ChatService) {
 	        this.ChatService = ChatService;
@@ -8834,7 +8931,7 @@ webpackJsonp([2],{
 	    ChatComponent = __decorate([
 	        core_1.Component({
 	            selector: 'chat',
-	            template: __webpack_require__(348),
+	            template: __webpack_require__(350),
 	            providers: [service_1.ChatService]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_c = typeof service_1.ChatService !== 'undefined' && service_1.ChatService) === 'function' && _c) || Object])
@@ -8847,7 +8944,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 172:
+/***/ 175:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -8861,7 +8958,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 173:
+/***/ 176:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8876,7 +8973,7 @@ webpackJsonp([2],{
 	};
 	var core_1 = __webpack_require__(2);
 	var http_1 = __webpack_require__(24);
-	var ng2_cookies_1 = __webpack_require__(140);
+	var ng2_cookies_1 = __webpack_require__(141);
 	__webpack_require__(42);
 	var ChatService = (function () {
 	    function ChatService(http) {
@@ -8939,59 +9036,13 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 174:
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (this && this.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	var core_1 = __webpack_require__(2);
-	var http_1 = __webpack_require__(24);
-	__webpack_require__(42);
-	var GameService = (function () {
-	    function GameService(http) {
-	        this.http = http;
-	        this.GAME_URL = 'pfg';
-	    }
-	    GameService.prototype.getGames = function () {
-	        //noinspection TypeScriptUnresolvedFunction
-	        return this.http.get(this.GAME_URL)
-	            .toPromise()
-	            .then(function (response) {
-	            var result = response.json();
-	            return result;
-	        })
-	            .catch(this.handlerError);
-	    };
-	    GameService.prototype.handlerError = function (error) {
-	        return Promise.reject(error.message || error);
-	    };
-	    GameService = __decorate([
-	        core_1.Injectable(), 
-	        __metadata('design:paramtypes', [(typeof (_a = typeof http_1.Http !== 'undefined' && http_1.Http) === 'function' && _a) || Object])
-	    ], GameService);
-	    return GameService;
-	    var _a;
-	}());
-	exports.GameService = GameService;
-
-
-/***/ },
-
-/***/ 175:
+/***/ 177:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var router_1 = __webpack_require__(46);
-	var main_1 = __webpack_require__(103);
-	var main_2 = __webpack_require__(102);
+	var main_1 = __webpack_require__(104);
+	var main_2 = __webpack_require__(103);
 	var main_3 = __webpack_require__(101);
 	var main_4 = __webpack_require__(99);
 	var appRoutes = [
@@ -9017,7 +9068,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 337:
+/***/ 339:
 /***/ function(module, exports) {
 
 	/**
@@ -9110,105 +9161,215 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 339:
-/***/ function(module, exports) {
-
-	module.exports = "<md-card>\n    <md-card-subtitle>Личные данные</md-card-subtitle>\n    <md-card-content>\n        <div *ngIf=\"user\">\n            <p>Имя в статистике: <strong>{{user.statistic_name.name}}</strong></p>\n            <p>id: <strong>{{user.uid_for_client.name}}</strong></p>\n            <div class=\"payment text-center\">\n                <h4>Баланс</h4>\n                <p>\n                    <strong><em>{{balance}}</em> бубликов</strong>\n                </p>\n                <p>\n                    <button type=\"button\"\n                            class=\"btn btn-primary\"\n                            disabled=\"disabled\">\n                        Пополнить баланс\n                    </button>\n                </p>\n            </div>\n        </div>\n    </md-card-content>\n</md-card>"
-
-/***/ },
-
-/***/ 340:
-/***/ function(module, exports) {
-
-	module.exports = "<div *ngIf=\"!chatList\">\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n</div>\n<div *ngIf=\"chatList && !chatList.length\">\n    <em>Нет активных разговоров</em>\n</div>\n<div *ngIf=\"chatList && chatList.length\"\n        class=\"row\">\n    <div class=\"col-md-4\">\n        <div class=\"list-group\">\n            <a *ngFor=\"let chat of chatList\"\n               class=\"list-group-item\"\n               [class.active]=\"selectedChat == chat\"\n               (click)=\"chooseChat(chat)\">\n                <span *ngIf=\"chat.count_not_read_messages != 0\"\n                      class=\"badge\">\n                    <span class=\"glyphicon glyphicon-envelope\"></span> {{chat.count_not_read_messages}}\n                </span>\n                {{chat.user.username}}\n            </a>\n        </div>\n    </div>\n    <div class=\"col-md-8\">\n        <chat [chat]=\"selectedChat\"></chat>\n    </div>\n</div>\n"
-
-/***/ },
-
 /***/ 341:
 /***/ function(module, exports) {
 
-	module.exports = "<div *ngIf=\"!friendList || !applicationsToFriends\">\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n</div>\n<div *ngIf=\"friendList && applicationsToFriends && !friendList.length && !applicationsToFriends.length\">\n    <em>У вас нет друзей</em>\n</div>\n<div *ngIf=\"friendList && friendList.length\">\n    <h4>Друзья</h4>\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">№ п/п</th>\n            <th>Имя</th>\n            <th width=\"160\">Действия</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let friendship of friendList; let i = index\">\n                <td>{{i + 1}}</td>\n                <td>{{friendship.friend.username}}</td>\n                <td>\n                    <div *ngIf=\"!friendship.friend.is_busy\">\n                        <button class=\"btn btn-primary btn-sm\"\n                                (click)=\"removeFriendship(friendship.friend)\">\n                            Удалить из друзей\n                        </button>\n                    </div>\n                    <div *ngIf=\"friendship.friend.is_busy\">\n                        <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n                    </div>\n                </td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n\n<div *ngIf=\"applicationsToFriends && applicationsToFriends.length\">\n    <h4>Заявки в друзья</h4>\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">№ п/п</th>\n            <th>Имя</th>\n            <th width=\"220\">Действия</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let friendship of applicationsToFriends; let i = index\">\n                <td>{{i + 1}}</td>\n                <td>{{friendship.friend.username}}</td>\n                <td>\n                    <div *ngIf=\"!friendship.friend.is_busy\">\n                        <button *ngIf=\"!friendship.friend.is_busy\"\n                                class=\"btn btn-primary btn-sm\"\n                                (click)=\"acceptFriendship(friendship.friend)\">\n                            Принять дружбу\n                        </button>\n                        <button class=\"btn btn-default btn-sm\"\n                                (click)=\"declineFriendship(friendship.friend)\">\n                            Отклонить\n                        </button>\n                    </div>\n                    <div *ngIf=\"friendship.friend.is_busy\">\n                        <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n                    </div>\n                </td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n"
+	module.exports = "<md-card>\r\n    <md-card-subtitle>Личные данные</md-card-subtitle>\r\n    <md-card-content>\r\n        <div *ngIf=\"user\">\r\n            <p>Имя в статистике: <strong>{{user.statistic_name.name}}</strong></p>\r\n            <p>id: <strong>{{user.uid_for_client.name}}</strong></p>\r\n            <div class=\"payment text-center\">\r\n                <h4>Баланс</h4>\r\n                <p>\r\n                    <strong><em>{{balance}}</em> бубликов</strong>\r\n                </p>\r\n                <p>\r\n                    <button type=\"button\"\r\n                            class=\"btn btn-primary\"\r\n                            disabled=\"disabled\">\r\n                        Пополнить баланс\r\n                    </button>\r\n                </p>\r\n            </div>\r\n        </div>\r\n    </md-card-content>\r\n</md-card>"
 
 /***/ },
 
 /***/ 342:
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"raw\">\n    <md-tab-group class=\"col-md-8\">\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-envelope\" aria-hidden=\"true\"></span> Сообщения\n            </template>\n            <template md-tab-content>\n                <account-chat></account-chat>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-star\" aria-hidden=\"true\"></span> Друзья\n            </template>\n            <template md-tab-content>\n                <account-friendship></account-friendship>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-signal\" aria-hidden=\"true\"></span> Статистика\n            </template>\n            <template md-tab-content>\n                <account-statistic [user]=\"user\"></account-statistic>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Поиск\n            </template>\n            <template md-tab-content>\n                <account-search></account-search>\n            </template>\n        </md-tab>\n    </md-tab-group>\n    <account-card class=\"col-md-4\"></account-card>\n</div>\n"
+	module.exports = "<div *ngIf=\"!chatList\">\r\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\r\n</div>\r\n<div *ngIf=\"chatList && !chatList.length\">\r\n    <em>Нет активных разговоров</em>\r\n</div>\r\n<div *ngIf=\"chatList && chatList.length\"\r\n        class=\"row\">\r\n    <div class=\"col-md-4\">\r\n        <div class=\"list-group\">\r\n            <a *ngFor=\"let chat of chatList\"\r\n               class=\"list-group-item\"\r\n               [class.active]=\"selectedChat == chat\"\r\n               (click)=\"chooseChat(chat)\">\r\n                <span *ngIf=\"chat.count_not_read_messages != 0\"\r\n                      class=\"badge\">\r\n                    <span class=\"glyphicon glyphicon-envelope\"></span> {{chat.count_not_read_messages}}\r\n                </span>\r\n                {{chat.user.username}}\r\n            </a>\r\n        </div>\r\n    </div>\r\n    <div class=\"col-md-8\">\r\n        <chat [chat]=\"selectedChat\"></chat>\r\n    </div>\r\n</div>\r\n"
 
 /***/ },
 
 /***/ 343:
 /***/ function(module, exports) {
 
-	module.exports = "<form>\n    <fieldset [disabled]=\"inSearchState\">\n        <div class=\"form-group\">\n            <label for=\"search-query-field\">Введите ID пользователя для поиска:</label>\n            <div class=\"input-group\">\n                <input\n                        id=\"search-query-field\"\n                        type=\"text\"\n                        name=\"search_uid\"\n                        class=\"form-control\"\n                        placeholder=\"ID пользователя\"\n                        [(ngModel)]=\"IDForSearch\" />\n                <span class=\"input-group-btn\">\n                    <button\n                            class=\"btn btn-primary\"\n                            type=\"button\"\n                            (click)=\"searchUserByID()\">\n                        Поиск\n                    </button>\n                </span>\n            </div>\n        </div>\n    </fieldset>\n    <div class=\"form-group\"\n         [hidden]=\"!inSearchState\">\n        <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n    </div>\n</form>\n<search-result-list [user]=\"foundUser\" [showResult]=\"showResultState\"></search-result-list>\n"
+	module.exports = "<div *ngIf=\"!friendList || !applicationsToFriends\">\r\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\r\n</div>\r\n<div *ngIf=\"friendList && applicationsToFriends && !friendList.length && !applicationsToFriends.length\">\r\n    <em>У вас нет друзей</em>\r\n</div>\r\n<div *ngIf=\"friendList && friendList.length\">\r\n    <h4>Друзья</h4>\r\n    <table class=\"table\" width=\"100%\">\r\n        <thead>\r\n            <th width=\"80\">№ п/п</th>\r\n            <th>Имя</th>\r\n            <th width=\"160\">Действия</th>\r\n        </thead>\r\n        <tbody>\r\n            <tr *ngFor=\"let friendship of friendList; let i = index\">\r\n                <td>{{i + 1}}</td>\r\n                <td>{{friendship.friend.username}}</td>\r\n                <td>\r\n                    <div *ngIf=\"!friendship.friend.is_busy\">\r\n                        <button class=\"btn btn-primary btn-sm\"\r\n                                (click)=\"removeFriendship(friendship.friend)\">\r\n                            Удалить из друзей\r\n                        </button>\r\n                    </div>\r\n                    <div *ngIf=\"friendship.friend.is_busy\">\r\n                        <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n        </tbody>\r\n    </table>\r\n</div>\r\n\r\n<div *ngIf=\"applicationsToFriends && applicationsToFriends.length\">\r\n    <h4>Заявки в друзья</h4>\r\n    <table class=\"table\" width=\"100%\">\r\n        <thead>\r\n            <th width=\"80\">№ п/п</th>\r\n            <th>Имя</th>\r\n            <th width=\"220\">Действия</th>\r\n        </thead>\r\n        <tbody>\r\n            <tr *ngFor=\"let friendship of applicationsToFriends; let i = index\">\r\n                <td>{{i + 1}}</td>\r\n                <td>{{friendship.friend.username}}</td>\r\n                <td>\r\n                    <div *ngIf=\"!friendship.friend.is_busy\">\r\n                        <button *ngIf=\"!friendship.friend.is_busy\"\r\n                                class=\"btn btn-primary btn-sm\"\r\n                                (click)=\"acceptFriendship(friendship.friend)\">\r\n                            Принять дружбу\r\n                        </button>\r\n                        <button class=\"btn btn-default btn-sm\"\r\n                                (click)=\"declineFriendship(friendship.friend)\">\r\n                            Отклонить\r\n                        </button>\r\n                    </div>\r\n                    <div *ngIf=\"friendship.friend.is_busy\">\r\n                        <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n        </tbody>\r\n    </table>\r\n</div>\r\n"
 
 /***/ },
 
 /***/ 344:
 /***/ function(module, exports) {
 
-	module.exports = "<div *ngIf=\"user\">\n    <h4>Найден пользователь:</h4>\n    <div class=\"row\">\n        <div class=\"col-md-8\">{{user.username}}</div>\n        <div class=\"col-md-4 text-right\">\n            <div *ngIf=\"!user.is_friend && !user.is_busy\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        (click)=\"addFriend()\">\n                    Добавить в друзья\n                </button>\n            </div>\n            <div *ngIf=\"user.is_friend && !user.is_busy\">\n                <button\n                        class=\"btn btn-default btn-sm\"\n                        disabled>\n                    Уже в друзьях\n                </button>\n            </div>\n            <div *ngIf=\"user.is_busy\">\n                <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n            </div>\n        </div>\n    </div>\n</div>\n<div *ngIf=\"showResult && !user\">\n    <em>Пользователи не найдены</em>\n</div>"
+	module.exports = "<div class=\"raw\">\r\n    <md-tab-group class=\"col-md-8\">\r\n        <md-tab>\r\n            <template md-tab-label>\r\n                <span class=\"glyphicon glyphicon-envelope\" aria-hidden=\"true\"></span> Сообщения\r\n            </template>\r\n            <template md-tab-content>\r\n                <account-chat></account-chat>\r\n            </template>\r\n        </md-tab>\r\n        <md-tab>\r\n            <template md-tab-label>\r\n                <span class=\"glyphicon glyphicon-star\" aria-hidden=\"true\"></span> Друзья\r\n            </template>\r\n            <template md-tab-content>\r\n                <account-friendship></account-friendship>\r\n            </template>\r\n        </md-tab>\r\n        <md-tab>\r\n            <template md-tab-label>\r\n                <span class=\"glyphicon glyphicon-signal\" aria-hidden=\"true\"></span> Статистика\r\n            </template>\r\n            <template md-tab-content>\r\n                <account-statistic [user]=\"user\"></account-statistic>\r\n            </template>\r\n        </md-tab>\r\n        <md-tab>\r\n            <template md-tab-label>\r\n                <span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Поиск\r\n            </template>\r\n            <template md-tab-content>\r\n                <account-search></account-search>\r\n            </template>\r\n        </md-tab>\r\n    </md-tab-group>\r\n    <account-card class=\"col-md-4\"></account-card>\r\n</div>\r\n"
 
 /***/ },
 
 /***/ 345:
 /***/ function(module, exports) {
 
-	module.exports = "<div *ngIf=\"!statisticUserList\">\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n</div>\n<div *ngIf=\"statisticUserList && !statisticUserList.length\">\n    <em>Статистика отсутствует</em>\n</div>\n<div *ngIf=\"statisticUserList && statisticUserList.length\">\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">Место</th>\n            <th>Имя</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let statisticUser of statisticUserList; let i = index\"\n                    [class.success]=\"statisticUser.id==user.id\">\n                <td>{{i + 1}}</td>\n                <td>{{statisticUser.statistic_name.name}}</td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n"
+	module.exports = "<form>\r\n    <fieldset [disabled]=\"inSearchState\">\r\n        <div class=\"form-group\">\r\n            <label for=\"search-query-field\">Введите ID пользователя для поиска:</label>\r\n            <div class=\"input-group\">\r\n                <input\r\n                        id=\"search-query-field\"\r\n                        type=\"text\"\r\n                        name=\"search_uid\"\r\n                        class=\"form-control\"\r\n                        placeholder=\"ID пользователя\"\r\n                        [(ngModel)]=\"IDForSearch\" />\r\n                <span class=\"input-group-btn\">\r\n                    <button\r\n                            class=\"btn btn-primary\"\r\n                            type=\"button\"\r\n                            (click)=\"searchUserByID()\">\r\n                        Поиск\r\n                    </button>\r\n                </span>\r\n            </div>\r\n        </div>\r\n    </fieldset>\r\n    <div class=\"form-group\"\r\n         [hidden]=\"!inSearchState\">\r\n        <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\r\n    </div>\r\n</form>\r\n<search-result-list [user]=\"foundUser\" [showResult]=\"showResultState\"></search-result-list>\r\n"
 
 /***/ },
 
 /***/ 346:
 /***/ function(module, exports) {
 
-	module.exports = "<nav class=\"navbar navbar-default\">\n    <div class=\"container-fluid\">\n        <div class=\"navbar-header\">\n            <a class=\"navbar-brand\"\n               routerLink=\"/\">\n                Сyfa.pnt\n            </a>\n        </div>\n        <ul class=\"nav navbar-nav navbar-right\">\n            <li *ngIf=\"!userLoaded\">\n                <em>Загрузка данных...</em>\n            </li>\n            <li *ngIf=\"userLoaded && is_authenticated\">\n                <a class=\"log-in text-left\"\n                   routerLink=\"account\">\n                    <span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span> {{userTitle}}\n                </a>\n            </li>\n            <li *ngIf=\"userLoaded && is_authenticated\">\n                <p class=\"navbar-text\"><em>id: {{uid}}</em></p>\n            </li>\n            <li *ngIf=\"userLoaded && is_authenticated\">\n                <a class=\"log-in\"\n                   (click)=\"routeLogOut()\">\n                    <span class=\"glyphicon glyphicon-log-out\" aria-hidden=\"true\"></span> Выйти\n                </a>\n            </li>\n            <li *ngIf=\"userLoaded && !is_authenticated\">\n                <a class=\"log-in\"\n                   (click)=\"routeLogIn()\">\n                    <span class=\"glyphicon glyphicon-log-in\" aria-hidden=\"true\"></span> Войти\n                </a>\n            </li>\n        </ul>\n    </div>\n</nav>\n\n<main>\n    <router-outlet></router-outlet>\n</main>\n\n"
+	module.exports = "<div *ngIf=\"user\">\r\n    <h4>Найден пользователь:</h4>\r\n    <div class=\"row\">\r\n        <div class=\"col-md-8\">{{user.username}}</div>\r\n        <div class=\"col-md-4 text-right\">\r\n            <div *ngIf=\"!user.is_friend && !user.is_busy\">\r\n                <button\r\n                        class=\"btn btn-default btn-xs\"\r\n                        (click)=\"addFriend()\">\r\n                    Добавить в друзья\r\n                </button>\r\n            </div>\r\n            <div *ngIf=\"user.is_friend && !user.is_busy\">\r\n                <button\r\n                        class=\"btn btn-default btn-sm\"\r\n                        disabled>\r\n                    Уже в друзьях\r\n                </button>\r\n            </div>\r\n            <div *ngIf=\"user.is_busy\">\r\n                <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n<div *ngIf=\"showResult && !user\">\r\n    <em>Пользователи не найдены</em>\r\n</div>"
 
 /***/ },
 
 /***/ 347:
 /***/ function(module, exports) {
 
-	module.exports = "<div *ngFor=\"let message of messages\"\n     class=\"chat__message_stripe\"\n     [class.myself]=\"message.isMyself\"\n     [class.other]=\"!message.isMyself\">\n    <div class=\"chat__message_block\">\n        <div class=\"chat__message-date\">{{message.creation_datetime | date:'yyyy.MM.dd HH:mm'}}</div>\n        <div class=\"chat__message-body\"\n             [innerHTML]=\"message.message\">\n        </div>\n    </div>\n</div>\n"
+	module.exports = "<div *ngIf=\"!statisticUserList\">\r\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\r\n</div>\r\n<div *ngIf=\"statisticUserList && !statisticUserList.length\">\r\n    <em>Статистика отсутствует</em>\r\n</div>\r\n<div *ngIf=\"statisticUserList && statisticUserList.length\">\r\n    <table class=\"table\" width=\"100%\">\r\n        <thead>\r\n            <th width=\"80\">Место</th>\r\n            <th>Имя</th>\r\n        </thead>\r\n        <tbody>\r\n            <tr *ngFor=\"let statisticUser of statisticUserList; let i = index\"\r\n                    [class.success]=\"statisticUser.id==user.id\">\r\n                <td>{{i + 1}}</td>\r\n                <td>{{statisticUser.statistic_name.name}}</td>\r\n            </tr>\r\n        </tbody>\r\n    </table>\r\n</div>\r\n"
 
 /***/ },
 
 /***/ 348:
 /***/ function(module, exports) {
 
-	module.exports = "<div *ngIf=\"chat && messages && messages.length\" class=\"chat__block\">\n    <chat-history #history class=\"chat__history\"></chat-history>\n    <form class=\"chat__editor\">\n        <div class=\"form-group\">\n            <textarea class=\"form-control\"\n                      [(ngModel)]=\"messageForSend\" [ngModelOptions]=\"{standalone: true}\">\n            </textarea>\n        </div>\n        <div class=\"form-group text-right\">\n            <button type=\"button\"\n                    class=\"btn btn-primary\"\n                    (click)=\"sendMessage()\"\n                    [disabled]=\"messageForSend==''\">\n                Отправить\n            </button>\n        </div>\n    </form>\n</div>\n<div *ngIf=\"!chat && !isBusy\">\n    <em>Не выбран собеседник</em>\n</div>\n<div *ngIf=\"isBusy\">\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n</div>\n"
+	module.exports = "<nav class=\"navbar navbar-default\">\r\n    <div class=\"container-fluid\">\r\n        <div class=\"navbar-header\">\r\n            <a class=\"navbar-brand\"\r\n               routerLink=\"/\">\r\n                Сyfa.pnt\r\n            </a>\r\n        </div>\r\n        <ul class=\"nav navbar-nav navbar-right\">\r\n            <li *ngIf=\"!userLoaded\">\r\n                <em>Загрузка данных...</em>\r\n            </li>\r\n            <li *ngIf=\"userLoaded && is_authenticated\">\r\n                <a class=\"log-in text-left\"\r\n                   routerLink=\"account\">\r\n                    <span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span> {{userTitle}}\r\n                </a>\r\n            </li>\r\n            <li *ngIf=\"userLoaded && is_authenticated\">\r\n                <p class=\"navbar-text\"><em>id: {{uid}}</em></p>\r\n            </li>\r\n            <li *ngIf=\"userLoaded && is_authenticated\">\r\n                <a class=\"log-in\"\r\n                   (click)=\"routeLogOut()\">\r\n                    <span class=\"glyphicon glyphicon-log-out\" aria-hidden=\"true\"></span> Выйти\r\n                </a>\r\n            </li>\r\n            <li *ngIf=\"userLoaded && !is_authenticated\">\r\n                <a class=\"log-in\"\r\n                   (click)=\"routeLogIn()\">\r\n                    <span class=\"glyphicon glyphicon-log-in\" aria-hidden=\"true\"></span> Войти\r\n                </a>\r\n            </li>\r\n        </ul>\r\n    </div>\r\n</nav>\r\n\r\n<main>\r\n    <router-outlet></router-outlet>\r\n</main>\r\n\r\n"
 
 /***/ },
 
 /***/ 349:
 /***/ function(module, exports) {
 
-	module.exports = "<h1>Оформление заявки на спор по игре ...</h1>\n"
+	module.exports = "<div *ngFor=\"let message of messages\"\r\n     class=\"chat__message_stripe\"\r\n     [class.myself]=\"message.isMyself\"\r\n     [class.other]=\"!message.isMyself\">\r\n    <div class=\"chat__message_block\">\r\n        <div class=\"chat__message-date\">{{message.creation_datetime | date:'yyyy.MM.dd HH:mm'}}</div>\r\n        <div class=\"chat__message-body\"\r\n             [innerHTML]=\"message.message\">\r\n        </div>\r\n    </div>\r\n</div>\r\n"
 
 /***/ },
 
 /***/ 350:
 /***/ function(module, exports) {
 
-	module.exports = "<h1>PfG: спор через игру</h1>\n<p>Выберите игру для спора:</p>\n<div *ngIf=\"!gameList\">\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n</div>\n<ul *ngIf=\"gameList && gameList.length\">\n    <li *ngFor=\"let game of gameList\"\n        (click)=\"changeGame(game.namespace)\">\n        {{game.name}}\n    </li>\n</ul>\n"
+	module.exports = "<div *ngIf=\"chat && messages && messages.length\" class=\"chat__block\">\r\n    <chat-history #history class=\"chat__history\"></chat-history>\r\n    <form class=\"chat__editor\">\r\n        <div class=\"form-group\">\r\n            <textarea class=\"form-control\"\r\n                      [(ngModel)]=\"messageForSend\" [ngModelOptions]=\"{standalone: true}\">\r\n            </textarea>\r\n        </div>\r\n        <div class=\"form-group text-right\">\r\n            <button type=\"button\"\r\n                    class=\"btn btn-primary\"\r\n                    (click)=\"sendMessage()\"\r\n                    [disabled]=\"messageForSend==''\">\r\n                Отправить\r\n            </button>\r\n        </div>\r\n    </form>\r\n</div>\r\n<div *ngIf=\"!chat && !isBusy\">\r\n    <em>Не выбран собеседник</em>\r\n</div>\r\n<div *ngIf=\"isBusy\">\r\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\r\n</div>\r\n"
 
 /***/ },
 
 /***/ 351:
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"start-page row\">\n    <div class=\"col-md-4\">\n        <a class=\"thumbnail text-center\"\n           routerLink=\"/pfg\">\n            <div class=\"caption\">\n                <p>PfG</p>\n            </div>\n            <div class=\"pfg-logo\"></div>\n        </a>\n    </div>\n    <div class=\"col-md-offset-1 col-md-7\">\n        <h1>Сyfa.pnt</h1>\n        <p>Добро пожаловать на сайт.</p>\n        <p>\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n        </p>\n        <p>\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n        </p>\n    </div>\n</div>\n"
+	module.exports = "<h1>Оформление заявки на спор по игре ...</h1>\r\n"
 
 /***/ },
 
-/***/ 357:
+/***/ 352:
+/***/ function(module, exports) {
+
+	module.exports = "<h1>PfG: спор через игру</h1>\r\n<p>Выберите игру для спора:</p>\r\n<div *ngIf=\"!gameList\">\r\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\r\n</div>\r\n<ul *ngIf=\"gameList && gameList.length\">\r\n    <li *ngFor=\"let game of gameList\"\r\n        (click)=\"changeGame(game.namespace)\">\r\n        {{game.name}}\r\n    </li>\r\n</ul>\r\n"
+
+/***/ },
+
+/***/ 353:
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"start-page row\">\r\n    <div class=\"col-md-4\">\r\n        <a class=\"thumbnail text-center\"\r\n           routerLink=\"/pfg\">\r\n            <div class=\"caption\">\r\n                <p>PfG</p>\r\n            </div>\r\n            <div class=\"pfg-logo\"></div>\r\n        </a>\r\n    </div>\r\n    <div class=\"col-md-offset-1 col-md-7\">\r\n        <h1>Сyfa.pnt</h1>\r\n        <p>Добро пожаловать на сайт.</p>\r\n        <p>\r\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\r\n            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\r\n            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\r\n            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\r\n        </p>\r\n        <p>\r\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\r\n            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\r\n            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\r\n            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\r\n        </p>\r\n    </div>\r\n</div>\r\n"
+
+/***/ },
+
+/***/ 359:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Observable_1 = __webpack_require__(11);
-	var map_1 = __webpack_require__(147);
-	Observable_1.Observable.prototype.map = map_1.map;
-	//# sourceMappingURL=map.js.map
+	var Observable_1 = __webpack_require__(9);
+	var throw_1 = __webpack_require__(367);
+	Observable_1.Observable.throw = throw_1._throw;
+	//# sourceMappingURL=throw.js.map
+
+/***/ },
+
+/***/ 360:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var Observable_1 = __webpack_require__(9);
+	var catch_1 = __webpack_require__(149);
+	Observable_1.Observable.prototype.catch = catch_1._catch;
+	Observable_1.Observable.prototype._catch = catch_1._catch;
+	//# sourceMappingURL=catch.js.map
+
+/***/ },
+
+/***/ 362:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var Observable_1 = __webpack_require__(9);
+	/**
+	 * We need this JSDoc comment for affecting ESDoc.
+	 * @extends {Ignored}
+	 * @hide true
+	 */
+	var ErrorObservable = (function (_super) {
+	    __extends(ErrorObservable, _super);
+	    function ErrorObservable(error, scheduler) {
+	        _super.call(this);
+	        this.error = error;
+	        this.scheduler = scheduler;
+	    }
+	    /**
+	     * Creates an Observable that emits no items to the Observer and immediately
+	     * emits an error notification.
+	     *
+	     * <span class="informal">Just emits 'error', and nothing else.
+	     * </span>
+	     *
+	     * <img src="./img/throw.png" width="100%">
+	     *
+	     * This static operator is useful for creating a simple Observable that only
+	     * emits the error notification. It can be used for composing with other
+	     * Observables, such as in a {@link mergeMap}.
+	     *
+	     * @example <caption>Emit the number 7, then emit an error.</caption>
+	     * var result = Rx.Observable.throw(new Error('oops!')).startWith(7);
+	     * result.subscribe(x => console.log(x), e => console.error(e));
+	     *
+	     * @example <caption>Map and flattens numbers to the sequence 'a', 'b', 'c', but throw an error for 13</caption>
+	     * var interval = Rx.Observable.interval(1000);
+	     * var result = interval.mergeMap(x =>
+	     *   x === 13 ?
+	     *     Rx.Observable.throw('Thirteens are bad') :
+	     *     Rx.Observable.of('a', 'b', 'c')
+	     * );
+	     * result.subscribe(x => console.log(x), e => console.error(e));
+	     *
+	     * @see {@link create}
+	     * @see {@link empty}
+	     * @see {@link never}
+	     * @see {@link of}
+	     *
+	     * @param {any} error The particular Error to pass to the error notification.
+	     * @param {Scheduler} [scheduler] A {@link Scheduler} to use for scheduling
+	     * the emission of the error notification.
+	     * @return {Observable} An error Observable: emits only the error notification
+	     * using the given error argument.
+	     * @static true
+	     * @name throw
+	     * @owner Observable
+	     */
+	    ErrorObservable.create = function (error, scheduler) {
+	        return new ErrorObservable(error, scheduler);
+	    };
+	    ErrorObservable.dispatch = function (arg) {
+	        var error = arg.error, subscriber = arg.subscriber;
+	        subscriber.error(error);
+	    };
+	    ErrorObservable.prototype._subscribe = function (subscriber) {
+	        var error = this.error;
+	        var scheduler = this.scheduler;
+	        if (scheduler) {
+	            return scheduler.schedule(ErrorObservable.dispatch, 0, {
+	                error: error, subscriber: subscriber
+	            });
+	        }
+	        else {
+	            subscriber.error(error);
+	        }
+	    };
+	    return ErrorObservable;
+	}(Observable_1.Observable));
+	exports.ErrorObservable = ErrorObservable;
+	//# sourceMappingURL=ErrorObservable.js.map
+
+/***/ },
+
+/***/ 367:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var ErrorObservable_1 = __webpack_require__(362);
+	exports._throw = ErrorObservable_1.ErrorObservable.create;
+	//# sourceMappingURL=throw.js.map
 
 /***/ }
 

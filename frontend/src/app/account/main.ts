@@ -16,6 +16,16 @@ export class AccountComponent implements OnInit{
     ) {}
 
     ngOnInit() {
+        this.UserService.getAuthUser()
+            .then( () => {
+                this.checkOnAuthorize();
+            })
+            .catch( () => {
+                this.redirectToMainPage();
+            });
+    }
+
+    checkOnAuthorize() {
         if ( this.UserService.isAutorized() ) {
             this.initAuthUser();
         } else {

@@ -11,4 +11,10 @@ export class User {
     uid_for_client: Standard;
 
     is_busy: boolean = false;
+
+    //TODO
+    public Uid():string {
+        console.log('user uid');
+        return this.uid_for_client.name;
+    }
 }
