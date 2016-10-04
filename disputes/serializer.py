@@ -9,7 +9,7 @@ from disputes.models import CanceledNegotiations, Games, OrderForDeal, TempDeals
 class GamesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Games
-        fields = ('name', 'namespace')
+        fields = ('id', 'name', 'namespace')
 
 
 class OrderForDealSerializer(serializers.ModelSerializer):

@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.http import Http404
 from django.db.models import Q
 from django.utils import timezone
+from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -11,17 +12,23 @@ from disputes.models import Games, OrderForDeal, TempDeals
 from disputes.serializer import GamesSerializer, OrderForDealSerializer, TempDealsSerializer
 
 
-class Game(APIView):
+class AllGames(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
     def get(self, request):
         games = Games.objects.all()
         serializer = GamesSerializer(games, many=True)
         return Response(serializer.data)
 
 
-class Dispute(APIView):
+class OneGame(APIView):
     def get(self, request, namespace):
-        print('namespace {0}'.format(namespace))
-        return Response({'namespace': namespace})
+        try:
+            game = Games.objects.get(namespace=namespace)
+        except Games.DoesNotExist:
+            raise Http404
+        serializer = GamesSerializer(game)
+        return Response(serializer.data)
 
 
 def find_competitor(request, game, me):
