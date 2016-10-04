@@ -10,13 +10,17 @@ class Games(models.Model):
 
 
 class Deals(models.Model):
-    steam_game_uid = models.CharField(max_length=255)
     count_of_games = models.PositiveIntegerField()
     left_rate = models.CharField(max_length=255)
     right_rate = models.CharField(max_length=2)
     is_active = models.BooleanField()
     left_count_of_money = models.CharField(max_length=255)
     right_count_of_money = models.CharField(max_length=2)
+
+
+class SteamGame(models.Model):
+    deal = models.ForeignKey(Deals, on_delete=models.CASCADE)
+    steam_game_uid = models.CharField(max_length=255)
 
 
 class TempDeals(models.Model):
