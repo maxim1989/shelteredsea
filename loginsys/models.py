@@ -26,3 +26,9 @@ class AdditionalUuid(models.Model):
             zero_count -= 1
         self.name = str(self.series) + number
         super(AdditionalUuid, self).save(*args, **kwargs)
+
+
+class UserBalance(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='balance')
+    integer_part = models.CharField(max_length=255, default='0')
+    fractional_part = models.CharField(max_length=2, default='0')
