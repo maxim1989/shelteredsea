@@ -35,16 +35,34 @@ def find_competitor(request, game, me):
     interval = timedelta(seconds=600)
     common_part = OrderForDeal.objects.exclude(user=request.user.id).\
         filter(in_negotiations=False, is_active=True, game=game.id).\
-        filter(myself__create_moment__lt=timezone.now() - interval)
-    strict_filter = common_part. \
-        filter(left_rate=me.left_rate, right_rate=me.right_rate, rate_trent=me.rate_trent,
-               games_count=me.games_count, team_size=me.team_size).order_by('modificate_moment')
-    strict_filter = [item.id for item in strict_filter]
-    light_filter = common_part.\
-        filter(Q(left_rate=me.left_rate) | Q(right_rate=me.right_rate) | Q(rate_trent=me.rate_trent) |
-               Q(games_count=me.games_count) | Q(team_size=me.team_size)).order_by('modificate_moment')
-    light_filter = [item.id for item in light_filter if item.id not in strict_filter]
+        filter(Q(myself__isnull=True) | Q(myself__create_moment__lt=timezone.now() - interval)).order_by('modificate_moment')
+
+    print('common_part')
+    print(', '.join(str(f.id) for f in common_part))
+    strict_filter = [item.id for item in common_part
+                     if int(item.integer_part_from) >= int(me.integer_part_from) and
+                        int(item.fractional_part_from) >= int(me.fractional_part_from) and
+                        int(item.integer_part_to) <= int(me.integer_part_to) and
+                        int(item.fractional_part_to) <= int(me.fractional_part_to) and
+                        item.games_count == me.games_count and
+                        item.team_size == me.team_size]
+    print('strict_filter')
+    print(strict_filter)
+    light_filter = [item.id for item in common_part
+                    if item.id not in strict_filter and
+                       int(item.integer_part_from) >= int(me.integer_part_from) and
+                       int(item.fractional_part_from) >= int(me.fractional_part_from) and
+                       int(item.integer_part_to) <= int(me.integer_part_to) and
+                       int(item.fractional_part_to) <= int(me.fractional_part_to) or
+                       item.games_count == me.games_count or
+                       item.team_size == me.team_size
+                    ]
+    print('light_filter')
+    print(light_filter)
+
     total_data = strict_filter + light_filter
+    print('light_filter')
+    print(light_filter)
     return total_data[0] if total_data else 0
 
 

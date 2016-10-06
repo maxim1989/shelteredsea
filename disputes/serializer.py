@@ -15,8 +15,9 @@ class GamesSerializer(serializers.ModelSerializer):
 class OrderForDealSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderForDeal
-        fields = ('id', 'user', 'deal', 'temp_deal', 'game', 'is_winner', 'left_rate', 'right_rate', 'rate_trent',
-                  'games_count', 'team_size', 'in_negotiations', 'modificate_moment', 'is_active')
+        fields = ('id', 'user', 'deal', 'temp_deal', 'game', 'is_winner', 'games_count', 'team_size',
+                  'in_negotiations', 'modificate_moment', 'is_active', 'integer_part_from', 'fractional_part_from',
+                  'integer_part_to', 'fractional_part_to')
 
     def create(self, validated_data):
         left_rate = validated_data.get('left_rate')
@@ -57,6 +58,8 @@ class TempDealsSerializer(serializers.ModelSerializer):
         orders = OrderForDeal.objects.filter(temp_deal=instance)
         for order in orders:
             order.in_negotiations = False if instance.is_active == False else True
+            if not order.in_negotiations:
+                order.temp_deal = None
             order.save()
             for order_2 in orders:
                 if order != order_2:
