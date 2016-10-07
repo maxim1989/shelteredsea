@@ -32,6 +32,19 @@ class OrderForDealSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+    def update(self, instance, validated_data):
+        if instance.temp_deal:
+            OrderForDeal.objects.filter(temp_deal=instance.temp_deal).exclude(user=self.context.get('user')).\
+                update(temp_deal=validated_data.get('temp_deal', instance.temp_deal),
+                       in_negotiations=validated_data.get('in_negotiations', instance.in_negotiations))
+            instance.temp_deal.is_active = False
+            instance.temp_deal.save()
+        instance.is_active = validated_data.get('is_active', instance.is_active)
+        instance.temp_deal = validated_data.get('temp_deal', instance.temp_deal)
+        instance.in_negotiations = validated_data.get('in_negotiations', instance.in_negotiations)
+        instance.save()
+        return instance
+
 
 class TempDealsSerializer(serializers.ModelSerializer):
     orders = OrderForDealSerializer(many=True)
@@ -61,7 +74,12 @@ class TempDealsSerializer(serializers.ModelSerializer):
             if not order.in_negotiations:
                 order.temp_deal = None
             order.save()
+
             for order_2 in orders:
                 if order != order_2:
-                    CanceledNegotiations.objects.create(myself=order, competitor=order_2)
+                    try:
+                        me = CanceledNegotiations.objects.get(myself=order)
+                        me.save()
+                    except CanceledNegotiations.DoesNotExist:
+                        CanceledNegotiations.objects.create(myself=order, competitor=order_2)
         return instance

@@ -118,12 +118,28 @@ class Order(APIView):
 
 class Next(APIView):
     def post(self, request, temp_deal_id):
-        print('Next')
         try:
             temp_deal = TempDeals.objects.get(pk=temp_deal_id)
         except TempDeals.DoesNotExist:
             raise Http404
         serializer = TempDealsSerializer(temp_deal, data={'is_active': False}, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'success': True, 'temp_deal': serializer.data})
+        return Response({'success': False, 'error': serializer.errors})
+
+
+class CloseOrder(APIView):
+    def post(self, request, order_id):
+        try:
+            user = User.objects.get(pk=request.user.id)
+            order = OrderForDeal.objects.get(pk=order_id)
+        except User.DoesNotExist:
+            raise Http404
+        except OrderForDeal.DoesNotExist:
+            raise Http404
+        serializer = OrderForDealSerializer(order, partial=True, context={'user': user},
+                                            data={'is_active': False, 'temp_deal': None, 'in_negotiations': False})
         if serializer.is_valid():
             serializer.save()
             return Response({'success': True, 'temp_deal': serializer.data})
