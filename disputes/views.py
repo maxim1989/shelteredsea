@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.http import Http404
 from django.db.models import Q
 from django.utils import timezone
-from rest_framework import permissions
+from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -25,8 +25,8 @@ class OneGame(APIView):
     def get(self, request, namespace):
         try:
             game = Games.objects.get(namespace=namespace)
-        except Games.DoesNotExist:
-            raise Http404
+        except Games.DoesNotExist as err:
+            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
         serializer = GamesSerializer(game)
         return Response(serializer.data)
 
@@ -37,8 +37,6 @@ def find_competitor(request, game, me):
         filter(in_negotiations=False, is_active=True, game=game.id).\
         filter(Q(myself__isnull=True) | Q(myself__create_moment__lt=timezone.now() - interval)).order_by('modificate_moment')
 
-    print('common_part')
-    print(', '.join(str(f.id) for f in common_part))
     strict_filter = [item.id for item in common_part
                      if int(item.integer_part_from) >= int(me.integer_part_from) and
                         int(item.fractional_part_from) >= int(me.fractional_part_from) and
@@ -46,8 +44,6 @@ def find_competitor(request, game, me):
                         int(item.fractional_part_to) <= int(me.fractional_part_to) and
                         item.games_count == me.games_count and
                         item.team_size == me.team_size]
-    print('strict_filter')
-    print(strict_filter)
     light_filter = [item.id for item in common_part
                     if item.id not in strict_filter and
                        int(item.integer_part_from) >= int(me.integer_part_from) and
@@ -57,12 +53,8 @@ def find_competitor(request, game, me):
                        item.games_count == me.games_count or
                        item.team_size == me.team_size
                     ]
-    print('light_filter')
-    print(light_filter)
 
     total_data = strict_filter + light_filter
-    print('light_filter')
-    print(light_filter)
     return total_data[0] if total_data else 0
 
 
@@ -120,8 +112,8 @@ class Next(APIView):
     def post(self, request, temp_deal_id):
         try:
             temp_deal = TempDeals.objects.get(pk=temp_deal_id)
-        except TempDeals.DoesNotExist:
-            raise Http404
+        except TempDeals.DoesNotExist as err:
+            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
         serializer = TempDealsSerializer(temp_deal, data={'is_active': False}, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -134,13 +126,23 @@ class CloseOrder(APIView):
         try:
             user = User.objects.get(pk=request.user.id)
             order = OrderForDeal.objects.get(pk=order_id)
-        except User.DoesNotExist:
-            raise Http404
-        except OrderForDeal.DoesNotExist:
-            raise Http404
+        except User.DoesNotExist as err:
+            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
+        except OrderForDeal.DoesNotExist as err:
+            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
         serializer = OrderForDealSerializer(order, partial=True, context={'user': user},
                                             data={'is_active': False, 'temp_deal': None, 'in_negotiations': False})
         if serializer.is_valid():
             serializer.save()
             return Response({'success': True, 'temp_deal': serializer.data})
         return Response({'success': False, 'error': serializer.errors})
+
+
+class Conditions(APIView):
+    def get(self, request, order_id):
+        try:
+            order = OrderForDeal.objects.get(pk=order_id)
+        except OrderForDeal.DoesNotExist as err:
+            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
+        serializer = OrderForDealSerializer(order)
+        return Response(serializer.data, status=status.HTTP_200_OK)
