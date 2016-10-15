@@ -43,9 +43,9 @@
 
             function doAjax(data) {
                 var ajax = getXmlHttp();
-                ajax.open('POST', 'pfg/cancel_2', true);
+                ajax.open('POST', 'pfg/dota2/deal_order', true);
                 ajax.setRequestHeader("Content-type", "application/json; charset=utf-8");
-                ajax.setRequestHeader("X-CSRFToken", 'OumiGvjIE00xqNKGil5YmhP1Z8xY9380');
+                ajax.setRequestHeader("X-CSRFToken", 'shrnRslRf24BDo6OA3unp1aJkmJcs2hq');
                 ajax.onreadystatechange = function() {
                     if (ajax.readyState == 4) {
                         if(ajax.status == 200) {

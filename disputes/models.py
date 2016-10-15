@@ -7,15 +7,11 @@ from chat.models import Chat
 class Games(models.Model):
     name = models.CharField(max_length=255)
     namespace = models.CharField(max_length=255, unique=True)
+    appid = models.CharField(max_length=255, unique=True)
 
 
 class Deals(models.Model):
-    count_of_games = models.PositiveIntegerField()
-    left_rate = models.CharField(max_length=255)
-    right_rate = models.CharField(max_length=2)
     is_active = models.BooleanField()
-    left_count_of_money = models.CharField(max_length=255)
-    right_count_of_money = models.CharField(max_length=2)
 
 
 class SteamGame(models.Model):
@@ -29,7 +25,6 @@ class TempDeals(models.Model):
 
 
 class OrderForDeal(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     deal = models.ForeignKey(Deals, on_delete=models.CASCADE, null=True)
     temp_deal = models.ForeignKey(TempDeals, on_delete=models.CASCADE, null=True, related_name='orders')
     game = models.ForeignKey(Games, on_delete=models.CASCADE)
@@ -43,6 +38,11 @@ class OrderForDeal(models.Model):
     in_negotiations = models.BooleanField(default=False)
     modificate_moment = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
+
+
+class Participants(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    order = models.ForeignKey(OrderForDeal, on_delete=models.CASCADE, related_name='participants')
 
 
 class CanceledNegotiations(models.Model):
