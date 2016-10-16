@@ -26,6 +26,7 @@ class TempDeals(models.Model):
 
 class OrderForDeal(models.Model):
     deal = models.ForeignKey(Deals, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     temp_deal = models.ForeignKey(TempDeals, on_delete=models.CASCADE, null=True, related_name='orders')
     game = models.ForeignKey(Games, on_delete=models.CASCADE)
     is_winner = models.BooleanField(default=False)

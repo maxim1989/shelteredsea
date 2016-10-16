@@ -3,6 +3,8 @@ from datetime import datetime
 from rest_framework import serializers
 
 from chat.models import Chat, ManyChatsToManyUsersConnector
+from chat.serializers import ChatSerializer
+from loginsys.serializers import AuthenticatedUserSerializer
 from disputes.models import CanceledNegotiations, Games, OrderForDeal, Participants, TempDeals
 
 
@@ -13,6 +15,7 @@ class GamesSerializer(serializers.ModelSerializer):
 
 
 class ParticipantsSerializer(serializers.ModelSerializer):
+    user = AuthenticatedUserSerializer()
     class Meta:
         model = Participants
         fields = ('id', 'user', 'order')
@@ -20,10 +23,12 @@ class ParticipantsSerializer(serializers.ModelSerializer):
 
 class OrderForDealSerializer(serializers.ModelSerializer):
     participants = ParticipantsSerializer(many=True)
+    game = GamesSerializer()
+    user =AuthenticatedUserSerializer()
 
     class Meta:
         model = OrderForDeal
-        fields = ('id', 'deal', 'temp_deal', 'game', 'is_winner', 'games_count', 'team_size',
+        fields = ('id', 'user', 'deal', 'temp_deal', 'game', 'is_winner', 'games_count', 'team_size',
                   'in_negotiations', 'modificate_moment', 'is_active', 'integer_part_from', 'fractional_part_from',
                   'integer_part_to', 'fractional_part_to', 'participants')
 
@@ -36,7 +41,7 @@ class OrderForDealSerializer(serializers.ModelSerializer):
         team_size = validated_data.get('team_size')
         myself = self.context.get('myself')
         game = self.context.get('game')
-        instance = OrderForDeal.objects.create(game=game, integer_part_from=integer_part_from,
+        instance = OrderForDeal.objects.create(game=game, user=myself, integer_part_from=integer_part_from,
                                                fractional_part_from=fractional_part_from,
                                                integer_part_to=integer_part_to, fractional_part_to=fractional_part_to,
                                                games_count=games_count, team_size=team_size)
@@ -59,6 +64,7 @@ class OrderForDealSerializer(serializers.ModelSerializer):
 
 class TempDealsSerializer(serializers.ModelSerializer):
     orders = OrderForDealSerializer(many=True)
+    chat = ChatSerializer()
 
     class Meta:
         model = TempDeals
@@ -73,7 +79,9 @@ class TempDealsSerializer(serializers.ModelSerializer):
             order.in_negotiations = self.context.get('in_negotiations', True)
             order.temp_deal = temp_deal
             order.save()
-            ManyChatsToManyUsersConnector.objects.create(user=order.user, chat=chat)
+            participants = Participants.objects.filter(order=order)
+            for participant in participants:
+                ManyChatsToManyUsersConnector.objects.create(user=participant.user, chat=chat)
         return temp_deal
 
     def update(self, instance, validated_data):

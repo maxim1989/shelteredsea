@@ -1,7 +1,6 @@
 from datetime import timedelta
 
 from django.contrib.auth.models import User
-from django.http import Http404
 from django.db.models import Q
 from django.utils import timezone
 from rest_framework import permissions, status
@@ -18,7 +17,7 @@ class AllGames(APIView):
     def get(self, request):
         games = Games.objects.all()
         serializer = GamesSerializer(games, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class OneGame(APIView):
@@ -28,7 +27,7 @@ class OneGame(APIView):
         except Games.DoesNotExist as err:
             return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
         serializer = GamesSerializer(game)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 def find_competitor(request, game, me):
@@ -65,14 +64,14 @@ class Order(APIView):
             order_id = request.GET["order_id"]  # TODO возможно будет приходить в ajax запросе, тогда request.data
             me = OrderForDeal.objects.get(pk=order_id)
         except Games.DoesNotExist as err:
-            return Response({'success': False, 'error': str(err)})
+            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
         except KeyError as err:
-            return Response({'success': False, 'error': str(err)})
+            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
         except OrderForDeal.DoesNotExist as err:
-            return Response({'success': False, 'error': str(err)})
+            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
         if me.in_negotiations:
             serializer_temp_deal = TempDealsSerializer(me.temp_deal)
-            return Response({'success': True, 'temp_deal': serializer_temp_deal.data})
+            return Response({'success': True, 'temp_deal': serializer_temp_deal.data}, status=status.HTTP_200_OK)
         competitor_id = find_competitor(request, game, me)
         if competitor_id:
             serializer_temp_deal = TempDealsSerializer(
@@ -81,10 +80,10 @@ class Order(APIView):
                 context={'uids': [order_id, competitor_id], 'in_negotiations': True})
             if serializer_temp_deal.is_valid():
                 serializer_temp_deal.save()
-                return Response({'success': True, 'temp_deal': serializer_temp_deal.data})
+                return Response({'success': True, 'temp_deal': serializer_temp_deal.data}, status=status.HTTP_200_OK)
 
-            return Response({'success': False, 'error': serializer_temp_deal.errors})
-        return Response({'success': True, 'temp_deal': 0})
+            return Response({'success': False, 'error': serializer_temp_deal.errors}, status=status.HTTP_403_FORBIDDEN)
+        return Response({'success': True, 'temp_deal': 0}, status=status.HTTP_200_OK)
 
     def post(self, request, namespace):
         """
@@ -97,15 +96,26 @@ class Order(APIView):
             game = Games.objects.get(namespace=namespace)
             myself = User.objects.get(pk=request.user.id)
         except Games.DoesNotExist as err:
-            return Response({'success': False, 'error': str(err)})
+            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
         except User.DoesNotExist as err:
-            return Response({'success': False, 'error': str(err)})
+            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
         serializer = OrderForDealSerializer(data=request.data, partial=True,
                                             context={'myself': myself, 'game': game})
         if serializer.is_valid():
             serializer.save()
-            return Response({'success': True, 'data': serializer.data})
-        return Response({'success': False, 'error': serializer.errors})
+            return Response({'success': True, 'data': serializer.data}, status=status.HTTP_200_OK)
+        return Response({'success': False, 'error': serializer.errors}, status=status.HTTP_403_FORBIDDEN)
+
+
+class MyOrders(APIView):
+    def get(self, request, namespace):
+        try:
+            game = Games.objects.get(namespace=namespace)
+        except Games.DoesNotExist as err:
+            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
+        query = OrderForDeal.objects.filter(user=request.user.id).filter(game=game.id).order_by('modificate_moment')
+        serializer = OrderForDealSerializer(query, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class Next(APIView):
@@ -117,8 +127,8 @@ class Next(APIView):
         serializer = TempDealsSerializer(temp_deal, data={'is_active': False}, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response({'success': True, 'temp_deal': serializer.data})
-        return Response({'success': False, 'error': serializer.errors})
+            return Response({'success': True, 'temp_deal': serializer.data}, status=status.HTTP_200_OK)
+        return Response({'success': False, 'error': serializer.errors}, status=status.HTTP_403_FORBIDDEN)
 
 
 class CloseOrder(APIView):
@@ -134,8 +144,8 @@ class CloseOrder(APIView):
                                             data={'is_active': False, 'temp_deal': None, 'in_negotiations': False})
         if serializer.is_valid():
             serializer.save()
-            return Response({'success': True, 'temp_deal': serializer.data})
-        return Response({'success': False, 'error': serializer.errors})
+            return Response({'success': True, 'temp_deal': serializer.data}, status=status.HTTP_200_OK)
+        return Response({'success': False, 'error': serializer.errors}, status=status.HTTP_403_FORBIDDEN)
 
 
 class Conditions(APIView):
