@@ -11,11 +11,11 @@ class Games(models.Model):
 
 
 class Deals(models.Model):
-    is_active = models.BooleanField()
+    is_active = models.BooleanField(default=True)
 
 
 class SteamGame(models.Model):
-    deal = models.ForeignKey(Deals, on_delete=models.CASCADE)
+    deal = models.ForeignKey(Deals, on_delete=models.CASCADE, related_name='matches')
     steam_game_uid = models.CharField(max_length=255)
 
 
@@ -25,7 +25,7 @@ class TempDeals(models.Model):
 
 
 class OrderForDeal(models.Model):
-    deal = models.ForeignKey(Deals, on_delete=models.CASCADE, null=True)
+    deal = models.ForeignKey(Deals, on_delete=models.CASCADE, null=True, related_name='deal_sides')
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     temp_deal = models.ForeignKey(TempDeals, on_delete=models.CASCADE, null=True, related_name='orders')
     game = models.ForeignKey(Games, on_delete=models.CASCADE)

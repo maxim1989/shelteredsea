@@ -7,8 +7,8 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from disputes.models import Games, OrderForDeal, TempDeals
-from disputes.serializer import GamesSerializer, OrderForDealSerializer, TempDealsSerializer
+from disputes.models import Deals, Games, OrderForDeal, TempDeals
+from disputes.serializer import DealsSerializer, GamesSerializer, OrderForDealSerializer, TempDealsSerializer
 
 
 class AllGames(APIView):
@@ -156,3 +156,33 @@ class Conditions(APIView):
             return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
         serializer = OrderForDealSerializer(order)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class StartDispute(APIView):
+    def post(self, request, order_id):
+        try:
+            me = OrderForDeal.objects.get(pk=int(order_id))
+        except OrderForDeal.DoesNotExist as err:
+            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
+        if not me.temp_deal:
+            return Response({'success': False, 'error': 'Temp deal does not exist'}, status=status.HTTP_403_FORBIDDEN)
+        competitor = OrderForDeal.objects.exclude(user=me.user).filter(temp_deal=me.temp_deal)
+        if not competitor:
+            return Response({'success': False, 'error': 'Temp deal does not exist'}, status=status.HTTP_403_FORBIDDEN)
+        if me.deal:
+            deal = Deals.objects.get(pk=me.deal.id)
+            serializer = DealsSerializer(deal)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            if competitor[0].deal:
+                me.deal = competitor[0].deal
+                me.save()
+                deal = Deals.objects.get(pk=me.deal.id)
+                serializer = DealsSerializer(deal)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                serializer = DealsSerializer(data=request.data, partial=True, context={'me': me})
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+                return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)

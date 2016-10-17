@@ -5,7 +5,7 @@ from rest_framework import serializers
 from chat.models import Chat, ManyChatsToManyUsersConnector
 from chat.serializers import ChatSerializer
 from loginsys.serializers import AuthenticatedUserSerializer
-from disputes.models import CanceledNegotiations, Games, OrderForDeal, Participants, TempDeals
+from disputes.models import CanceledNegotiations, Deals, Games, OrderForDeal, Participants, SteamGame, TempDeals
 
 
 class GamesSerializer(serializers.ModelSerializer):
@@ -102,3 +102,24 @@ class TempDealsSerializer(serializers.ModelSerializer):
                     except CanceledNegotiations.DoesNotExist:
                         CanceledNegotiations.objects.create(myself=order, competitor=order_2)
         return instance
+
+
+class SteamGameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SteamGame
+        fields = ('id', 'steam_game_uid')
+
+
+class DealsSerializer(serializers.ModelSerializer):
+    deal_sides = OrderForDealSerializer(many=True)
+    matches = SteamGameSerializer(many=True)
+
+    class Meta:
+        model = Deals
+        fields = ('id', 'is_active', 'deal_sides', 'matches')
+
+    def create(self, validated_data):
+        deal = Deals.objects.create()
+        self.context.get('me').deal = deal
+        self.context.get('me').save()
+        return deal
