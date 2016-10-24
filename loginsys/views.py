@@ -11,7 +11,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from loginsys.models import AdditionalUuid, DisputeName, StatisticSame
+from loginsys.models import AdditionalUuid, DisputeName, StatisticSame, UserBalance
 from loginsys.serializers import AuthenticatedUserSerializer
 from loginsys.towns import towns
 
@@ -61,9 +61,17 @@ def add_uid(request_object):
         appended_uuid.save()
 
 
+def add_balance(request_object):
+    balance = UserBalance.objects.filter(user=request_object.user.id)
+    if not balance:
+        user = User.objects.get(pk=request_object.user.id)
+        UserBalance.objects.create(user=user, integer_part='400', fractional_part='0')
+
+
 def append_additional_parameters(request_object):
     add_name(request_object)
     add_uid(request_object)
+    add_balance(request_object)
 
 
 def logged(request):

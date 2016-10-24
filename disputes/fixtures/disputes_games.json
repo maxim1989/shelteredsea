@@ -4,7 +4,8 @@
     "pk": 1,
     "fields": {
       "name": "Игра Дота 2",
-      "namespace": "dota2"
+      "namespace": "dota2",
+      "appid": "570"
     }
   }
 ]
