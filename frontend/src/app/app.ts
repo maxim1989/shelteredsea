@@ -33,8 +33,10 @@ export class AppComponent implements OnInit{
 
     initAuthUser(user: User) {
         this.is_authenticated = user.is_autorized;
-        this.userTitle = user.username;
-        this.uid = user.uid_for_client.name;
+        if ( user.is_autorized ) {
+            this.userTitle = user.username;
+            this.uid = user.uid_for_client.name;
+        }
     }
     
     routeLogIn() {

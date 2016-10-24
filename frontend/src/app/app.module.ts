@@ -3,10 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
-import { MdTabsModule } from '@angular2-material/tabs';
-import { MdCardModule } from '@angular2-material/card';
-import { MdProgressBarModule } from '@angular2-material/progress-bar';
-import { MdProgressCircleModule } from '@angular2-material/progress-circle';
+import { MaterialModule } from '@angular/material';
 
 import {AppComponent} from './app';
 import {routing} from './routes';
@@ -33,10 +30,7 @@ import {AccountStatisticComponent} from './account/statistic/main';
         routing,
         HttpModule,
 
-        MdTabsModule,
-        MdCardModule,
-        MdProgressBarModule,
-        MdProgressCircleModule
+        MaterialModule.forRoot()
     ],
     declarations: [
         AppComponent,
