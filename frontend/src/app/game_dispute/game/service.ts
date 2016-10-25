@@ -22,6 +22,19 @@ export class GameService {
             .catch(this.handlerError);
     }
 
+    getGameByNamespace(namespace: string) {
+        //noinspection TypeScriptUnresolvedFunction
+        return this.http.get(this.GAME_URL + "/" + namespace)
+            .toPromise()
+            .then(
+                response => {
+                    let result = response.json();
+                    return result as Game;
+                }
+            )
+            .catch(this.handlerError);
+    }
+
     handlerError(error: any) {
         return Promise.reject(error.message || error);
     }

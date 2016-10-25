@@ -1,13 +1,14 @@
-<h1>Оформление заявки на спор по игре ...</h1>
+<h1>Оформление заявки на спор по игре <em>{{game.name}}</em></h1>
 <div class="row">
     <div class="col-md-2">
         <h4>Вид игры:</h4>
-        <ul>
+        <ul class="nav nav-pills nav-stacked">
             <li *ngFor="let game_option of DEFAULT_GAMERS_COUNT"
+                role="presentation"
+                [class.active]="game_option == dealParams.gamers_count"
+                [class.disabled]="game_option.disabled"
                 (click)="changeGamersCount(game_option)">
-                <span [class.text-danger]="game_option == dealParams.gamers_count">
-                    {{game_option.name}}
-                </span>
+                <a>{{game_option.name}}</a>
             </li>
         </ul>
     </div>
@@ -31,12 +32,11 @@
                     placeholder="500" />
             </div>
         </div>
-        <md-slider min="1" max="5"></md-slider>
     </form>
     <div class="col-md-3 text-center">
-        <button type="button"
-                (click)="sendOrder()"
-                class="btn btn-danger btn-lg">
+        <button md-fab color="warn"
+                [disabled]="!dealParams.gamers_count || !dealParams.rate.left_limit || !dealParams.rate.right_limit"
+                (click)="sendOrder()">
             FA
         </button>
     </div>

@@ -12,7 +12,7 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 43:
+/***/ 34:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -37,10 +37,10 @@ webpackJsonp([1],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(3);
-	var http_1 = __webpack_require__(21);
-	__webpack_require__(43);
+	var http_1 = __webpack_require__(19);
+	__webpack_require__(34);
 	// Statics
-	__webpack_require__(366);
+	__webpack_require__(368);
 	// Operators
 	__webpack_require__(144);
 	__webpack_require__(145);
@@ -124,7 +124,7 @@ webpackJsonp([1],{
 	 * License: MIT
 	 */
 	(function (global, factory) {
-	     true ? factory(exports, __webpack_require__(3), __webpack_require__(158), __webpack_require__(42), __webpack_require__(4), __webpack_require__(150)) :
+	     true ? factory(exports, __webpack_require__(3), __webpack_require__(158), __webpack_require__(43), __webpack_require__(4), __webpack_require__(150)) :
 	    typeof define === 'function' && define.amd ? define(['exports', '@angular/core', 'rxjs/operator/toPromise', 'rxjs/Subject', 'rxjs/Observable', 'rxjs/observable/fromPromise'], factory) :
 	    (factory((global.ng = global.ng || {}, global.ng.forms = global.ng.forms || {}),global.ng.core,global.Rx.Observable.prototype,global.Rx,global.Rx,global.Rx.Observable));
 	}(this, function (exports,_angular_core,rxjs_operator_toPromise,rxjs_Subject,rxjs_Observable,rxjs_observable_fromPromise) { 'use strict';
@@ -4653,9 +4653,9 @@ webpackJsonp([1],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(3);
-	var http_1 = __webpack_require__(21);
+	var http_1 = __webpack_require__(19);
 	var ng2_cookies_1 = __webpack_require__(142);
-	__webpack_require__(43);
+	__webpack_require__(34);
 	var FriendshipService = (function () {
 	    function FriendshipService(http) {
 	        this.http = http;
@@ -4789,7 +4789,7 @@ webpackJsonp([1],{
 	    AccountComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account',
-	            template: __webpack_require__(349)
+	            template: __webpack_require__(351)
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object, (typeof (_b = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _b) || Object])
 	    ], AccountComponent);
@@ -4839,7 +4839,7 @@ webpackJsonp([1],{
 	    ChatHistoryComponent = __decorate([
 	        core_1.Component({
 	            selector: 'chat-history',
-	            template: __webpack_require__(354)
+	            template: __webpack_require__(356)
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object, (typeof (_b = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _b) || Object])
 	    ], ChatHistoryComponent);
@@ -4866,37 +4866,46 @@ webpackJsonp([1],{
 	};
 	var core_1 = __webpack_require__(3);
 	var router_1 = __webpack_require__(47);
-	var params_model_1 = __webpack_require__(179);
+	var params_model_1 = __webpack_require__(180);
+	var model_1 = __webpack_require__(181);
 	var auth_service_1 = __webpack_require__(48);
 	var service_1 = __webpack_require__(103);
+	var service_2 = __webpack_require__(179);
 	var DealOrder = (function () {
-	    function DealOrder(UserService, GameService, router, route) {
+	    function DealOrder(UserService, GameService, DealOrderService, router, route) {
 	        this.UserService = UserService;
 	        this.GameService = GameService;
+	        this.DealOrderService = DealOrderService;
 	        this.router = router;
 	        this.route = route;
 	        this.DEFAULT_GAMERS_COUNT = [
 	            {
 	                id: 1,
-	                name: "1x1"
+	                name: "1x1",
+	                disabled: false
 	            },
 	            {
 	                id: 2,
-	                name: "2x2"
+	                name: "2x2",
+	                disabled: true
 	            },
 	            {
 	                id: 3,
-	                name: "3x3"
+	                name: "3x3",
+	                disabled: true
 	            },
 	            {
 	                id: 4,
-	                name: "4x4"
+	                name: "4x4",
+	                disabled: true
 	            },
 	            {
 	                id: 5,
-	                name: "5x5"
+	                name: "5x5",
+	                disabled: true
 	            }
 	        ];
+	        this.game = new model_1.Game();
 	        this.dealParams = new params_model_1.DealParams();
 	    }
 	    DealOrder.prototype.ngOnInit = function () {
@@ -4906,14 +4915,24 @@ webpackJsonp([1],{
 	            .catch(function () { _this.redirectToMainPage(); });
 	    };
 	    DealOrder.prototype.loadTemplate = function () {
-	        console.log("TODO loadTemplate");
+	        var _this = this;
 	        this.route.params.forEach(function (params) {
-	            var game_namespace = params['game_namespace'];
-	            console.log(game_namespace);
+	            var gameNamespace = params['game_namespace'];
+	            _this.GameService.getGameByNamespace(gameNamespace)
+	                .then(function (game) {
+	                _this.game = game;
+	                _this.initExistsOrders();
+	            });
 	        });
 	    };
+	    DealOrder.prototype.initExistsOrders = function () {
+	        this.DealOrderService.getMyOrders(this.game.namespace)
+	            .then(function (orders) { console.log(orders); });
+	    };
 	    DealOrder.prototype.changeGamersCount = function (gameOption) {
-	        this.dealParams.gamers_count = gameOption;
+	        if (!gameOption.disabled) {
+	            this.dealParams.gamers_count = gameOption;
+	        }
 	    };
 	    DealOrder.prototype.sendOrder = function () {
 	        console.log(this.dealParams);
@@ -4924,13 +4943,13 @@ webpackJsonp([1],{
 	    DealOrder = __decorate([
 	        core_1.Component({
 	            selector: 'deal-order',
-	            template: __webpack_require__(356),
-	            providers: [service_1.GameService]
+	            template: __webpack_require__(358),
+	            providers: [service_1.GameService, service_2.DealOrderService]
 	        }), 
-	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object, (typeof (_b = typeof service_1.GameService !== 'undefined' && service_1.GameService) === 'function' && _b) || Object, (typeof (_c = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _c) || Object, (typeof (_d = typeof router_1.ActivatedRoute !== 'undefined' && router_1.ActivatedRoute) === 'function' && _d) || Object])
+	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object, (typeof (_b = typeof service_1.GameService !== 'undefined' && service_1.GameService) === 'function' && _b) || Object, (typeof (_c = typeof service_2.DealOrderService !== 'undefined' && service_2.DealOrderService) === 'function' && _c) || Object, (typeof (_d = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _d) || Object, (typeof (_e = typeof router_1.ActivatedRoute !== 'undefined' && router_1.ActivatedRoute) === 'function' && _e) || Object])
 	    ], DealOrder);
 	    return DealOrder;
-	    var _a, _b, _c, _d;
+	    var _a, _b, _c, _d, _e;
 	}());
 	exports.DealOrder = DealOrder;
 
@@ -4951,8 +4970,8 @@ webpackJsonp([1],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(3);
-	var http_1 = __webpack_require__(21);
-	__webpack_require__(43);
+	var http_1 = __webpack_require__(19);
+	__webpack_require__(34);
 	var GameService = (function () {
 	    function GameService(http) {
 	        this.http = http;
@@ -4961,6 +4980,16 @@ webpackJsonp([1],{
 	    GameService.prototype.getGames = function () {
 	        //noinspection TypeScriptUnresolvedFunction
 	        return this.http.get(this.GAME_URL)
+	            .toPromise()
+	            .then(function (response) {
+	            var result = response.json();
+	            return result;
+	        })
+	            .catch(this.handlerError);
+	    };
+	    GameService.prototype.getGameByNamespace = function (namespace) {
+	        //noinspection TypeScriptUnresolvedFunction
+	        return this.http.get(this.GAME_URL + "/" + namespace)
 	            .toPromise()
 	            .then(function (response) {
 	            var result = response.json();
@@ -5027,7 +5056,7 @@ webpackJsonp([1],{
 	    GameDispute = __decorate([
 	        core_1.Component({
 	            selector: 'pfg',
-	            template: __webpack_require__(357),
+	            template: __webpack_require__(359),
 	            providers: [service_1.GameService]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof service_1.GameService !== 'undefined' && service_1.GameService) === 'function' && _a) || Object, (typeof (_b = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _b) || Object])
@@ -5060,7 +5089,7 @@ webpackJsonp([1],{
 	    StartPageComponent = __decorate([
 	        core_1.Component({
 	            selector: 'start_page',
-	            template: __webpack_require__(358),
+	            template: __webpack_require__(360),
 	        }), 
 	        __metadata('design:paramtypes', [])
 	    ], StartPageComponent);
@@ -5114,7 +5143,7 @@ webpackJsonp([1],{
 /***/ function(module, exports, __webpack_require__) {
 
 	// Export all services
-	var cookie_1 = __webpack_require__(344);
+	var cookie_1 = __webpack_require__(346);
 	exports.Cookie = cookie_1.Cookie;
 	//# sourceMappingURL=services.js.map
 
@@ -5152,7 +5181,7 @@ webpackJsonp([1],{
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var Subject_1 = __webpack_require__(42);
+	var Subject_1 = __webpack_require__(43);
 	var Observable_1 = __webpack_require__(4);
 	var Subscriber_1 = __webpack_require__(14);
 	var Subscription_1 = __webpack_require__(56);
@@ -5307,7 +5336,7 @@ webpackJsonp([1],{
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var root_1 = __webpack_require__(34);
+	var root_1 = __webpack_require__(35);
 	/**
 	 * @param PromiseCtor
 	 * @return {Promise<T>}
@@ -5341,7 +5370,7 @@ webpackJsonp([1],{
 /***/ function(module, exports, __webpack_require__) {
 
 	(function (global, factory) {
-	     true ? factory(exports, __webpack_require__(3), __webpack_require__(42), __webpack_require__(46), __webpack_require__(97), __webpack_require__(4), __webpack_require__(70), __webpack_require__(21), __webpack_require__(364), __webpack_require__(365), __webpack_require__(145), __webpack_require__(368), __webpack_require__(367), __webpack_require__(371), __webpack_require__(369), __webpack_require__(144), __webpack_require__(370)) :
+	     true ? factory(exports, __webpack_require__(3), __webpack_require__(43), __webpack_require__(46), __webpack_require__(97), __webpack_require__(4), __webpack_require__(70), __webpack_require__(19), __webpack_require__(366), __webpack_require__(367), __webpack_require__(145), __webpack_require__(370), __webpack_require__(369), __webpack_require__(373), __webpack_require__(371), __webpack_require__(144), __webpack_require__(372)) :
 	    typeof define === 'function' && define.amd ? define(['exports', '@angular/core', 'rxjs/Subject', '@angular/platform-browser', '@angular/forms', 'rxjs/Observable', '@angular/common', '@angular/http', 'rxjs/add/observable/forkJoin', 'rxjs/add/observable/of', 'rxjs/add/operator/map', 'rxjs/add/operator/filter', 'rxjs/add/operator/do', 'rxjs/add/operator/share', 'rxjs/add/operator/finally', 'rxjs/add/operator/catch', 'rxjs/add/operator/first'], factory) :
 	    (factory((global.ng = global.ng || {}, global.ng.material = global.ng.material || {}),global.ng.core,global.Rx,global.ng.platformBrowser,global.ng.forms,global.Rx,global.ng.common,global.ng.http,global.Rx.Observable,global.Rx.Observable,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.rxjs_add_operator_first));
 	}(this, (function (exports,_angular_core,rxjs_Subject,_angular_platformBrowser,_angular_forms,rxjs_Observable,_angular_common,_angular_http,rxjs_add_observable_forkJoin,rxjs_add_observable_of,rxjs_add_operator_map,rxjs_add_operator_filter,rxjs_add_operator_do,rxjs_add_operator_share,rxjs_add_operator_finally,rxjs_add_operator_catch,rxjs_add_operator_first) { 'use strict';
@@ -14387,7 +14416,7 @@ webpackJsonp([1],{
 	    AccountCardComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-card',
-	            template: __webpack_require__(346),
+	            template: __webpack_require__(348),
 	            providers: [],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object])
@@ -14436,7 +14465,7 @@ webpackJsonp([1],{
 	    AccountChatComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-chat',
-	            template: __webpack_require__(347),
+	            template: __webpack_require__(349),
 	            providers: [service_1.AccountChatService],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof service_1.AccountChatService !== 'undefined' && service_1.AccountChatService) === 'function' && _a) || Object])
@@ -14463,8 +14492,8 @@ webpackJsonp([1],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(3);
-	var http_1 = __webpack_require__(21);
-	__webpack_require__(43);
+	var http_1 = __webpack_require__(19);
+	__webpack_require__(34);
 	var AccountChatService = (function () {
 	    function AccountChatService(http) {
 	        this.http = http;
@@ -14557,7 +14586,7 @@ webpackJsonp([1],{
 	    AccountFriendshipComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-friendship',
-	            template: __webpack_require__(348),
+	            template: __webpack_require__(350),
 	            providers: [service_1.FriendshipService],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof service_1.FriendshipService !== 'undefined' && service_1.FriendshipService) === 'function' && _a) || Object])
@@ -14613,7 +14642,7 @@ webpackJsonp([1],{
 	    AccountSearchComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-search',
-	            template: __webpack_require__(350),
+	            template: __webpack_require__(352),
 	            providers: [service_1.SearchUserService],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof service_1.SearchUserService !== 'undefined' && service_1.SearchUserService) === 'function' && _a) || Object])
@@ -14669,7 +14698,7 @@ webpackJsonp([1],{
 	    AccountSearchResultListComponent = __decorate([
 	        core_1.Component({
 	            selector: 'search-result-list',
-	            template: __webpack_require__(351),
+	            template: __webpack_require__(353),
 	            providers: [service_1.FriendshipService]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_b = typeof service_1.FriendshipService !== 'undefined' && service_1.FriendshipService) === 'function' && _b) || Object])
@@ -14696,8 +14725,8 @@ webpackJsonp([1],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(3);
-	var http_1 = __webpack_require__(21);
-	__webpack_require__(43);
+	var http_1 = __webpack_require__(19);
+	__webpack_require__(34);
 	var SearchUserService = (function () {
 	    function SearchUserService(http) {
 	        this.http = http;
@@ -14764,7 +14793,7 @@ webpackJsonp([1],{
 	    AccountStatisticComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-statistic',
-	            template: __webpack_require__(352),
+	            template: __webpack_require__(354),
 	            providers: [service_1.StatisticService],
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_b = typeof service_1.StatisticService !== 'undefined' && service_1.StatisticService) === 'function' && _b) || Object])
@@ -14791,8 +14820,8 @@ webpackJsonp([1],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(3);
-	var http_1 = __webpack_require__(21);
-	__webpack_require__(43);
+	var http_1 = __webpack_require__(19);
+	__webpack_require__(34);
 	var StatisticService = (function () {
 	    function StatisticService(http) {
 	        this.http = http;
@@ -14840,10 +14869,10 @@ webpackJsonp([1],{
 	var core_1 = __webpack_require__(3);
 	var platform_browser_1 = __webpack_require__(46);
 	var forms_1 = __webpack_require__(97);
-	var http_1 = __webpack_require__(21);
+	var http_1 = __webpack_require__(19);
 	var material_1 = __webpack_require__(164);
 	var app_1 = __webpack_require__(175);
-	var routes_1 = __webpack_require__(181);
+	var routes_1 = __webpack_require__(183);
 	var main_1 = __webpack_require__(176);
 	var main_2 = __webpack_require__(101);
 	var main_3 = __webpack_require__(105);
@@ -14946,7 +14975,7 @@ webpackJsonp([1],{
 	        core_1.Component({
 	            selector: 'app',
 	            providers: [auth_service_1.UserService],
-	            template: __webpack_require__(353),
+	            template: __webpack_require__(355),
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object])
 	    ], AppComponent);
@@ -15045,7 +15074,7 @@ webpackJsonp([1],{
 	    ChatComponent = __decorate([
 	        core_1.Component({
 	            selector: 'chat',
-	            template: __webpack_require__(355),
+	            template: __webpack_require__(357),
 	            providers: [service_1.ChatService]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_c = typeof service_1.ChatService !== 'undefined' && service_1.ChatService) === 'function' && _c) || Object])
@@ -15086,9 +15115,9 @@ webpackJsonp([1],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(3);
-	var http_1 = __webpack_require__(21);
+	var http_1 = __webpack_require__(19);
 	var ng2_cookies_1 = __webpack_require__(142);
-	__webpack_require__(43);
+	__webpack_require__(34);
 	var ChatService = (function () {
 	    function ChatService(http) {
 	        this.http = http;
@@ -15154,8 +15183,55 @@ webpackJsonp([1],{
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var standard_model_1 = __webpack_require__(182);
-	var range_model_1 = __webpack_require__(180);
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(3);
+	var http_1 = __webpack_require__(19);
+	__webpack_require__(34);
+	var DealOrderService = (function () {
+	    function DealOrderService(http) {
+	        this.http = http;
+	        this.ORDER_URL = 'pfg/';
+	    }
+	    DealOrderService.prototype.getMyOrders = function (game_name) {
+	        console.log(game_name);
+	        //noinspection TypeScriptUnresolvedFunction
+	        return this.http.get(this.ORDER_URL + game_name + "/deal_order_myself")
+	            .toPromise()
+	            .then(function (response) {
+	            var result = response.json();
+	            return result;
+	        })
+	            .catch(this.handlerError);
+	    };
+	    DealOrderService.prototype.handlerError = function (error) {
+	        return Promise.reject(error.message || error);
+	    };
+	    DealOrderService = __decorate([
+	        core_1.Injectable(), 
+	        __metadata('design:paramtypes', [(typeof (_a = typeof http_1.Http !== 'undefined' && http_1.Http) === 'function' && _a) || Object])
+	    ], DealOrderService);
+	    return DealOrderService;
+	    var _a;
+	}());
+	exports.DealOrderService = DealOrderService;
+
+
+/***/ },
+
+/***/ 180:
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var standard_model_1 = __webpack_require__(184);
+	var range_model_1 = __webpack_require__(182);
 	var DealParams = (function () {
 	    function DealParams() {
 	        this.gamers_count = new standard_model_1.Standard();
@@ -15168,7 +15244,21 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 180:
+/***/ 181:
+/***/ function(module, exports) {
+
+	"use strict";
+	var Game = (function () {
+	    function Game() {
+	    }
+	    return Game;
+	}());
+	exports.Game = Game;
+
+
+/***/ },
+
+/***/ 182:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -15182,7 +15272,7 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 181:
+/***/ 183:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -15214,12 +15304,13 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 182:
+/***/ 184:
 /***/ function(module, exports) {
 
 	"use strict";
 	var Standard = (function () {
 	    function Standard() {
+	        this.disabled = false;
 	    }
 	    return Standard;
 	}());
@@ -15228,7 +15319,7 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 344:
+/***/ 346:
 /***/ function(module, exports) {
 
 	/**
@@ -15321,109 +15412,109 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 346:
+/***/ 348:
 /***/ function(module, exports) {
 
 	module.exports = "<md-card>\n    <md-card-subtitle>Личные данные</md-card-subtitle>\n    <md-card-content>\n        <div *ngIf=\"user\">\n            <p>Имя в статистике: <strong>{{user.statistic_name.name}}</strong></p>\n            <p>id: <strong>{{user.uid_for_client.name}}</strong></p>\n            <div class=\"payment text-center\">\n                <h4>Баланс</h4>\n                <p>\n                    <strong><em>{{balance}}</em> бубликов</strong>\n                </p>\n                <p>\n                    <button type=\"button\"\n                            class=\"btn btn-primary\"\n                            disabled=\"disabled\">\n                        Пополнить баланс\n                    </button>\n                </p>\n            </div>\n        </div>\n    </md-card-content>\n</md-card>"
 
 /***/ },
 
-/***/ 347:
+/***/ 349:
 /***/ function(module, exports) {
 
 	module.exports = "<div *ngIf=\"!chatList\">\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n</div>\n<div *ngIf=\"chatList && !chatList.length\">\n    <em>Нет активных разговоров</em>\n</div>\n<div *ngIf=\"chatList && chatList.length\"\n        class=\"row\">\n    <div class=\"col-md-4\">\n        <div class=\"list-group\">\n            <a *ngFor=\"let chat of chatList\"\n               class=\"list-group-item\"\n               [class.active]=\"selectedChat == chat\"\n               (click)=\"chooseChat(chat)\">\n                <span *ngIf=\"chat.count_not_read_messages != 0\"\n                      class=\"badge\">\n                    <span class=\"glyphicon glyphicon-envelope\"></span> {{chat.count_not_read_messages}}\n                </span>\n                {{chat.user.username}}\n            </a>\n        </div>\n    </div>\n    <div class=\"col-md-8\">\n        <chat [chat]=\"selectedChat\"></chat>\n    </div>\n</div>\n"
 
 /***/ },
 
-/***/ 348:
+/***/ 350:
 /***/ function(module, exports) {
 
 	module.exports = "<div *ngIf=\"!friendList || !applicationsToFriends\">\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n</div>\n<div *ngIf=\"friendList && applicationsToFriends && !friendList.length && !applicationsToFriends.length\">\n    <em>У вас нет друзей</em>\n</div>\n<div *ngIf=\"friendList && friendList.length\">\n    <h4>Друзья</h4>\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">№ п/п</th>\n            <th>Имя</th>\n            <th width=\"160\">Действия</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let friendship of friendList; let i = index\">\n                <td>{{i + 1}}</td>\n                <td>{{friendship.friend.username}}</td>\n                <td>\n                    <div *ngIf=\"!friendship.friend.is_busy\">\n                        <button class=\"btn btn-primary btn-sm\"\n                                (click)=\"removeFriendship(friendship.friend)\">\n                            Удалить из друзей\n                        </button>\n                    </div>\n                    <div *ngIf=\"friendship.friend.is_busy\">\n                        <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n                    </div>\n                </td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n\n<div *ngIf=\"applicationsToFriends && applicationsToFriends.length\">\n    <h4>Заявки в друзья</h4>\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">№ п/п</th>\n            <th>Имя</th>\n            <th width=\"220\">Действия</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let friendship of applicationsToFriends; let i = index\">\n                <td>{{i + 1}}</td>\n                <td>{{friendship.friend.username}}</td>\n                <td>\n                    <div *ngIf=\"!friendship.friend.is_busy\">\n                        <button *ngIf=\"!friendship.friend.is_busy\"\n                                class=\"btn btn-primary btn-sm\"\n                                (click)=\"acceptFriendship(friendship.friend)\">\n                            Принять дружбу\n                        </button>\n                        <button class=\"btn btn-default btn-sm\"\n                                (click)=\"declineFriendship(friendship.friend)\">\n                            Отклонить\n                        </button>\n                    </div>\n                    <div *ngIf=\"friendship.friend.is_busy\">\n                        <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n                    </div>\n                </td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n"
 
 /***/ },
 
-/***/ 349:
+/***/ 351:
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"raw\">\n    <md-tab-group class=\"col-md-8\">\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-envelope\" aria-hidden=\"true\"></span> Сообщения\n            </template>\n            <template md-tab-content>\n                <account-chat></account-chat>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-star\" aria-hidden=\"true\"></span> Друзья\n            </template>\n            <template md-tab-content>\n                <account-friendship></account-friendship>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-signal\" aria-hidden=\"true\"></span> Статистика\n            </template>\n            <template md-tab-content>\n                <account-statistic [user]=\"user\"></account-statistic>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Поиск\n            </template>\n            <template md-tab-content>\n                <account-search></account-search>\n            </template>\n        </md-tab>\n    </md-tab-group>\n    <account-card class=\"col-md-4\"></account-card>\n</div>\n"
 
 /***/ },
 
-/***/ 350:
+/***/ 352:
 /***/ function(module, exports) {
 
 	module.exports = "<form>\n    <fieldset [disabled]=\"inSearchState\">\n        <div class=\"form-group\">\n            <label for=\"search-query-field\">Введите ID пользователя для поиска:</label>\n            <div class=\"input-group\">\n                <input\n                        id=\"search-query-field\"\n                        type=\"text\"\n                        name=\"search_uid\"\n                        class=\"form-control\"\n                        placeholder=\"ID пользователя\"\n                        [(ngModel)]=\"IDForSearch\" />\n                <span class=\"input-group-btn\">\n                    <button\n                            class=\"btn btn-primary\"\n                            type=\"button\"\n                            (click)=\"searchUserByID()\">\n                        Поиск\n                    </button>\n                </span>\n            </div>\n        </div>\n    </fieldset>\n    <div class=\"form-group\"\n         [hidden]=\"!inSearchState\">\n        <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n    </div>\n</form>\n<search-result-list [user]=\"foundUser\" [showResult]=\"showResultState\"></search-result-list>\n"
 
 /***/ },
 
-/***/ 351:
+/***/ 353:
 /***/ function(module, exports) {
 
 	module.exports = "<div *ngIf=\"user\">\n    <h4>Найден пользователь:</h4>\n    <div class=\"row\">\n        <div class=\"col-md-8\">{{user.username}}</div>\n        <div class=\"col-md-4 text-right\">\n            <div *ngIf=\"!user.is_friend && !user.is_busy\">\n                <button\n                        class=\"btn btn-default btn-xs\"\n                        (click)=\"addFriend()\">\n                    Добавить в друзья\n                </button>\n            </div>\n            <div *ngIf=\"user.is_friend && !user.is_busy\">\n                <button\n                        class=\"btn btn-default btn-sm\"\n                        disabled>\n                    Уже в друзьях\n                </button>\n            </div>\n            <div *ngIf=\"user.is_busy\">\n                <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n            </div>\n        </div>\n    </div>\n</div>\n<div *ngIf=\"showResult && !user\">\n    <em>Пользователи не найдены</em>\n</div>"
 
 /***/ },
 
-/***/ 352:
+/***/ 354:
 /***/ function(module, exports) {
 
 	module.exports = "<div *ngIf=\"!statisticUserList\">\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n</div>\n<div *ngIf=\"statisticUserList && !statisticUserList.length\">\n    <em>Статистика отсутствует</em>\n</div>\n<div *ngIf=\"statisticUserList && statisticUserList.length\">\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th width=\"80\">Место</th>\n            <th>Имя</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let statisticUser of statisticUserList; let i = index\"\n                    [class.success]=\"statisticUser.id==user.id\">\n                <td>{{i + 1}}</td>\n                <td>{{statisticUser.statistic_name.name}}</td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n"
 
 /***/ },
 
-/***/ 353:
+/***/ 355:
 /***/ function(module, exports) {
 
 	module.exports = "<nav class=\"navbar navbar-default\">\n    <div class=\"container-fluid\">\n        <div class=\"navbar-header\">\n            <a class=\"navbar-brand\"\n               routerLink=\"/\">\n                Сyfa.pnt\n            </a>\n        </div>\n        <ul class=\"nav navbar-nav navbar-right\">\n            <li *ngIf=\"!userLoaded\">\n                <em>Загрузка данных...</em>\n            </li>\n            <li *ngIf=\"userLoaded && is_authenticated\">\n                <a class=\"log-in text-left\"\n                   routerLink=\"account\">\n                    <span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span> {{userTitle}}\n                </a>\n            </li>\n            <li *ngIf=\"userLoaded && is_authenticated\">\n                <p class=\"navbar-text\"><em>id: {{uid}}</em></p>\n            </li>\n            <li *ngIf=\"userLoaded && is_authenticated\">\n                <a class=\"log-in\"\n                   (click)=\"routeLogOut()\">\n                    <span class=\"glyphicon glyphicon-log-out\" aria-hidden=\"true\"></span> Выйти\n                </a>\n            </li>\n            <li *ngIf=\"userLoaded && !is_authenticated\">\n                <a class=\"log-in\"\n                   (click)=\"routeLogIn()\">\n                    <span class=\"glyphicon glyphicon-log-in\" aria-hidden=\"true\"></span> Войти\n                </a>\n            </li>\n        </ul>\n    </div>\n</nav>\n\n<main>\n    <router-outlet></router-outlet>\n</main>\n"
 
 /***/ },
 
-/***/ 354:
+/***/ 356:
 /***/ function(module, exports) {
 
 	module.exports = "<div *ngFor=\"let message of messages\"\n     class=\"chat__message_stripe\"\n     [class.myself]=\"message.isMyself\"\n     [class.other]=\"!message.isMyself\">\n    <div class=\"chat__message_block\">\n        <div class=\"chat__message-date\">{{message.creation_datetime | date:'yyyy.MM.dd HH:mm'}}</div>\n        <div class=\"chat__message-body\"\n             [innerHTML]=\"message.message\">\n        </div>\n    </div>\n</div>\n"
 
 /***/ },
 
-/***/ 355:
+/***/ 357:
 /***/ function(module, exports) {
 
 	module.exports = "<div *ngIf=\"chat && messages && messages.length\" class=\"chat__block\">\n    <chat-history #history class=\"chat__history\"></chat-history>\n    <form class=\"chat__editor\">\n        <div class=\"form-group\">\n            <textarea class=\"form-control\"\n                      [(ngModel)]=\"messageForSend\" [ngModelOptions]=\"{standalone: true}\">\n            </textarea>\n        </div>\n        <div class=\"form-group text-right\">\n            <button type=\"button\"\n                    class=\"btn btn-primary\"\n                    (click)=\"sendMessage()\"\n                    [disabled]=\"messageForSend==''\">\n                Отправить\n            </button>\n        </div>\n    </form>\n</div>\n<div *ngIf=\"!chat && !isBusy\">\n    <em>Не выбран собеседник</em>\n</div>\n<div *ngIf=\"isBusy\">\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n</div>\n"
 
 /***/ },
 
-/***/ 356:
+/***/ 358:
 /***/ function(module, exports) {
 
-	module.exports = "<h1>Оформление заявки на спор по игре ...</h1>\n<div class=\"row\">\n    <div class=\"col-md-2\">\n        <h4>Вид игры:</h4>\n        <ul>\n            <li *ngFor=\"let game_option of DEFAULT_GAMERS_COUNT\"\n                (click)=\"changeGamersCount(game_option)\">\n                <span [class.text-danger]=\"game_option == dealParams.gamers_count\">\n                    {{game_option.name}}\n                </span>\n            </li>\n        </ul>\n    </div>\n    <form class=\"col-md-3\">\n        <h4>Сумма сделки:</h4>\n        <div class=\"row\">\n            <div class=\"form-group col-md-6\">\n                <label>от</label>\n                <input type=\"text\" \n                       [(ngModel)]=\"dealParams.rate.left_limit\"\n                       name=\"left_limit\"\n                       class=\"form-control\" \n                       placeholder=\"100\" />\n            </div>\n            <div class=\"form-group col-md-6\">\n                <label>до</label>\n                <input type=\"text\" \n                    [(ngModel)]=\"dealParams.rate.right_limit\"\n                    name=\"right_limit\"\n                    class=\"form-control\" \n                    placeholder=\"500\" />\n            </div>\n        </div>\n        <md-slider min=\"1\" max=\"5\"></md-slider>\n    </form>\n    <div class=\"col-md-3 text-center\">\n        <button type=\"button\"\n                (click)=\"sendOrder()\"\n                class=\"btn btn-danger btn-lg\">\n            FA\n        </button>\n    </div>\n</div>"
+	module.exports = "<h1>Оформление заявки на спор по игре <em>{{game.name}}</em></h1>\n<div class=\"row\">\n    <div class=\"col-md-2\">\n        <h4>Вид игры:</h4>\n        <ul class=\"nav nav-pills nav-stacked\">\n            <li *ngFor=\"let game_option of DEFAULT_GAMERS_COUNT\"\n                role=\"presentation\"\n                [class.active]=\"game_option == dealParams.gamers_count\"\n                [class.disabled]=\"game_option.disabled\"\n                (click)=\"changeGamersCount(game_option)\">\n                <a>{{game_option.name}}</a>\n            </li>\n        </ul>\n    </div>\n    <form class=\"col-md-3\">\n        <h4>Сумма сделки:</h4>\n        <div class=\"row\">\n            <div class=\"form-group col-md-6\">\n                <label>от</label>\n                <input type=\"text\" \n                       [(ngModel)]=\"dealParams.rate.left_limit\"\n                       name=\"left_limit\"\n                       class=\"form-control\" \n                       placeholder=\"100\" />\n            </div>\n            <div class=\"form-group col-md-6\">\n                <label>до</label>\n                <input type=\"text\" \n                    [(ngModel)]=\"dealParams.rate.right_limit\"\n                    name=\"right_limit\"\n                    class=\"form-control\" \n                    placeholder=\"500\" />\n            </div>\n        </div>\n    </form>\n    <div class=\"col-md-3 text-center\">\n        <button md-fab color=\"warn\"\n                [disabled]=\"!dealParams.gamers_count || !dealParams.rate.left_limit || !dealParams.rate.right_limit\"\n                (click)=\"sendOrder()\">\n            FA\n        </button>\n    </div>\n</div>"
 
 /***/ },
 
-/***/ 357:
+/***/ 359:
 /***/ function(module, exports) {
 
 	module.exports = "<h1>PfG: спор через игру</h1>\n<p>Выберите игру для спора:</p>\n<div *ngIf=\"!gameList\">\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n</div>\n<ul *ngIf=\"gameList && gameList.length\">\n    <li *ngFor=\"let game of gameList\"\n        (click)=\"changeGame(game.namespace)\">\n        {{game.name}}\n    </li>\n</ul>\n"
 
 /***/ },
 
-/***/ 358:
+/***/ 360:
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"start-page row\">\n    <div class=\"col-md-4\">\n        <a class=\"thumbnail text-center\"\n           routerLink=\"/pfg\">\n            <div class=\"caption\">\n                <p>PfG</p>\n            </div>\n            <div class=\"pfg-logo\"></div>\n        </a>\n    </div>\n    <div class=\"col-md-offset-1 col-md-7\">\n        <h1>Сyfa.pnt</h1>\n        <p>Добро пожаловать на сайт.</p>\n        <p>\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n        </p>\n        <p>\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n        </p>\n    </div>\n</div>\n"
 
 /***/ },
 
-/***/ 364:
+/***/ 366:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var Observable_1 = __webpack_require__(4);
-	var forkJoin_1 = __webpack_require__(378);
+	var forkJoin_1 = __webpack_require__(380);
 	Observable_1.Observable.forkJoin = forkJoin_1.forkJoin;
 	//# sourceMappingURL=forkJoin.js.map
 
 /***/ },
 
-/***/ 365:
+/***/ 367:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -15434,30 +15525,30 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 366:
+/***/ 368:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var Observable_1 = __webpack_require__(4);
-	var throw_1 = __webpack_require__(380);
+	var throw_1 = __webpack_require__(382);
 	Observable_1.Observable.throw = throw_1._throw;
 	//# sourceMappingURL=throw.js.map
 
 /***/ },
 
-/***/ 367:
+/***/ 369:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var Observable_1 = __webpack_require__(4);
-	var do_1 = __webpack_require__(383);
+	var do_1 = __webpack_require__(385);
 	Observable_1.Observable.prototype.do = do_1._do;
 	Observable_1.Observable.prototype._do = do_1._do;
 	//# sourceMappingURL=do.js.map
 
 /***/ },
 
-/***/ 368:
+/***/ 370:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -15468,19 +15559,19 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 369:
+/***/ 371:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var Observable_1 = __webpack_require__(4);
-	var finally_1 = __webpack_require__(385);
+	var finally_1 = __webpack_require__(387);
 	Observable_1.Observable.prototype.finally = finally_1._finally;
 	Observable_1.Observable.prototype._finally = finally_1._finally;
 	//# sourceMappingURL=finally.js.map
 
 /***/ },
 
-/***/ 370:
+/***/ 372:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -15491,18 +15582,18 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 371:
+/***/ 373:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var Observable_1 = __webpack_require__(4);
-	var share_1 = __webpack_require__(390);
+	var share_1 = __webpack_require__(392);
 	Observable_1.Observable.prototype.share = share_1.share;
 	//# sourceMappingURL=share.js.map
 
 /***/ },
 
-/***/ 373:
+/***/ 375:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -15590,7 +15681,7 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 374:
+/***/ 376:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -15708,7 +15799,7 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 377:
+/***/ 379:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -15741,27 +15832,27 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 378:
+/***/ 380:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var ForkJoinObservable_1 = __webpack_require__(374);
+	var ForkJoinObservable_1 = __webpack_require__(376);
 	exports.forkJoin = ForkJoinObservable_1.ForkJoinObservable.create;
 	//# sourceMappingURL=forkJoin.js.map
 
 /***/ },
 
-/***/ 380:
+/***/ 382:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var ErrorObservable_1 = __webpack_require__(373);
+	var ErrorObservable_1 = __webpack_require__(375);
 	exports._throw = ErrorObservable_1.ErrorObservable.create;
 	//# sourceMappingURL=throw.js.map
 
 /***/ },
 
-/***/ 383:
+/***/ 385:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -15879,7 +15970,7 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 385:
+/***/ 387:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -15928,11 +16019,11 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 387:
+/***/ 389:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var MulticastObservable_1 = __webpack_require__(377);
+	var MulticastObservable_1 = __webpack_require__(379);
 	var ConnectableObservable_1 = __webpack_require__(147);
 	/**
 	 * Returns an Observable that emits the results of invoking a specified selector on items
@@ -15972,12 +16063,12 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 390:
+/***/ 392:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var multicast_1 = __webpack_require__(387);
-	var Subject_1 = __webpack_require__(42);
+	var multicast_1 = __webpack_require__(389);
+	var Subject_1 = __webpack_require__(43);
 	function shareSubjectFactory() {
 	    return new Subject_1.Subject();
 	}
