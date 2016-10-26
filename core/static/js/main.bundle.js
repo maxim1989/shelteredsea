@@ -4,7 +4,7 @@ webpackJsonp([1],{
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var platform_browser_dynamic_1 = __webpack_require__(98);
+	var platform_browser_dynamic_1 = __webpack_require__(99);
 	var app_module_1 = __webpack_require__(174);
 	//noinspection TypeScriptValidateTypes
 	platform_browser_dynamic_1.platformBrowserDynamic().bootstrapModule(app_module_1.AppModule);
@@ -115,7 +115,23 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 97:
+/***/ 92:
+/***/ function(module, exports, __webpack_require__) {
+
+	function __export(m) {
+	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+	}
+	__export(__webpack_require__(143));
+	var services = __webpack_require__(143);
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = {
+	    services: services
+	};
+	//# sourceMappingURL=ng2-cookies.js.map
+
+/***/ },
+
+/***/ 98:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -4639,7 +4655,7 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 99:
+/***/ 100:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4654,7 +4670,7 @@ webpackJsonp([1],{
 	};
 	var core_1 = __webpack_require__(3);
 	var http_1 = __webpack_require__(19);
-	var ng2_cookies_1 = __webpack_require__(142);
+	var ng2_cookies_1 = __webpack_require__(92);
 	__webpack_require__(34);
 	var FriendshipService = (function () {
 	    function FriendshipService(http) {
@@ -4741,7 +4757,7 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 100:
+/***/ 101:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4801,7 +4817,7 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 101:
+/***/ 102:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4851,7 +4867,7 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 102:
+/***/ 103:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4869,7 +4885,7 @@ webpackJsonp([1],{
 	var params_model_1 = __webpack_require__(180);
 	var model_1 = __webpack_require__(181);
 	var auth_service_1 = __webpack_require__(48);
-	var service_1 = __webpack_require__(103);
+	var service_1 = __webpack_require__(104);
 	var service_2 = __webpack_require__(179);
 	var DealOrder = (function () {
 	    function DealOrder(UserService, GameService, DealOrderService, router, route) {
@@ -4918,6 +4934,7 @@ webpackJsonp([1],{
 	        var _this = this;
 	        this.route.params.forEach(function (params) {
 	            var gameNamespace = params['game_namespace'];
+	            _this.DealOrderService.setGameName(gameNamespace);
 	            _this.GameService.getGameByNamespace(gameNamespace)
 	                .then(function (game) {
 	                _this.game = game;
@@ -4926,7 +4943,7 @@ webpackJsonp([1],{
 	        });
 	    };
 	    DealOrder.prototype.initExistsOrders = function () {
-	        this.DealOrderService.getMyOrders(this.game.namespace)
+	        this.DealOrderService.getMyOrders()
 	            .then(function (orders) { console.log(orders); });
 	    };
 	    DealOrder.prototype.changeGamersCount = function (gameOption) {
@@ -4935,6 +4952,7 @@ webpackJsonp([1],{
 	        }
 	    };
 	    DealOrder.prototype.sendOrder = function () {
+	        this.DealOrderService.createOrderForDeal(this.dealParams);
 	        console.log(this.dealParams);
 	    };
 	    DealOrder.prototype.redirectToMainPage = function () {
@@ -4956,7 +4974,7 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 103:
+/***/ 104:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -5012,7 +5030,7 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 104:
+/***/ 105:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -5027,7 +5045,7 @@ webpackJsonp([1],{
 	};
 	var core_1 = __webpack_require__(3);
 	var router_1 = __webpack_require__(47);
-	var service_1 = __webpack_require__(103);
+	var service_1 = __webpack_require__(104);
 	var GameDispute = (function () {
 	    function GameDispute(GameService, router) {
 	        this.GameService = GameService;
@@ -5069,7 +5087,7 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 105:
+/***/ 106:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -5100,7 +5118,7 @@ webpackJsonp([1],{
 
 /***/ },
 
-/***/ 106:
+/***/ 107:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -5120,22 +5138,6 @@ webpackJsonp([1],{
 	}());
 	exports.User = User;
 
-
-/***/ },
-
-/***/ 142:
-/***/ function(module, exports, __webpack_require__) {
-
-	function __export(m) {
-	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-	}
-	__export(__webpack_require__(143));
-	var services = __webpack_require__(143);
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = {
-	    services: services
-	};
-	//# sourceMappingURL=ng2-cookies.js.map
 
 /***/ },
 
@@ -5370,7 +5372,7 @@ webpackJsonp([1],{
 /***/ function(module, exports, __webpack_require__) {
 
 	(function (global, factory) {
-	     true ? factory(exports, __webpack_require__(3), __webpack_require__(43), __webpack_require__(46), __webpack_require__(97), __webpack_require__(4), __webpack_require__(70), __webpack_require__(19), __webpack_require__(366), __webpack_require__(367), __webpack_require__(145), __webpack_require__(370), __webpack_require__(369), __webpack_require__(373), __webpack_require__(371), __webpack_require__(144), __webpack_require__(372)) :
+	     true ? factory(exports, __webpack_require__(3), __webpack_require__(43), __webpack_require__(46), __webpack_require__(98), __webpack_require__(4), __webpack_require__(70), __webpack_require__(19), __webpack_require__(366), __webpack_require__(367), __webpack_require__(145), __webpack_require__(370), __webpack_require__(369), __webpack_require__(373), __webpack_require__(371), __webpack_require__(144), __webpack_require__(372)) :
 	    typeof define === 'function' && define.amd ? define(['exports', '@angular/core', 'rxjs/Subject', '@angular/platform-browser', '@angular/forms', 'rxjs/Observable', '@angular/common', '@angular/http', 'rxjs/add/observable/forkJoin', 'rxjs/add/observable/of', 'rxjs/add/operator/map', 'rxjs/add/operator/filter', 'rxjs/add/operator/do', 'rxjs/add/operator/share', 'rxjs/add/operator/finally', 'rxjs/add/operator/catch', 'rxjs/add/operator/first'], factory) :
 	    (factory((global.ng = global.ng || {}, global.ng.material = global.ng.material || {}),global.ng.core,global.Rx,global.ng.platformBrowser,global.ng.forms,global.Rx,global.ng.common,global.ng.http,global.Rx.Observable,global.Rx.Observable,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.Rx.Observable.prototype,global.rxjs_add_operator_first));
 	}(this, (function (exports,_angular_core,rxjs_Subject,_angular_platformBrowser,_angular_forms,rxjs_Observable,_angular_common,_angular_http,rxjs_add_observable_forkJoin,rxjs_add_observable_of,rxjs_add_operator_map,rxjs_add_operator_filter,rxjs_add_operator_do,rxjs_add_operator_share,rxjs_add_operator_finally,rxjs_add_operator_catch,rxjs_add_operator_first) { 'use strict';
@@ -14539,7 +14541,7 @@ webpackJsonp([1],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(3);
-	var service_1 = __webpack_require__(99);
+	var service_1 = __webpack_require__(100);
 	var AccountFriendshipComponent = (function () {
 	    function AccountFriendshipComponent(FriendshipService) {
 	        this.FriendshipService = FriendshipService;
@@ -14669,8 +14671,8 @@ webpackJsonp([1],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(3);
-	var service_1 = __webpack_require__(99);
-	var model_1 = __webpack_require__(106);
+	var service_1 = __webpack_require__(100);
+	var model_1 = __webpack_require__(107);
 	var AccountSearchResultListComponent = (function () {
 	    function AccountSearchResultListComponent(FriendshipService) {
 	        this.FriendshipService = FriendshipService;
@@ -14773,7 +14775,7 @@ webpackJsonp([1],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(3);
-	var model_1 = __webpack_require__(106);
+	var model_1 = __webpack_require__(107);
 	var service_1 = __webpack_require__(173);
 	var AccountStatisticComponent = (function () {
 	    function AccountStatisticComponent(StatisticService) {
@@ -14868,17 +14870,17 @@ webpackJsonp([1],{
 	};
 	var core_1 = __webpack_require__(3);
 	var platform_browser_1 = __webpack_require__(46);
-	var forms_1 = __webpack_require__(97);
+	var forms_1 = __webpack_require__(98);
 	var http_1 = __webpack_require__(19);
 	var material_1 = __webpack_require__(164);
 	var app_1 = __webpack_require__(175);
 	var routes_1 = __webpack_require__(183);
 	var main_1 = __webpack_require__(176);
-	var main_2 = __webpack_require__(101);
-	var main_3 = __webpack_require__(105);
-	var main_4 = __webpack_require__(104);
-	var main_5 = __webpack_require__(102);
-	var main_6 = __webpack_require__(100);
+	var main_2 = __webpack_require__(102);
+	var main_3 = __webpack_require__(106);
+	var main_4 = __webpack_require__(105);
+	var main_5 = __webpack_require__(103);
+	var main_6 = __webpack_require__(101);
 	var main_7 = __webpack_require__(166);
 	var main_8 = __webpack_require__(165);
 	var main_9 = __webpack_require__(169);
@@ -15001,7 +15003,7 @@ webpackJsonp([1],{
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(3);
-	var main_1 = __webpack_require__(101);
+	var main_1 = __webpack_require__(102);
 	var service_1 = __webpack_require__(178);
 	var model_1 = __webpack_require__(177);
 	var ChatComponent = (function () {
@@ -15116,7 +15118,7 @@ webpackJsonp([1],{
 	};
 	var core_1 = __webpack_require__(3);
 	var http_1 = __webpack_require__(19);
-	var ng2_cookies_1 = __webpack_require__(142);
+	var ng2_cookies_1 = __webpack_require__(92);
 	__webpack_require__(34);
 	var ChatService = (function () {
 	    function ChatService(http) {
@@ -15194,20 +15196,45 @@ webpackJsonp([1],{
 	};
 	var core_1 = __webpack_require__(3);
 	var http_1 = __webpack_require__(19);
+	var ng2_cookies_1 = __webpack_require__(92);
 	__webpack_require__(34);
 	var DealOrderService = (function () {
 	    function DealOrderService(http) {
 	        this.http = http;
-	        this.ORDER_URL = 'pfg/';
+	        this.ORDER_BASE_URL = 'pfg/';
 	    }
-	    DealOrderService.prototype.getMyOrders = function (game_name) {
-	        console.log(game_name);
+	    DealOrderService.prototype.setGameName = function (game_name) {
+	        this.orderUrl = this.ORDER_BASE_URL + game_name + "/";
+	    };
+	    DealOrderService.prototype.getMyOrders = function () {
 	        //noinspection TypeScriptUnresolvedFunction
-	        return this.http.get(this.ORDER_URL + game_name + "/deal_order_myself")
+	        return this.http.get(this.orderUrl + "deal_order_myself")
 	            .toPromise()
 	            .then(function (response) {
 	            var result = response.json();
 	            return result;
+	        })
+	            .catch(this.handlerError);
+	    };
+	    DealOrderService.prototype.createOrderForDeal = function (deal_params) {
+	        var url = this.orderUrl + "deal_order";
+	        var headers = new http_1.Headers({
+	            'Content-Type': 'application/json',
+	            'X-CSRFToken': ng2_cookies_1.Cookie.get('csrftoken')
+	        });
+	        var options = new http_1.RequestOptions({ headers: headers });
+	        var data = {
+	            left_rate: deal_params.rate.left_limit,
+	            right_rate: deal_params.rate.right_limit,
+	            games_count: 1,
+	            team_size: deal_params.gamers_count.id
+	        };
+	        //noinspection TypeScriptUnresolvedFunction
+	        return this.http.post(url, JSON.stringify(data), options)
+	            .toPromise()
+	            .then(function (response) {
+	            var result = response.json();
+	            console.log(result);
 	        })
 	            .catch(this.handlerError);
 	    };
@@ -15277,10 +15304,10 @@ webpackJsonp([1],{
 
 	"use strict";
 	var router_1 = __webpack_require__(47);
-	var main_1 = __webpack_require__(105);
-	var main_2 = __webpack_require__(104);
-	var main_3 = __webpack_require__(102);
-	var main_4 = __webpack_require__(100);
+	var main_1 = __webpack_require__(106);
+	var main_2 = __webpack_require__(105);
+	var main_3 = __webpack_require__(103);
+	var main_4 = __webpack_require__(101);
 	var appRoutes = [
 	    {
 	        path: '',
@@ -15485,7 +15512,7 @@ webpackJsonp([1],{
 /***/ 358:
 /***/ function(module, exports) {
 
-	module.exports = "<h1>Оформление заявки на спор по игре <em>{{game.name}}</em></h1>\n<div class=\"row\">\n    <div class=\"col-md-2\">\n        <h4>Вид игры:</h4>\n        <ul class=\"nav nav-pills nav-stacked\">\n            <li *ngFor=\"let game_option of DEFAULT_GAMERS_COUNT\"\n                role=\"presentation\"\n                [class.active]=\"game_option == dealParams.gamers_count\"\n                [class.disabled]=\"game_option.disabled\"\n                (click)=\"changeGamersCount(game_option)\">\n                <a>{{game_option.name}}</a>\n            </li>\n        </ul>\n    </div>\n    <form class=\"col-md-3\">\n        <h4>Сумма сделки:</h4>\n        <div class=\"row\">\n            <div class=\"form-group col-md-6\">\n                <label>от</label>\n                <input type=\"text\" \n                       [(ngModel)]=\"dealParams.rate.left_limit\"\n                       name=\"left_limit\"\n                       class=\"form-control\" \n                       placeholder=\"100\" />\n            </div>\n            <div class=\"form-group col-md-6\">\n                <label>до</label>\n                <input type=\"text\" \n                    [(ngModel)]=\"dealParams.rate.right_limit\"\n                    name=\"right_limit\"\n                    class=\"form-control\" \n                    placeholder=\"500\" />\n            </div>\n        </div>\n    </form>\n    <div class=\"col-md-3 text-center\">\n        <button md-fab color=\"warn\"\n                [disabled]=\"!dealParams.gamers_count || !dealParams.rate.left_limit || !dealParams.rate.right_limit\"\n                (click)=\"sendOrder()\">\n            FA\n        </button>\n    </div>\n</div>"
+	module.exports = "<h1>Оформление заявки на спор по игре <em>{{game.name}}</em></h1>\n<div class=\"row\">\n    <div class=\"col-md-2\">\n        <h4>Вид игры:</h4>\n        <ul class=\"nav nav-pills nav-stacked\">\n            <li *ngFor=\"let game_option of DEFAULT_GAMERS_COUNT\"\n                role=\"presentation\"\n                [class.active]=\"game_option == dealParams.gamers_count\"\n                [class.disabled]=\"game_option.disabled\"\n                (click)=\"changeGamersCount(game_option)\">\n                <a>{{game_option.name}}</a>\n            </li>\n        </ul>\n    </div>\n    <form class=\"col-md-3\">\n        <h4>Сумма сделки:</h4>\n        <div class=\"row\">\n            <div class=\"form-group col-md-6\">\n                <label>от</label>\n                <input type=\"text\" \n                       [(ngModel)]=\"dealParams.rate.left_limit\"\n                       name=\"left_limit\"\n                       class=\"form-control\" \n                       placeholder=\"100\" />\n            </div>\n            <div class=\"form-group col-md-6\">\n                <label>до</label>\n                <input type=\"text\" \n                    [(ngModel)]=\"dealParams.rate.right_limit\"\n                    name=\"right_limit\"\n                    class=\"form-control\" \n                    placeholder=\"500\" />\n            </div>\n        </div>\n    </form>\n    <div class=\"col-md-3 text-center\">\n        <button md-fab color=\"warn\"\n                style=\"margin-top: 70px; font-size: 3em; height: 100px; width: 100px;\"\n                [disabled]=\"!dealParams.gamers_count.id || !dealParams.rate.left_limit || !dealParams.rate.right_limit\"\n                (click)=\"sendOrder()\">\n            FA\n        </button>\n    </div>\n</div>"
 
 /***/ },
 
@@ -15691,7 +15718,7 @@ webpackJsonp([1],{
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var Observable_1 = __webpack_require__(4);
-	var EmptyObservable_1 = __webpack_require__(92);
+	var EmptyObservable_1 = __webpack_require__(93);
 	var isArray_1 = __webpack_require__(68);
 	var subscribeToResult_1 = __webpack_require__(69);
 	var OuterSubscriber_1 = __webpack_require__(67);

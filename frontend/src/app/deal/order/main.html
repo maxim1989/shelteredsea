@@ -35,7 +35,8 @@
     </form>
     <div class="col-md-3 text-center">
         <button md-fab color="warn"
-                [disabled]="!dealParams.gamers_count || !dealParams.rate.left_limit || !dealParams.rate.right_limit"
+                style="margin-top: 70px; font-size: 3em; height: 100px; width: 100px;"
+                [disabled]="!dealParams.gamers_count.id || !dealParams.rate.left_limit || !dealParams.rate.right_limit"
                 (click)="sendOrder()">
             FA
         </button>

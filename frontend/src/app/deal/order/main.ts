@@ -60,6 +60,7 @@ export class DealOrder implements OnInit{
     loadTemplate() {
         this.route.params.forEach((params: Params) => {
             let gameNamespace = params['game_namespace'];
+            this.DealOrderService.setGameName(gameNamespace);
             this.GameService.getGameByNamespace(gameNamespace)
                 .then( (game) => {
                     this.game = game;
@@ -68,8 +69,8 @@ export class DealOrder implements OnInit{
         });
     }
 
-    initExistsOrders() {
-        this.DealOrderService.getMyOrders( this.game.namespace )
+    initExistsOrders() { //TODO remove
+        this.DealOrderService.getMyOrders()
             .then( (orders) => { console.log(orders); });
     }
 
@@ -80,6 +81,9 @@ export class DealOrder implements OnInit{
     }
 
     sendOrder() {
+        this.DealOrderService.createOrderForDeal(
+            this.dealParams
+        );
         console.log( this.dealParams );
     }
 
