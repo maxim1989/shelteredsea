@@ -22,6 +22,7 @@ import {AccountSearchResultListComponent} from './account/search/result-list';
 import {AccountFriendshipComponent} from './account/friendship/main';
 import {AccountStatisticComponent} from './account/statistic/main';
 
+import {TimePipe} from './pipes/time';
 
 @NgModule({
     imports: [
@@ -45,7 +46,9 @@ import {AccountStatisticComponent} from './account/statistic/main';
         AccountCardComponent,
         AccountSearchComponent, AccountSearchResultListComponent,
         AccountFriendshipComponent,
-        AccountStatisticComponent
+        AccountStatisticComponent,
+
+        TimePipe
     ],
     providers: [
     ],

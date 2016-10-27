@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router, ActivatedRoute, Params} from '@angular/router';
+import {Observable} from 'rxjs/Rx';
 import { Standard } from 'app/standard.model';
 import { DealParams } from 'app/deal/params.model';
 import { Game } from 'app/game_dispute/game/model';
@@ -40,8 +41,10 @@ export class DealOrder implements OnInit{
             disabled: true
         }
     ];
+    isWaitOrder: boolean = false;
     game: Game = new Game();
     dealParams: DealParams = new DealParams();
+    timerFromFa: number = 0;
 
     constructor(
         private UserService: UserService,
@@ -71,7 +74,13 @@ export class DealOrder implements OnInit{
 
     initExistsOrders() { //TODO remove
         this.DealOrderService.getMyOrders()
-            .then( (orders) => { console.log(orders); });
+            .then( (orders) => {
+                if (!orders.length) { // TODO
+                    this.dealParams.rate.left_limit = 1;
+                    this.dealParams.rate.right_limit = 300;
+                    this.dealParams.gamers_count = this.DEFAULT_GAMERS_COUNT[0];
+                }
+            });
     }
 
     changeGamersCount(gameOption: Standard) {
@@ -80,11 +89,28 @@ export class DealOrder implements OnInit{
         }
     }
 
+    checkRateLimits() {
+        if ( this.dealParams.rate.left_limit > this.dealParams.rate.right_limit ) {
+            this.dealParams.rate.left_limit = this.dealParams.rate.right_limit;
+        }
+    }
+
     sendOrder() {
         this.DealOrderService.createOrderForDeal(
             this.dealParams
         );
-        console.log( this.dealParams );
+        this.afterSendOrder();
+    }
+
+    afterSendOrder() {
+        this.runTimer();
+        this.isWaitOrder = true;
+    }
+
+    runTimer(begin_seconds: number = 0) {
+        //noinspection TypeScriptUnresolvedFunction
+        let timer = Observable.timer(begin_seconds * 1000, 1000);
+        timer.subscribe(time => this.timerFromFa = time);
     }
 
     private redirectToMainPage() {
