@@ -21,16 +21,23 @@ class ParticipantsSerializer(serializers.ModelSerializer):
         fields = ('id', 'user', 'order')
 
 
+class Deals_2_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Deals
+        fields = ('id', 'is_active')
+
+
 class OrderForDealSerializer(serializers.ModelSerializer):
     participants = ParticipantsSerializer(many=True)
     game = GamesSerializer()
-    user =AuthenticatedUserSerializer()
+    user = AuthenticatedUserSerializer()
+    deal = Deals_2_Serializer()
 
     class Meta:
         model = OrderForDeal
         fields = ('id', 'user', 'deal', 'temp_deal', 'game', 'is_winner', 'games_count', 'team_size',
                   'in_negotiations', 'modificate_moment', 'is_active', 'integer_part_from', 'fractional_part_from',
-                  'integer_part_to', 'fractional_part_to', 'participants')
+                  'integer_part_to', 'fractional_part_to', 'participants', 'deal')
 
     def create(self, validated_data):
         integer_part_from = validated_data.get('integer_part_from')
