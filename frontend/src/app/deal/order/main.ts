@@ -6,12 +6,12 @@ import { DealParams } from 'app/deal/params.model';
 import { Game } from 'app/game_dispute/game/model';
 import { UserService } from 'app/user/auth.service';
 import { GameService } from 'app/game_dispute/game/service';
-import { DealOrderService } from 'app/deal/order/service';
+import { OrderInGameService } from 'app/deal/order/service';
 
 @Component({
     selector: 'deal-order',
     templateUrl: './main.html',
-    providers: [GameService, DealOrderService]
+    providers: [GameService, OrderInGameService]
 })
 export class DealOrder implements OnInit{
     DEFAULT_GAMERS_COUNT: Standard[] = [
@@ -49,7 +49,7 @@ export class DealOrder implements OnInit{
     constructor(
         private UserService: UserService,
         private GameService: GameService,
-        private DealOrderService: DealOrderService,
+        private OrderInGameService: OrderInGameService,
         private router: Router,
         private route: ActivatedRoute
     ) {}
@@ -63,7 +63,7 @@ export class DealOrder implements OnInit{
     loadTemplate() {
         this.route.params.forEach((params: Params) => {
             let gameNamespace = params['game_namespace'];
-            this.DealOrderService.setGameName(gameNamespace);
+            this.OrderInGameService.setGameName(gameNamespace);
             this.GameService.getGameByNamespace(gameNamespace)
                 .then( (game) => {
                     this.game = game;
@@ -73,7 +73,7 @@ export class DealOrder implements OnInit{
     }
 
     initExistsOrders() { //TODO remove
-        this.DealOrderService.getMyOrders()
+        this.OrderInGameService.getMyOrders()
             .then( (orders) => {
                 if (!orders.length) { // TODO
                     this.dealParams.rate.left_limit = 1;
@@ -96,7 +96,7 @@ export class DealOrder implements OnInit{
     }
 
     sendOrder() {
-        this.DealOrderService.createOrderForDeal(
+        this.OrderInGameService.createOrderForDeal(
             this.dealParams
         );
         this.afterSendOrder();

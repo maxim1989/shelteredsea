@@ -1,32 +1,28 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions } from '@angular/http';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
-import { Order } from './model';
 import { DealParams } from 'app/deal/params.model';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
-export class OrderInGameService {
-    private ORDER_BASE_URL = 'pfg/';
+export class DealService {
+    private TEMP_DEAL_URL = 'temp_deal';
     private orderUrl: string;
 
     constructor(private http: Http) { }
 
-    setGameName(game_name:string) {
-        this.orderUrl = this.ORDER_BASE_URL + game_name + "/";
-    }
-
-    getMyOrders() {
+    getTempDealData(dealID: number) {
         //noinspection TypeScriptUnresolvedFunction
-        return this.http.get(this.orderUrl + "deal_order_myself")
+        return this.http.get(this.TEMP_DEAL_URL + '/' + dealID)
             .toPromise()
             .then(
                 response => {
                     let result = response.json();
-                    return result as Order[];
+                    return result;
                 }
             )
             .catch(this.handlerError);
+
     }
     
     createOrderForDeal(deal_params:DealParams) {
