@@ -30,5 +30,6 @@ class AdditionalUuid(models.Model):
 
 class UserBalance(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='balance')
-    integer_part = models.CharField(max_length=255, default='0')
-    fractional_part = models.CharField(max_length=2, default='0')
+    balance = models.IntegerField(default=40000)
+    frozen_balance = models.IntegerField(default=0)
+    withdrawn_balance = models.IntegerField(default=0)
