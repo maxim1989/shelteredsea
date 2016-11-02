@@ -57,43 +57,29 @@ def find_competitor(request, game, me):
     return total_data[0] if total_data else 0
 
 
-class Order(APIView):
-    def get(self, request, namespace):
-        try:
-            game = Games.objects.get(namespace=namespace)
-            order_id = request.GET["order_id"]  # TODO возможно будет приходить в ajax запросе, тогда request.data
-            me = OrderForDeal.objects.get(pk=order_id)
-        except Games.DoesNotExist as err:
-            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
-        except KeyError as err:
-            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
-        except OrderForDeal.DoesNotExist as err:
-            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
-        if me.in_negotiations:
-            serializer_temp_deal = TempDealsSerializer(me.temp_deal)
-            return Response({'success': True, 'temp_deal': serializer_temp_deal.data}, status=status.HTTP_200_OK)
-        competitor_id = find_competitor(request, game, me)
-        if competitor_id:
-            serializer_temp_deal = TempDealsSerializer(
-                data={'is_active': True},
-                partial=True,
-                context={'uids': [order_id, competitor_id], 'in_negotiations': True})
-            if serializer_temp_deal.is_valid():
-                serializer_temp_deal.save()
-                return Response({'success': True, 'temp_deal': serializer_temp_deal.data}, status=status.HTTP_200_OK)
+class MyOrder(APIView):
+    def get(self, request):
+        result_list = list()
+        my_orders_for_deal = OrderForDeal.objects.filter(user=request.user.id).filter(is_active=True).\
+            order_by('modificate_moment')
+        for my_order in my_orders_for_deal:
+            serializer_my_order = OrderForDealSerializer(my_order)
+            competitor_id = find_competitor(request, my_order.game, my_order)
+            if competitor_id:
+                serializer_temp_deal = TempDealsSerializer(
+                    data={'is_active': True},
+                    partial=True,
+                    context={'uids': [my_order.id, competitor_id], 'in_negotiations': True})
+                if serializer_temp_deal.is_valid():
+                    serializer_temp_deal.save()
+                    result_list.append({'order': serializer_my_order.data, 'temp_deal': serializer_temp_deal.data})
+                result_list.append({'order': serializer_my_order.data, 'temp_deal': serializer_temp_deal.errors})
+            result_list.append({'order': serializer_my_order.data, 'temp_deal': 0})
+        return Response(result_list, status=status.HTTP_200_OK)
 
-            return Response({'success': False, 'error': serializer_temp_deal.errors}, status=status.HTTP_403_FORBIDDEN)
-        return Response({'success': True, 'temp_deal': 0}, status=status.HTTP_200_OK)
-
-    def post(self, request, namespace):
-        """
-        Параметры в POST запросе: left_rate, right_rate, rate_trent, games_count, team_size
-        :param request:
-        :param namespace: имя игры (уникально)
-        :return:
-        """
+    def post(self, request):
         try:
-            game = Games.objects.get(namespace=namespace)
+            game = Games.objects.get(namespace=request.data.get('namespace'))
             myself = User.objects.get(pk=request.user.id)
         except Games.DoesNotExist as err:
             return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
@@ -107,14 +93,23 @@ class Order(APIView):
         return Response({'success': False, 'error': serializer.errors}, status=status.HTTP_403_FORBIDDEN)
 
 
-class MyOrders(APIView):
-    def get(self, request, namespace):
+class TempD(APIView):
+    def get(self, request, pk):
         try:
-            game = Games.objects.get(namespace=namespace)
-        except Games.DoesNotExist as err:
+            tmp_deal = TempDeals.objects.get(pk=pk)
+        except TempDeals.DoesNotExist as err:
             return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
-        query = OrderForDeal.objects.filter(user=request.user.id).filter(game=game.id).order_by('modificate_moment')
-        serializer = OrderForDealSerializer(query, many=True)
+        serializer_temp_deal = TempDealsSerializer(tmp_deal)
+        return Response(serializer_temp_deal.data, status=status.HTTP_200_OK)
+
+
+class Order(APIView):
+    def get(self, request, pk):
+        try:
+            order = OrderForDeal.objects.get(pk=pk)
+        except OrderForDeal.DoesNotExist as err:
+            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
+        serializer = OrderForDealSerializer(order)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
