@@ -42,6 +42,7 @@
     "core-js": "^2.4.1",
     "ie-shim": "^0.1.0",
     "ng2-cookies": "^1.0.2",
+    "primeng": "^1.0.0-rc.3",
     "reflect-metadata": "^0.1.8",
     "rxjs": "5.0.0-beta.12",
     "webpack": "^1.13.2",

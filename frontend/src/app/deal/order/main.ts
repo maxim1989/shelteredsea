@@ -1,20 +1,24 @@
 import {Component, OnInit} from '@angular/core';
 import {Router, ActivatedRoute, Params} from '@angular/router';
 import {Observable} from 'rxjs/Rx';
+
 import { Standard } from 'app/standard.model';
-import { DealParams } from 'app/deal/params.model';
+import { User } from 'app/user/model';
 import { Game } from 'app/game_dispute/game/model';
+
 import { UserService } from 'app/user/auth.service';
 import { GameService } from 'app/game_dispute/game/service';
-import { OrderInGameService } from 'app/deal/order/service';
+import { OrderForDealService } from 'app/deal/order/service';
+import {Order} from "./model";
+import {FooOrder} from "./foo.model";
 
 @Component({
     selector: 'deal-order',
     templateUrl: './main.html',
-    providers: [GameService, OrderInGameService]
+    providers: [GameService, OrderForDealService]
 })
 export class DealOrder implements OnInit{
-    DEFAULT_GAMERS_COUNT: Standard[] = [
+    DEFAULT_TEAM_SIZE: Standard[] = [
         {
             id: 1,
             name: "1x1",
@@ -41,65 +45,89 @@ export class DealOrder implements OnInit{
             disabled: true
         }
     ];
+    user: User;
+    order: Order = new Order();
     isWaitOrder: boolean = false;
     game: Game = new Game();
-    dealParams: DealParams = new DealParams();
     timerFromFa: number = 0;
 
     constructor(
         private UserService: UserService,
         private GameService: GameService,
-        private OrderInGameService: OrderInGameService,
+        private OrderForDealService: OrderForDealService,
         private router: Router,
         private route: ActivatedRoute
     ) {}
 
     ngOnInit() {
-        this.UserService.isAutorizedPromise()
-            .then( () => { this.loadTemplate() })
+        this.UserService.getAuthUser()
+            .then( (user: User) => {
+                this.user = user;
+                this.initParams();
+            })
             .catch( () => { this.redirectToMainPage() });
     }
 
-    loadTemplate() {
+    initParams() {
         this.route.params.forEach((params: Params) => {
             let gameNamespace = params['game_namespace'];
-            this.OrderInGameService.setGameName(gameNamespace);
             this.GameService.getGameByNamespace(gameNamespace)
-                .then( (game) => {
+                .then( (game: Game) => {
                     this.game = game;
+                    this.order.game = game;
                     this.initExistsOrders();
                 });
         });
     }
 
-    initExistsOrders() { //TODO remove
-        this.OrderInGameService.getMyOrders()
+    initExistsOrders() {
+        this.OrderForDealService.getMyOrders()
             .then( (orders) => {
-                if (!orders.length) { // TODO
-                    this.dealParams.rate.left_limit = 1;
-                    this.dealParams.rate.right_limit = 300;
-                    this.dealParams.gamers_count = this.DEFAULT_GAMERS_COUNT[0];
+                if (orders.length) {
+                    let orderOfGame: FooOrder[] = orders.filter( // TODO change type
+                        (order: FooOrder) => order.order.game.id == this.game.id
+                    );
+                    if (orderOfGame.length) {
+                        this.loadExistOrderData(orderOfGame[0].order);
+                    }
                 }
             });
     }
 
+    loadExistOrderData(order: Order) {
+        this.order = order;
+        this.isWaitOrder = true;
+    }
+
     changeGamersCount(gameOption: Standard) {
         if ( !gameOption.disabled ) {
-            this.dealParams.gamers_count = gameOption;
+            this.order.team_size = gameOption.id;
         }
     }
 
     checkRateLimits() {
-        if ( this.dealParams.rate.left_limit > this.dealParams.rate.right_limit ) {
-            this.dealParams.rate.left_limit = this.dealParams.rate.right_limit;
+        if ( this.order.integer_part_to > Math.floor(this.user.balance.balance / 100) ) {
+            this.order.integer_part_to = Math.floor(this.user.balance.balance / 100);
+        }
+        if ( this.order.integer_part_from > this.order.integer_part_to ) {
+            this.order.integer_part_from = this.order.integer_part_to;
         }
     }
 
     sendOrder() {
-        this.OrderInGameService.createOrderForDeal(
-            this.dealParams
-        );
-        this.afterSendOrder();
+        this.OrderForDealService.createOrderForDeal(this.order, this.game)
+            .then( () => {
+                this.initExistsOrders();
+                this.afterSendOrder();
+            });
+    }
+
+    cancelOrder() {
+        this.OrderForDealService.cancelOrder(this.order)
+            .then( () => {
+                this.initExistsOrders();
+                this.isWaitOrder = false;
+            });
     }
 
     afterSendOrder() {

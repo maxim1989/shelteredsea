@@ -1,4 +1,5 @@
 import {Standard} from 'app/standard.model';
+import {Balance} from 'app/rate/balance.model';
 
 export class User {
     id : number;
@@ -9,6 +10,7 @@ export class User {
     dispute_name: Standard;
     statistic_name: Standard;
     uid_for_client: Standard;
+    balance: Balance;
 
     is_busy: boolean = false;
 

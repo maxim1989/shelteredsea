@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { MaterialModule } from '@angular/material';
+// import {SliderModule} from 'primeng/primeng';
 
 import {AppComponent} from './app';
 import {routing} from './routes';
@@ -24,6 +25,7 @@ import {AccountFriendshipComponent} from './account/friendship/main';
 import {AccountStatisticComponent} from './account/statistic/main';
 
 import {TimePipe} from './pipes/time';
+import {RatePipe} from './pipes/rate';
 
 @NgModule({
     imports: [
@@ -33,6 +35,7 @@ import {TimePipe} from './pipes/time';
         HttpModule,
 
         MaterialModule.forRoot()
+        // SliderModule
     ],
     declarations: [
         AppComponent,
@@ -50,7 +53,8 @@ import {TimePipe} from './pipes/time';
         AccountFriendshipComponent,
         AccountStatisticComponent,
 
-        TimePipe
+        TimePipe,
+        RatePipe
     ],
     providers: [
     ],
