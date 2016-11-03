@@ -36,8 +36,8 @@ class OrderForDealSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderForDeal
         fields = ('id', 'user', 'deal', 'temp_deal', 'game', 'is_winner', 'games_count', 'team_size',
-                  'in_negotiations', 'modificate_moment', 'is_active', 'integer_part_from', 'fractional_part_from',
-                  'integer_part_to', 'fractional_part_to', 'participants')
+                  'in_negotiations', 'modificate_moment', 'is_active', 'participants', 'rate_left',
+                  'rate_right', 'rate')
 
     def update(self, instance, validated_data):
         if instance.temp_deal:
@@ -57,29 +57,25 @@ class OrderForDealCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderForDeal
         fields = ('id', 'temp_deal', 'is_winner', 'games_count', 'team_size', 'in_negotiations', 'modificate_moment',
-                  'is_active', 'integer_part_from', 'fractional_part_from', 'integer_part_to', 'fractional_part_to')
+                  'is_active', 'rate_left', 'rate_right', 'rate')
 
     def create(self, validated_data):
-        integer_part_from = validated_data.get('integer_part_from')
-        fractional_part_from = validated_data.get('fractional_part_from')
-        integer_part_to = validated_data.get('integer_part_to')
-        fractional_part_to = validated_data.get('fractional_part_to')
+        rate_left = validated_data.get('rate_left', 10000)
+        rate_right = validated_data.get('rate_right', 100000)
+        rate = validated_data.get('rate')
         games_count = validated_data.get('games_count')
         team_size = validated_data.get('team_size')
         myself = self.context.get('myself')
         game = self.context.get('game')
-        instance = OrderForDeal.objects.create(game=game, user=myself, integer_part_from=integer_part_from,
-                                               fractional_part_from=fractional_part_from,
-                                               integer_part_to=integer_part_to, fractional_part_to=fractional_part_to,
-                                               games_count=games_count, team_size=team_size)
+        instance = OrderForDeal.objects.create(game=game, user=myself, rate_left=rate_left, rate_right=rate_right,
+                                               rate=rate, games_count=games_count, team_size=team_size)
         Participants.objects.create(user=myself, order=instance)
         return instance
 
     def update(self, instance, validated_data):
-        instance.integer_part_from = validated_data.get('integer_part_from', instance.integer_part_from)
-        instance.fractional_part_from = validated_data.get('fractional_part_from', instance.fractional_part_from)
-        instance.integer_part_to = validated_data.get('integer_part_to', instance.integer_part_to)
-        instance.fractional_part_to = validated_data.get('fractional_part_to', instance.fractional_part_to)
+        instance.rate_left = validated_data.get('rate_left', instance.rate_left)
+        instance.rate_right = validated_data.get('rate_right', instance.rate_right)
+        instance.rate = validated_data.get('rate', instance.rate)
         instance.games_count = validated_data.get('games_count', instance.games_count)
         instance.team_size = validated_data.get('team_size', instance.team_size)
         instance.save()
