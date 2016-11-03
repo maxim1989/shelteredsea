@@ -37,7 +37,27 @@ class OrderForDealSerializer(serializers.ModelSerializer):
         model = OrderForDeal
         fields = ('id', 'user', 'deal', 'temp_deal', 'game', 'is_winner', 'games_count', 'team_size',
                   'in_negotiations', 'modificate_moment', 'is_active', 'integer_part_from', 'fractional_part_from',
-                  'integer_part_to', 'fractional_part_to', 'participants', 'deal')
+                  'integer_part_to', 'fractional_part_to', 'participants')
+
+    def update(self, instance, validated_data):
+        if instance.temp_deal:
+            OrderForDeal.objects.filter(temp_deal=instance.temp_deal).exclude(user=self.context.get('user')).\
+                update(temp_deal=validated_data.get('temp_deal', instance.temp_deal),
+                       in_negotiations=validated_data.get('in_negotiations', instance.in_negotiations))
+            instance.temp_deal.is_active = False
+            instance.temp_deal.save()
+        instance.is_active = validated_data.get('is_active', instance.is_active)
+        instance.temp_deal = validated_data.get('temp_deal', instance.temp_deal)
+        instance.in_negotiations = validated_data.get('in_negotiations', instance.in_negotiations)
+        instance.save()
+        return instance
+
+
+class OrderForDealCreateUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderForDeal
+        fields = ('id', 'temp_deal', 'is_winner', 'games_count', 'team_size', 'in_negotiations', 'modificate_moment',
+                  'is_active', 'integer_part_from', 'fractional_part_from', 'integer_part_to', 'fractional_part_to')
 
     def create(self, validated_data):
         integer_part_from = validated_data.get('integer_part_from')
@@ -56,15 +76,12 @@ class OrderForDealSerializer(serializers.ModelSerializer):
         return instance
 
     def update(self, instance, validated_data):
-        if instance.temp_deal:
-            OrderForDeal.objects.filter(temp_deal=instance.temp_deal).exclude(user=self.context.get('user')).\
-                update(temp_deal=validated_data.get('temp_deal', instance.temp_deal),
-                       in_negotiations=validated_data.get('in_negotiations', instance.in_negotiations))
-            instance.temp_deal.is_active = False
-            instance.temp_deal.save()
-        instance.is_active = validated_data.get('is_active', instance.is_active)
-        instance.temp_deal = validated_data.get('temp_deal', instance.temp_deal)
-        instance.in_negotiations = validated_data.get('in_negotiations', instance.in_negotiations)
+        instance.integer_part_from = validated_data.get('integer_part_from', instance.integer_part_from)
+        instance.fractional_part_from = validated_data.get('fractional_part_from', instance.fractional_part_from)
+        instance.integer_part_to = validated_data.get('integer_part_to', instance.integer_part_to)
+        instance.fractional_part_to = validated_data.get('fractional_part_to', instance.fractional_part_to)
+        instance.games_count = validated_data.get('games_count', instance.games_count)
+        instance.team_size = validated_data.get('team_size', instance.team_size)
         instance.save()
         return instance
 

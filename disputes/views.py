@@ -8,7 +8,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from disputes.models import Deals, Games, OrderForDeal, TempDeals
-from disputes.serializer import DealsSerializer, GamesSerializer, OrderForDealSerializer, TempDealsSerializer
+from disputes.serializer import DealsSerializer, GamesSerializer, OrderForDealSerializer, \
+    OrderForDealCreateUpdateSerializer, TempDealsSerializer
 
 
 class AllGames(APIView):
@@ -85,8 +86,8 @@ class MyOrder(APIView):
             return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
         except User.DoesNotExist as err:
             return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
-        serializer = OrderForDealSerializer(data=request.data, partial=True,
-                                            context={'myself': myself, 'game': game})
+        serializer = OrderForDealCreateUpdateSerializer(data=request.data, partial=True,
+                                                        context={'myself': myself, 'game': game})
         if serializer.is_valid():
             serializer.save()
             return Response({'success': True, 'data': serializer.data}, status=status.HTTP_200_OK)
@@ -111,6 +112,17 @@ class Order(APIView):
             return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
         serializer = OrderForDealSerializer(order)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, pk):
+        try:
+            order = OrderForDeal.objects.get(pk=pk)
+        except OrderForDeal.DoesNotExist as err:
+            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
+        serializer = OrderForDealCreateUpdateSerializer(order, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
 
 
 class Next(APIView):
