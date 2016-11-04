@@ -73,9 +73,9 @@ class MyOrder(APIView):
                     context={'uids': [my_order.id, competitor_id], 'in_negotiations': True})
                 if serializer_temp_deal.is_valid():
                     serializer_temp_deal.save()
-                    result_list.append({'order': serializer_my_order.data, 'temp_deal': serializer_temp_deal.data})
-                result_list.append({'order': serializer_my_order.data, 'temp_deal': serializer_temp_deal.errors})
-            result_list.append({'order': serializer_my_order.data, 'temp_deal': 0})
+                    result_list.append(serializer_my_order.data)
+                result_list.append(serializer_my_order.data)
+            result_list.append(serializer_my_order.data)
         return Response(result_list, status=status.HTTP_200_OK)
 
     def post(self, request):
