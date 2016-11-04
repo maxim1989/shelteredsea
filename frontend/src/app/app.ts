@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from 'app/user/auth.service';
+import { OrderMonitoringService } from 'app/deal/order/monitoring.service';
 import { User } from 'app/user/model';
 
 @Component({
     selector: 'app',
-    providers: [UserService],
+    providers: [UserService, OrderMonitoringService],
     templateUrl: './app.html',
 })
 export class AppComponent implements OnInit{
@@ -17,7 +18,8 @@ export class AppComponent implements OnInit{
     is_authenticated: boolean = false;
 
     constructor(
-        private UserService: UserService
+        private UserService: UserService,
+        private OrderMonitoringService: OrderMonitoringService
     ) {}
 
     ngOnInit() {
@@ -29,6 +31,7 @@ export class AppComponent implements OnInit{
             .catch( () => {
                 this.userLoaded = false;
             });
+        this.initOrderMonitoring();
     }
 
     initAuthUser(user: User) {
@@ -45,6 +48,13 @@ export class AppComponent implements OnInit{
 
     routeLogOut() {
         location.href = this.URL_LOGOUT;
+    }
+
+    initOrderMonitoring() {
+        let monitoring = this.OrderMonitoringService.runMonitoring();
+        monitoring.subscribe((data:any) => {
+            console.log(data);
+        });
     }
 
 }
