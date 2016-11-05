@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
+import datetime
 import os
 
 import dj_database_url
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social.apps.django_app.default',
+    'kombu.transport.django',
     'rest_framework',
     'loginsys',
     'core',
@@ -173,4 +175,17 @@ REST_FRAMEWORK = {
 # Custom variables
 _ME_ERROR = 'SelfAccount'
 _UID_SERIES = 4
+#-----------------------------------------------------------------------------------------------------------------------
+# Celery
+BROKER_URL = 'django://'
+CELERYBEAT_SCHEDULE = {
+    'add-every-30-seconds': {
+        'task': 'core.tasks.test',
+        'schedule': datetime.timedelta(seconds=30),
+        # 'args': (16, 16)
+    },
+}
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json']
 #-----------------------------------------------------------------------------------------------------------------------

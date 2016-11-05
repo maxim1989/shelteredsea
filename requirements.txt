@@ -12,4 +12,3 @@ gunicorn==19.6.0
 python-social-auth==0.2.19
 djangorestframework==3.4.0
 celery==3.1.24
-redis==2.10.5
