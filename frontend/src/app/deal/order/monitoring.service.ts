@@ -13,6 +13,14 @@ export class OrderMonitoringService {
 
     constructor(private http: Http) { }
 
+    toPause() {
+        this.isPaused = true;
+    }
+
+    toContinue() {
+        this.isPaused = false;
+    }
+
     runMonitoring() {
         return Observable.create((observer) => {
             //noinspection TypeScriptUnresolvedFunction
@@ -21,7 +29,12 @@ export class OrderMonitoringService {
                 if ( !this.isPaused ) {
                     this.getMyOrders()
                         .then((data:Order[]) => {
-                            observer.next(data);
+                            let ordersInTempDeal: Order[] = data.filter(
+                                (order: Order) => !!order.temp_deal
+                            );
+                            if (ordersInTempDeal.length) {
+                                observer.next(ordersInTempDeal[0]);
+                            }
                         });
                 }
             });

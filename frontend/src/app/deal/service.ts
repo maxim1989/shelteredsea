@@ -3,9 +3,11 @@ import { Headers, Http, RequestOptions } from '@angular/http';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 import 'rxjs/add/operator/toPromise';
 
+import { TempDeal } from 'app/deal/temp_deal.model';
+
 @Injectable()
 export class DealService {
-    private TEMP_DEAL_URL = 'temp_deal';
+    private TEMP_DEAL_URL = 'pfg/temp_deals';
 
     constructor(private http: Http) { }
 
@@ -16,7 +18,7 @@ export class DealService {
             .then(
                 response => {
                     let result = response.json();
-                    return result;
+                    return result as TempDeal;
                 }
             )
             .catch(this.handlerError);

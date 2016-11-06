@@ -36,20 +36,16 @@ def find_competitor(request, game, me):
     common_part = OrderForDeal.objects.exclude(user=request.user.id).\
         filter(in_negotiations=False, is_active=True, game=game.id).\
         filter(Q(myself__isnull=True) | Q(myself__create_moment__lt=timezone.now() - interval)).order_by('modificate_moment')
-
+    # TODO надо подумать над фильтрами
     strict_filter = [item.id for item in common_part
-                     if int(item.integer_part_from) >= int(me.integer_part_from) and
-                        int(item.fractional_part_from) >= int(me.fractional_part_from) and
-                        int(item.integer_part_to) <= int(me.integer_part_to) and
-                        int(item.fractional_part_to) <= int(me.fractional_part_to) and
+                     if int(item.rate_left) >= int(me.rate_left) and
+                        int(item.rate_right) <= int(me.rate_right) and
                         item.games_count == me.games_count and
                         item.team_size == me.team_size]
     light_filter = [item.id for item in common_part
                     if item.id not in strict_filter and
-                       int(item.integer_part_from) >= int(me.integer_part_from) and
-                       int(item.fractional_part_from) >= int(me.fractional_part_from) and
-                       int(item.integer_part_to) <= int(me.integer_part_to) and
-                       int(item.fractional_part_to) <= int(me.fractional_part_to) or
+                       int(item.rate_left) >= int(me.rate_left) and
+                       int(item.rate_right) <= int(me.rate_right) or
                        item.games_count == me.games_count or
                        item.team_size == me.team_size
                     ]

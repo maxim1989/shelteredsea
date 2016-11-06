@@ -65,7 +65,7 @@ def add_balance(request_object):
     balance = UserBalance.objects.filter(user=request_object.user.id)
     if not balance:
         user = User.objects.get(pk=request_object.user.id)
-        UserBalance.objects.create(user=user, integer_part='400', fractional_part='0')
+        UserBalance.objects.create(user=user, balance='40000')
 
 
 def append_additional_parameters(request_object):

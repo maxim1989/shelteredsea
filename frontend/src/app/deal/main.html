@@ -1,1 +1,8 @@
-<h1>Оформление сделки</h1>
+<md-card>
+    <md-card-subtitle>Оформление сделки</md-card-subtitle>
+    <md-card-content>
+        <div *ngIf="chat">
+            <chat [chat]="chat"></chat>
+        </div>
+    </md-card-content>
+</md-card>

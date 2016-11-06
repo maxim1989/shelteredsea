@@ -1,5 +1,6 @@
 import {User} from 'app/user/model';
 import {Game} from 'app/game_dispute/game/model';
+import {TempDeal} from 'app/deal/temp_deal.model';
 
 export class Order {
     id: number;
@@ -17,4 +18,5 @@ export class Order {
 
     game: Game;
     user: User;
+    temp_deal: number;
 }

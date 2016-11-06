@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+
 import { UserService } from 'app/user/auth.service';
 import { OrderMonitoringService } from 'app/deal/order/monitoring.service';
 import { User } from 'app/user/model';
@@ -18,6 +20,7 @@ export class AppComponent implements OnInit{
     is_authenticated: boolean = false;
 
     constructor(
+        private router: Router,
         private UserService: UserService,
         private OrderMonitoringService: OrderMonitoringService
     ) {}
@@ -31,7 +34,7 @@ export class AppComponent implements OnInit{
             .catch( () => {
                 this.userLoaded = false;
             });
-        // this.initOrderMonitoring();
+        this.initOrderMonitoring();
     }
 
     initAuthUser(user: User) {
@@ -53,8 +56,13 @@ export class AppComponent implements OnInit{
     initOrderMonitoring() {
         let monitoring = this.OrderMonitoringService.runMonitoring();
         monitoring.subscribe((data:any) => {
-            console.log(data);
+            this.OrderMonitoringService.toPause();
+            this.redirectToTempDeal(data.temp_deal);
         });
+    }
+
+    redirectToTempDeal(temp_deal_id: number) {
+        this.router.navigate(['pfg', 'deal', temp_deal_id]);
     }
 
 }
