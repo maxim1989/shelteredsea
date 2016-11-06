@@ -4,7 +4,6 @@ import { Cookie } from 'ng2-cookies/ng2-cookies';
 import {Observable} from 'rxjs/Rx';
 
 import { Order } from './model';
-import { FooOrder } from './foo.model'; //TODO remove
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
@@ -21,7 +20,7 @@ export class OrderMonitoringService {
             timer.subscribe(() => {
                 if ( !this.isPaused ) {
                     this.getMyOrders()
-                        .then((data:FooOrder[]) => {
+                        .then((data:Order[]) => {
                             observer.next(data);
                         });
                 }
@@ -36,7 +35,7 @@ export class OrderMonitoringService {
             .then(
                 response => {
                     let result = response.json();
-                    return result as FooOrder[];
+                    return result as Order[];
                 }
             )
             .catch(this.handlerError);

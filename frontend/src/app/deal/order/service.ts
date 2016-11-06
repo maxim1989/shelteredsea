@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions } from '@angular/http';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { Order } from './model';
-import { FooOrder } from './foo.model'; //TODO remove
 import { Game } from 'app/game_dispute/game/model';
 import 'rxjs/add/operator/toPromise';
 
@@ -19,7 +18,7 @@ export class OrderForDealService {
             .then(
                 response => {
                     let result = response.json();
-                    return result as FooOrder[];
+                    return result as Order[];
                 }
             )
             .catch(this.handlerError);
@@ -34,10 +33,8 @@ export class OrderForDealService {
         let options = new RequestOptions({ headers: headers });
         let data: any = {
             namespace: game.namespace,
-            integer_part_from: order.integer_part_from,
-            fractional_part_from: 0,
-            integer_part_to: order.integer_part_to,
-            fractional_part_to: 0,
+            rate_left: order.rate_left,
+            rate_right: order.rate_right,
             games_count: 1,
             team_size: order.team_size
         };

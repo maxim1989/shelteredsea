@@ -6273,10 +6273,9 @@ webpackJsonp([1],[
 	        this.OrderForDealService.getMyOrders()
 	            .then(function (orders) {
 	            if (orders.length) {
-	                var orderOfGame = orders.filter(// TODO change type
-	                function (order) { return order.order.game.id == _this.game.id; });
+	                var orderOfGame = orders.filter(function (order) { return order.game.id == _this.game.id; });
 	                if (orderOfGame.length) {
-	                    _this.loadExistOrderData(orderOfGame[0].order);
+	                    _this.loadExistOrderData(orderOfGame[0]);
 	                }
 	            }
 	        });
@@ -6291,11 +6290,11 @@ webpackJsonp([1],[
 	        }
 	    };
 	    DealOrder.prototype.checkRateLimits = function () {
-	        if (this.order.integer_part_to > Math.floor(this.user.balance.balance / 100)) {
-	            this.order.integer_part_to = Math.floor(this.user.balance.balance / 100);
+	        if (this.order.rate_right > Math.floor(this.user.balance.balance / 100)) {
+	            this.order.rate_right = Math.floor(this.user.balance.balance / 100);
 	        }
-	        if (this.order.integer_part_from > this.order.integer_part_to) {
-	            this.order.integer_part_from = this.order.integer_part_to;
+	        if (this.order.rate_left > this.order.rate_right) {
+	            this.order.rate_left = this.order.rate_right;
 	        }
 	    };
 	    DealOrder.prototype.sendOrder = function () {
@@ -18005,7 +18004,7 @@ webpackJsonp([1],[
 	            .catch(function () {
 	            _this.userLoaded = false;
 	        });
-	        this.initOrderMonitoring();
+	        // this.initOrderMonitoring();
 	    };
 	    AppComponent.prototype.initAuthUser = function (user) {
 	        this.is_authenticated = user.is_autorized;
@@ -18263,16 +18262,21 @@ webpackJsonp([1],[
 	var OrderMonitoringService = (function () {
 	    function OrderMonitoringService(http) {
 	        this.http = http;
+	        this.INTERVAL = 5000;
+	        this.isPaused = false;
 	    }
 	    OrderMonitoringService.prototype.runMonitoring = function () {
 	        var _this = this;
 	        return Rx_1.Observable.create(function (observer) {
-	            var timer = Rx_1.Observable.timer(0, 1000);
+	            //noinspection TypeScriptUnresolvedFunction
+	            var timer = Rx_1.Observable.timer(0, _this.INTERVAL);
 	            timer.subscribe(function () {
-	                _this.getMyOrders()
-	                    .then(function (data) {
-	                    observer.next(data);
-	                });
+	                if (!_this.isPaused) {
+	                    _this.getMyOrders()
+	                        .then(function (data) {
+	                        observer.next(data);
+	                    });
+	                }
 	            });
 	        });
 	    };
@@ -18341,10 +18345,8 @@ webpackJsonp([1],[
 	        var options = new http_1.RequestOptions({ headers: headers });
 	        var data = {
 	            namespace: game.namespace,
-	            integer_part_from: order.integer_part_from,
-	            fractional_part_from: 0,
-	            integer_part_to: order.integer_part_to,
-	            fractional_part_to: 0,
+	            rate_left: order.rate_left,
+	            rate_right: order.rate_right,
 	            games_count: 1,
 	            team_size: order.team_size
 	        };
@@ -18898,7 +18900,7 @@ webpackJsonp([1],[
 /* 414 */
 /***/ function(module, exports) {
 
-	module.exports = "<h1>Оформление заявки на спор по игре <em>{{game.name}}</em></h1>\n<div class=\"row\">\n    <div class=\"col-md-2\">\n        <h4>Вид игры:</h4>\n        <ul class=\"nav nav-pills nav-stacked\">\n            <li *ngFor=\"let game_option of DEFAULT_TEAM_SIZE\"\n                role=\"presentation\"\n                [class.active]=\"game_option.id == order.team_size\"\n                [class.disabled]=\"game_option.disabled\"\n                (click)=\"changeGamersCount(game_option)\">\n                <a>{{game_option.name}}</a>\n            </li>\n        </ul>\n    </div>\n    <form class=\"col-md-3\">\n        <h4>Сумма сделки:</h4>\n        <div class=\"row\">\n            <div class=\"form-group col-md-6\">\n                <label>от</label>\n                <input type=\"text\"\n                       [(ngModel)]=\"order.integer_part_from\"\n                       (ngModelChange)=\"checkRateLimits()\"\n                       name=\"left_limit\"\n                       class=\"form-control\" \n                       placeholder=\"100\" />\n            </div>\n            <div class=\"form-group col-md-6\">\n                <label>до</label>\n                <input type=\"text\"\n                    [(ngModel)]=\"order.integer_part_to\"\n                    (ngModelChange)=\"checkRateLimits()\"\n                    name=\"right_limit\"\n                    class=\"form-control\" \n                    placeholder=\"500\" />\n            </div>\n        </div>\n    </form>\n    <div class=\"col-md-3 text-center\">\n        <button md-fab color=\"warn\"\n                style=\"margin-top: 70px; font-size: 3em; height: 100px; width: 100px;\"\n                [disabled]=\"isWaitOrder || !(order.team_size && order.integer_part_from && order.integer_part_to)\"\n                (click)=\"sendOrder()\">\n            FA\n        </button>\n        <div *ngIf=\"isWaitOrder\" style=\"margin-top: 10px\">\n            <button md-raised-button\n                    (click)=\"cancelOrder()\">\n                Отмена\n            </button>\n        </div>\n    </div>\n    <div class=\"col-md-3 text-center\">\n        <div *ngIf=\"timerFromFa && timerFromFa > 0\">\n            {{timerFromFa | time}}\n        </div>\n    </div>\n</div>"
+	module.exports = "<h1>Оформление заявки на спор по игре <em>{{game.name}}</em></h1>\n<div class=\"row\">\n    <div class=\"col-md-2\">\n        <h4>Вид игры:</h4>\n        <ul class=\"nav nav-pills nav-stacked\">\n            <li *ngFor=\"let game_option of DEFAULT_TEAM_SIZE\"\n                role=\"presentation\"\n                [class.active]=\"game_option.id == order.team_size\"\n                [class.disabled]=\"game_option.disabled\"\n                (click)=\"changeGamersCount(game_option)\">\n                <a>{{game_option.name}}</a>\n            </li>\n        </ul>\n    </div>\n    <form class=\"col-md-3\">\n        <h4>Сумма сделки:</h4>\n        <div class=\"row\">\n            <div class=\"form-group col-md-6\">\n                <label>от</label>\n                <input type=\"text\"\n                       [(ngModel)]=\"order.rate_left\"\n                       (ngModelChange)=\"checkRateLimits()\"\n                       name=\"left_limit\"\n                       class=\"form-control\" \n                       placeholder=\"100\" />\n            </div>\n            <div class=\"form-group col-md-6\">\n                <label>до</label>\n                <input type=\"text\"\n                    [(ngModel)]=\"order.rate_right\"\n                    (ngModelChange)=\"checkRateLimits()\"\n                    name=\"right_limit\"\n                    class=\"form-control\" \n                    placeholder=\"500\" />\n            </div>\n        </div>\n    </form>\n    <div class=\"col-md-3 text-center\">\n        <button md-fab color=\"warn\"\n                style=\"margin-top: 70px; font-size: 3em; height: 100px; width: 100px;\"\n                [disabled]=\"isWaitOrder || !(order.team_size && order.rate_left && order.rate_right)\"\n                (click)=\"sendOrder()\">\n            FA\n        </button>\n        <div *ngIf=\"isWaitOrder\" style=\"margin-top: 10px\">\n            <button md-raised-button\n                    (click)=\"cancelOrder()\">\n                Отмена\n            </button>\n        </div>\n    </div>\n    <div class=\"col-md-3 text-center\">\n        <div *ngIf=\"timerFromFa && timerFromFa > 0\">\n            {{timerFromFa | time}}\n        </div>\n    </div>\n</div>"
 
 /***/ },
 /* 415 */

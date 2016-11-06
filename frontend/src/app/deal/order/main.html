@@ -18,7 +18,7 @@
             <div class="form-group col-md-6">
                 <label>от</label>
                 <input type="text"
-                       [(ngModel)]="order.integer_part_from"
+                       [(ngModel)]="order.rate_left"
                        (ngModelChange)="checkRateLimits()"
                        name="left_limit"
                        class="form-control" 
@@ -27,7 +27,7 @@
             <div class="form-group col-md-6">
                 <label>до</label>
                 <input type="text"
-                    [(ngModel)]="order.integer_part_to"
+                    [(ngModel)]="order.rate_right"
                     (ngModelChange)="checkRateLimits()"
                     name="right_limit"
                     class="form-control" 
@@ -38,7 +38,7 @@
     <div class="col-md-3 text-center">
         <button md-fab color="warn"
                 style="margin-top: 70px; font-size: 3em; height: 100px; width: 100px;"
-                [disabled]="isWaitOrder || !(order.team_size && order.integer_part_from && order.integer_part_to)"
+                [disabled]="isWaitOrder || !(order.team_size && order.rate_left && order.rate_right)"
                 (click)="sendOrder()">
             FA
         </button>

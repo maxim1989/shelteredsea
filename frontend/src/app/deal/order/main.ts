@@ -10,7 +10,6 @@ import { UserService } from 'app/user/auth.service';
 import { GameService } from 'app/game_dispute/game/service';
 import { OrderForDealService } from 'app/deal/order/service';
 import {Order} from "./model";
-import {FooOrder} from "./foo.model";
 
 @Component({
     selector: 'deal-order',
@@ -84,11 +83,11 @@ export class DealOrder implements OnInit{
         this.OrderForDealService.getMyOrders()
             .then( (orders) => {
                 if (orders.length) {
-                    let orderOfGame: FooOrder[] = orders.filter( // TODO change type
-                        (order: FooOrder) => order.order.game.id == this.game.id
+                    let orderOfGame: Order[] = orders.filter(
+                        (order: Order) => order.game.id == this.game.id
                     );
                     if (orderOfGame.length) {
-                        this.loadExistOrderData(orderOfGame[0].order);
+                        this.loadExistOrderData(orderOfGame[0]);
                     }
                 }
             });
@@ -106,11 +105,11 @@ export class DealOrder implements OnInit{
     }
 
     checkRateLimits() {
-        if ( this.order.integer_part_to > Math.floor(this.user.balance.balance / 100) ) {
-            this.order.integer_part_to = Math.floor(this.user.balance.balance / 100);
+        if ( this.order.rate_right > Math.floor(this.user.balance.balance / 100) ) {
+            this.order.rate_right = Math.floor(this.user.balance.balance / 100);
         }
-        if ( this.order.integer_part_from > this.order.integer_part_to ) {
-            this.order.integer_part_from = this.order.integer_part_to;
+        if ( this.order.rate_left > this.order.rate_right ) {
+            this.order.rate_left = this.order.rate_right;
         }
     }
 

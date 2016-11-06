@@ -11,10 +11,9 @@ export class Order {
     is_winner: boolean;
     in_negotiations: boolean;
 
-    integer_part_from: number;
-    fractional_part_from: number;
-    integer_part_to: number;
-    fractional_part_to: number;
+    rate: number;
+    rate_left: number;
+    rate_right: number;
 
     game: Game;
     user: User;

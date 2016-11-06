@@ -31,7 +31,7 @@ export class AppComponent implements OnInit{
             .catch( () => {
                 this.userLoaded = false;
             });
-        this.initOrderMonitoring();
+        // this.initOrderMonitoring();
     }
 
     initAuthUser(user: User) {
