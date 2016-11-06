@@ -73,9 +73,9 @@ class MyOrder(APIView):
                     context={'uids': [my_order.id, competitor_id], 'in_negotiations': True})
                 if serializer_temp_deal.is_valid():
                     serializer_temp_deal.save()
-                    result_list.append({'order': serializer_my_order.data, 'temp_deal': serializer_temp_deal.data})
-                result_list.append({'order': serializer_my_order.data, 'temp_deal': serializer_temp_deal.errors})
-            result_list.append({'order': serializer_my_order.data, 'temp_deal': 0})
+                    result_list.append(serializer_my_order.data)
+                result_list.append(serializer_my_order.data)
+            result_list.append(serializer_my_order.data)
         return Response(result_list, status=status.HTTP_200_OK)
 
     def post(self, request):
@@ -113,7 +113,7 @@ class Order(APIView):
         serializer = OrderForDealSerializer(order)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post(self, request, pk):
+    def put(self, request, pk):
         try:
             order = OrderForDeal.objects.get(pk=pk)
         except OrderForDeal.DoesNotExist as err:
@@ -124,6 +124,21 @@ class Order(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
 
+    def delete(self, request, pk):
+        try:
+            user = User.objects.get(pk=request.user.id)
+            order = OrderForDeal.objects.get(pk=pk)
+        except User.DoesNotExist as err:
+            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
+        except OrderForDeal.DoesNotExist as err:
+            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
+        serializer = OrderForDealSerializer(order, partial=True, context={'user': user},
+                                            data={'is_active': False, 'temp_deal': None, 'in_negotiations': False})
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'success': True, 'temp_deal': serializer.data}, status=status.HTTP_200_OK)
+        return Response({'success': False, 'error': serializer.errors}, status=status.HTTP_403_FORBIDDEN)
+
 
 class Next(APIView):
     def post(self, request, temp_deal_id):
@@ -132,23 +147,6 @@ class Next(APIView):
         except TempDeals.DoesNotExist as err:
             return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
         serializer = TempDealsSerializer(temp_deal, data={'is_active': False}, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'success': True, 'temp_deal': serializer.data}, status=status.HTTP_200_OK)
-        return Response({'success': False, 'error': serializer.errors}, status=status.HTTP_403_FORBIDDEN)
-
-
-class CloseOrder(APIView):
-    def post(self, request, order_id):
-        try:
-            user = User.objects.get(pk=request.user.id)
-            order = OrderForDeal.objects.get(pk=order_id)
-        except User.DoesNotExist as err:
-            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
-        except OrderForDeal.DoesNotExist as err:
-            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
-        serializer = OrderForDealSerializer(order, partial=True, context={'user': user},
-                                            data={'is_active': False, 'temp_deal': None, 'in_negotiations': False})
         if serializer.is_valid():
             serializer.save()
             return Response({'success': True, 'temp_deal': serializer.data}, status=status.HTTP_200_OK)
