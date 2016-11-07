@@ -82,6 +82,11 @@ class MyOrder(APIView):
             return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
         except User.DoesNotExist as err:
             return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
+
+        find_order = OrderForDeal.objects.filter(user=myself, game=game)
+        if find_order:
+            return Response({'success': True, 'data': 'already_exist'}, status=status.HTTP_200_OK)
+
         serializer = OrderForDealCreateUpdateSerializer(data=request.data, partial=True,
                                                         context={'myself': myself, 'game': game})
         if serializer.is_valid():
