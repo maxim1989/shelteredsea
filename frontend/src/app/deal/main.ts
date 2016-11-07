@@ -2,8 +2,10 @@ import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Router, ActivatedRoute, Params} from '@angular/router';
 import {Observable} from 'rxjs/Rx';
 import { Standard } from 'app/standard.model';
+import { User } from 'app/user/model';
 import { Chat } from 'app/chat/model';
 import { TempDeal } from 'app/deal/temp_deal.model';
+import { Order } from 'app/deal/order/model';
 
 import { UserService } from 'app/user/auth.service';
 import { DealService } from 'app/deal/service';
@@ -15,9 +17,11 @@ import { OrderMonitoringService } from 'app/deal/order/monitoring.service';
     providers: [DealService]
 })
 export class Deal implements OnInit, OnDestroy{
-
+    user: User;
     dealId: number;
     chat: Chat;
+    myselfOrder: Order = new Order();
+    alienOrder: Order = new Order();
 
     constructor(
         private UserService: UserService,
@@ -28,8 +32,11 @@ export class Deal implements OnInit, OnDestroy{
     ) {}
 
     ngOnInit() {
-        this.UserService.isAutorizedPromise()
-            .then( () => {this.initParams()} )
+        this.UserService.getAuthUser()
+            .then( (user:User) => {
+                this.user = user;
+                this.initParams()
+            })
             .catch( () => {this.redirectToMainPage()} );
     }
 
@@ -49,7 +56,14 @@ export class Deal implements OnInit, OnDestroy{
     loadTemplateData(data:TempDeal) {
         this.chat = new Chat();
         this.chat.chat = data.chat;
-        console.log(this.chat);
+        
+        data.orders.forEach((order:Order) => {
+            if ( order.user.id == this.user.id ) {
+                this.myselfOrder = order;
+            } else {
+                this.alienOrder = order;
+            }
+        });
     }
 
     private redirectToMainPage() {

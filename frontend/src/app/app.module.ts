@@ -15,6 +15,7 @@ import {ChatHistoryComponent} from './chat/history/main';
 import {StartPageComponent} from './start_module/main';
 import {GameDispute} from './game_dispute/main';
 import {Deal} from './deal/main';
+import {DealParamsByOrder} from './deal/params/by_order';
 import {DealOrder} from './deal/order/main';
 import {AccountComponent} from './account/main';
 import {AccountChatComponent} from './account/chat/main';
@@ -41,7 +42,9 @@ import {RatePipe} from './pipes/rate';
         AppComponent,
         StartPageComponent,
         GameDispute,
+
         Deal,
+        DealParamsByOrder,
         DealOrder,
 
         ChatComponent, ChatHistoryComponent,

@@ -1,8 +1,23 @@
 <md-card>
     <md-card-subtitle>Оформление сделки</md-card-subtitle>
     <md-card-content>
-        <div *ngIf="chat">
-            <chat [chat]="chat"></chat>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="well well-sm">
+                    <h5>Общие параметры игры на спор</h5>
+                    Количество игроков в команде: <strong><em>1x1</em></strong>
+                </div>
+                <div *ngIf="chat">
+                    <h5>Обсуждение игры на спор</h5>
+                    <chat [chat]="chat"></chat>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <params-by-order [owner]="'alien'" [order]="alienOrder"></params-by-order>
+            </div>
+            <div class="col-md-4">
+                <params-by-order [owner]="'myself'" [order]="myselfOrder"></params-by-order>
+            </div>
         </div>
     </md-card-content>
 </md-card>
