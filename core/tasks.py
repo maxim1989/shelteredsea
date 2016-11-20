@@ -1,13 +1,13 @@
 from __future__ import absolute_import
 
 import datetime
-import os
+# import os
 
-import requests
+# import requests
 from celery import shared_task
 
 from disputes.models import Deals, OrderForDeal
-from social.apps.django_app.default.models import UserSocialAuth
+# from social.apps.django_app.default.models import UserSocialAuth
 
 
 @shared_task
