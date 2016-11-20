@@ -46,7 +46,7 @@
 
             function doAjax(data) {
                 var ajax = getXmlHttp();
-                ajax.open('POST', 'pfg/orders_for_deal', true);
+                ajax.open('POST', 'pfg/start_dispute_2', true);
                 ajax.setRequestHeader("Content-type", "application/json; charset=utf-8");
                 ajax.setRequestHeader("X-CSRFToken", 'J9HX9g7ZdSbxb6nBPpQTwFN4leiiCL1Z');
                 ajax.onreadystatechange = function() {
