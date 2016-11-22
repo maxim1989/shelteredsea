@@ -24,7 +24,7 @@ class ParticipantsSerializer(serializers.ModelSerializer):
 class Deals_2_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Deals
-        fields = ('id', 'is_active')
+        fields = ('id', 'is_active', 'created')
 
 
 class OrderForDealSerializer(serializers.ModelSerializer):

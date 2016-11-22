@@ -23,6 +23,7 @@ import {AccountSearchComponent} from './account/search/main';
 import {AccountSearchResultListComponent} from './account/search/result-list';
 import {AccountFriendshipComponent} from './account/friendship/main';
 import {AccountStatisticComponent} from './account/statistic/main';
+import { AccountDealsComponent } from './account/deals/main'
 
 import {TimePipe} from './pipes/time';
 import {RatePipe} from './pipes/rate';
@@ -52,6 +53,7 @@ import {RatePipe} from './pipes/rate';
         AccountSearchComponent, AccountSearchResultListComponent,
         AccountFriendshipComponent,
         AccountStatisticComponent,
+        AccountDealsComponent,
 
         TimePipe,
         RatePipe
