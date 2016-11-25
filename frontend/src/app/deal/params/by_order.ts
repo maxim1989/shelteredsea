@@ -9,12 +9,15 @@ import { OrderMonitoringService } from 'app/deal/order/monitoring.service';
     selector: 'params-by-order',
     templateUrl: './by_order.html'
 })
-export class DealParamsByOrder implements OnChanges{
+export class DealParamsByOrderComponent implements OnChanges{
+    private TITLE_TEXT_ALIEN: string = "Параметры игры на спор, выбранные соперником";
+    private TITLE_TEXT_MYSELF: string = "Параметры игры на спор, выбранные вами";
     @Input()
     owner: string;
     @Input()
     order: Order = new Order();
 
+    isAlien: bool = true;
     title: string;
     title_cls: string;
     user_name: string;
@@ -30,12 +33,13 @@ export class DealParamsByOrder implements OnChanges{
 
     initOwner() {
         if ( this.owner ) {
-            if (this.owner == 'alien') {
+            this.isAlien = this.owner == 'alien';
+            if ( this.isAlien ) {
                 this.title_cls = "text-danger";
-                this.title = "Параметры игры на спор, выбранные соперником";
+                this.title = this.TITLE_TEXT_ALIEN;
             } else {
                 this.title_cls = "text-success";
-                this.title = "Параметры игры на спор, выбранные вами";
+                this.title = this.TITLE_TEXT_MYSELF;
             }
         }
     }

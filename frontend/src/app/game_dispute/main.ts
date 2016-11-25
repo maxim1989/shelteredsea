@@ -8,7 +8,7 @@ import { GameService } from 'app/game_dispute/game/service';
     templateUrl: './main.html',
     providers: [GameService]
 })
-export class GameDispute implements OnInit{
+export class GameDisputeComponent implements OnInit{
     gameList: Game[];
 
     constructor(

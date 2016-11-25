@@ -16,7 +16,7 @@ import { OrderMonitoringService } from 'app/deal/order/monitoring.service';
     templateUrl: './main.html',
     providers: [DealService]
 })
-export class Deal implements OnInit, OnDestroy{
+export class DealComponent implements OnInit, OnDestroy{
     user: User;
     dealId: number;
     chat: Chat;

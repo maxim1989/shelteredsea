@@ -13,10 +13,10 @@ import {ChatComponent} from './chat/main';
 import {ChatHistoryComponent} from './chat/history/main';
 
 import {StartPageComponent} from './start_module/main';
-import {GameDispute} from './game_dispute/main';
-import {Deal} from './deal/main';
-import {DealParamsByOrder} from './deal/params/by_order';
-import {DealOrder} from './deal/order/main';
+import {GameDisputeComponent} from './game_dispute/main';
+import {DealComponent} from './deal/main';
+import {DealParamsByOrderComponent} from './deal/params/by_order';
+import {DealOrderComponent} from './deal/order/main';
 import {AccountComponent} from './account/main';
 import {AccountChatComponent} from './account/chat/main';
 import {AccountCardComponent} from './account/card/main';
@@ -41,11 +41,11 @@ import {RatePipe} from './pipes/rate';
     declarations: [
         AppComponent,
         StartPageComponent,
-        GameDispute,
+        GameDisputeComponent,
 
-        Deal,
-        DealParamsByOrder,
-        DealOrder,
+        DealComponent,
+        DealParamsByOrderComponent,
+        DealOrderComponent,
 
         ChatComponent, ChatHistoryComponent,
 

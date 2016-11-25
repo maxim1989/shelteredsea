@@ -1411,7 +1411,7 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * @license Angular v2.1.1
+	 * @license Angular v2.1.2
 	 * (c) 2010-2016 Google, Inc. https://angular.io/
 	 * License: MIT
 	 */
@@ -1422,17 +1422,14 @@ webpackJsonp([1],[
 	}(this, function (exports,_angular_core,rxjs_operator_toPromise,rxjs_Subject,rxjs_Observable,rxjs_observable_fromPromise) { 'use strict';
 
 	    function isPresent(obj) {
-	        return obj !== undefined && obj !== null;
+	        return obj != null;
 	    }
 	    function isBlank(obj) {
-	        return obj === undefined || obj === null;
+	        return obj == null;
 	    }
 	    // JS has NaN !== NaN
 	    function looseIdentical(a, b) {
 	        return a === b || typeof a === 'number' && typeof b === 'number' && isNaN(a) && isNaN(b);
-	    }
-	    function normalizeBool(obj) {
-	        return isBlank(obj) ? false : obj;
 	    }
 	    function isJsObject(o) {
 	        return o !== null && (typeof o === 'function' || typeof o === 'object');
@@ -1655,42 +1652,6 @@ webpackJsonp([1],[
 	    var ListWrapper = (function () {
 	        function ListWrapper() {
 	        }
-	        // JS has no way to express a statically fixed size list, but dart does so we
-	        // keep both methods.
-	        ListWrapper.createFixedSize = function (size) { return new Array(size); };
-	        ListWrapper.createGrowableSize = function (size) { return new Array(size); };
-	        ListWrapper.clone = function (array) { return array.slice(0); };
-	        ListWrapper.forEachWithIndex = function (array, fn) {
-	            for (var i = 0; i < array.length; i++) {
-	                fn(array[i], i);
-	            }
-	        };
-	        ListWrapper.first = function (array) {
-	            if (!array)
-	                return null;
-	            return array[0];
-	        };
-	        ListWrapper.last = function (array) {
-	            if (!array || array.length == 0)
-	                return null;
-	            return array[array.length - 1];
-	        };
-	        ListWrapper.indexOf = function (array, value, startIndex) {
-	            if (startIndex === void 0) { startIndex = 0; }
-	            return array.indexOf(value, startIndex);
-	        };
-	        ListWrapper.contains = function (list, el) { return list.indexOf(el) !== -1; };
-	        ListWrapper.reversed = function (array) {
-	            var a = ListWrapper.clone(array);
-	            return a.reverse();
-	        };
-	        ListWrapper.concat = function (a, b) { return a.concat(b); };
-	        ListWrapper.insert = function (list, index, value) { list.splice(index, 0, value); };
-	        ListWrapper.removeAt = function (list, index) {
-	            var res = list[index];
-	            list.splice(index, 1);
-	            return res;
-	        };
 	        ListWrapper.removeAll = function (list, items) {
 	            for (var i = 0; i < items.length; ++i) {
 	                var index = list.indexOf(items[i]);
@@ -1705,13 +1666,6 @@ webpackJsonp([1],[
 	            }
 	            return false;
 	        };
-	        ListWrapper.clear = function (list) { list.length = 0; };
-	        ListWrapper.isEmpty = function (list) { return list.length == 0; };
-	        ListWrapper.fill = function (list, value, start, end) {
-	            if (start === void 0) { start = 0; }
-	            if (end === void 0) { end = null; }
-	            list.fill(value, start, end === null ? list.length : end);
-	        };
 	        ListWrapper.equals = function (a, b) {
 	            if (a.length != b.length)
 	                return false;
@@ -1721,22 +1675,6 @@ webpackJsonp([1],[
 	            }
 	            return true;
 	        };
-	        ListWrapper.slice = function (l, from, to) {
-	            if (from === void 0) { from = 0; }
-	            if (to === void 0) { to = null; }
-	            return l.slice(from, to === null ? undefined : to);
-	        };
-	        ListWrapper.splice = function (l, from, length) { return l.splice(from, length); };
-	        ListWrapper.sort = function (l, compareFn) {
-	            if (isPresent(compareFn)) {
-	                l.sort(compareFn);
-	            }
-	            else {
-	                l.sort();
-	            }
-	        };
-	        ListWrapper.toString = function (l) { return l.toString(); };
-	        ListWrapper.toJSON = function (l) { return JSON.stringify(l); };
 	        ListWrapper.maximum = function (list, predicate) {
 	            if (list.length == 0) {
 	                return null;
@@ -1745,7 +1683,7 @@ webpackJsonp([1],[
 	            var maxValue = -Infinity;
 	            for (var index = 0; index < list.length; index++) {
 	                var candidate = list[index];
-	                if (isBlank(candidate)) {
+	                if (candidate == null) {
 	                    continue;
 	                }
 	                var candidateValue = predicate(candidate);
@@ -1760,11 +1698,6 @@ webpackJsonp([1],[
 	            var target = [];
 	            _flattenArray(list, target);
 	            return target;
-	        };
-	        ListWrapper.addAll = function (list, source) {
-	            for (var i = 0; i < source.length; i++) {
-	                list.push(source[i]);
-	            }
 	        };
 	        return ListWrapper;
 	    }());
@@ -2170,7 +2103,7 @@ webpackJsonp([1],[
 	                    indexToRemove = i;
 	                }
 	            }
-	            ListWrapper.removeAt(this._accessors, indexToRemove);
+	            this._accessors.splice(indexToRemove, 1);
 	        };
 	        RadioControlRegistry.prototype.select = function (accessor) {
 	            var _this = this;
@@ -3084,7 +3017,7 @@ webpackJsonp([1],[
 	     */
 	    var DISABLED = 'DISABLED';
 	    function _find(control, path, delimiter) {
-	        if (isBlank(path))
+	        if (path == null)
 	            return null;
 	        if (!(path instanceof Array)) {
 	            path = path.split(delimiter);
@@ -3312,9 +3245,8 @@ webpackJsonp([1],[
 	         */
 	        AbstractControl.prototype.markAsTouched = function (_a) {
 	            var onlySelf = (_a === void 0 ? {} : _a).onlySelf;
-	            onlySelf = normalizeBool(onlySelf);
 	            this._touched = true;
-	            if (isPresent(this._parent) && !onlySelf) {
+	            if (this._parent && !onlySelf) {
 	                this._parent.markAsTouched({ onlySelf: onlySelf });
 	            }
 	        };
@@ -3329,7 +3261,7 @@ webpackJsonp([1],[
 	            var onlySelf = (_a === void 0 ? {} : _a).onlySelf;
 	            this._touched = false;
 	            this._forEachChild(function (control) { control.markAsUntouched({ onlySelf: true }); });
-	            if (isPresent(this._parent) && !onlySelf) {
+	            if (this._parent && !onlySelf) {
 	                this._parent._updateTouched({ onlySelf: onlySelf });
 	            }
 	        };
@@ -3341,9 +3273,8 @@ webpackJsonp([1],[
 	         */
 	        AbstractControl.prototype.markAsDirty = function (_a) {
 	            var onlySelf = (_a === void 0 ? {} : _a).onlySelf;
-	            onlySelf = normalizeBool(onlySelf);
 	            this._pristine = false;
-	            if (isPresent(this._parent) && !onlySelf) {
+	            if (this._parent && !onlySelf) {
 	                this._parent.markAsDirty({ onlySelf: onlySelf });
 	            }
 	        };
@@ -3358,7 +3289,7 @@ webpackJsonp([1],[
 	            var onlySelf = (_a === void 0 ? {} : _a).onlySelf;
 	            this._pristine = true;
 	            this._forEachChild(function (control) { control.markAsPristine({ onlySelf: true }); });
-	            if (isPresent(this._parent) && !onlySelf) {
+	            if (this._parent && !onlySelf) {
 	                this._parent._updatePristine({ onlySelf: onlySelf });
 	            }
 	        };
@@ -3367,9 +3298,8 @@ webpackJsonp([1],[
 	         */
 	        AbstractControl.prototype.markAsPending = function (_a) {
 	            var onlySelf = (_a === void 0 ? {} : _a).onlySelf;
-	            onlySelf = normalizeBool(onlySelf);
 	            this._status = PENDING;
-	            if (isPresent(this._parent) && !onlySelf) {
+	            if (this._parent && !onlySelf) {
 	                this._parent.markAsPending({ onlySelf: onlySelf });
 	            }
 	        };
@@ -3381,12 +3311,11 @@ webpackJsonp([1],[
 	         */
 	        AbstractControl.prototype.disable = function (_a) {
 	            var _b = _a === void 0 ? {} : _a, onlySelf = _b.onlySelf, emitEvent = _b.emitEvent;
-	            emitEvent = isPresent(emitEvent) ? emitEvent : true;
 	            this._status = DISABLED;
 	            this._errors = null;
 	            this._forEachChild(function (control) { control.disable({ onlySelf: true }); });
 	            this._updateValue();
-	            if (emitEvent) {
+	            if (emitEvent !== false) {
 	                this._valueChanges.emit(this._value);
 	                this._statusChanges.emit(this._status);
 	            }
@@ -3409,7 +3338,7 @@ webpackJsonp([1],[
 	            this._onDisabledChange.forEach(function (changeFn) { return changeFn(false); });
 	        };
 	        AbstractControl.prototype._updateAncestors = function (onlySelf) {
-	            if (isPresent(this._parent) && !onlySelf) {
+	            if (this._parent && !onlySelf) {
 	                this._parent.updateValueAndValidity();
 	                this._parent._updatePristine();
 	                this._parent._updateTouched();
@@ -3423,8 +3352,6 @@ webpackJsonp([1],[
 	         */
 	        AbstractControl.prototype.updateValueAndValidity = function (_a) {
 	            var _b = _a === void 0 ? {} : _a, onlySelf = _b.onlySelf, emitEvent = _b.emitEvent;
-	            onlySelf = normalizeBool(onlySelf);
-	            emitEvent = isPresent(emitEvent) ? emitEvent : true;
 	            this._setInitialStatus();
 	            this._updateValue();
 	            if (this.enabled) {
@@ -3434,11 +3361,11 @@ webpackJsonp([1],[
 	                    this._runAsyncValidator(emitEvent);
 	                }
 	            }
-	            if (emitEvent) {
+	            if (emitEvent !== false) {
 	                this._valueChanges.emit(this._value);
 	                this._statusChanges.emit(this._status);
 	            }
-	            if (isPresent(this._parent) && !onlySelf) {
+	            if (this._parent && !onlySelf) {
 	                this._parent.updateValueAndValidity({ onlySelf: onlySelf, emitEvent: emitEvent });
 	            }
 	        };
@@ -3450,19 +3377,20 @@ webpackJsonp([1],[
 	        };
 	        AbstractControl.prototype._setInitialStatus = function () { this._status = this._allControlsDisabled() ? DISABLED : VALID; };
 	        AbstractControl.prototype._runValidator = function () {
-	            return isPresent(this.validator) ? this.validator(this) : null;
+	            return this.validator ? this.validator(this) : null;
 	        };
 	        AbstractControl.prototype._runAsyncValidator = function (emitEvent) {
 	            var _this = this;
-	            if (isPresent(this.asyncValidator)) {
+	            if (this.asyncValidator) {
 	                this._status = PENDING;
 	                this._cancelExistingSubscription();
 	                var obs = toObservable(this.asyncValidator(this));
-	                this._asyncValidationSubscription = obs.subscribe({ next: function (res) { return _this.setErrors(res, { emitEvent: emitEvent }); } });
+	                this._asyncValidationSubscription =
+	                    obs.subscribe({ next: function (res) { return _this.setErrors(res, { emitEvent: emitEvent }); } });
 	            }
 	        };
 	        AbstractControl.prototype._cancelExistingSubscription = function () {
-	            if (isPresent(this._asyncValidationSubscription)) {
+	            if (this._asyncValidationSubscription) {
 	                this._asyncValidationSubscription.unsubscribe();
 	            }
 	        };
@@ -3491,9 +3419,8 @@ webpackJsonp([1],[
 	         */
 	        AbstractControl.prototype.setErrors = function (errors, _a) {
 	            var emitEvent = (_a === void 0 ? {} : _a).emitEvent;
-	            emitEvent = isPresent(emitEvent) ? emitEvent : true;
 	            this._errors = errors;
-	            this._updateControlsErrors(emitEvent);
+	            this._updateControlsErrors(emitEvent !== false);
 	        };
 	        /**
 	         * Retrieves a child control given the control's name or path.
@@ -3517,13 +3444,8 @@ webpackJsonp([1],[
 	         */
 	        AbstractControl.prototype.getError = function (errorCode, path) {
 	            if (path === void 0) { path = null; }
-	            var control = isPresent(path) && (path.length > 0) ? this.get(path) : this;
-	            if (isPresent(control) && isPresent(control._errors)) {
-	                return control._errors[errorCode];
-	            }
-	            else {
-	                return null;
-	            }
+	            var control = path ? this.get(path) : this;
+	            return control && control._errors ? control._errors[errorCode] : null;
 	        };
 	        /**
 	         * Returns true if the control with the given path has the error specified. Otherwise
@@ -3533,7 +3455,7 @@ webpackJsonp([1],[
 	         */
 	        AbstractControl.prototype.hasError = function (errorCode, path) {
 	            if (path === void 0) { path = null; }
-	            return isPresent(this.getError(errorCode, path));
+	            return !!this.getError(errorCode, path);
 	        };
 	        Object.defineProperty(AbstractControl.prototype, "root", {
 	            /**
@@ -3541,7 +3463,7 @@ webpackJsonp([1],[
 	             */
 	            get: function () {
 	                var x = this;
-	                while (isPresent(x._parent)) {
+	                while (x._parent) {
 	                    x = x._parent;
 	                }
 	                return x;
@@ -3555,7 +3477,7 @@ webpackJsonp([1],[
 	            if (emitEvent) {
 	                this._statusChanges.emit(this._status);
 	            }
-	            if (isPresent(this._parent)) {
+	            if (this._parent) {
 	                this._parent._updateControlsErrors(emitEvent);
 	            }
 	        };
@@ -3567,7 +3489,7 @@ webpackJsonp([1],[
 	        AbstractControl.prototype._calculateStatus = function () {
 	            if (this._allControlsDisabled())
 	                return DISABLED;
-	            if (isPresent(this._errors))
+	            if (this._errors)
 	                return INVALID;
 	            if (this._anyControlsHaveStatus(PENDING))
 	                return PENDING;
@@ -3591,7 +3513,7 @@ webpackJsonp([1],[
 	        AbstractControl.prototype._updatePristine = function (_a) {
 	            var onlySelf = (_a === void 0 ? {} : _a).onlySelf;
 	            this._pristine = !this._anyControlsDirty();
-	            if (isPresent(this._parent) && !onlySelf) {
+	            if (this._parent && !onlySelf) {
 	                this._parent._updatePristine({ onlySelf: onlySelf });
 	            }
 	        };
@@ -3599,7 +3521,7 @@ webpackJsonp([1],[
 	        AbstractControl.prototype._updateTouched = function (_a) {
 	            var onlySelf = (_a === void 0 ? {} : _a).onlySelf;
 	            this._touched = this._anyControlsTouched();
-	            if (isPresent(this._parent) && !onlySelf) {
+	            if (this._parent && !onlySelf) {
 	                this._parent._updateTouched({ onlySelf: onlySelf });
 	            }
 	        };
@@ -3688,11 +3610,9 @@ webpackJsonp([1],[
 	        FormControl.prototype.setValue = function (value, _a) {
 	            var _this = this;
 	            var _b = _a === void 0 ? {} : _a, onlySelf = _b.onlySelf, emitEvent = _b.emitEvent, emitModelToViewChange = _b.emitModelToViewChange, emitViewToModelChange = _b.emitViewToModelChange;
-	            emitModelToViewChange = isPresent(emitModelToViewChange) ? emitModelToViewChange : true;
-	            emitViewToModelChange = isPresent(emitViewToModelChange) ? emitViewToModelChange : true;
 	            this._value = value;
-	            if (this._onChange.length && emitModelToViewChange) {
-	                this._onChange.forEach(function (changeFn) { return changeFn(_this._value, emitViewToModelChange); });
+	            if (this._onChange.length && emitModelToViewChange !== false) {
+	                this._onChange.forEach(function (changeFn) { return changeFn(_this._value, emitViewToModelChange !== false); });
 	            }
 	            this.updateValueAndValidity({ onlySelf: onlySelf, emitEvent: emitEvent });
 	        };
@@ -3983,7 +3903,7 @@ webpackJsonp([1],[
 	         * ### Example
 	         *
 	         * ```ts
-	         * this.form.reset({first: 'name', last; 'last name'});
+	         * this.form.reset({first: 'name', last: 'last name'});
 	         *
 	         * console.log(this.form.value);  // {first: 'name', last: 'last name'}
 	         * ```
@@ -4504,7 +4424,7 @@ webpackJsonp([1],[
 	        /** @internal */
 	        NgForm.prototype._findContainer = function (path) {
 	            path.pop();
-	            return ListWrapper.isEmpty(path) ? this.form : this.form.get(path);
+	            return path.length ? this.form.get(path) : this.form;
 	        };
 	        NgForm.decorators = [
 	            { type: _angular_core.Directive, args: [{
@@ -6173,8 +6093,8 @@ webpackJsonp([1],[
 	var auth_service_1 = __webpack_require__(55);
 	var service_1 = __webpack_require__(236);
 	var monitoring_service_1 = __webpack_require__(138);
-	var Deal = (function () {
-	    function Deal(UserService, DealService, router, route, OrderMonitoringService) {
+	var DealComponent = (function () {
+	    function DealComponent(UserService, DealService, router, route, OrderMonitoringService) {
 	        this.UserService = UserService;
 	        this.DealService = DealService;
 	        this.router = router;
@@ -6183,7 +6103,7 @@ webpackJsonp([1],[
 	        this.myselfOrder = new model_2.Order();
 	        this.alienOrder = new model_2.Order();
 	    }
-	    Deal.prototype.ngOnInit = function () {
+	    DealComponent.prototype.ngOnInit = function () {
 	        var _this = this;
 	        this.UserService.getAuthUser()
 	            .then(function (user) {
@@ -6192,10 +6112,10 @@ webpackJsonp([1],[
 	        })
 	            .catch(function () { _this.redirectToMainPage(); });
 	    };
-	    Deal.prototype.ngOnDestroy = function () {
+	    DealComponent.prototype.ngOnDestroy = function () {
 	        this.OrderMonitoringService.toContinue();
 	    };
-	    Deal.prototype.initParams = function () {
+	    DealComponent.prototype.initParams = function () {
 	        var _this = this;
 	        this.route.params.forEach(function (params) {
 	            _this.dealId = params['deal_id'];
@@ -6204,7 +6124,7 @@ webpackJsonp([1],[
 	                .catch(function () { _this.redirectToMainPage(); });
 	        });
 	    };
-	    Deal.prototype.loadTemplateData = function (data) {
+	    DealComponent.prototype.loadTemplateData = function (data) {
 	        var _this = this;
 	        this.chat = new model_1.Chat();
 	        this.chat.chat = data.chat;
@@ -6217,21 +6137,21 @@ webpackJsonp([1],[
 	            }
 	        });
 	    };
-	    Deal.prototype.redirectToMainPage = function () {
+	    DealComponent.prototype.redirectToMainPage = function () {
 	        this.router.navigate(['/']);
 	    };
-	    Deal = __decorate([
+	    DealComponent = __decorate([
 	        core_1.Component({
 	            selector: 'deal',
 	            template: __webpack_require__(414),
 	            providers: [service_1.DealService]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object, (typeof (_b = typeof service_1.DealService !== 'undefined' && service_1.DealService) === 'function' && _b) || Object, (typeof (_c = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _c) || Object, (typeof (_d = typeof router_1.ActivatedRoute !== 'undefined' && router_1.ActivatedRoute) === 'function' && _d) || Object, (typeof (_e = typeof monitoring_service_1.OrderMonitoringService !== 'undefined' && monitoring_service_1.OrderMonitoringService) === 'function' && _e) || Object])
-	    ], Deal);
-	    return Deal;
+	    ], DealComponent);
+	    return DealComponent;
 	    var _a, _b, _c, _d, _e;
 	}());
-	exports.Deal = Deal;
+	exports.DealComponent = DealComponent;
 
 
 /***/ },
@@ -6256,8 +6176,8 @@ webpackJsonp([1],[
 	var service_1 = __webpack_require__(139);
 	var service_2 = __webpack_require__(234);
 	var model_2 = __webpack_require__(92);
-	var DealOrder = (function () {
-	    function DealOrder(UserService, GameService, OrderForDealService, router, route) {
+	var DealOrderComponent = (function () {
+	    function DealOrderComponent(UserService, GameService, OrderForDealService, router, route) {
 	        this.UserService = UserService;
 	        this.GameService = GameService;
 	        this.OrderForDealService = OrderForDealService;
@@ -6295,7 +6215,7 @@ webpackJsonp([1],[
 	        this.game = new model_1.Game();
 	        this.timerFromFa = 0;
 	    }
-	    DealOrder.prototype.ngOnInit = function () {
+	    DealOrderComponent.prototype.ngOnInit = function () {
 	        var _this = this;
 	        this.UserService.getAuthUser()
 	            .then(function (user) {
@@ -6304,7 +6224,7 @@ webpackJsonp([1],[
 	        })
 	            .catch(function () { _this.redirectToMainPage(); });
 	    };
-	    DealOrder.prototype.initParams = function () {
+	    DealOrderComponent.prototype.initParams = function () {
 	        var _this = this;
 	        this.route.params.forEach(function (params) {
 	            var gameNamespace = params['game_namespace'];
@@ -6316,7 +6236,7 @@ webpackJsonp([1],[
 	            });
 	        });
 	    };
-	    DealOrder.prototype.initExistsOrders = function () {
+	    DealOrderComponent.prototype.initExistsOrders = function () {
 	        var _this = this;
 	        this.OrderForDealService.getMyOrders()
 	            .then(function (orders) {
@@ -6328,16 +6248,16 @@ webpackJsonp([1],[
 	            }
 	        });
 	    };
-	    DealOrder.prototype.loadExistOrderData = function (order) {
+	    DealOrderComponent.prototype.loadExistOrderData = function (order) {
 	        this.order = order;
 	        this.isWaitOrder = true;
 	    };
-	    DealOrder.prototype.changeGamersCount = function (gameOption) {
+	    DealOrderComponent.prototype.changeGamersCount = function (gameOption) {
 	        if (!gameOption.disabled) {
 	            this.order.team_size = gameOption.id;
 	        }
 	    };
-	    DealOrder.prototype.checkRateLimits = function () {
+	    DealOrderComponent.prototype.checkRateLimits = function () {
 	        if (this.order.rate_right > Math.floor(this.user.balance.balance / 100)) {
 	            this.order.rate_right = Math.floor(this.user.balance.balance / 100);
 	        }
@@ -6345,7 +6265,7 @@ webpackJsonp([1],[
 	            this.order.rate_left = this.order.rate_right;
 	        }
 	    };
-	    DealOrder.prototype.sendOrder = function () {
+	    DealOrderComponent.prototype.sendOrder = function () {
 	        var _this = this;
 	        this.OrderForDealService.createOrderForDeal(this.order, this.game)
 	            .then(function () {
@@ -6353,7 +6273,7 @@ webpackJsonp([1],[
 	            _this.afterSendOrder();
 	        });
 	    };
-	    DealOrder.prototype.cancelOrder = function () {
+	    DealOrderComponent.prototype.cancelOrder = function () {
 	        var _this = this;
 	        this.OrderForDealService.cancelOrder(this.order)
 	            .then(function () {
@@ -6361,32 +6281,32 @@ webpackJsonp([1],[
 	            _this.isWaitOrder = false;
 	        });
 	    };
-	    DealOrder.prototype.afterSendOrder = function () {
+	    DealOrderComponent.prototype.afterSendOrder = function () {
 	        this.runTimer();
 	        this.isWaitOrder = true;
 	    };
-	    DealOrder.prototype.runTimer = function (begin_seconds) {
+	    DealOrderComponent.prototype.runTimer = function (begin_seconds) {
 	        var _this = this;
 	        if (begin_seconds === void 0) { begin_seconds = 0; }
 	        //noinspection TypeScriptUnresolvedFunction
 	        var timer = Rx_1.Observable.timer(begin_seconds * 1000, 1000);
 	        timer.subscribe(function (time) { return _this.timerFromFa = time; });
 	    };
-	    DealOrder.prototype.redirectToMainPage = function () {
+	    DealOrderComponent.prototype.redirectToMainPage = function () {
 	        this.router.navigate(['/']);
 	    };
-	    DealOrder = __decorate([
+	    DealOrderComponent = __decorate([
 	        core_1.Component({
 	            selector: 'deal-order',
 	            template: __webpack_require__(415),
 	            providers: [service_1.GameService, service_2.OrderForDealService]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof auth_service_1.UserService !== 'undefined' && auth_service_1.UserService) === 'function' && _a) || Object, (typeof (_b = typeof service_1.GameService !== 'undefined' && service_1.GameService) === 'function' && _b) || Object, (typeof (_c = typeof service_2.OrderForDealService !== 'undefined' && service_2.OrderForDealService) === 'function' && _c) || Object, (typeof (_d = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _d) || Object, (typeof (_e = typeof router_1.ActivatedRoute !== 'undefined' && router_1.ActivatedRoute) === 'function' && _e) || Object])
-	    ], DealOrder);
-	    return DealOrder;
+	    ], DealOrderComponent);
+	    return DealOrderComponent;
 	    var _a, _b, _c, _d, _e;
 	}());
-	exports.DealOrder = DealOrder;
+	exports.DealOrderComponent = DealOrderComponent;
 
 
 /***/ },
@@ -6532,15 +6452,15 @@ webpackJsonp([1],[
 	var core_1 = __webpack_require__(4);
 	var router_1 = __webpack_require__(47);
 	var service_1 = __webpack_require__(139);
-	var GameDispute = (function () {
-	    function GameDispute(GameService, router) {
+	var GameDisputeComponent = (function () {
+	    function GameDisputeComponent(GameService, router) {
 	        this.GameService = GameService;
 	        this.router = router;
 	    }
-	    GameDispute.prototype.ngOnInit = function () {
+	    GameDisputeComponent.prototype.ngOnInit = function () {
 	        this.loadGames();
 	    };
-	    GameDispute.prototype.loadGames = function () {
+	    GameDisputeComponent.prototype.loadGames = function () {
 	        var _this = this;
 	        this.GameService.getGames()
 	            .then(function (games) {
@@ -6550,25 +6470,25 @@ webpackJsonp([1],[
 	            _this.redirectToMainPage();
 	        });
 	    };
-	    GameDispute.prototype.changeGame = function (game_namespace) {
+	    GameDisputeComponent.prototype.changeGame = function (game_namespace) {
 	        var link = ['/pfg', game_namespace, 'dispute'];
 	        this.router.navigate(link);
 	    };
-	    GameDispute.prototype.redirectToMainPage = function () {
+	    GameDisputeComponent.prototype.redirectToMainPage = function () {
 	        this.router.navigate(['/']);
 	    };
-	    GameDispute = __decorate([
+	    GameDisputeComponent = __decorate([
 	        core_1.Component({
 	            selector: 'pfg',
 	            template: __webpack_require__(417),
 	            providers: [service_1.GameService]
 	        }), 
 	        __metadata('design:paramtypes', [(typeof (_a = typeof service_1.GameService !== 'undefined' && service_1.GameService) === 'function' && _a) || Object, (typeof (_b = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _b) || Object])
-	    ], GameDispute);
-	    return GameDispute;
+	    ], GameDisputeComponent);
+	    return GameDisputeComponent;
 	    var _a, _b;
 	}());
-	exports.GameDispute = GameDispute;
+	exports.GameDisputeComponent = GameDisputeComponent;
 
 
 /***/ },
@@ -18063,10 +17983,10 @@ webpackJsonp([1],[
 	            declarations: [
 	                app_1.AppComponent,
 	                main_3.StartPageComponent,
-	                main_4.GameDispute,
-	                main_5.Deal,
-	                by_order_1.DealParamsByOrder,
-	                main_6.DealOrder,
+	                main_4.GameDisputeComponent,
+	                main_5.DealComponent,
+	                by_order_1.DealParamsByOrderComponent,
+	                main_6.DealOrderComponent,
 	                main_1.ChatComponent, main_2.ChatHistoryComponent,
 	                main_7.AccountComponent,
 	                main_8.AccountChatComponent,
@@ -18440,27 +18360,31 @@ webpackJsonp([1],[
 	};
 	var core_1 = __webpack_require__(4);
 	var model_1 = __webpack_require__(92);
-	var DealParamsByOrder = (function () {
-	    function DealParamsByOrder() {
+	var DealParamsByOrderComponent = (function () {
+	    function DealParamsByOrderComponent() {
+	        this.TITLE_TEXT_ALIEN = "Параметры игры на спор, выбранные соперником";
+	        this.TITLE_TEXT_MYSELF = "Параметры игры на спор, выбранные вами";
 	        this.order = new model_1.Order();
+	        this.isAlien = true;
 	    }
-	    DealParamsByOrder.prototype.ngOnChanges = function () {
+	    DealParamsByOrderComponent.prototype.ngOnChanges = function () {
 	        this.initOwner();
 	        this.initOrder();
 	    };
-	    DealParamsByOrder.prototype.initOwner = function () {
+	    DealParamsByOrderComponent.prototype.initOwner = function () {
 	        if (this.owner) {
-	            if (this.owner == 'alien') {
+	            this.isAlien = this.owner == 'alien';
+	            if (this.isAlien) {
 	                this.title_cls = "text-danger";
-	                this.title = "Параметры игры на спор, выбранные соперником";
+	                this.title = this.TITLE_TEXT_ALIEN;
 	            }
 	            else {
 	                this.title_cls = "text-success";
-	                this.title = "Параметры игры на спор, выбранные вами";
+	                this.title = this.TITLE_TEXT_MYSELF;
 	            }
 	        }
 	    };
-	    DealParamsByOrder.prototype.initOrder = function () {
+	    DealParamsByOrderComponent.prototype.initOrder = function () {
 	        if (this.order && this.order.user) {
 	            this.user_name = this.order.user.username;
 	        }
@@ -18468,22 +18392,22 @@ webpackJsonp([1],[
 	    __decorate([
 	        core_1.Input(), 
 	        __metadata('design:type', String)
-	    ], DealParamsByOrder.prototype, "owner", void 0);
+	    ], DealParamsByOrderComponent.prototype, "owner", void 0);
 	    __decorate([
 	        core_1.Input(), 
 	        __metadata('design:type', (typeof (_a = typeof model_1.Order !== 'undefined' && model_1.Order) === 'function' && _a) || Object)
-	    ], DealParamsByOrder.prototype, "order", void 0);
-	    DealParamsByOrder = __decorate([
+	    ], DealParamsByOrderComponent.prototype, "order", void 0);
+	    DealParamsByOrderComponent = __decorate([
 	        core_1.Component({
 	            selector: 'params-by-order',
 	            template: __webpack_require__(416)
 	        }), 
 	        __metadata('design:paramtypes', [])
-	    ], DealParamsByOrder);
-	    return DealParamsByOrder;
+	    ], DealParamsByOrderComponent);
+	    return DealParamsByOrderComponent;
 	    var _a;
 	}());
-	exports.DealParamsByOrder = DealParamsByOrder;
+	exports.DealParamsByOrderComponent = DealParamsByOrderComponent;
 
 
 /***/ },
@@ -18660,15 +18584,15 @@ webpackJsonp([1],[
 	    },
 	    {
 	        path: 'pfg',
-	        component: main_2.GameDispute
+	        component: main_2.GameDisputeComponent
 	    },
 	    {
 	        path: 'pfg/:game_namespace/dispute',
-	        component: main_4.DealOrder
+	        component: main_4.DealOrderComponent
 	    },
 	    {
 	        path: 'pfg/deal/:deal_id',
-	        component: main_3.Deal
+	        component: main_3.DealComponent
 	    },
 	    {
 	        path: 'account',
@@ -18990,7 +18914,7 @@ webpackJsonp([1],[
 /* 413 */
 /***/ function(module, exports) {
 
-	module.exports = "<div *ngIf=\"chat && messages && messages.length\" class=\"chat__block\">\n    <chat-history #history class=\"chat__history\"></chat-history>\n    <form class=\"chat__editor\">\n        <div class=\"form-group\">\n            <textarea class=\"form-control\"\n                      [(ngModel)]=\"messageForSend\" [ngModelOptions]=\"{standalone: true}\">\n            </textarea>\n        </div>\n        <div class=\"form-group text-right\">\n            <button type=\"button\"\n                    class=\"btn btn-primary\"\n                    (click)=\"sendMessage()\"\n                    [disabled]=\"messageForSend==''\">\n                Отправить\n            </button>\n        </div>\n    </form>\n</div>\n<div *ngIf=\"!chat && !isBusy\">\n    <em>Не выбран собеседник</em>\n</div>\n<div *ngIf=\"isBusy\">\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n</div>\n"
+	module.exports = "<div *ngIf=\"chat && messages\" class=\"chat__block\">\n    <chat-history #history class=\"chat__history\"></chat-history>\n    <form class=\"chat__editor\">\n        <div class=\"form-group\">\n            <textarea class=\"form-control\"\n                      [(ngModel)]=\"messageForSend\" [ngModelOptions]=\"{standalone: true}\">\n            </textarea>\n        </div>\n        <div class=\"form-group text-right\">\n            <button type=\"button\"\n                    class=\"btn btn-primary\"\n                    (click)=\"sendMessage()\"\n                    [disabled]=\"messageForSend==''\">\n                Отправить\n            </button>\n        </div>\n    </form>\n</div>\n<div *ngIf=\"!chat && !isBusy\">\n    <em>Не выбран собеседник</em>\n</div>\n<div *ngIf=\"isBusy\">\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n</div>\n"
 
 /***/ },
 /* 414 */
@@ -19008,7 +18932,7 @@ webpackJsonp([1],[
 /* 416 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"well well-sm\">\n    <h5 [class]=\"title_cls\">{{title}}</h5>\n    Заявленная сумма сделки: <strong *ngIf=\"order && order.rate\"><em>{{order.rate | rate}}</em></strong>\n</div>\n\n<md-card>\n    <md-card-subtitle>{{user_name}}</md-card-subtitle>\n    <md-card-content>\n        <form>\n            <div class=\"form-group\">\n                <label>Сумма сделки:</label>\n                <input type=\"text\"\n                       [(ngModel)]=\"order.rate\"\n                       name=\"rate\"\n                       class=\"form-control\" >\n            </div>\n            <div class=\"form-group\">\n                <label>Условия победы:</label>\n                <select class=\"form-control\">\n                    <option value=\"1\">best of 1</option>\n                    <option value=\"3\">best of 3</option>\n                </select>\n            </div>\n        </form>\n    </md-card-content>\n</md-card>\n"
+	module.exports = "<div class=\"well well-sm\">\n    <h5 [class]=\"title_cls\">{{title}}</h5>\n    Заявленная сумма сделки: <strong *ngIf=\"order && order.rate\"><em>{{order.rate | rate}}</em></strong>\n</div>\n\n<md-card>\n    <md-card-subtitle>{{user_name}}</md-card-subtitle>\n    <md-card-content>\n        <form>\n            <div class=\"form-group\">\n                <label>Сумма сделки:</label>\n                <input type=\"text\"\n                       [(ngModel)]=\"order.rate\"\n                       name=\"rate\"\n                       class=\"form-control\"\n                       [disabled]=\"isAlien\">\n            </div>\n            <div class=\"form-group\">\n                <label>Условия победы:</label>\n                <select class=\"form-control\"\n                        [disabled]=\"isAlien\">\n                    <option value=\"1\">best of 1</option>\n                    <option value=\"3\">best of 3</option>\n                </select>\n            </div>\n        </form>\n    </md-card-content>\n</md-card>\n"
 
 /***/ },
 /* 417 */

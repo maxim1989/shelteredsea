@@ -16,7 +16,7 @@ import {Order} from "./model";
     templateUrl: './main.html',
     providers: [GameService, OrderForDealService]
 })
-export class DealOrder implements OnInit{
+export class DealOrderComponent implements OnInit{
     DEFAULT_TEAM_SIZE: Standard[] = [
         {
             id: 1,
