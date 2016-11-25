@@ -4,12 +4,15 @@ from rest_framework.views import APIView
 
 from chat.models import Chat, ManyChatsToManyUsersConnector, Message
 from chat.serializers import ManyChatsToManyUsersConnectorSerializer, MessageSerializer
+from disputes.models import TempDeals
 
 
 class ChatList(APIView):
     def get(self, request):
         u = request.user.id
         my_chats_uids = [ch.chat for ch in ManyChatsToManyUsersConnector.objects.filter(user=u)]
+        temp_deal_chats_uids = [i.chat for i in TempDeals.objects.filter(chat__in=my_chats_uids)]
+        my_chats_uids = [j for j in my_chats_uids if j not in temp_deal_chats_uids]
         users_in_my_chats = ManyChatsToManyUsersConnector.objects.\
             filter(chat__in=my_chats_uids).\
             exclude(user=u).\
