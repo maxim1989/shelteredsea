@@ -2,20 +2,23 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
+import { Order } from 'app/account/deals/order.model'
+
 @Injectable()
 export class AccountDealsService {
     private DEALS_URL = 'pfg/account_deals';
 
     constructor(private http: Http) { }
     
-    getDealList() {
+    getDealList(): Promise<Order[]> {
         //noinspection TypeScriptUnresolvedFunction
         return this.http.get(this.DEALS_URL)
             .toPromise()
             .then(
                 response => {
                     let result = response.json();
-                    return result;
+                    return result as Order[];
+                    
                 }
             )
             .catch(this.handlerError);

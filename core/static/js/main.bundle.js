@@ -17606,13 +17606,10 @@ webpackJsonp([1],[
 	    };
 	    AccountDealsComponent.prototype.loadDealsList = function () {
 	        var _this = this;
-	        console.log('-----------------');
-	        console.log(this.orderList);
-	        var res = this.DealsService.getDealList()
-	            .then(function (orderList) { return _this.orderList = orderList; });
-	        console.log('-----------------');
-	        console.log(this.orderList);
-	        console.log(res);
+	        this.DealsService.getDealList()
+	            .then(function (orderList) {
+	            _this.orderList = orderList;
+	        });
 	    };
 	    AccountDealsComponent = __decorate([
 	        core_1.Component({
@@ -18885,7 +18882,7 @@ webpackJsonp([1],[
 /* 407 */
 /***/ function(module, exports) {
 
-	module.exports = "<div>\n    <p>Empty</p>\n</div>\n"
+	module.exports = "<div *ngIf=\"!orderList\">\n    <em>Данные не получены</em>\n</div>\n<div *ngIf=\"orderList && !orderList.length\">\n    <em>Данные отсутствуют</em>\n</div>\n<div *ngIf=\"orderList && orderList.length\">\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th>Дата создания</th>\n            <th>Статус</th>\n            <th>Итог</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let order of orderList\">\n                <td>\n                    {{ order.deal.created | date: 'dd.M.y H:m'}}\n                </td>\n                <td *ngIf=\"order.deal.is_active\">\n                    Активная сделка\n                </td>\n                <td *ngIf=\"!order.deal.is_active\">\n                    Сделка закрыта\n                </td>\n                <td *ngIf=\"order.is_winner\">\n                    Победа\n                </td>\n                <td *ngIf=\"!order.is_winner\">\n                    Поражение\n                </td>\n            </tr>\n        </tbody>\n    </table>\n\n</div>\n"
 
 /***/ },
 /* 408 */
@@ -18897,7 +18894,7 @@ webpackJsonp([1],[
 /* 409 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"raw\">\n    <md-tab-group class=\"col-md-8\">\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-envelope\" aria-hidden=\"true\"></span> Сообщения\n            </template>\n            <template md-tab-content>\n                <account-chat></account-chat>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-star\" aria-hidden=\"true\"></span> Друзья\n            </template>\n            <template md-tab-content>\n                <account-friendship></account-friendship>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-signal\" aria-hidden=\"true\"></span> Статистика\n            </template>\n            <template md-tab-content>\n                <account-statistic [user]=\"user\"></account-statistic>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Поиск\n            </template>\n            <template md-tab-content>\n                <account-search></account-search>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-road\" aria-hidden=\"true\"></span> Сделки\n            </template>\n            <template md-tab-content>\n                <account-deals></account-deals>\n            </template>\n        </md-tab>\n    </md-tab-group>\n    <account-card class=\"col-md-4\"></account-card>\n</div>\n"
+	module.exports = "<div class=\"row\">\n    <md-tab-group class=\"col-md-9\">\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-envelope\" aria-hidden=\"true\"></span> Сообщения\n            </template>\n            <template md-tab-content>\n                <account-chat></account-chat>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-star\" aria-hidden=\"true\"></span> Друзья\n            </template>\n            <template md-tab-content>\n                <account-friendship></account-friendship>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-signal\" aria-hidden=\"true\"></span> Статистика\n            </template>\n            <template md-tab-content>\n                <account-statistic [user]=\"user\"></account-statistic>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Поиск\n            </template>\n            <template md-tab-content>\n                <account-search></account-search>\n            </template>\n        </md-tab>\n        <md-tab>\n            <template md-tab-label>\n                <span class=\"glyphicon glyphicon-road\" aria-hidden=\"true\"></span> Сделки\n            </template>\n            <template md-tab-content>\n                <account-deals></account-deals>\n            </template>\n        </md-tab>\n    </md-tab-group>\n    <account-card class=\"col-md-3\"></account-card>\n</div>\n"
 
 /***/ },
 /* 410 */

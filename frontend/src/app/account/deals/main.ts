@@ -21,13 +21,12 @@ export class AccountDealsComponent implements OnInit{
     }
 
     loadDealsList() {
-        console.log('-----------------');
-        console.log(this.orderList);
-        let res: any = this.DealsService.getDealList()
-            .then(orderList => this.orderList = orderList);
-        console.log('-----------------');
-        console.log(this.orderList);
-        console.log(res);
+        this.DealsService.getDealList()
+            .then(
+                (orderList: Order[]) => {
+                    this.orderList = orderList;
+                }
+            );
     }
 
 }
