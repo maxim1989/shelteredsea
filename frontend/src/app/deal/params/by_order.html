@@ -18,6 +18,8 @@
             <div class="form-group">
                 <label>Условия победы:</label>
                 <select class="form-control"
+                        [(ngModel)]="order.games_count"
+                        name="games_count"
                         [disabled]="isAlien">
                     <option value="1">best of 1</option>
                     <option value="3">best of 3</option>

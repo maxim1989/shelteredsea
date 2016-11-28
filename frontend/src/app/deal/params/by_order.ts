@@ -1,15 +1,16 @@
-import {Component, Input, OnChanges, OnInit, OnDestroy, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
 
 import { Order } from 'app/deal/order/model';
 
 import { DealService } from 'app/deal/service';
-import { OrderMonitoringService } from 'app/deal/order/monitoring.service';
+import { DealParamsService } from 'app/deal/params/service';
 
 @Component({
     selector: 'params-by-order',
-    templateUrl: './by_order.html'
+    templateUrl: './by_order.html',
+    providers: [DealParamsService]
 })
-export class DealParamsByOrderComponent implements OnChanges{
+export class DealParamsByOrderComponent implements OnChanges, OnDestroy{
     private TITLE_TEXT_ALIEN: string = "Параметры игры на спор, выбранные соперником";
     private TITLE_TEXT_MYSELF: string = "Параметры игры на спор, выбранные вами";
     @Input()
@@ -17,18 +18,24 @@ export class DealParamsByOrderComponent implements OnChanges{
     @Input()
     order: Order = new Order();
 
-    isAlien: bool = true;
+    private monitoring;
+    isAlien: boolean = true;
     title: string;
     title_cls: string;
     user_name: string;
 
 
     constructor(
+        private DealParamsService: DealParamsService
     ) {}
 
     ngOnChanges() {
         this.initOwner();
         this.initOrder();
+    }
+
+    ngOnDestroy() {
+        this.DealParamsService.clearMonitoring();
     }
 
     initOwner() {
@@ -47,7 +54,23 @@ export class DealParamsByOrderComponent implements OnChanges{
     initOrder() {
         if ( this.order && this.order.user) {
             this.user_name = this.order.user.username;
+            this.initParamsMonitoring(this.order.id);
         }
     }
 
+    initParamsMonitoring(orderID:number) {
+        this.monitoring = this.DealParamsService.runMonitoring(orderID);
+        this.monitoring.subscribe((order:Order) => {
+            if (this.isAlien) {
+                this.order = order;
+            } else {
+                this.DealParamsService.setOrderParam(this.order);
+            }
+            //this.refreshParams(order);
+        })
+    }
+
+    refreshParams(order) {
+
+    }
 }
