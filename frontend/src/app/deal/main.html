@@ -13,10 +13,30 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <params-by-order [owner]="'alien'" [order]="alienOrder"></params-by-order>
+                <params-by-order [owner]="'alien'"
+                                 [order]="alienOrder">
+                </params-by-order>
             </div>
             <div class="col-md-4">
-                <params-by-order [owner]="'myself'" [order]="myselfOrder"></params-by-order>
+                <params-by-order [owner]="'myself'"
+                                 [order]="myselfOrder"
+                                 (checkActive)="checkingActivity($event)">
+                </params-by-order>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-offset-7 col-md-5 text-right">
+                <button type="button"
+                        class="btn btn-default"
+                        (click)="nextDeal()">
+                    Искать другого соперника
+                </button>
+                <button type="button"
+                        class="btn btn-danger"
+                        (click)="startDeal()"
+                        [disabled]="!canStartDeal()">
+                    Начать сделку
+                </button>
             </div>
         </div>
     </md-card-content>

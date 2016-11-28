@@ -22,34 +22,34 @@ export class DealService {
                 }
             )
             .catch(this.handlerError);
-
     }
-    
-    // createOrderForDeal(deal_params:DealParams) {
-    //     let url = this.orderUrl + "deal_order";
-    //     let headers = new Headers({
-    //         'Content-Type': 'application/json',
-    //         'X-CSRFToken': Cookie.get('csrftoken')
-    //     });
-    //     let options = new RequestOptions({ headers: headers });
-    //     let data: any = {
-    //         left_rate: deal_params.rate.left_limit,
-    //         right_rate: deal_params.rate.right_limit,
-    //         games_count: 1,
-    //         team_size: deal_params.gamers_count.id
-    //     };
-    //     //noinspection TypeScriptUnresolvedFunction
-    //     return this.http.post(url, JSON.stringify(data), options)
-    //         .toPromise()
-    //         .then(
-    //             response => {
-    //                 let result = response.json();
-    //                 console.log(result);
-    //             }
-    //         )
-    //         .catch(this.handlerError);
-    // }
 
+    toNextDeal(dealID: number){
+        let url = 'pfg/next_' + dealID;
+        let headers = new Headers({
+            'Content-Type': 'application/json',
+            'X-CSRFToken': Cookie.get('csrftoken')
+        });
+        let options = new RequestOptions({ headers: headers });
+        //noinspection TypeScriptUnresolvedFunction
+        return this.http.post(url, JSON.stringify({}), options)
+            .toPromise()
+            .catch(this.handlerError);
+    }
+
+    startDeal(orderID:number) {
+        let url = 'pfg/start_dispute_' + orderID;
+        let headers = new Headers({
+            'Content-Type': 'application/json',
+            'X-CSRFToken': Cookie.get('csrftoken')
+        });
+        let options = new RequestOptions({ headers: headers });
+        //TODO после отправки возвращается Id сделки.
+        //noinspection TypeScriptUnresolvedFunction
+        return this.http.post(url, JSON.stringify({}), options)
+            .toPromise()
+            .catch(this.handlerError);
+    }
 
     handlerError(error: any) {
         return Promise.reject(error.message || error);

@@ -53,21 +53,58 @@ export class DealComponent implements OnInit, OnDestroy{
         });
     }
 
-    loadTemplateData(data:TempDeal) {
-        this.chat = new Chat();
-        this.chat.chat = data.chat;
-        
-        data.orders.forEach((order:Order) => {
-            if ( order.user.id == this.user.id ) {
-                this.myselfOrder = order;
-            } else {
-                this.alienOrder = order;
-            }
-        });
+    loadTemplateData(deal:TempDeal) {
+        if (deal.is_active) {
+            this.chat = new Chat();
+            this.chat.chat = deal.chat;
+
+            deal.orders.forEach((order:Order) => {
+                if (order.user.id == this.user.id) {
+                    this.myselfOrder = order;
+                } else {
+                    this.alienOrder = order;
+                }
+            });
+        } else {
+            this.redirectToDisputeOrderPage();
+        }
+    }
+
+    checkingActivity(active:boolean) {
+        if ( !active ) {
+            this.redirectToDisputeOrderPage();
+        }
+    }
+
+    nextDeal() {
+        this.DealService.toNextDeal(this.dealId);
+        this.redirectToDisputeOrderPage()
     }
 
     private redirectToMainPage() {
         this.router.navigate(['/']);
     }
 
+    canStartDeal() {
+        return this.alienOrder.games_count == this.myselfOrder.games_count &&
+                this.alienOrder.rate == this.myselfOrder.rate;
+    }
+
+    startDeal() {
+        if (this.canStartDeal()) {
+            this.DealService.startDeal(this.myselfOrder.id);
+        }
+    }
+
+    private redirectToDisputeOrderPage(){
+        return this.OrderMonitoringService.getMyOrders()
+            .then((order:Order[]) => {
+                if (order.length) {
+                    let game_namespace = order[0].game.namespace;
+                    this.router.navigate(['pfg', game_namespace, 'dispute']);
+                } else {
+                    this.redirectToMainPage();
+                }
+            });
+    }
 }

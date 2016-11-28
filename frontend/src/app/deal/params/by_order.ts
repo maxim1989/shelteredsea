@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
+import {Component, Input, Output, OnChanges, OnDestroy, SimpleChanges, EventEmitter} from '@angular/core';
 
 import { Order } from 'app/deal/order/model';
 
@@ -17,6 +17,8 @@ export class DealParamsByOrderComponent implements OnChanges, OnDestroy{
     owner: string;
     @Input()
     order: Order = new Order();
+    @Output()
+    checkActive = new EventEmitter<boolean>();
 
     private monitoring;
     isAlien: boolean = true;
@@ -61,16 +63,14 @@ export class DealParamsByOrderComponent implements OnChanges, OnDestroy{
     initParamsMonitoring(orderID:number) {
         this.monitoring = this.DealParamsService.runMonitoring(orderID);
         this.monitoring.subscribe((order:Order) => {
+            this.checkActive.emit(order.in_negotiations);
             if (this.isAlien) {
-                this.order = order;
+                this.order.rate = order.rate;
+                this.order.games_count = order.games_count;
             } else {
                 this.DealParamsService.setOrderParam(this.order);
             }
-            //this.refreshParams(order);
         })
     }
 
-    refreshParams(order) {
-
-    }
 }

@@ -36,8 +36,8 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var AsyncAction_1 = __webpack_require__(69);
-	var AsyncScheduler_1 = __webpack_require__(70);
+	var AsyncAction_1 = __webpack_require__(70);
+	var AsyncScheduler_1 = __webpack_require__(71);
 	exports.async = new AsyncScheduler_1.AsyncScheduler(AsyncAction_1.AsyncAction);
 	//# sourceMappingURL=async.js.map
 
@@ -226,9 +226,24 @@ webpackJsonp([1],[
 /* 64 */,
 /* 65 */,
 /* 66 */,
-/* 67 */,
+/* 67 */
+/***/ function(module, exports, __webpack_require__) {
+
+	function __export(m) {
+	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+	}
+	__export(__webpack_require__(179));
+	var services = __webpack_require__(179);
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = {
+	    services: services
+	};
+	//# sourceMappingURL=ng2-cookies.js.map
+
+/***/ },
 /* 68 */,
-/* 69 */
+/* 69 */,
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -375,7 +390,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=AsyncAction.js.map
 
 /***/ },
-/* 70 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -431,7 +446,6 @@ webpackJsonp([1],[
 	//# sourceMappingURL=AsyncScheduler.js.map
 
 /***/ },
-/* 71 */,
 /* 72 */,
 /* 73 */,
 /* 74 */,
@@ -443,21 +457,7 @@ webpackJsonp([1],[
 /* 80 */,
 /* 81 */,
 /* 82 */,
-/* 83 */
-/***/ function(module, exports, __webpack_require__) {
-
-	function __export(m) {
-	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-	}
-	__export(__webpack_require__(179));
-	var services = __webpack_require__(179);
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = {
-	    services: services
-	};
-	//# sourceMappingURL=ng2-cookies.js.map
-
-/***/ },
+/* 83 */,
 /* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -840,9 +840,9 @@ webpackJsonp([1],[
 	exports.MulticastObservable = MulticastObservable_1.MulticastObservable;
 	var ConnectableObservable_1 = __webpack_require__(119);
 	exports.ConnectableObservable = ConnectableObservable_1.ConnectableObservable;
-	var Notification_1 = __webpack_require__(67);
+	var Notification_1 = __webpack_require__(68);
 	exports.Notification = Notification_1.Notification;
-	var EmptyError_1 = __webpack_require__(72);
+	var EmptyError_1 = __webpack_require__(73);
 	exports.EmptyError = EmptyError_1.EmptyError;
 	var ArgumentOutOfRangeError_1 = __webpack_require__(90);
 	exports.ArgumentOutOfRangeError = ArgumentOutOfRangeError_1.ArgumentOutOfRangeError;
@@ -867,7 +867,7 @@ webpackJsonp([1],[
 	var queue_1 = __webpack_require__(212);
 	var animationFrame_1 = __webpack_require__(665);
 	var rxSubscriber_1 = __webpack_require__(89);
-	var iterator_1 = __webpack_require__(71);
+	var iterator_1 = __webpack_require__(72);
 	var observable_1 = __webpack_require__(88);
 	/* tslint:enable:no-unused-variable */
 	/**
@@ -1252,7 +1252,7 @@ webpackJsonp([1],[
 	"use strict";
 	var isScheduler_1 = __webpack_require__(46);
 	var ArrayObservable_1 = __webpack_require__(39);
-	var mergeAll_1 = __webpack_require__(68);
+	var mergeAll_1 = __webpack_require__(69);
 	/**
 	 * Creates an output Observable which sequentially emits all values from every
 	 * given input Observable after the current Observable.
@@ -1376,7 +1376,7 @@ webpackJsonp([1],[
 	var Subscriber_1 = __webpack_require__(3);
 	var OuterSubscriber_1 = __webpack_require__(5);
 	var subscribeToResult_1 = __webpack_require__(6);
-	var iterator_1 = __webpack_require__(71);
+	var iterator_1 = __webpack_require__(72);
 	/**
 	 * @param observables
 	 * @return {Observable<R>}
@@ -6099,7 +6099,7 @@ webpackJsonp([1],[
 	};
 	var core_1 = __webpack_require__(4);
 	var http_1 = __webpack_require__(21);
-	var ng2_cookies_1 = __webpack_require__(83);
+	var ng2_cookies_1 = __webpack_require__(67);
 	__webpack_require__(28);
 	var FriendshipService = (function () {
 	    function FriendshipService(http) {
@@ -6357,21 +6357,57 @@ webpackJsonp([1],[
 	                .catch(function () { _this.redirectToMainPage(); });
 	        });
 	    };
-	    DealComponent.prototype.loadTemplateData = function (data) {
+	    DealComponent.prototype.loadTemplateData = function (deal) {
 	        var _this = this;
-	        this.chat = new model_1.Chat();
-	        this.chat.chat = data.chat;
-	        data.orders.forEach(function (order) {
-	            if (order.user.id == _this.user.id) {
-	                _this.myselfOrder = order;
-	            }
-	            else {
-	                _this.alienOrder = order;
-	            }
-	        });
+	        if (deal.is_active) {
+	            this.chat = new model_1.Chat();
+	            this.chat.chat = deal.chat;
+	            deal.orders.forEach(function (order) {
+	                if (order.user.id == _this.user.id) {
+	                    _this.myselfOrder = order;
+	                }
+	                else {
+	                    _this.alienOrder = order;
+	                }
+	            });
+	        }
+	        else {
+	            this.redirectToDisputeOrderPage();
+	        }
+	    };
+	    DealComponent.prototype.checkingActivity = function (active) {
+	        if (!active) {
+	            this.redirectToDisputeOrderPage();
+	        }
+	    };
+	    DealComponent.prototype.nextDeal = function () {
+	        this.DealService.toNextDeal(this.dealId);
+	        this.redirectToDisputeOrderPage();
 	    };
 	    DealComponent.prototype.redirectToMainPage = function () {
 	        this.router.navigate(['/']);
+	    };
+	    DealComponent.prototype.canStartDeal = function () {
+	        return this.alienOrder.games_count == this.myselfOrder.games_count &&
+	            this.alienOrder.rate == this.myselfOrder.rate;
+	    };
+	    DealComponent.prototype.startDeal = function () {
+	        if (this.canStartDeal()) {
+	            this.DealService.startDeal(this.myselfOrder.id);
+	        }
+	    };
+	    DealComponent.prototype.redirectToDisputeOrderPage = function () {
+	        var _this = this;
+	        return this.OrderMonitoringService.getMyOrders()
+	            .then(function (order) {
+	            if (order.length) {
+	                var game_namespace = order[0].game.namespace;
+	                _this.router.navigate(['pfg', game_namespace, 'dispute']);
+	            }
+	            else {
+	                _this.redirectToMainPage();
+	            }
+	        });
 	    };
 	    DealComponent = __decorate([
 	        core_1.Component({
@@ -7623,7 +7659,7 @@ webpackJsonp([1],[
 
 	"use strict";
 	var ArrayObservable_1 = __webpack_require__(39);
-	var mergeAll_1 = __webpack_require__(68);
+	var mergeAll_1 = __webpack_require__(69);
 	var isScheduler_1 = __webpack_require__(46);
 	/**
 	 * Creates an output Observable which concurrently emits all values from every
@@ -8269,8 +8305,8 @@ webpackJsonp([1],[
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var AsyncAction_1 = __webpack_require__(69);
-	var AsyncScheduler_1 = __webpack_require__(70);
+	var AsyncAction_1 = __webpack_require__(70);
+	var AsyncScheduler_1 = __webpack_require__(71);
 	var VirtualTimeScheduler = (function (_super) {
 	    __extends(VirtualTimeScheduler, _super);
 	    function VirtualTimeScheduler(SchedulerAction, maxFrames) {
@@ -18202,7 +18238,7 @@ webpackJsonp([1],[
 	};
 	var core_1 = __webpack_require__(4);
 	var http_1 = __webpack_require__(21);
-	var ng2_cookies_1 = __webpack_require__(83);
+	var ng2_cookies_1 = __webpack_require__(67);
 	__webpack_require__(28);
 	var ChatService = (function () {
 	    function ChatService(http) {
@@ -18279,7 +18315,7 @@ webpackJsonp([1],[
 	};
 	var core_1 = __webpack_require__(4);
 	var http_1 = __webpack_require__(21);
-	var ng2_cookies_1 = __webpack_require__(83);
+	var ng2_cookies_1 = __webpack_require__(67);
 	__webpack_require__(28);
 	var OrderForDealService = (function () {
 	    function OrderForDealService(http) {
@@ -18367,6 +18403,7 @@ webpackJsonp([1],[
 	        this.TITLE_TEXT_ALIEN = "Параметры игры на спор, выбранные соперником";
 	        this.TITLE_TEXT_MYSELF = "Параметры игры на спор, выбранные вами";
 	        this.order = new model_1.Order();
+	        this.checkActive = new core_1.EventEmitter();
 	        this.isAlien = true;
 	    }
 	    DealParamsByOrderComponent.prototype.ngOnChanges = function () {
@@ -18399,16 +18436,15 @@ webpackJsonp([1],[
 	        var _this = this;
 	        this.monitoring = this.DealParamsService.runMonitoring(orderID);
 	        this.monitoring.subscribe(function (order) {
+	            _this.checkActive.emit(order.in_negotiations);
 	            if (_this.isAlien) {
-	                _this.order = order;
+	                _this.order.rate = order.rate;
+	                _this.order.games_count = order.games_count;
 	            }
 	            else {
 	                _this.DealParamsService.setOrderParam(_this.order);
 	            }
-	            //this.refreshParams(order);
 	        });
-	    };
-	    DealParamsByOrderComponent.prototype.refreshParams = function (order) {
 	    };
 	    __decorate([
 	        core_1.Input(), 
@@ -18418,6 +18454,10 @@ webpackJsonp([1],[
 	        core_1.Input(), 
 	        __metadata('design:type', (typeof (_a = typeof model_1.Order !== 'undefined' && model_1.Order) === 'function' && _a) || Object)
 	    ], DealParamsByOrderComponent.prototype, "order", void 0);
+	    __decorate([
+	        core_1.Output(), 
+	        __metadata('design:type', Object)
+	    ], DealParamsByOrderComponent.prototype, "checkActive", void 0);
 	    DealParamsByOrderComponent = __decorate([
 	        core_1.Component({
 	            selector: 'params-by-order',
@@ -18448,7 +18488,7 @@ webpackJsonp([1],[
 	};
 	var core_1 = __webpack_require__(4);
 	var http_1 = __webpack_require__(21);
-	var ng2_cookies_1 = __webpack_require__(83);
+	var ng2_cookies_1 = __webpack_require__(67);
 	var Rx_1 = __webpack_require__(116);
 	__webpack_require__(28);
 	var DealParamsService = (function () {
@@ -18530,6 +18570,7 @@ webpackJsonp([1],[
 	};
 	var core_1 = __webpack_require__(4);
 	var http_1 = __webpack_require__(21);
+	var ng2_cookies_1 = __webpack_require__(67);
 	__webpack_require__(28);
 	var DealService = (function () {
 	    function DealService(http) {
@@ -18546,30 +18587,30 @@ webpackJsonp([1],[
 	        })
 	            .catch(this.handlerError);
 	    };
-	    // createOrderForDeal(deal_params:DealParams) {
-	    //     let url = this.orderUrl + "deal_order";
-	    //     let headers = new Headers({
-	    //         'Content-Type': 'application/json',
-	    //         'X-CSRFToken': Cookie.get('csrftoken')
-	    //     });
-	    //     let options = new RequestOptions({ headers: headers });
-	    //     let data: any = {
-	    //         left_rate: deal_params.rate.left_limit,
-	    //         right_rate: deal_params.rate.right_limit,
-	    //         games_count: 1,
-	    //         team_size: deal_params.gamers_count.id
-	    //     };
-	    //     //noinspection TypeScriptUnresolvedFunction
-	    //     return this.http.post(url, JSON.stringify(data), options)
-	    //         .toPromise()
-	    //         .then(
-	    //             response => {
-	    //                 let result = response.json();
-	    //                 console.log(result);
-	    //             }
-	    //         )
-	    //         .catch(this.handlerError);
-	    // }
+	    DealService.prototype.toNextDeal = function (dealID) {
+	        var url = 'pfg/next_' + dealID;
+	        var headers = new http_1.Headers({
+	            'Content-Type': 'application/json',
+	            'X-CSRFToken': ng2_cookies_1.Cookie.get('csrftoken')
+	        });
+	        var options = new http_1.RequestOptions({ headers: headers });
+	        //noinspection TypeScriptUnresolvedFunction
+	        return this.http.post(url, JSON.stringify({}), options)
+	            .toPromise()
+	            .catch(this.handlerError);
+	    };
+	    DealService.prototype.startDeal = function (orderID) {
+	        var url = 'pfg/start_dispute_' + orderID;
+	        var headers = new http_1.Headers({
+	            'Content-Type': 'application/json',
+	            'X-CSRFToken': ng2_cookies_1.Cookie.get('csrftoken')
+	        });
+	        var options = new http_1.RequestOptions({ headers: headers });
+	        //noinspection TypeScriptUnresolvedFunction
+	        return this.http.post(url, JSON.stringify({}), options)
+	            .toPromise()
+	            .catch(this.handlerError);
+	    };
 	    DealService.prototype.handlerError = function (error) {
 	        return Promise.reject(error.message || error);
 	    };
@@ -19024,7 +19065,7 @@ webpackJsonp([1],[
 /* 415 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-card>\n    <md-card-subtitle>Оформление сделки</md-card-subtitle>\n    <md-card-content>\n        <div class=\"row\">\n            <div class=\"col-md-4\">\n                <div class=\"well well-sm\">\n                    <h5>Общие параметры игры на спор</h5>\n                    Количество игроков в команде: <strong><em>1x1</em></strong>\n                </div>\n                <div *ngIf=\"chat\">\n                    <h5>Обсуждение игры на спор</h5>\n                    <chat [chat]=\"chat\"></chat>\n                </div>\n            </div>\n            <div class=\"col-md-4\">\n                <params-by-order [owner]=\"'alien'\" [order]=\"alienOrder\"></params-by-order>\n            </div>\n            <div class=\"col-md-4\">\n                <params-by-order [owner]=\"'myself'\" [order]=\"myselfOrder\"></params-by-order>\n            </div>\n        </div>\n    </md-card-content>\n</md-card>"
+	module.exports = "<md-card>\n    <md-card-subtitle>Оформление сделки</md-card-subtitle>\n    <md-card-content>\n        <div class=\"row\">\n            <div class=\"col-md-4\">\n                <div class=\"well well-sm\">\n                    <h5>Общие параметры игры на спор</h5>\n                    Количество игроков в команде: <strong><em>1x1</em></strong>\n                </div>\n                <div *ngIf=\"chat\">\n                    <h5>Обсуждение игры на спор</h5>\n                    <chat [chat]=\"chat\"></chat>\n                </div>\n            </div>\n            <div class=\"col-md-4\">\n                <params-by-order [owner]=\"'alien'\"\n                                 [order]=\"alienOrder\">\n                </params-by-order>\n            </div>\n            <div class=\"col-md-4\">\n                <params-by-order [owner]=\"'myself'\"\n                                 [order]=\"myselfOrder\"\n                                 (checkActive)=\"checkingActivity($event)\">\n                </params-by-order>\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"col-md-offset-7 col-md-5 text-right\">\n                <button type=\"button\"\n                        class=\"btn btn-default\"\n                        (click)=\"nextDeal()\">\n                    Искать другого соперника\n                </button>\n                <button type=\"button\"\n                        class=\"btn btn-danger\"\n                        (click)=\"startDeal()\"\n                        [disabled]=\"!canStartDeal()\">\n                    Начать сделку\n                </button>\n            </div>\n        </div>\n    </md-card-content>\n</md-card>"
 
 /***/ },
 /* 416 */
@@ -19764,7 +19805,7 @@ webpackJsonp([1],[
 
 	"use strict";
 	var Observable_1 = __webpack_require__(1);
-	var mergeAll_1 = __webpack_require__(68);
+	var mergeAll_1 = __webpack_require__(69);
 	Observable_1.Observable.prototype.mergeAll = mergeAll_1.mergeAll;
 	//# sourceMappingURL=mergeAll.js.map
 
@@ -23988,7 +24029,7 @@ webpackJsonp([1],[
 	var async_1 = __webpack_require__(23);
 	var isDate_1 = __webpack_require__(91);
 	var Subscriber_1 = __webpack_require__(3);
-	var Notification_1 = __webpack_require__(67);
+	var Notification_1 = __webpack_require__(68);
 	/**
 	 * Delays the emission of items from the source Observable by a given timeout or
 	 * until a given Date.
@@ -25589,7 +25630,7 @@ webpackJsonp([1],[
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var Subscriber_1 = __webpack_require__(3);
-	var Notification_1 = __webpack_require__(67);
+	var Notification_1 = __webpack_require__(68);
 	/**
 	 * Represents all of the notifications from the source Observable as `next`
 	 * emissions marked with their original types within {@link Notification}
@@ -27004,7 +27045,7 @@ webpackJsonp([1],[
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var Subscriber_1 = __webpack_require__(3);
-	var EmptyError_1 = __webpack_require__(72);
+	var EmptyError_1 = __webpack_require__(73);
 	/**
 	 * Returns an Observable that emits the single item emitted by the source Observable that matches a specified
 	 * predicate, if that Observable emits one such item. If the source Observable emits more than one such item or no
@@ -29577,7 +29618,7 @@ webpackJsonp([1],[
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var AsyncAction_1 = __webpack_require__(69);
+	var AsyncAction_1 = __webpack_require__(70);
 	var AnimationFrame_1 = __webpack_require__(669);
 	/**
 	 * We need this JSDoc comment for affecting ESDoc.
@@ -29635,7 +29676,7 @@ webpackJsonp([1],[
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var AsyncScheduler_1 = __webpack_require__(70);
+	var AsyncScheduler_1 = __webpack_require__(71);
 	var AnimationFrameScheduler = (function (_super) {
 	    __extends(AnimationFrameScheduler, _super);
 	    function AnimationFrameScheduler() {
@@ -29678,7 +29719,7 @@ webpackJsonp([1],[
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var Immediate_1 = __webpack_require__(671);
-	var AsyncAction_1 = __webpack_require__(69);
+	var AsyncAction_1 = __webpack_require__(70);
 	/**
 	 * We need this JSDoc comment for affecting ESDoc.
 	 * @ignore
@@ -29735,7 +29776,7 @@ webpackJsonp([1],[
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var AsyncScheduler_1 = __webpack_require__(70);
+	var AsyncScheduler_1 = __webpack_require__(71);
 	var AsapScheduler = (function (_super) {
 	    __extends(AsapScheduler, _super);
 	    function AsapScheduler() {
@@ -29777,7 +29818,7 @@ webpackJsonp([1],[
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var AsyncAction_1 = __webpack_require__(69);
+	var AsyncAction_1 = __webpack_require__(70);
 	/**
 	 * We need this JSDoc comment for affecting ESDoc.
 	 * @ignore
@@ -29829,7 +29870,7 @@ webpackJsonp([1],[
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var AsyncScheduler_1 = __webpack_require__(70);
+	var AsyncScheduler_1 = __webpack_require__(71);
 	var QueueScheduler = (function (_super) {
 	    __extends(QueueScheduler, _super);
 	    function QueueScheduler() {
@@ -29965,7 +30006,7 @@ webpackJsonp([1],[
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var Observable_1 = __webpack_require__(1);
-	var Notification_1 = __webpack_require__(67);
+	var Notification_1 = __webpack_require__(68);
 	var ColdObservable_1 = __webpack_require__(666);
 	var HotObservable_1 = __webpack_require__(667);
 	var SubscriptionLog_1 = __webpack_require__(213);
