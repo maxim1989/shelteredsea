@@ -27,10 +27,12 @@ class Deals_2_Serializer(serializers.ModelSerializer):
 
     class Meta:
         model = Deals
-        fields = ('id', 'is_active', 'created', 'created_in_seconds')
+        fields = ('id', 'is_active', 'created', 'created_in_seconds', 'is_failed')
 
     def get_created_in_seconds(self, obj):
-        return (django_timezone.now() - obj.created).total_seconds()
+        if obj.created:
+            return (django_timezone.now() - obj.created).total_seconds()
+        return
 
 class OrderForDealSerializer(serializers.ModelSerializer):
     participants = ParticipantsSerializer(many=True)
@@ -148,7 +150,7 @@ class DealsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Deals
-        fields = ('id', 'is_active', 'deal_sides', 'matches', 'created_in_seconds')
+        fields = ('id', 'is_active', 'deal_sides', 'matches', 'created_in_seconds', 'is_failed')
 
     def create(self, validated_data):
         deal = Deals.objects.create()
@@ -157,4 +159,6 @@ class DealsSerializer(serializers.ModelSerializer):
         return deal
 
     def get_created_in_seconds(self, obj):
-        return (django_timezone.now() - obj.created).total_seconds()
+        if obj.created:
+            return (django_timezone.now() - obj.created).total_seconds()
+        return
