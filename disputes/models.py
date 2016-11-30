@@ -13,6 +13,7 @@ class Games(models.Model):
 class Deals(models.Model):
     is_active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
+    is_failed = models.BooleanField(default=False)
 
 
 class SteamGame(models.Model):
