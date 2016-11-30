@@ -19,4 +19,6 @@ export class Order {
     game: Game;
     user: User;
     temp_deal: number;
+
+    modification_in_seconds: number;
 }

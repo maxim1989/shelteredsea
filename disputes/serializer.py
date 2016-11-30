@@ -37,12 +37,13 @@ class OrderForDealSerializer(serializers.ModelSerializer):
     game = GamesSerializer()
     user = AuthenticatedUserSerializer()
     deal = Deals_2_Serializer()
+    modification_in_seconds = serializers.SerializerMethodField()
 
     class Meta:
         model = OrderForDeal
         fields = ('id', 'user', 'deal', 'temp_deal', 'game', 'is_winner', 'games_count', 'team_size',
                   'in_negotiations', 'modificate_moment', 'is_active', 'participants', 'rate_left',
-                  'rate_right', 'rate')
+                  'rate_right', 'rate', 'modification_in_seconds')
 
     def update(self, instance, validated_data):
         if instance.temp_deal:
@@ -56,6 +57,9 @@ class OrderForDealSerializer(serializers.ModelSerializer):
         instance.in_negotiations = validated_data.get('in_negotiations', instance.in_negotiations)
         instance.save()
         return instance
+
+    def get_modification_in_seconds(self, obj):
+        return (django_timezone.now() - obj.modificate_moment).total_seconds()
 
 
 class OrderForDealCreateUpdateSerializer(serializers.ModelSerializer):

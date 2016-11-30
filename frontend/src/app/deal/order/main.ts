@@ -49,6 +49,7 @@ export class DealOrderComponent implements OnInit{
     isWaitOrder: boolean = false;
     game: Game = new Game();
     timerFromFa: number = 0;
+    timerSubscription: any;
 
     constructor(
         private UserService: UserService,
@@ -96,6 +97,9 @@ export class DealOrderComponent implements OnInit{
     loadExistOrderData(order: Order) {
         this.order = order;
         this.isWaitOrder = true;
+        if (order.is_active) {
+            this.runTimer( Math.round(order.modification_in_seconds) );
+        }
     }
 
     changeGamersCount(gameOption: Standard) {
@@ -122,6 +126,7 @@ export class DealOrderComponent implements OnInit{
     }
 
     cancelOrder() {
+        this.clearTimer();
         this.OrderForDealService.cancelOrder(this.order)
             .then( () => {
                 this.initExistsOrders();
@@ -136,8 +141,13 @@ export class DealOrderComponent implements OnInit{
 
     runTimer(begin_seconds: number = 0) {
         //noinspection TypeScriptUnresolvedFunction
-        let timer = Observable.timer(begin_seconds * 1000, 1000);
-        timer.subscribe(time => this.timerFromFa = time);
+        let timer = Observable.timer(0, 1000);
+        this.timerSubscription = timer.subscribe(time => this.timerFromFa = time + begin_seconds);
+    }
+
+    clearTimer() {
+        this.timerSubscription.unsubscribe();
+        this.timerFromFa = 0;
     }
 
     private redirectToMainPage() {

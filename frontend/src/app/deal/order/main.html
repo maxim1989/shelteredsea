@@ -51,7 +51,8 @@
     </div>
     <div class="col-md-3 text-center">
         <div *ngIf="timerFromFa && timerFromFa > 0">
-            {{timerFromFa | time}}
+            <h4>Время ожидания нового противника:</h4>
+            <div class="lead text-primary">{{timerFromFa | time}}</div>
         </div>
     </div>
 </div>
