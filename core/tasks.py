@@ -17,9 +17,10 @@ def test():
         # deal_time_stamp = (deal.created - datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)).total_seconds()
         # print(deal_time_stamp)
         interval = datetime.datetime.now(datetime.timezone.utc) - deal.created
-        if interval.total_seconds() > 300:
+        if interval.total_seconds() > 15*60:
             orders = OrderForDeal.objects.filter(deal=deal)
             deal.is_active = False
+            deal.is_failed = True
             deal.save()
             for order in orders:
                 # steam_id = UserSocialAuth.objects.get(user_id=order.user.id)
