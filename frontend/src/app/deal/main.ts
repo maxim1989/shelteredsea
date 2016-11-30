@@ -76,6 +76,10 @@ export class DealComponent implements OnInit, OnDestroy{
         }
     }
 
+    canNextDeal(){
+        return !this.myselfOrder.deal;
+    }
+
     nextDeal() {
         this.DealService.toNextDeal(this.dealId);
         this.redirectToDisputeOrderPage()
@@ -87,7 +91,9 @@ export class DealComponent implements OnInit, OnDestroy{
 
     canStartDeal() {
         return this.alienOrder.games_count == this.myselfOrder.games_count &&
-                this.alienOrder.rate == this.myselfOrder.rate;
+            this.alienOrder.rate == this.myselfOrder.rate &&
+            this.myselfOrder.rate > 0 &&
+            !this.myselfOrder.deal;
     }
 
     startDeal() {

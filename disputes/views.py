@@ -83,7 +83,7 @@ class MyOrder(APIView):
         except User.DoesNotExist as err:
             return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
 
-        find_order = OrderForDeal.objects.filter(user=myself, game=game)
+        find_order = OrderForDeal.objects.filter(user=myself, game=game, is_active=True)
         if find_order:
             return Response({'success': True, 'data': 'already_exist'}, status=status.HTTP_200_OK)
 

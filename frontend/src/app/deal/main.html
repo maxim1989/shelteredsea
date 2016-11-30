@@ -1,14 +1,14 @@
-<md-card>
+<md-card *ngIf="!myselfOrder.deal">
     <md-card-subtitle>Оформление сделки</md-card-subtitle>
     <md-card-content>
         <div class="row">
             <div class="col-md-4">
                 <div class="well well-sm">
-                    <h5>Общие параметры игры на спор</h5>
+                    <h4>Общие параметры игры на спор</h4>
                     Количество игроков в команде: <strong><em>1x1</em></strong>
                 </div>
                 <div *ngIf="chat">
-                    <h5>Обсуждение игры на спор</h5>
+                    <h4>Обсуждение игры на спор</h4>
                     <chat [chat]="chat"></chat>
                 </div>
             </div>
@@ -25,19 +25,42 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-offset-7 col-md-5 text-right">
+            <div class="col-md-12 text-right">
                 <button type="button"
                         class="btn btn-default"
-                        (click)="nextDeal()">
+                        (click)="nextDeal()"
+                        [disabled]="!canNextDeal()">
                     Искать другого соперника
                 </button>
                 <button type="button"
                         class="btn btn-danger"
                         (click)="startDeal()"
                         [disabled]="!canStartDeal()">
-                    Начать сделку
+                    Подтвердить условия сделки
                 </button>
             </div>
         </div>
     </md-card-content>
 </md-card>
+<md-card *ngIf="myselfOrder.deal">
+    <md-card-subtitle>Карточка заключеной сделки</md-card-subtitle>
+    <md-card-content>
+        <div class="row">
+            <div class="col-md-4">
+                <div *ngIf="chat">
+                    <h4>Обсуждение игры на спор</h4>
+                    <chat [chat]="chat"></chat>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="well well-sm">
+                    <h4>Общие параметры сделки</h4>
+                    <div>Количество игроков в команде: <strong><em>1x1</em></strong></div>
+                    <div>Заявленная сумма сделки: <strong><em>{{myselfOrder.rate | rate}}</em></strong></div>
+                    <div>Количество побед для выигрыша сделки: <strong><em>{{myselfOrder.games_count}}</em></strong></div>
+                </div>
+            </div>
+        </div>
+    </md-card-content>
+</md-card>
+

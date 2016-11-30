@@ -1,5 +1,6 @@
 import {User} from 'app/user/model';
 import {Game} from 'app/game_dispute/game/model';
+import {Deal} from 'app/deal/model';
 import {TempDeal} from 'app/deal/temp_deal.model';
 
 export class Order {
@@ -18,6 +19,7 @@ export class Order {
 
     game: Game;
     user: User;
+    deal: Deal;
     temp_deal: number;
 
     modification_in_seconds: number;

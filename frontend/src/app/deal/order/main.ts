@@ -49,6 +49,7 @@ export class DealOrderComponent implements OnInit{
     isWaitOrder: boolean = false;
     game: Game = new Game();
     timerFromFa: number = 0;
+    timer: any;
     timerSubscription: any;
 
     constructor(
@@ -141,12 +142,15 @@ export class DealOrderComponent implements OnInit{
 
     runTimer(begin_seconds: number = 0) {
         //noinspection TypeScriptUnresolvedFunction
-        let timer = Observable.timer(0, 1000);
-        this.timerSubscription = timer.subscribe(time => this.timerFromFa = time + begin_seconds);
+        this.clearTimer();
+        this.timerFromFa = begin_seconds;
+        this.timer = setInterval(() => this.timerFromFa += 1, 1000)
     }
 
     clearTimer() {
-        this.timerSubscription.unsubscribe();
+        if (this.timer) {
+            clearInterval(this.timer);
+        }
         this.timerFromFa = 0;
     }
 

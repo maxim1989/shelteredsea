@@ -57,7 +57,6 @@ export class OrderForDealService {
             .then(
                 response => {
                     let result = response.json();
-                    console.log(result);
                 }
             )
             .catch(this.handlerError);

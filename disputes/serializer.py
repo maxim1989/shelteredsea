@@ -118,9 +118,10 @@ class TempDealsSerializer(serializers.ModelSerializer):
         instance.save()
         orders = OrderForDeal.objects.filter(temp_deal=instance)
         for order in orders:
-            order.in_negotiations = False if instance.is_active == False else True
+            order.in_negotiations = instance.is_active
             if not order.in_negotiations:
                 order.temp_deal = None
+                order.deal = None
             order.save()
 
             for order_2 in orders:

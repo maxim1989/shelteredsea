@@ -64,6 +64,7 @@ export class DealParamsByOrderComponent implements OnChanges, OnDestroy{
         this.monitoring = this.DealParamsService.runMonitoring(orderID);
         this.monitoring.subscribe((order:Order) => {
             this.checkActive.emit(order.in_negotiations);
+            this.order.deal = order.deal;
             if (this.isAlien) {
                 this.order.rate = order.rate;
                 this.order.games_count = order.games_count;
