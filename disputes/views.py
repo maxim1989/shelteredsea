@@ -192,3 +192,14 @@ class StartDispute(APIView):
                     serializer.save()
                     return Response(serializer.data, status=status.HTTP_200_OK)
                 return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
+
+
+class UserDeals(APIView):
+    def get(self, request):
+        try:
+            me = User.objects.get(pk=request.user.id)
+        except User.DoesNotExist as err:
+            return Response({'success': False, 'error': str(err)}, status=status.HTTP_403_FORBIDDEN)
+        my_orders = OrderForDeal.objects.filter(user=me).filter(deal__isnull=False).order_by('-deal__created')
+        serializer = OrderForDealSerializer(my_orders, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.utils import timezone as django_timezone
 from rest_framework import serializers
 
 from chat.models import Chat, ManyChatsToManyUsersConnector
@@ -22,10 +23,14 @@ class ParticipantsSerializer(serializers.ModelSerializer):
 
 
 class Deals_2_Serializer(serializers.ModelSerializer):
+    created_in_seconds = serializers.SerializerMethodField()
+
     class Meta:
         model = Deals
-        fields = ('id', 'is_active')
+        fields = ('id', 'is_active', 'created', 'created_in_seconds')
 
+    def get_created_in_seconds(self, obj):
+        return (django_timezone.now() - obj.created).total_seconds()
 
 class OrderForDealSerializer(serializers.ModelSerializer):
     participants = ParticipantsSerializer(many=True)
@@ -134,12 +139,17 @@ class DealsSerializer(serializers.ModelSerializer):
     deal_sides = OrderForDealSerializer(many=True)
     matches = SteamGameSerializer(many=True)
 
+    created_in_seconds = serializers.SerializerMethodField()
+
     class Meta:
         model = Deals
-        fields = ('id', 'is_active', 'deal_sides', 'matches')
+        fields = ('id', 'is_active', 'deal_sides', 'matches', 'created_in_seconds')
 
     def create(self, validated_data):
         deal = Deals.objects.create()
         self.context.get('me').deal = deal
         self.context.get('me').save()
         return deal
+
+    def get_created_in_seconds(self, obj):
+        return (django_timezone.now() - obj.created).total_seconds()

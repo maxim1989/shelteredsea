@@ -1,0 +1,34 @@
+<div *ngIf="!orderList">
+    <em>Данные не получены</em>
+</div>
+<div *ngIf="orderList && !orderList.length">
+    <em>Данные отсутствуют</em>
+</div>
+<div *ngIf="orderList && orderList.length">
+    <table class="table" width="100%">
+        <thead>
+            <th>Дата создания</th>
+            <th>Статус</th>
+            <th>Итог</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let order of orderList">
+                <td>
+                    {{ order.deal.created | date: 'dd.M.y H:m'}}
+                </td>
+                <td *ngIf="order.deal.is_active">
+                    Активная сделка
+                </td>
+                <td *ngIf="!order.deal.is_active">
+                    Сделка закрыта
+                </td>
+                <td *ngIf="order.is_winner">
+                    Победа
+                </td>
+                <td *ngIf="!order.is_winner">
+                    Поражение
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
