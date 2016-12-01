@@ -14,21 +14,14 @@
         <tbody>
             <tr *ngFor="let order of orderList">
                 <td>
-                    {{ order.deal.created | date: 'dd.M.y H:m'}}
+                    {{ order.deal.created | date: 'HH:mm dd.MM.y'}}
                 </td>
-                <td *ngIf="order.deal.is_active">
-                    Активная сделка
+                <td>
+                    {{ getDealState(order) }}
                 </td>
-                <td *ngIf="!order.deal.is_active">
-                    Сделка закрыта
+                <td>
+                    {{ getDealStatus(order) }}
                 </td>
-                <td *ngIf="order.is_winner">
-                    Победа
-                </td>
-                <td *ngIf="!order.is_winner">
-                    Поражение
-                </td>
-            </tr>
         </tbody>
     </table>
 </div>

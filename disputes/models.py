@@ -11,7 +11,7 @@ class Games(models.Model):
 
 
 class Deals(models.Model):
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     created = models.DateTimeField(null=True)
     is_failed = models.BooleanField(default=False)
 

@@ -1,4 +1,4 @@
-<md-card *ngIf="!myselfOrder.deal">
+<md-card *ngIf="!myselfOrder.deal || !myselfOrder.deal.is_active">
     <md-card-subtitle>Оформление сделки</md-card-subtitle>
     <md-card-content>
         <div class="row">
@@ -42,7 +42,7 @@
         </div>
     </md-card-content>
 </md-card>
-<md-card *ngIf="myselfOrder.deal">
+<md-card *ngIf="myselfOrder.deal && myselfOrder.deal.is_active">
     <md-card-subtitle>Карточка заключеной сделки</md-card-subtitle>
     <md-card-content>
         <div class="row">

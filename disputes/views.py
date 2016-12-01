@@ -184,6 +184,7 @@ class StartDispute(APIView):
                 me.deal = competitor[0].deal
                 me.save()
                 me.deal.created = timezone.now()
+                me.deal.is_active = True
                 me.deal.save()
                 deal = Deals.objects.get(pk=me.deal.id)
                 serializer = DealsSerializer(deal)

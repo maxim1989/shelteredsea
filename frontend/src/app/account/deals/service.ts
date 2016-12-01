@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
-import { Order } from 'app/account/deals/order.model'
+import { Order } from 'app/deal/order/model';
 
 @Injectable()
 export class AccountDealsService {

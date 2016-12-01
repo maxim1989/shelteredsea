@@ -3,9 +3,14 @@
 <div *ngIf="!gameList">
     <md-progress-bar mode="indeterminate"></md-progress-bar>
 </div>
-<ul *ngIf="gameList && gameList.length">
-    <li *ngFor="let game of gameList"
-        (click)="changeGame(game.namespace)">
-        {{game.name}}
-    </li>
-</ul>
+<div class="row">
+    <div *ngIf="gameList && gameList.length"
+        class="list-group col-md-8">
+        <button *ngFor="let game of gameList"
+            class="list-group-item"
+            type="button"
+            (click)="changeGame(game.namespace)">
+            {{game.name}}
+        </button>
+    </div>
+</div>

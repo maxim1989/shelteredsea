@@ -17689,6 +17689,22 @@ webpackJsonp([1],[
 	            _this.orderList = orderList;
 	        });
 	    };
+	    AccountDealsComponent.prototype.getDealState = function (order) {
+	        return (order.is_active) ? "Активная сделка" : "Сделка завершена";
+	    };
+	    AccountDealsComponent.prototype.getDealStatus = function (order) {
+	        if (order.deal && !order.is_active && !order.deal.is_active) {
+	            if (order.deal.is_failed) {
+	                return "Ошибка в определении победителя";
+	            }
+	            else {
+	                return (order.is_winner) ? "Победа" : "Поражение";
+	            }
+	        }
+	        else {
+	            return "-";
+	        }
+	    };
 	    AccountDealsComponent = __decorate([
 	        core_1.Component({
 	            selector: 'account-deals',
@@ -19125,7 +19141,7 @@ webpackJsonp([1],[
 /* 409 */
 /***/ function(module, exports) {
 
-	module.exports = "<div *ngIf=\"!orderList\">\n    <em>Данные не получены</em>\n</div>\n<div *ngIf=\"orderList && !orderList.length\">\n    <em>Данные отсутствуют</em>\n</div>\n<div *ngIf=\"orderList && orderList.length\">\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th>Дата создания</th>\n            <th>Статус</th>\n            <th>Итог</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let order of orderList\">\n                <td>\n                    {{ order.deal.created | date: 'dd.M.y H:m'}}\n                </td>\n                <td *ngIf=\"order.deal.is_active\">\n                    Активная сделка\n                </td>\n                <td *ngIf=\"!order.deal.is_active\">\n                    Сделка закрыта\n                </td>\n                <td *ngIf=\"order.is_winner\">\n                    Победа\n                </td>\n                <td *ngIf=\"!order.is_winner\">\n                    Поражение\n                </td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n"
+	module.exports = "<div *ngIf=\"!orderList\">\n    <em>Данные не получены</em>\n</div>\n<div *ngIf=\"orderList && !orderList.length\">\n    <em>Данные отсутствуют</em>\n</div>\n<div *ngIf=\"orderList && orderList.length\">\n    <table class=\"table\" width=\"100%\">\n        <thead>\n            <th>Дата создания</th>\n            <th>Статус</th>\n            <th>Итог</th>\n        </thead>\n        <tbody>\n            <tr *ngFor=\"let order of orderList\">\n                <td>\n                    {{ order.deal.created | date: 'HH:mm dd.MM.y'}}\n                </td>\n                <td>\n                    {{ getDealState(order) }}\n                </td>\n                <td>\n                    {{ getDealStatus(order) }}\n                </td>\n        </tbody>\n    </table>\n</div>\n"
 
 /***/ },
 /* 410 */
@@ -19179,7 +19195,7 @@ webpackJsonp([1],[
 /* 418 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-card *ngIf=\"!myselfOrder.deal\">\n    <md-card-subtitle>Оформление сделки</md-card-subtitle>\n    <md-card-content>\n        <div class=\"row\">\n            <div class=\"col-md-4\">\n                <div class=\"well well-sm\">\n                    <h4>Общие параметры игры на спор</h4>\n                    Количество игроков в команде: <strong><em>1x1</em></strong>\n                </div>\n                <div *ngIf=\"chat\">\n                    <h4>Обсуждение игры на спор</h4>\n                    <chat [chat]=\"chat\"></chat>\n                </div>\n            </div>\n            <div class=\"col-md-4\">\n                <params-by-order [owner]=\"'alien'\"\n                                 [order]=\"alienOrder\">\n                </params-by-order>\n            </div>\n            <div class=\"col-md-4\">\n                <params-by-order [owner]=\"'myself'\"\n                                 [order]=\"myselfOrder\"\n                                 (checkActive)=\"checkingActivity($event)\">\n                </params-by-order>\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"col-md-12 text-right\">\n                <button type=\"button\"\n                        class=\"btn btn-default\"\n                        (click)=\"nextDeal()\"\n                        [disabled]=\"!canNextDeal()\">\n                    Искать другого соперника\n                </button>\n                <button type=\"button\"\n                        class=\"btn btn-danger\"\n                        (click)=\"startDeal()\"\n                        [disabled]=\"!canStartDeal()\">\n                    Подтвердить условия сделки\n                </button>\n            </div>\n        </div>\n    </md-card-content>\n</md-card>\n<md-card *ngIf=\"myselfOrder.deal\">\n    <md-card-subtitle>Карточка заключеной сделки</md-card-subtitle>\n    <md-card-content>\n        <div class=\"row\">\n            <div class=\"col-md-4\">\n                <div *ngIf=\"chat\">\n                    <h4>Обсуждение игры на спор</h4>\n                    <chat [chat]=\"chat\"></chat>\n                </div>\n            </div>\n            <div class=\"col-md-8\">\n                <div class=\"well well-sm\">\n                    <h4>Общие параметры сделки</h4>\n                    <div>Количество игроков в команде: <strong><em>1x1</em></strong></div>\n                    <div>Заявленная сумма сделки: <strong><em>{{myselfOrder.rate | rate}}</em></strong></div>\n                    <div>Количество побед для выигрыша сделки: <strong><em>{{myselfOrder.games_count}}</em></strong></div>\n                </div>\n            </div>\n        </div>\n    </md-card-content>\n</md-card>\n\n"
+	module.exports = "<md-card *ngIf=\"!myselfOrder.deal || !myselfOrder.deal.is_active\">\n    <md-card-subtitle>Оформление сделки</md-card-subtitle>\n    <md-card-content>\n        <div class=\"row\">\n            <div class=\"col-md-4\">\n                <div class=\"well well-sm\">\n                    <h4>Общие параметры игры на спор</h4>\n                    Количество игроков в команде: <strong><em>1x1</em></strong>\n                </div>\n                <div *ngIf=\"chat\">\n                    <h4>Обсуждение игры на спор</h4>\n                    <chat [chat]=\"chat\"></chat>\n                </div>\n            </div>\n            <div class=\"col-md-4\">\n                <params-by-order [owner]=\"'alien'\"\n                                 [order]=\"alienOrder\">\n                </params-by-order>\n            </div>\n            <div class=\"col-md-4\">\n                <params-by-order [owner]=\"'myself'\"\n                                 [order]=\"myselfOrder\"\n                                 (checkActive)=\"checkingActivity($event)\">\n                </params-by-order>\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"col-md-12 text-right\">\n                <button type=\"button\"\n                        class=\"btn btn-default\"\n                        (click)=\"nextDeal()\"\n                        [disabled]=\"!canNextDeal()\">\n                    Искать другого соперника\n                </button>\n                <button type=\"button\"\n                        class=\"btn btn-danger\"\n                        (click)=\"startDeal()\"\n                        [disabled]=\"!canStartDeal()\">\n                    Подтвердить условия сделки\n                </button>\n            </div>\n        </div>\n    </md-card-content>\n</md-card>\n<md-card *ngIf=\"myselfOrder.deal && myselfOrder.deal.is_active\">\n    <md-card-subtitle>Карточка заключеной сделки</md-card-subtitle>\n    <md-card-content>\n        <div class=\"row\">\n            <div class=\"col-md-4\">\n                <div *ngIf=\"chat\">\n                    <h4>Обсуждение игры на спор</h4>\n                    <chat [chat]=\"chat\"></chat>\n                </div>\n            </div>\n            <div class=\"col-md-8\">\n                <div class=\"well well-sm\">\n                    <h4>Общие параметры сделки</h4>\n                    <div>Количество игроков в команде: <strong><em>1x1</em></strong></div>\n                    <div>Заявленная сумма сделки: <strong><em>{{myselfOrder.rate | rate}}</em></strong></div>\n                    <div>Количество побед для выигрыша сделки: <strong><em>{{myselfOrder.games_count}}</em></strong></div>\n                </div>\n            </div>\n        </div>\n    </md-card-content>\n</md-card>\n\n"
 
 /***/ },
 /* 419 */
@@ -19197,7 +19213,7 @@ webpackJsonp([1],[
 /* 421 */
 /***/ function(module, exports) {
 
-	module.exports = "<h1>PfG: спор через игру</h1>\n<p>Выберите игру для спора:</p>\n<div *ngIf=\"!gameList\">\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n</div>\n<ul *ngIf=\"gameList && gameList.length\">\n    <li *ngFor=\"let game of gameList\"\n        (click)=\"changeGame(game.namespace)\">\n        {{game.name}}\n    </li>\n</ul>\n"
+	module.exports = "<h1>PfG: спор через игру</h1>\n<p>Выберите игру для спора:</p>\n<div *ngIf=\"!gameList\">\n    <md-progress-bar mode=\"indeterminate\"></md-progress-bar>\n</div>\n<div class=\"row\">\n    <div *ngIf=\"gameList && gameList.length\"\n        class=\"list-group col-md-8\">\n        <button *ngFor=\"let game of gameList\"\n            class=\"list-group-item\"\n            type=\"button\"\n            (click)=\"changeGame(game.namespace)\">\n            {{game.name}}\n        </button>\n    </div>\n</div>\n"
 
 /***/ },
 /* 422 */

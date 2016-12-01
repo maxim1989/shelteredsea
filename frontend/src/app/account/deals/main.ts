@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountDealsService } from './service';
 
-import { Order } from 'app/account/deals/order.model'
-
+import { Order } from 'app/deal/order/model';
 
 @Component({
     selector: 'account-deals',
@@ -27,6 +26,23 @@ export class AccountDealsComponent implements OnInit{
                     this.orderList = orderList;
                 }
             );
+    }
+
+    public getDealState(order:Order) {
+        return (order.is_active) ? "Активная сделка" : "Сделка завершена";
+    }
+
+    public getDealStatus(order:Order) {
+        if (order.deal && !order.is_active && !order.deal.is_active) {
+            if (order.deal.is_failed) {
+                return "Ошибка в определении победителя";
+            } else {
+                return (order.is_winner) ? "Победа" : "Поражение";
+            }
+        } else {
+            return "-";
+        }
+        
     }
 
 }
