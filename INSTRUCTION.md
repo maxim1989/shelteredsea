@@ -31,12 +31,14 @@
     ```
 
 ##Установка HEROKU
-0. [Читаем документацию](devceter.heroku.com/articles/heroku-command-line)
-1. wget -O- https://toolbelt.heroku.com/install-ubuntu.sh | sh
-2. heroku --version
+
+0. [Читаем документацию по heroku](devceter.heroku.com/articles/heroku-command-line)
+1. `wget -O- https://toolbelt.heroku.com/install-ubuntu.sh | sh`
+2. `heroku --version`
 
 
-##Установка джанго
+##Установка Django
+
 1. Создаем виртуальное окружение. Возможно сначала надо установить virtualenv и pip:
 
     ```
@@ -56,16 +58,23 @@
    Возможно надо бужет доусстановить:
    `sudo apt install libpq-dev python3-dev`
 
-5. 
+5. Устанавливаем переменные окружения приложения. Для этого копируем файл `.env.example` в эту же папку с названием `.env`:
+
+    `cp .env.example .env`s
+
+    Затем меняем значения переменных в файле .env. На данный момент необходимо изменить только параметры подключения к БД (`DATABASE_URL`).
+
+6. 
     ```
     heroku local migrate
     heroku local loaddata
     heroku local web
     ```
 
-6. Смотрим результат на `http://localhost:5000` в браузере
+7. Смотрим результат на `http://localhost:5000` в браузере
 
 ##Установка frontend
+
 0. Устанавливаем nodejs версии 6+
 1. Переходим в папку frontend
 2. `npm install`

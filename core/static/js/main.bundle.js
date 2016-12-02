@@ -17547,9 +17547,13 @@ webpackJsonp([1],[
 	    function AccountCardComponent(UserService) {
 	        this.UserService = UserService;
 	        this.balance = "2 340";
+	        this.isFailed = false;
 	    }
 	    AccountCardComponent.prototype.ngOnInit = function () {
-	        this.user = this.UserService.getUser();
+	        var _this = this;
+	        this.UserService.getAuthUser()
+	            .then(function (user) { return _this.user = user; })
+	            .catch(function () { return _this.isFailed = true; });
 	    };
 	    AccountCardComponent = __decorate([
 	        core_1.Component({
@@ -19129,7 +19133,7 @@ webpackJsonp([1],[
 /* 407 */
 /***/ function(module, exports) {
 
-	module.exports = "<md-card>\n    <md-card-subtitle>Личные данные</md-card-subtitle>\n    <md-card-content>\n        <div *ngIf=\"user\">\n            <p>Имя в статистике: <strong>{{user.statistic_name.name}}</strong></p>\n            <p>id: <strong>{{user.uid_for_client.name}}</strong></p>\n            <div class=\"payment text-center\">\n                <h4>Баланс</h4>\n                <p>\n                    <strong><em>{{balance}}</em> бубликов</strong>\n                </p>\n                <p>\n                    <button type=\"button\"\n                            class=\"btn btn-primary\"\n                            disabled=\"disabled\">\n                        Пополнить баланс\n                    </button>\n                </p>\n            </div>\n        </div>\n    </md-card-content>\n</md-card>"
+	module.exports = "<md-card>\n    <md-card-subtitle>Личные данные</md-card-subtitle>\n    <md-card-content>\n        <div *ngIf=\"isFailed\">\n            <p class=\"text-center\">Ошибка загрузки данных</p>\n        </div>\n        <div *ngIf=\"user && !isFailed\">\n            <p>Имя в статистике: <strong>{{user.statistic_name.name}}</strong></p>\n            <p>id: <strong>{{user.uid_for_client.name}}</strong></p>\n            <div class=\"payment text-center\">\n                <h4>Баланс</h4>\n                <p>\n                    <strong><em>{{user.balance.balance | rate}}</em> бубликов</strong>\n                </p>\n                <p>\n                    <button type=\"button\"\n                            class=\"btn btn-primary\"\n                            disabled=\"disabled\">\n                        Пополнить баланс\n                    </button>\n                </p>\n            </div>\n        </div>\n    </md-card-content>\n</md-card>"
 
 /***/ },
 /* 408 */

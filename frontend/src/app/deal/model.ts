@@ -3,4 +3,5 @@ export class Deal {
     is_active: boolean;
     created: string;
     created_in_seconds: number;
+    is_failed: boolean;
 }

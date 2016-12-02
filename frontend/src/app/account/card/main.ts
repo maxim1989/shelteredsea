@@ -10,12 +10,15 @@ import { UserService } from 'app/user/auth.service';
 export class AccountCardComponent implements OnInit{
     user: User;
     balance: string = "2 340";
+    isFailed: boolean = false;
 
     constructor(
         private UserService: UserService
     ) {}
 
     ngOnInit() {
-        this.user = this.UserService.getUser();
+        this.UserService.getAuthUser()
+            .then((user:User) => this.user = user)
+            .catch(() => this.isFailed = true);
     }
 }

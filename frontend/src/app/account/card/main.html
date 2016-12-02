@@ -1,13 +1,16 @@
 <md-card>
     <md-card-subtitle>Личные данные</md-card-subtitle>
     <md-card-content>
-        <div *ngIf="user">
+        <div *ngIf="isFailed">
+            <p class="text-center">Ошибка загрузки данных</p>
+        </div>
+        <div *ngIf="user && !isFailed">
             <p>Имя в статистике: <strong>{{user.statistic_name.name}}</strong></p>
             <p>id: <strong>{{user.uid_for_client.name}}</strong></p>
             <div class="payment text-center">
                 <h4>Баланс</h4>
                 <p>
-                    <strong><em>{{balance}}</em> бубликов</strong>
+                    <strong><em>{{user.balance.balance | rate}}</em> бубликов</strong>
                 </p>
                 <p>
                     <button type="button"
